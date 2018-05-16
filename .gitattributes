@@ -1,0 +1,2 @@
+# Treat files as binaries to preserve original line endings, but treat files as text to be able to diff them
+* diff -text
