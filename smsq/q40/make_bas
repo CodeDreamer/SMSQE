@@ -101,3 +101,7 @@
 1100   END IF
 1110 END DEFine compile_and_check
 1120 :
+1130 DEFine PROCedure p
+1140   make_it_full
+1150 END DEFine p
+1160 :

@@ -1,4 +1,26 @@
+
+
+
+
+
+
+         
          Cline_bin
          
          
-         Please read the del_all help for this
+         This  will   add  a  new  keyword,   CURRENT_LINE  to  the  Sbasic
+         interpreter.  This keyword returns the line number on which it was
+         called (0 if called directly from the command line).
+         
+         You should  avoid  using  this  keyword  from  within  a  compiled
+         program. For QLIB,  this keywords returns  0  due to  a fluke, but
+         nothing is  guaranteed. I don't  know what happens  with Turbo. In
+         any  case, I don't think  it will crash your  machine if used from
+         within a compiled program, but it might... Just don't!
+         
+         To load the CURRENT_LINE keyword, use:
+         LRESPR cline_bin.
+         
+         The source of this is in the source directory.
+         
+         

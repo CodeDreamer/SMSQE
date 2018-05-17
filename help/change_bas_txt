@@ -1,0 +1,17 @@
+
+
+
+
+
+
+         Change_bas
+         
+         This  little basic program will just try to  change one string for
+         another in all normal files held in a directory.
+         
+         It does not recurse down into subdirectories.
+         
+         I  mainly use it to change win1_ to dev8_ whenever I get something
+         from a contributor.
+         
+         

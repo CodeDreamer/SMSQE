@@ -1,13 +1,19 @@
 SMSQ/E	file(s) 			version
 Version changed 			of file changes made
 ------------------------------------------------------------------------------
+2z99
+	Qx0 bugfixes
+	dev8_iod_con2_q40_blob_drop_asm 	bugfix for movep
+	DEV8_smsq_kbd_ibm_base_asm		1.00	also links in italian kbd
+
 2y99
 
   CHANGES FOR SHADOW   (MK)
 
 	iod_con2_16_Q40_shad_asm	1.00	added (MK)
 	iod_con2_q4016_cct			adapted to take that file into
----						account (wl)
+						account (wl)
+	iod_con2_qxl16_cct			same (wl)
 
   CHANGES FOR MOVEP -- REMOVED FROM Q40/Q60 CODE (FD)
 
@@ -75,7 +81,11 @@ Version changed 			of file changes made
 
 -------------------------------------------------------------------------------
 
-2x99	iod_con2_ptr_mouse_asm		1.00	removed reference to useless
+2x99
+
+--- sundry changes
+
+	iod_con2_ptr_mouse_asm		1.00	removed reference to useless
 						key file (wl)
 	iod_con2_gold_PROCV_asm 	1.00	same (wl)
 	iod_con2_gold_DISP_SIZE_asm	1.00	same (wl)
@@ -85,6 +95,11 @@ Version changed 			of file changes made
 	changed to flp_bas file for rach target (wl) to refer to dev8_ instead
 	of win1_
 
+	replaced sbsext_ext_maint_asm by newer version (made by mk) and renamed
+	old files to _old (this concerns STAT for big drives - thanks JH)
+								
+
+ ----------- CHANGES FOR FAST MEMORY
 
 	dd_rd_fm_occi_asm		3.00	fast memory (mk)
 	dd_rd_fm_cct			(new)	fast memory (mk)
@@ -108,8 +123,8 @@ Version changed 			of file changes made
 		  dev8_smsq_q40_driver_ser_link
 
 
-	   replaced sbsext_ext_heap_asm and sbsext_ext_maint_asm by newer
-	   versions (made by mk) and renamed old files to _old
+	   replaced sbsext_ext_heap_asm by newer version (made by mk) and
+	   renamed old file to _old
 
 	   replaced smsq_mem_free_asm by newer version (made by mk) and renamed
 	   old file to _old
@@ -120,12 +135,15 @@ Version changed 			of file changes made
 	   made changes to various flp_bas files  to refer to the newer
 	   smsq_smsq_1mb_os instead of smsq_smqe_os
 
+
+----------------------------------------------------------------------
 2.99	  none - as delivered by TT
 
 
 keys:
 
 FD = Fabrizio Diversi
+JH = John Hall
 MK = Marcel Kilgus
 TT = Tony Tebby
 WL = Wolfgang Lenerz

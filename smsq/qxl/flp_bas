@@ -2,7 +2,7 @@
 110 INPUT 'SMSQ/E QXL options: Copy> ';cmd$
 120 IF FOP_IN ('dev8_smsq_qxl_qxlh.exe') <> -7: INPUT 'QXLH.EXE exists'; cmd$: QUIT
 130 p$   = 'dev8_sys_boot_file'
-140 bl$  = 'dev8_smsq_qxl_qxl2.exe'
+140 bl$  = 'dev8_smsq_qxl_qxl2_exe'
 150 hst$ = 'dev8_smsq_qxl_host'
 160 hi$  = 'dev8_smsq_qxl_hwinit'
 170 ld$  = 'dev8_smsq_smsq_loader'

@@ -1,0 +1,92 @@
+100 DEFine PROCedure p
+110   do_diffs 'win2_','win5_',0
+120 REMark  zip_it "win5_"
+130 END DEFine p
+140 :
+150 DEFine PROCedure do_diffs(device1$,device2$,exfl%)
+160 LOCal o%
+170   o%=FOP_OVER('ram1_diffs_result_txt')
+180   extract_diff device1$,device2$,"",1,o%,0
+190 PRINT#o%,"--------"
+200   extract_diff device2$,device1$,"",1,o%,1
+210   PRINT#o%
+220   CLOSE#o%
+230 END DEFine do_diffs
+240 :
+250 DEFine PROCedure extract_diff(dev1$,dev2$,mdirs$,ddown%,o%,existfl%)
+260 REMark extract differences: mentions which file has been changed in dev2$ with respect to dev1$
+270 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
+280 REMark by calling itself recursively
+290 REMark if existfl%=1 thenwe only care if the file also exists in dev2$
+300 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new
+310   FOR lp%=1 TO 50
+320     myfile$="ram1_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+330     chan%=FOP_NEW (myfile$)            : REMark try to open unique file
+340     IF chan%>0:EXIT lp%
+350   END FOR lp%
+360   PRINT mdirs$
+370   IF chan%<0:RETurn                     : REMark ooops!!!!
+380   WDIR#chan%,dev1$&mdirs$                : REMark dir of this rep in file
+390   GET#chan%\0                           : REMark reset file pointer to start
+400   REPeat lp%
+410     IF EOF(#chan%):EXIT lp%
+420     INPUT#chan%,a$                      : REMark get filename
+430     IF a$="":NEXT lp%
+440     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+450     IF t%
+460       extract_diff dev1$,dev2$,a$(1 TO t%-1),ddown%,o%,existfl%
+470       NEXT lp%
+480     END IF
+490     tc%=FOP_IN(dev1$&a$)                : REMark open "old" file
+500     IF tc%<0:NEXT lp%
+510     date_old=FUPDT(#tc%)                : REMark file date of "old" file
+520     len_old=FLEN(#tc%)                  : REMark len of "old" file
+530     CLOSE#tc%
+540     tc%=FOP_IN(dev2$&a$)                : REMark try to open same "new" file
+550     IF tc%<0
+560       PRINT#o%,a$;"  ==>  doesn't exist";
+570       REPORT#o%,tc%                     : REMark file problem!
+580       NEXT lp%
+590     END IF
+600     IF existfl%:CLOSE#tc%:NEXT lp%
+610     date_new=FUPDT(#tc%)
+620     len_new=FLEN(#tc%)
+630     CLOSE#tc%
+640     IF date_old<date_new
+650       PRINT#o%,a$;"  ==>   File was updated"
+660       NEXT lp%
+670     END IF
+680     IF date_old>date_new
+690       PRINT#o%,a$;"  ==>   File was DOWNdated !!! !!! !! "
+700       NEXT lp%
+710     END IF
+720     IF len_old<>len_new
+730       PRINT#o%,a$;"  ==>   Same date, but file length change "
+740       NEXT lp%
+750     END IF
+760   END REPeat lp%
+770   CLOSE#chan%
+780   DELETE myfile$
+790 END DEFine extract_diff
+800 :
+810 DEFine PROCedure sa
+820   SAVE_O DEV8_extras_diff_bas
+830 END DEFine sa
+840 :
+850 DEFine PROCedure zip_it (dev1$)
+860 LOCal o%,z$,lp%,t%
+870   o%=FOP_IN('ram1_diffs_result_txt')
+880   IF o%<0:RETurn
+890   REPeat lp%
+900     IF EOF(#o%):EXIT lp%
+910     INPUT#o%,a$
+920     IF a$="":NEXT lp%
+930     IF a$(1)="-":NEXT lp%
+940     t%="  ==>" INSTR a$
+950     a$=a$(1 TO t%-1)
+960     z$=z$&dev1$&a$&" "
+970   END REPeat lp%
+980   EW dev1_progs_zip;" -r9 ram1_changes.zip "&z$
+990   CLOSE#o%
+1000 END DEFine zip_it
+1010 :

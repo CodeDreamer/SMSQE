@@ -8,6 +8,7 @@
 	xref	kbde_tab
 	xref	kbdd_tab
 	xref	kbdf_tab
+	xref	kbdi_tab
 
 	xref	kbd_nsid
 	xref	kbdf_nsid
@@ -34,6 +35,10 @@ kbd_def
 	dc.w	6
 	dc.l	kbd_deu-*
 
+	dc.w	ldm.kbdt,0,39		 ; Italian
+	dc.w	6
+	dc.l	kbd_ita-*
+
 	dc.w	ldm.kbdt,0,33		 ; French
 	dc.w	0
 	dc.l	kbd_fra-*
@@ -44,6 +49,8 @@ kbd_eng dc.w	44
 	dc.w	kbde_tab-*,kbd_nsid-*-2
 kbd_deu dc.w	49
 	dc.w	kbdd_tab-*,kbd_nsid-*-2
+kbd_ita dc.w	39
+	dc.w	kbdi_tab-*,kbd_nsid-*-2
 kbd_fra dc.w	33
 	dc.w	kbdf_tab-*,kbdf_nsid-*-2
 

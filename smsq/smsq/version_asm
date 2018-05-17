@@ -573,6 +573,6 @@
 ;	A3 addressing problems in pointer open routine fixed.
 ;	Q40 MMU initialisation corrected.
 
-smsq_vers equ	 '2.99'
+smsq_vers equ	 '2y99'
 
 	end

@@ -83,7 +83,7 @@ dev8_iod_con2_16_recol_rel
 dev8_iod_con2_16_rpixl_rel
 dev8_iod_con2_16_spray_rel
 dev8_iod_con2_16_drop_rel
-dev8_iod_con2_16_shad_rel
+dev8_iod_con2_16_q40_shad_rel
 dev8_iod_con2_16_smove_rel
 dev8_iod_con2_16_spcch_rel
 dev8_iod_con2_qxl16_sppref_rel
