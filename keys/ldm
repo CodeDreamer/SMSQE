@@ -1,0 +1,24 @@
+; Language Dependent Module Definitions
+        nolist
+
+ldm_type   equ  $00     ; word  type of module
+ldm.pref     equ    0     ;       preference table
+ldm.kbdt     equ    1     ;       keyboard table
+ldm.prtt     equ    2     ;       printer translates
+ldm.msgt     equ    3     ;       message texts
+
+ldm_group  equ  $02     ; word  module group
+ldm_lang   equ  $04     ; word  language code
+ldm_next   equ  $06     ; word  rel pointer to next module header in block
+ldm_module equ  $08     ; long  rel pointer to module
+
+ldp_ireg   equ  $00     ; long  international car reg code, left justified
+ldp_defs   equ  $04     ; words table of preferred language codes
+
+; language dependent list
+
+ldl_enda   equ  -$8     ; long  end of allocation (one spare)
+ldl_endl   equ  -$4     ; long  end of list
+ldl.hdr    equ    $08     ; language dependent list header
+
+        list

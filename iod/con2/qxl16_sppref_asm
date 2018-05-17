@@ -1,0 +1,11 @@
+; 16 bit sprite preference table    V2.00   1999  Tony Tebby
+;
+	section driver
+
+	xdef	pt_sppref     ; 4 sprite preference table
+	xdef	pt_spnative
+
+
+pt_sppref dc.w	 $FEDC,$0210,$021f,$0100  ; the QXL native mode is not supported
+pt_spnative dc.w $0220			  ; ... this is usually first pref
+	end

@@ -1,0 +1,268 @@
+; Multi IO chip keys (included in hardware specific definitions)
+
+como_rxdr  equ  $00<<MIO_s      ; receiver data register
+como_txdr  equ  $00<<MIO_s      ; transmitter data register
+
+como_ier   equ  $01<<MIO_s      ; interrupt enable register
+com..rxbi  equ    0               ; receive buffer interrupt
+com..txbi  equ    1               ; transmit buffer interrupt
+com..rxsi  equ    2               ; receive status interrupt
+com..msi   equ    3               ; modem status interrupt
+com.rxbi   equ    %00000001       ; receive buffer interrupt
+com.txbi   equ    %00000010       ; transmit buffer interrupt
+com.rxsi   equ    %00000100       ; receive status interrupt
+com.msi    equ    %00001000       ; modem status interrupt
+
+
+como_fifo  equ  $02<<MIO_s      ; FIFO control register
+com.fdis   equ    %00000000       ; fifos disabled
+com.fzero  equ    %00000001       ; fifo no threshold
+com.fmin   equ    %01000001       ; min fifo threshold
+com.frx8   equ    %10000001       ; 8 byte rx threshhold
+com.fmax   equ    %11000001       ; max fifo threshold
+com.fclr   equ    %00000110       ; clear fifos
+
+como_iir   equ  $02<<MIO_s      ; interrupt identification register
+com..nint  equ    0               ; bit set when no interrupt
+com.intbit equ    %00000111       ; interrupt identification + nint
+com.intid  equ    %00000110       ; interrupt id bits
+
+como_lcr   equ  $03<<MIO_s      ; line control register
+com.7bit   equ    %00000010       ; 7 bit data
+com.8bit   equ    %00000011       ; 8 bit data
+com.2stop  equ    %00000100       ; 2 stop bits
+com.odd    equ    %00001000       ; odd parity
+com.even   equ    %00011000       ; even parity
+com.mark   equ    %00101000       ; mark
+com.space  equ    %00111000       ; space
+com.break  equ    %01000000       ; break
+com.dlab   equ    %10000000       ; divisor latch access
+
+como_mcr   equ  $04<<MIO_s      ; modem control register
+com..dtr   equ    0               ; dtr output
+com..rts   equ    1               ; rts output
+com..ien   equ    3               ; interrupt enable
+com.dtr    equ    %00000001       ; dtr output
+com.rts    equ    %00000010       ; rts output
+com.ien    equ    %00001000       ; interrupt enable
+
+como_lsr   equ  $05<<MIO_s      ; line status register
+com..dr    equ    0               ; data ready (rx byte)
+com..oe    equ    1               ; overrun error
+com..pe    equ    2               ; parity error
+com..fe    equ    3               ; framing error
+com..bi    equ    4               ; break interrupt
+com..thre  equ    5               ; transmitter holding reg empty
+com..temt  equ    6               ; transmitter empty
+
+como_msr   equ  $06<<MIO_s      ; modem status register
+com..dcts  equ    0               ; CTS changed
+com..ddsr  equ    1               ; DSR changed
+com..teri  equ    2               ; trailing edge of RI
+com..ddcd  equ    3               ; DCD changed
+com..cts   equ    4               ; CTS
+com..dsr   equ    5               ; DSR
+com..ri    equ    6               ; RI
+com..dcd   equ    7               ; DCD
+
+como_dll   equ  $00<<MIO_s      ; divisor latch low
+como_dlh   equ  $01<<MIO_s      ; divisor latch high
+
+; printer port section
+
+lpto_dtr   equ  $00<<MIO_s      ; data register
+
+lpto_str   equ  $01<<MIO_s      ; status register
+lpt..to    equ    0               ; timeout (epp)
+lpt..irq   equ    2               ; IRQ (epp)
+lpt..nerr  equ    3               ; no printer ERR
+lpt..slct  equ    4               ; printer selected
+lpt..pe    equ    5               ; printer paper end
+lpt..nack  equ    6               ; not printer acknowledge
+lpt..nbusy equ    7               ; printer not busy
+
+lpto_ctr   equ  $02<<MIO_s      ; control register
+lpt..stb   equ    0               ; strobe
+lpt..alf   equ    1               ; auto line feed
+lpt..ninit equ    2               ; not printer init
+lpt..slin  equ    3               ; select the printer
+lpt..inte  equ    4               ; interrupt enable
+lpt..input equ    5               ; port is input
+lptc.inte  equ    %00010000              ; interrupt enable
+;**** because of hardware problems, each driver has a constant lpt.ie which
+;**** is either 0 (no interrupts) or lptc.inte (interupts available)
+;;;;lptc.check equ    %00001111              ; check mode set bits
+lptc.clear equ    %00000100              ; clear (not printer init)
+lptc.inact equ    %00100100              ; inactive status
+lptc.output equ   %00001100              ; output idle (add lpt.ie!!)
+lptc.ocheck equ   %00001000              ; check for output idle
+lptc.ocmask equ   %00001000              ; check for output idle
+lptc.ostrobe equ  %00001101              ; output strobe (add lpt.ie!!)
+lptc.epp   equ    %00000100              ; epp mode (add lpt.ie!!)
+lptc.ecp   equ    %00000100              ; ecp mode
+
+ecpo_data  equ  $400<<MIO_s     ; data fifo
+
+ecpo_cnfga equ  $400<<MIO_s     ; extended configuration a
+ecp.level  equ    %10000000       ; level interrupts
+ecp.width  equ    %01110000       ; bus width bits
+ecp.8bit   equ    %00010000       ; 8 bit bus
+
+ecpo_cnfgb equ  $401<<MIO_s     ; extended configuration b
+
+ecpo_ecr   equ  $402<<MIO_s     ; extended control register
+ecp..fifoe equ    0               ; fifo empty bit
+ecp..fifof equ    1               ; fifo full bit
+ecp..ecps  equ    2               ; ecp service bit
+ecp.ecps   equ    %00000100       ; ecp service bit
+;**** because of hardware problems, each driver has a constant ecp.ie which
+;**** is either ecp.ecps (no interrupts) or 0 (interupts available)
+ecp.erre   equ    %00010000       ; ecp error interrupt enable
+ecp.mode   equ    %11100000       ; parallel port mode bits
+ecpm.spp   equ    %00000000       ; spp mode
+ecpm.ps2   equ    %00100000       ; PS2 (bidirectional) mode
+ecpm.fifo  equ    %01000000       ; fifo mode
+ecpm.ecp   equ    %01100000       ; ecp mode
+ecpm.epp   equ    %10000000       ; epp mode
+ecpm.conf  equ    %11100000       ; configuration mode
+
+; floppy disk section
+
+fdco_dctl  equ  $02<<MIO_s       ; drive control reg
+fdc..rst   equ    2                ; reset bit
+fdc.desl   equ    %00000100        ; deselected
+fdc.moto   equ    %11110000        ; motor on
+fdco_stat  equ  $04<<MIO_s       ; status register
+fdc..req   equ    7                ; request transfer bit
+fdc..rdd   equ    6                ; read data bit
+fdc..dat   equ    5                ; data transfer bit
+fdc..bsy   equ    4                ; busy - command in progress
+fdcs.bsy   equ    %00010000        ; any of these busy - wait a bit
+fdcs.bit   equ    %11110000+$ffffff00 ; real status bits
+fdcs.stt   equ    %10000000+$ffffff00 ; start of command
+fdcs.cmd   equ    %10010000+$ffffff00 ; command parameter byte
+fdcs.res   equ    %11010000+$ffffff00 ; result phase
+fdcs.rdd   equ    %11110000+$ffffff00 ; read data
+fdcs.wrd   equ    %10110000+$ffffff00 ; write data
+fdcs.rsk   equ    %00001111           ; recalibrate / seek in progress bits
+fdco_data  equ  $05<<MIO_s       ; data register
+fdco_rate  equ  $07<<MIO_s       ; data rate
+fdc.rsd    equ    %10              ; standard data rate
+fdc.rhd    equ    %00              ; high density
+fdc.red    equ    %11              ; extended density
+
+fdc.cmpb   equ    %11000000+$ffffff00 ; completion code bits - status byte 0
+fdc.cmpo   equ    %00000000      ; OK
+fdc.cmpi   equ    %10000000      ; illegal command
+fdc.recb   equ    %11110000+$ffffff00 ; recalibrate (seek) bits
+fdc.reco   equ    %00100000      ; recalibrate (seek) OK
+
+fdc..eot   equ    7              ; end of track bit in status byte 1
+fdc..crc   equ    5              ; CRC error bit in status byte 1
+fdc..orn   equ    4              ; overrun bit in status byte 1
+fdc..mam   equ    0              ; missing address mark bit in byte 1
+fdc..wtr   equ    4              ; wrong track bit in status byte 2
+
+
+fdc.trk0   equ    %00010000      ; track 0 bit in status byte 3
+fdc.wprt   equ    %01000000      ; write protect bit in status byte 3
+
+fdc.modx   equ  5                ; five bytes of mode
+fdc.modc   equ  %00000001        ; mode
+fdc.mod1   equ  %01000010        ; TMR 0, ISO fmt, no seek, no LP, no ext range
+fdc.mod2   equ  0
+fdc.mod3   equ  %11000000+$ffffff00 ; no wild, no settle
+fdc.mod4   equ  0                ; not test
+
+fdc.senx   equ  2                ; two bytes of sense
+fdc.senc   equ  %00000100        ; sense command (byte 1 standard)
+
+fdc.spcx   equ  3                ; three bytes of specify
+fdc.spcc   equ  %00000011        ; specify
+fdc.spc1   equ  %00001111        ; nearly max head unload (depending on chip)
+fdc.spc2   equ  %00000011        ; min head load, no dma
+
+fdc.recx   equ  2                ; two bytes recalibrate
+fdc.recc   equ  %00000111        ; recalibrate command (byte 1 no side)
+
+fdc.seex   equ  3                ; three bytes seek
+fdc.seec   equ  %00001111        ; seek command (byte 1 no side, 2 standard)
+
+fdc.stix   equ  3                ; three bytes step in
+fdc.stic   equ  %11001111+$ffffff00 ; step in command (byte 1 no side, 2 nr tracks)
+
+fdc.sinx   equ  1                ; one byte sense interrupt
+fdc.sinc   equ  %00001000        ; sense interrupt
+
+fdc.ridx   equ  2                ; two bytes read ID
+fdc.ridc   equ  %01001010        ; read ID command (byte 1 standard)
+
+fdc.trkx   equ  3                ; two bytes set / read track
+fdc.strc   equ  %01100001        ; set track command (byte 1 +$30, 2 std)
+fdc.rtrc   equ  %00100001        ; read track command (byte 1 +$30, 2 std)
+fdc.trk1   equ  %00110000        : ... added to drive number
+
+fdc.rwsx   equ  9                ; nine bytes for read / write sector
+fdc.rdsc   equ  %01000110        ; read sector MFM, no seek
+fdc.wrsc   equ  %01000101        ; write sector MFM, no seek
+fdc..mfm   equ    6
+
+fdc.fmtx   equ  6                ; six bytes format
+fdc.fmtc   equ  %01001101        ; format track command (byte 1 standard)
+
+ideo_data  equ  $00<<MIO_s      ; word wide data register
+ideo_errr  equ  $01<<MIO_s      ; error register
+ideo_scnt  equ  $02<<MIO_s      ; sector count
+ideo_sect  equ  $03<<MIO_s      ; sector number
+ideo_cyll  equ  $04<<MIO_s      ; cylinder number (low byte)
+ideo_cylh  equ  $05<<MIO_s      ; cylinder number (high byte)
+ideo_head  equ  $06<<MIO_s      ; head (and drive, and LBA)
+ide.slv    equ    %00010000       ; bit set for slave drive
+ide..slv   equ    4               ; bit set for slave drive
+ide.lba    equ    %01000000       ; bit set for LBA
+ide..lba   equ    6               ; bit set for LBA
+ide.head   equ    %10100000       ; Bits 7 and 5 always set for compatibility
+ideo_cmd   equ  $07<<MIO_s      ; command
+ide.recal  equ    $10             ; recalibrate
+ide.read   equ    $20             ; read sectors
+ide.write  equ    $30             ; write sectors
+ide.ver1   equ    $41             ; verify without retry
+ide.stop   equ    $94+$ffffff00   ; stop (standby)
+ide.idle   equ    $95+$ffffff00   ; idle immediate
+ide.rund   equ    $97+$ffffff00   ; (idle and) set drive run-down timer
+ide.idnt   equ    $EC+$ffffff00   ; identify drive
+idei_lcyl  equ    $02               ; number of logical cylinders
+idei_lhead equ    $06               ; number of logical heads
+idei_lsect equ    $0c               ; number of logical sectors
+ideo_stat  equ  $07<<MIO_s      ; status register
+ide..err   equ    0               ; bit 0 indicates an error
+ide..drq   equ    3               ; bit 3 indicates data ready for transfer
+ide..drdy  equ    6               ; bit 6 set if drive ready
+ide..busy  equ    7               ; bit 7 of status set for busy
+
+ideo_alt   equ  $06<<MIO_s      ; alternate status / control register
+ide.nint   equ    %00000010       ; no interrupts
+
+rtc_index  equ  $00<<MIO_s      ; adress select index for RTC registers
+rtc_data   equ  $01<<MIO_s      ; read/write data
+
+rtc.sec    equ  $00             ; seconds counter
+rtc.asec   equ  $01             ; seconds alarm
+rtc.min    equ  $02             ; minutes counter
+rtc.amin   equ  $03             ; minutes alarm
+rtc.hour   equ  $04             ; hours counter
+rtc.ahour  equ  $05             ; hours alarm
+rtc.dow    equ  $06             ; day of week
+rtc.day    equ  $07             ; day (of month)
+rtc.month  equ  $08             ; month
+rtc.year   equ  $09             ; year
+rtc.rega   equ  $0a             ; register a
+rtc.divm   equ    %01110000       ; divider control mask
+rtc.divn   equ    %00100000       ; divider normal mode
+rtc.regb   equ  $0b             ; register b
+rtc.smod   equ    %10000110       ; set date mode
+rtc.nmod   equ    %00000110       ; normal mode
+rtc.regc   equ  $0c             ; register c
+rtc.vrt    equ  $0d             ; valid real time register
+rtc..vrt   equ   7                ; valid real time bit
+rtc.cmos   equ  $0e             ; 50 bytes (or more) of CMOS ram

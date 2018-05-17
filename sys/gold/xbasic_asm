@@ -1,0 +1,273 @@
+; SUPER GOLD CARD PATCHES
+
+	section sgc
+
+	xdef	sgc_xbasic
+
+	xref	gl_proc1
+	xref	ut_gtint
+
+	include 'dev8_sys_gold_keys'
+
+sgc_xbasic
+a84e	 lea	 min_procs,a1
+a852	 tst.w	 $1c204
+a858	 bne.s	 a85e
+a85a	 lea	 max_procs,a1
+a85e	 move.w  $110,a2
+a862	 jsr	 (a2)
+a864	 moveq	 #$0,d0
+a866	 rts
+max_procs
+	dc.w	10
+	dc.w	cache_on-*
+	dc.b	8,'CACHE_ON'
+	dc.w	cache_off-*
+	dc.b	9,'CACHE_OFF'
+	dc.w	scr2dis-*
+	dc.b	7,'SCR2DIS'
+	dc.w	scr2en-*
+	dc.b	6,'SCR2EN'
+	dc.w	auto_tk2f1-*
+	dc.b	10,'AUTO_TK2F1'
+	dc.w	auto_tk2f2-*
+	dc.b	10,'AUTO_TK2F2'
+	dc.w	auto_dis-*
+	dc.b	8,'AUTO_DIS'
+	dc.w	flp_jiggle-*
+	dc.b	10,'FLP_JIGGLE'
+	dc.w	0,0,0
+
+min_procs
+	dc.w	6
+	dc.w	a_tk2f1-*
+	dc.b	10,'AUTO_TK2F1'
+	dc.w	a_tk2f2-*
+	dc.b	10,'AUTO_TK2F2'
+	dc.w	a_dis-*
+	dc.b	8,'AUTO_DIS'
+	dc.w	f_jiggle-*
+	dc.b	10,'FLP_JIGGLE'
+	dc.w	0,0,0
+
+f_jiggle
+a910	 bsr.l	aaa2
+a914	 andi.b  #$80,d0
+a918	 addq.b  #4,d0
+a91a	 bsr.s	 a944
+a91c	 moveq	 #$0,d0
+a91e	 rts
+
+a_tk2f1
+a920	 moveq	 #$ffffff87,d0
+a922	 bsr.s	 a944
+a924	 moveq	 #$6,d0
+a926	 bsr.s	 a944
+a928	 moveq	 #$0,d0
+a92a	 rts
+
+a_tk2f2
+a92c	 moveq	 #$ffffff86,d0
+a92e	 bsr.s	 a944
+a930	 moveq	 #$7,d0
+a932	 bsr.s	 a944
+a934	 moveq	 #$0,d0
+a936	 rts
+
+a_dis
+a938	 moveq	 #$7,d0
+a93a	 bsr.s	 a944
+a93c	 moveq	 #$6,d0
+a93e	 bsr.s	 a944
+a940	 moveq	 #$0,d0
+a942	 rts
+
+a944	 movem.l d1/a2,-(sp)
+a948	 move	 sr,d1
+a94a	 swap	 d1
+a94c	 move.l  $1c200,a2
+a952	 trap	 #$0
+a954	 ori.w	 #$700,sr
+a958	 move.b  #$30,(a2)
+a95c	 move.b  $3c(a2),d1
+a960	 tst.b	 d0
+a962	 bpl.s	 a968
+a964	 bset	 d0,d1
+a966	 bra.s	 a96a
+a968	 bclr	 d0,d1
+a96a	 move.b  d1,$3c(a2)
+a96e	 move.b  #$10,(a2)
+a972	 swap	 d1
+a974	 move	 d1,sr
+a976	 movem.l (sp)+,d1/a2
+a97a	 rts
+
+cache_on
+a97c	 moveq	 #$9,d0
+a97e	 bra.s	 a982
+
+cache_off
+a980	 moveq	 #$0,d0
+a982	 sne	 $1c10c
+a988	 moveq	 #$0,d0
+a98a	 trap	 #$1
+a98c	 rts
+
+scr2dis
+a98e	 moveq	 #$1,d0
+a990	 bra.s	 a994
+scr2en
+a992	 moveq	 #$0,d0
+a994	 sne	 d0
+a996	 move.l  $1c200,a2
+a99c	 beq.s	 a9a4
+a99e	 sf	 $68(a2)
+a9a2	 bra.s	 a9a8
+
+a9a4	 tst.b	 $68(a2)
+
+a9a8	 andi.b  #$80,d0
+a9ac	 addq.b  #5,d0
+a9ae	 bsr.s	 a9b4
+a9b0	 moveq	 #$0,d0
+a9b2	 rts
+
+a9b4	 movem.l d1/a2,-(sp)
+a9b8	 move	 sr,d1
+a9ba	 swap	 d1
+a9bc	 move.l  $1c200,a2
+a9c2	 trap	 #$0
+a9c4	 ori.w	 #$700,sr
+a9c8	 sf	 (a2)
+a9ca	 sf	 $38(a2)
+a9ce	 sf	 $20(a2)
+a9d2	 move.b  #$30,(a2)
+a9d6	 move.b  $3c(a2),d1
+a9da	 tst.b	 d0
+a9dc	 bpl.s	 a9e2
+a9de	 bset	 d0,d1
+a9e0	 bra.s	 a9e4
+a9e2	 bclr	 d0,d1
+a9e4	 sf	 (a2)
+a9e6	 sf	 $38(a2)
+a9ea	 sf	 $20(a2)
+a9ee	 move.b  d1,$3c(a2)
+a9f2	 sf	 (a2)
+a9f4	 sf	 $38(a2)
+a9f8	 sf	 $20(a2)
+a9fc	 move.b  #$10,(a2)
+aa00	 swap	 d1
+aa02	 move	 d1,sr
+aa04	 movem.l (sp)+,d1/a2
+aa08	 rts
+
+auto_tk2f1
+aa0a	 moveq	 #$ffffff87,d0
+aa0c	 bsr.s	 a9b4
+aa0e	 moveq	 #$6,d0
+aa10	 bsr.s	 a9b4
+aa12	 clr.l	 $1c110
+aa18	 moveq	 #$0,d0
+aa1a	 rts
+
+auto_tk2f2
+aa1c	 moveq	 #$ffffff86,d0
+aa1e	 bsr.s	 a9b4
+aa20	 moveq	 #$7,d0
+aa22	 bsr.s	 a9b4
+aa24	 clr.l	 $1c110
+aa2a	 moveq	 #$0,d0
+aa2c	 rts
+
+auto_dis
+aa2e	 moveq	 #$7,d0
+aa30	 bsr.s	 a9b4
+aa32	 moveq	 #$6,d0
+aa34	 bsr.l	 a9b4
+aa38	 clr.l	 $1c110
+aa3e	 moveq	 #$0,d0
+aa40	 rts
+
+aa42	 move.b  gl_proc1,d0
+aa46	 bpl.s	 aa5a
+aa48	 tst.w	 $1c204
+aa4e	 bne.s	 aa5a
+aa50	 lea	 hr_procs,a1
+aa54	 move.w  $110,a2
+aa58	 jsr	 (a2)
+aa5a	 moveq	 #$0,d0
+aa5c	 rts
+hr_procs
+	dc.w	2
+	dc.w	auto_tk2hires-*
+	dc.b	13,'AUTO_TK2HIRES'
+	dc.w	0,0,0,0
+
+auto_tk2hires
+aa78	 moveq	 #$ffffff87,d0
+aa7a	 bsr.l	 a9b4
+aa7e	 moveq	 #$ffffff86,d0
+aa80	 bsr.l	 a9b4
+aa84	 move.l  #$b8be4741,$1c110
+aa8e	 moveq	 #$0,d0
+aa90	 rts
+
+flp_jiggle
+aa92	 bsr.s	 aaa2
+aa94	 andi.b  #$80,d0
+aa98	 addq.b  #4,d0
+aa9a	 bsr.l	 a9b4
+aa9e	 moveq	 #$0,d0
+aaa0	 rts
+
+aaa2	 bsr.l	 ut_gtint
+aaa6	 bne.s	 aaf6
+aaa8	 tst.w	 d3
+aaaa	 beq.s	 aaf6
+aaac	 subq.w  #2,d3
+aaae	 bhi.s	 aaf6
+aab0	 bsr.s	 aafc
+aab2	 bne.s	 aaf6
+aab4	 lea	 $b4(a0),a0
+aab8	 tst.w	 d3
+aaba	 blt.s	 aade
+aabc	 move.w  $0(a6,a1.l),d2
+aac0	 ble.s	 aaf6
+aac2	 subq.w  #4,d2
+aac4	 bhi.s	 aaf6
+aac6	 moveq	 #$7f,d0
+aac8	 and.b	 $3(a0,d2.w),d0
+aacc	 tst.w	 $2(a6,a1.l)
+aad0	 beq.s	 aad4
+aad2	 tas	 d0
+aad4	 move.b  d0,$3(a0,d2.w)
+aad8	 addq.l  #4,sp
+aada	 moveq	 #$0,d0
+aadc	 rts
+
+aade	 move.l  #$7f7f7f7f,d0
+aae4	 tst.w	 $0(a6,a1.l)
+aae8	 beq.s	 aaf0
+aaea	 not.l	 d0
+aaec	 or.l	 (a0),d0
+aaee	 bra.s	 aaf2
+aaf0	 and.l	 (a0),d0
+aaf2	 move.l  d0,(a0)
+aaf4	 rts
+
+aaf6	 addq.l  #4,sp
+aaf8	 moveq	 #-15,d0
+aafa	 rts
+
+aafc	 move.l  #'FLP0',d7
+ab02	 moveq	 #$0,d0
+ab04	 trap	 #$1
+ab06	 lea	 $48(a0),a0
+ab0a	 move.l  (a0),d0
+ab0c	 beq.s	 aaf8
+ab0e	 move.l  d0,a0
+ab10	 cmp.l	 $2c(a0),d7
+ab14	 bne.s	 ab0a
+ab16	 rts
+
+	end

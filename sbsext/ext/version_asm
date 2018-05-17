@@ -1,0 +1,102 @@
+; TK2 versions
+
+	xdef	tk2_vers
+	xdef	tk2_mess
+	xdef	tk2_mend
+
+; V2.01  First full version.
+
+; V2.02  First release version.
+
+; V2.03  Patched to prevent MG initialisation problems.
+
+; V2.04  (Jeaggi only) network eof problems fixed.
+
+; V2.05  Lost channel on OPEN_NEW (file already exists) fixed.
+;	 EX EW changed so that owner is current job.
+
+; V2.06  EX EW changed for compiled programs: EX jobs owned by 0,
+;	 EW jobs owned by current job and now wait!
+
+; V2.07  (Sandy only) "bad line" character wrap problem in ED fixed.
+
+; V2.08  Empty line in ED problem (introduced in V2.07) fixed.
+;	 Unset string parameter collapse in PRINT_USING fixed.
+
+; V2.09  PUTting randomly positioned bytes over the the network should
+;	 not now shuffle the contents of a file.
+
+; V2.10  RENAME with only one name does not now leave file open.
+;	 The file system prompts are now sent to #0 rather than channel 0
+
+; V2.11  Initialisation error causing loss of replacement commands (e.g. OPEN)
+;	 using JM/AH ROMs and CST QDisc V1.17 and V1.18 fixed.
+
+; V2.12  Bad error message return from opening a file name that is too long
+;	 changed to return "bad name".
+;	 "Bad parameter" from special job opening a file specified as a string
+;	 in an EX command fixed.
+;	 "Not complete" from SPL fixed.
+;	 Last line recall changed to reduce problems due to asynchonous
+;	 modification of keyboard queue.
+;	 Can GET null string at end of file.
+
+; V2.13  Error status returned from SAVE and LIST if drive full or bad or
+;	 changed medium during output.
+;	 Network fixed to prevent serial IO buffer damage when interleaving
+;	 serial IO with window enquiries while reading from a file.
+
+; V2.14  Sub-directories recognised by directory commands.
+;	 Backup date and version numbers added.
+;	 COPY (etc) preserves version number.
+;	 ED last line problems fixed.
+;
+; V2.15  ED ESC problem (introduced in V2.14) fixed.
+;
+; V2.16  Futher V2.14 ED problem (delete new line) fixed.
+;	 Network file server extended to handle IOF.XINF call.
+;
+; V2.17  ED now able to accept completely blank line.
+;
+; V2.18  Network server / Archive append and re-read problems fixed.
+;	 WMON/WTV (not quite) redone for Minerva.
+;
+; V2.19  WCOPY skips directories. WMON/WTV now done for Minerva.
+;
+; V2.20  ED for multi BASICs. WMON/WTV default to mode 4.
+;	 LRESPR tries common heap as well.
+;
+; V2.21  Fix for error in ERR_DF, PARTYP and PARUSE introduced V2.14?
+;	 Top line problems in ED fixed.
+;
+; V2.22  Returns ERR.NF if name+default directory too long
+;	 Rejects file types<>0 for LOAD MERGE etc.
+;
+; V2.23  French 'Secteurs' text corrected
+;
+; V2.24  %C added to clock string
+;
+; V2.25  File statistics error with version 2 driver and Turbo corrected
+;
+; V2.26  DIR \file (etc) corrected for case of "N" reply to "OK to Overwrite"
+;
+; V2.27  DEL_DEFB timing corrected for ST/GOLD card
+;
+; V2.28  WCOPY etc. recognises any single char device as network
+;
+; V2.29  SPL COPY corrected for input error problems
+;
+; V2.30  INT corrected
+;	 PRINT ,1 tabulates to column 8
+;
+; V2.31  Job functions with invalid job ID do not now access address 0
+;	 EPROM_LOAD always returns 0
+
+tk2_vers equ	'2.30'
+	section version
+tk2_mess dc.b	 'CARE/QJUMP  TK'
+	 dc.l	 tk2_vers
+	 dc.b	 '    1985',$a
+tk2_mend
+*
+	end

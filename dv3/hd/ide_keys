@@ -1,0 +1,7 @@
+; keys for PC IDE interface
+        nolist
+
+MIO_s   equ     0                ; dummy shift for addresses
+        include 'dev8_keys_multiIO'
+
+        list

@@ -1,0 +1,848 @@
+* Window Definition Macros
+        nolist
+* The macros in this file are in alphabetic order (or nearly) the header defines
+* the usage of each macro and any labels created by that macro.
+*
+* V0.01 Additional labels added to simplify modification of the working
+*       definition at runtime.
+*
+* V0.02 CLAYOUT reset in I_END. Prevents confusion with multiple window
+*       definitions using different information object lists.
+*
+* V0.03 Minor changes
+*
+*
+* Make pointer to action routine
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEA_name        
+*
+action  macro   name
+        mkptrx  mea_,[name]
+        endm
+*
+* Allocate space in status area
+*
+*       Labels                          Variables
+*       Defined         Used            Updated         Used
+*       MV_name         WAL_currw       WAL_currw       WAL_currw               
+*                       WST_currw
+*
+alcstat macro   name,size
+        xdef    mv_[name]
+mv_[name] equ   [wal_[currw]]+wal_[currw]
+size    setnum  [size]+[size]&1
+wal_[currw] setnum [wal_[currw]]+[size]
+        endm
+*
+* Make pointer to application sub-window
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*
+appn    macro   name
+        ifstr   {[clayout]} = {*} goto appx
+        mkpptr  maw_,[name]
+        append  maw_[name],[clayout]
+        goto    mexit
+appx    maclab
+        mkptrx  maw_,[name]
+mexit   maclab
+        endm
+*
+* Define pan/scroll arrow colour
+*
+arrow   macro   colour
+        dc.w    [colour]
+        endm
+*
+* Make status-area-relative pointer to section control block
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MCdirn_name        WST_currw                    NCdirn.curra
+*
+a_ctrl  macro   dirn,cblock
+        ifstr   {[cblock]} <> {} goto defit
+cblock  setstr  [curra]
+defit   maclab
+        xdef    mc[dirn]_[cblock]
+        common  mc[dirn]_[cblock]
+        ds.b    2+wss.ssln*[nc[dirn].[curra]]
+        section menu
+        dc.w    mc[dirn]_[cblock]-wst_[currw]
+        endm
+*
+* Terminate an application sub-window list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       CLAYOUT
+*
+a_end   macro
+        dc.w    0
+        addwrk  4
+clayout setstr  {*}
+        endm
+*
+* Terminate a menu sub-window object list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MOB_name                        CLAYOUT
+*
+a_obje  macro   name,sblock
+mob_[name]
+clayout setstr  {*}
+        ifstr   {[sblock]} <> {} goto defit
+sblock  setstr  [currs]
+defit   maclab
+mst_[sblock] setnum [mst_[sblock]]+1
+        mkeven  mst_[sblock]
+        xdef    mst_[sblock]
+        common  mst_[sblock]
+        ds.b    [mst_[sblock]]
+        section menu
+        endm
+*
+* Introduce the menu sub-window portion of an
+* application sub-window definition, and generate
+* a relative pointer to the menu item statuses.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MST_sblock                      MST_sblock      CURRA
+*       WST_currw                                       CURRW
+*
+a_menu  macro   sblock
+        ifstr   {[sblock]} <> {} goto defit
+sblock  setstr  [curra]
+defit   maclab
+mst_[sblock] setnum 0
+currs   setstr  [sblock]
+        dc.w    mst_[sblock]-wst_[currw]
+        addwrk  wwa.mlen
+        endm
+*
+* Introduce and label a menu sub-window row list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MRW_name                        CLAYOUT         MRW_name
+*
+a_rlst  macro   name
+mrw_[name]
+clayout setstr  [mrw_[name]]
+        endm
+*
+* Introduce a menu sub-window spacing list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MSdirn_name                     CLAYOUT         MSdirn_name
+*
+a_slst  macro   name,dirn
+ms[dirn]_[name]
+clayout setstr [ms[dirn]_[name]]
+        endm
+*
+* Introduce an application sub-window definition
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MAD_name                                        MAD_name
+*
+a_wdef  macro   name
+mad_[name]
+clayout setstr  [mad_[name]]
+curra   setstr  [name]
+currs   setstr  [name]
+        addwrk  wwa.blen+2*wwa.clen
+        endm
+*
+* Generate relative pointer to application sub-window defn
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                          MAD_name     MAD_name        CLAYOUT
+*                                       WWclayout.currw WWclayout.currw
+*
+a_windw macro   name
+        mkpptr  mad_,[name]
+        append  mad_[name],[clayout]
+        addwrk  4
+        endm
+*
+* Introduce an application sub-window list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MAW_name                        CLAYOUT         MAW_name
+*
+a_wlst  macro   name
+maw_[name]
+clayout setstr  [maw_[name]]
+        endm
+*
+* Define colours for thermometer bar
+*
+bar     macro   paper,ink
+        dc.w    [paper],[ink]
+        endm
+*
+* Make relative pointer to externally defined blob
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEB_name        
+*
+blob    macro   name
+        mkptrx  meb_,[name]
+        endm
+*
+* Define border to mark current item
+*
+border  macro   size,colour
+        dc.w    [size],[colour] 
+        endm
+*
+* Define character size for information item
+*
+csize   macro   xs,ys
+        dc.b    [xs],[ys]
+        endm
+*
+* Make relative pointer to an external application
+* sub-window control routine
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEC_name        
+*
+ctrl    macro   name
+        mkptrx  mec_,[name]
+        endm
+*
+* Define the maximum number of control sections possible
+* in an application sub-window.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       NCX.curra
+*                                       NCY.curra
+*
+ctrlmax macro   maxx,maxy
+ncx.[curra] setnum [maxx]
+ncy.[curra] setnum [maxy]
+        dc.w    [maxx],[maxy]
+        endm
+*
+* Make relative pointer to sub-window drawing routine
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MED_name        
+*
+draw    macro   name
+        mkptrx  med_,[name]
+        endm
+*
+* Define help pointer
+*
+help    macro   label
+        mkptrx  {},[label]
+        endm
+*
+* Define one set of item attributes
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEB_blob        
+*       MEP_patt
+*
+iattr   macro   paper,ink,blob,patt
+        dc.w    [paper],[ink]
+        mkptrx  meb_,[blob]
+        mkptrx  mep_,[patt]
+        endm
+*
+* Define the size and spacing of an index bar
+*
+ibar    macro   size,spc,szsc,spsc
+        mkscl   [size],[szsc]
+        mkscl   [spc],[spsc]
+        endm
+*
+* Generate an internal pointer to an index object list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MOB_name                        MOB_name        CLAYOUT
+*
+ilst    macro   name
+        mkpptr  mob_,[name]
+        append  mob_[name],[clayout]
+        endm
+*
+* Make pointer to information sub-window list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MIW_name                        MIW_name        CLAYOUT
+*
+info    macro   name
+        ifstr {[clayout]} = {*} goto appx
+        mkpptr  miw_,[name]
+        append  miw_[name],[clayout]
+        goto    mexit
+appx    maclab
+        mkptrx  miw_,[name]
+mexit   maclab
+        endm
+*
+* Define ink for information item
+*
+ink     macro   colour
+        dc.w    [colour]
+        endm
+*
+* Set item number for loose or menu item
+*
+item    macro   number
+        ifstr   {[currs]} <> {*} goto seta
+        ifnum   [maxitem] >= [number] goto setn
+maxitem setnum  [number]
+        goto    setn
+seta    maclab
+        ifnum   [mst_[currs]] >= [number] goto setn
+mst_[currs] setnum [number]
+setn    maclab
+        dc.w    [number]
+        endm
+*
+* Generate an end-of-list marker for information window
+* and object lists.
+*
+i_end   macro
+        dc.w    -1
+        addwrk  2
+clayout setstr  {*}
+        endm
+*
+* Introduce an information item
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       WWclayout.currw WWclayout.currw
+*
+i_item  macro
+        addwrk  wwo.elen
+        endm
+*
+* Introduce and label an information object list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MIO_name                        CLAYOUT         MIO_name
+*
+i_olst  macro   name
+mio_[name]
+        ifstr   {[clayout]} = {*} goto newlab
+clayout setstr  [mio_[name]][clayout]
+        goto    done
+newlab  maclab
+clayout setstr  [mio_[name]]
+done    maclab
+        endm
+*
+* Introduce an information window
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       WWclayout.currw WWclayout.currw
+*
+i_windw macro
+        addwrk  wwi.elen
+        endm
+*
+* Introduce an information sub-window list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MIW_name                        CLAYOUT         MIW_name
+*
+i_wlst  macro   name
+miw_[name]
+        ifstr   {[clayout]} = {*} goto newlab
+clayout setstr  [miw_[name]][clayout]
+        goto    done
+newlab  maclab
+clayout setstr  [miw_[name]]
+done    maclab
+        endm
+*
+* Define the justification of a loose or menu object
+*
+justify macro   xjst,yjst
+        dc.b    [xjst],[yjst]
+        endm
+*
+* Introduce a window layout external to the main definition: the
+* pointers to the information, loose items and application window list
+* may be omitted if a layout does not include them.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       WSIZES          WSIZES
+*       MIW_ptr1                        MIW_ptr1        MIW_ptr1
+*       MLI_ptr2                        MLI_ptr2        MLI_ptr2
+*       MAW_ptr3                        MAW_ptr3        MAW_ptr3
+*
+layout  macro   letter,ptr1,ptr2,ptr3
+        local   ptrc,alpre,symbol
+alpre   setstr  miw_mli_maw_
+ptrc    setnum  1
+layloop maclab
+        ifstr   {[ptr[ptrc]]} = {} goto endloop
+symbol  setstr  [.right(.left(alpre,[ptrc]*4),4)][ptr[ptrc]]
+        xdef    [symbol]
+        append  [symbol],[letter]
+endloop maclab
+ptrc    setnum  [ptrc]+1
+        ifnum   [ptrc] < 4 goto layloop
+ww[letter].[currw] setnum ww_lists
+wsizes  setstr  [wsizes][letter]
+        endm
+*
+* Make pointer to loose item list.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MLI_name                        MLI_name        CLAYOUT
+*
+loos    macro   name
+        ifstr {[clayout]} = {*} goto appx
+        mkpptr  mli_,[name]
+        append  mli_[name],[clayout]
+        goto    mexit
+appx    maclab
+        mkptrx  mli_,[name]
+mexit   maclab
+        endm
+*
+* Terminate a loose item list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       WST_currw                       CLAYOUT         MAXITEM
+*
+l_end   macro   name
+        dc.w    -1
+        addwrk  2
+clayout setstr  {*}
+        endm
+*
+* Introduce a loose item list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MLI_name                        CLAYOUT         MLI_name
+*
+l_ilst  macro   name
+mli_[name]
+currs   setstr  {*}
+        ifstr   {[clayout]} = {*} goto newlay
+clayout setstr  [mli_[name]][clayout]
+        goto done
+newlay  maclab
+clayout setstr  [mli_[name]]
+done    maclab
+llst    setstr  [name]
+        endm
+*
+* Introduce a loose item
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       WWclayout.currw WWclayout.currw
+*
+l_item  macro   name,number
+        ifstr   {[name]} = {} goto addspace
+mli.[name] equ [number]
+mlo.[name] equ (*-mli_[llst])/wdl.elen
+        xdef    mli.[name],mlo.[name]
+addspace maclab
+        addwrk  wwl.elen
+         endm
+*
+* Define the total size of a menu sub-window,
+* in columns and rows.
+*
+mensiz  macro   xs,ys
+        dc.w    [xs],[ys]
+        endm
+*
+* Introduce a menu item
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MOB_name                                        MOB_name
+*                                       WWclayout.currw WWclayout.currw
+*                                       CLAYOUT         CLAYOUT       
+*                                                       CURRW
+*
+objel   macro   name
+        ifstr   {[name]} = {} goto addup
+mob_[name]
+clayout setstr  [mob_[name]]
+addup   maclab
+        addwrk  wwm.olen
+        endm
+*
+* Generate relative pointer to information object list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                          MIO_name     MIO_name        CLAYOUT
+*                                       WWclayout.currw WWclayout.currw
+*
+olst    macro   name
+        mkpptr  mio_,[name]
+        append  mio_[name],[clayout]
+        endm
+*
+* Define the origin of an object or window
+*
+origin  macro   size,spc,szsc,spsc
+        mkscl   [size],[szsc]
+        mkscl   [spc],[spsc]
+        endm
+*
+* Make relative pointer to externally defined pattern
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEP_name        
+*
+pattern macro   name
+        mkptrx  mep_,[name]
+        endm
+* 
+* Position defining macro
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEA_name        
+*
+*
+posn    macro   name,xorg,yorg,xscale,yscale
+        xdef    mps_[name]
+        ifstr   {[xscale]} <> {} goto xs_ok
+xscale  setstr  0
+xs_ok   maclab
+        ifstr   {[yscale]} <> {} goto ys_ok
+yscale  setstr  0
+ys_ok   maclab
+mps_[name] dc.w    [xscale]<<12+[xorg],[yscale]<<12+[yorg]
+        endm
+*
+* Generate one element of a row list, being two internal relative pointers
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MOB_start                       MOB_start       CLAYOUT
+*       MOB_end                         MOB_end         CURRW
+*                                       WWclayout.currw WWclayout.currw
+*
+rowel   macro   start,end
+        mkpptr  mob_,[start]
+        mkpptr  mob_,[end]
+        append  mob_[start],[clayout]
+        append  mob_[end],[clayout]
+        addwrk  wwm.rlen
+        endm
+*
+* Generate relative pointer to menu row list
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                          MRW_name     MRW_name        CLAYOUT
+*                                       WWclayout.currw WWclayout.currw
+*
+rlst    macro   name
+        mkpptr  mrw_,[name]
+        append  mrw_[name],[clayout]
+        endm
+*
+* Generate externally defined select key entry for loose or menu item
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEK.name        
+*
+selkey  macro   char
+        ifstr   {[char]} = {} goto selkdc
+        ifstr   {[char]} = {0} goto selkdc
+        xref.s  mek.[char]
+[.lab]  dc.b    mek.[char]
+        goto    selkend
+selkdc  maclab
+[.lab]  dc.b    0
+selkend maclab
+        endm
+*
+* Make pointer to setup routine
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEM_name        
+*
+setr    macro   name
+        mkptrx  mem_,[name]
+        endm
+*
+* Finish window definition, setting up XDEFs for the size of each
+* layout defined in this file.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       WWx_currw                                       WSIZES
+*                                                       CURRW
+*
+*       Where x runs through all the layout letters defined
+*       in this file.
+*
+setwrk  macro
+        local   laynum,maxnum,laylet
+laynum  setnum  1
+        ifstr   [.def(wsizes)] = {TRUE} goto setlen
+        error   WINDOW or XLAYOUT not coded
+        goto    mexit
+setlen maclab
+maxnum  setnum  [.len(wsizes)]
+xdloop  maclab
+        ifnum   [laynum] > [maxnum] goto endset
+laylet  setstr  [.right(.left(wsizes,[laynum]),1)]
+        xdef    ww[laylet].[currw]
+ww[laylet].[currw] equ [ww[laylet].[currw]]
+laynum  setnum  [laynum]+1
+        goto    xdloop
+endset  maclab
+        ifstr   [.def(wal_[currw])] = {FALSE} goto sshdr
+        xdef    wal_[currw]
+        common  wal_[currw]
+        ds.b    [wal_[currw]]
+sshdr   maclab
+maxitem setnum  [maxitem]+1
+        mkeven  maxitem
+        xdef    wst_[currw]
+        common  wst_[currw]
+        ds.b    ws_litem+[maxitem]
+mexit   maclab
+        section menu
+        endm
+*
+* Define the size of something
+*
+size    macro   xsiz,ysiz,xsc,ysc
+        mkscl   [xsiz],[xsc]
+        mkscl   [ysiz],[ysc]
+        endm
+*
+* Introduce a layout entry in the main part o a window
+* definition.
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*
+size_opt macro  letter
+clayout setstr  [letter]
+        ifstr   {[letter]} = {*} goto mexit
+ww[letter].[currw] setnum ww_lists
+wsizes  setstr  [wsizes][letter]
+mexit   maclab
+        endm
+*
+* Define offset of top left menu object
+*
+soffset macro   xoff,yoff
+        dc.w    [xoff],[yoff]
+        endm
+*
+* Put in "spare" byte
+*
+spare   macro
+        dc.b    0
+        endm
+*
+* Define spacing element: calculation makes it consistent 
+* with definition of index item offset (?)
+*
+spcel   macro   gap,size
+        dc.w    [size],[size]+[gap]
+        addwrk  wwm.slen
+        endm
+*
+* Make pointers to spacing lists
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MSX_xnam                        MSX_xnam        CLAYOUT
+*       MSX_ynam                        MSY_ynam
+*
+slst    macro   xnam,ynam
+        mkpptr  msx_,[xnam]
+        mkpptr  msy_,[ynam]
+        append  msx_[xnam],[clayout]
+        append  msy_[ynam],[clayout]
+        endm
+*
+* Make relative pointer to externally defined sprite
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MES_name        
+*
+sprite  macro   name
+        mkptrx  mes_,[name]
+        endm
+*
+* Terminate list of size options
+*
+s_end   macro
+        dc.w    -1
+clayout setstr  {*}
+        endm
+*
+* Make relative pointer to externally defined text
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MET_name        
+*
+text    macro   name
+        mkptrx  met_,[name]
+        endm
+*
+* Define an object's type
+*
+type    macro   key
+        dc.b    [key]
+        endm
+*
+* Define a window's attributes
+*
+wattr   macro   shad,bwid,bcol,papr
+        dc.w    [shad],[bwid],[bcol],[papr]
+        endm
+*
+* Introduce a window defintion
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*       MEN_name        
+*
+window  macro   name
+        common  wal_[name]
+        common  wst_[name]
+        section menu
+        xdef    men_[name]
+men_[name]
+currw   setstr  [name]
+wsizes  setstr  {}
+maxitem setnum  0
+wal_[currw] setnum 0
+        endm
+*
+* Introduce a file of external layouts
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*                                       CURRW
+*
+xlayout macro   name
+        common  wst_[name]
+        section menu
+currw   setstr  [name]
+wsizes  setstr  {}
+maxitem setnum  0
+clayout setstr  {*}
+        endm
+*
+* Add a quantity to all working definitions currently being
+* set up: this is required when more than one layout uses 
+* a given loose item list, information window or application
+* window. 
+*
+addwrk  macro   amount
+        local   laynum,maxnum,laylet
+laynum  setnum  1
+        ifstr   [.def(wsizes)] = {TRUE} goto setlen
+        error   WINDOW or XLAYOUT not coded
+        goto    mexit
+setlen  maclab
+maxnum  setnum  [.len(wsizes)]
+adloop  maclab
+        ifnum   [laynum] > [maxnum] goto mexit
+laylet setstr   [.right(.left(wsizes,[laynum]),1)]
+        ifstr   [.instr(clayout,laylet)] = {0} goto nxtsiz
+ww[laylet].[currw] setnum [ww[laylet].[currw]]+[amount]
+nxtsiz  maclab
+laynum  setnum  [laynum]+1
+        goto    adloop
+mexit   maclab
+        endm
+*
+* Append to or create string variable
+*
+append  macro   var,string
+        ifstr   [.def([var])] = {TRUE} goto applab
+[var]   setstr  [string]
+        goto    mexit
+applab  maclab
+[var]   setstr  [[var]][string]
+mexit   maclab
+        endm
+*
+* Make scaled word
+*
+mkscl   macro   n,sc
+        ifstr   {[sc]} <> {} goto setw
+sc      setnum  0
+setw    maclab
+        dc.w    ([sc])<<12+([n])
+        endm
+*
+* Make relative pointer to internal symbol
+*
+mkpptr  macro   pfx,name                
+        ifstr   [name] = {} goto nulptr
+        ifstr   [name] = {0} goto nulptr
+[.lab]  dc.w    [pfx][name]-*
+        goto    mkpte
+nulptr  maclab
+[.lab]  dc.w    0
+mkpte   maclab
+        endm
+*
+* Make relative pointer to external symbol
+*
+mkptrx  macro   pfx,name                 ; as mkptr with xref
+        ifstr   [name] = {} goto nulptr
+        ifstr   [name] = {0} goto nulptr
+        xref    [pfx][name]
+[.lab]  dc.w    [pfx][name]-*
+        goto    mkpte
+nulptr  maclab
+[.lab]  dc.w    0
+mkpte   maclab
+        endm
+*
+* Make variable even
+*
+mkeven  macro   var
+[var]   setnum  [[var]]+[[var]]&1
+        endm
+*
+        list

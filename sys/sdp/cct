@@ -1,0 +1,15 @@
+dev8_sys_sdp_init_rel
+dev8_sys_sdp_io_rel
+dev8_sys_sdp_open_rel
+dev8_sys_sdp_close_rel
+dev8_sys_sdp_sched_rel
+dev8_sys_sdp_poll_rel
+dev8_sys_sdp_retry_rel
+dev8_sys_sdp_psdo_rel
+dev8_sys_sdp_setw_rel
+dev8_sys_sdp_do_rel
+dev8_sys_sdp_ctrl_rel
+dev8_sys_sdp_byte_rel
+dev8_sys_sdp_sbuf_rel
+dev8_sys_sdp_def_rel
+dev8_sys_sdp_basic_rel

@@ -1,0 +1,19 @@
+; Compression Utility Keys
+        nolist
+
+cmp_flength equ $00 long    (uncompressed) file length
+cmp_fnext   equ $04 long    relative pointer to next file or zero
+cmp_fattr   equ $08 word    file attributes
+cmp_fsect   equ $0a word    rel pointer to first section of file
+cmp_fname   equ $0c wname   file name
+
+
+cmp_sect    equ $00 word    section number
+cmp_method  equ $02 word    method(s) used
+wmp.null      equ $00         uncompressed
+cmp.w3        equ $03         3/6/9 bit word encoding
+cmp.w4        equ $04         4/7/10 bit word encoding
+cmp.w5        equ $05         5/8/11 bit word encoding
+cmp.w6        equ $06         6/9/12 bit word encoding
+cmp_slen    equ $04 long    section length
+cmp_table   equ $08 long    relative pointer to decode table or 0 if it follows

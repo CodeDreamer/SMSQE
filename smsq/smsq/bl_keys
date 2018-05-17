@@ -1,0 +1,6 @@
+; BOOTLOAD KEYS
+
+        nolist
+sbl.os  equ     $1f               ; msb of facility is OS
+sbl.fh  equ     $1e               ; nmsb is fast ram available
+        list

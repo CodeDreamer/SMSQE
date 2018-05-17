@@ -1,0 +1,44 @@
+; channel block definitions
+        nolist
+
+chn_len  equ    $0000 ; long    LENgth of channel block
+chn_drvr equ    $0004 ; long    address of driver linkage
+chn_ownr equ    $0008 ; long    OWNeR of this channel
+chn_rflg equ    $000c ; long    pointer to channel Closed FLaG, cleared on close
+chn_tag  equ    $0010 ; word    channel TAG
+chn_stat equ    $0012 ; byte    STATus 0 ok, $01 wait, $ff wait (rel a6)
+chn_actn equ    $0013 ; byte    IO action (stored value of d0)
+chn_jbwt equ    $0014 ; long    JoB WaiTing for IO
+
+chn_end  equ    $0018 ;         end of header
+
+; standard channel block for fsd
+
+chn_link equ    $0018 ; long    LINKed list of channel blocks
+chn_accs equ    $001c ; byte    ACCeSs mode
+chn_drid equ    $001d ; byte    DRive ID
+chn_qdid equ    $001e ; word    Qdos thinks this is file ID
+chn_fpos equ    $0020 ; long    File POSition
+chn_feof equ    $0024 ; long    File EOF
+chn_csb  equ    $0028 ; long    current slave block
+chn_updt equ    $002c ; byte    file UPDaTed
+chn_usef equ    $002d ; byte    file USE Flags
+chn..usd equ      7           ; file used
+chn..dst equ      0           ; date set 
+chn..vst equ      1           ; version set
+chn_name equ    $0032 ; string  file NAME
+chn.nmln equ      $24 ;         max file NaMe LeNgth
+chn_ddef equ    $0058 ; long    pointer to Drive DEFinition
+chn_drnr equ    $005c ; word    DRive NumbeR
+chn_flid equ    $005e ; word    FiLe ID
+chn_sctl equ    $005e ; word    SeCTor Length (direct sector IO) 0:128 1:256 etc
+chn_opwk equ    $0060 ; long    $40 (hdr.len) bytes of working space for open
+chn_sdid equ    $0062 ; word    (Sub-)Directory ID
+chn_sdps equ    $0064 ; long    (Sub-)Directory entry PoSition
+chn_sdef equ    $0068 ; long    (Sub-)Directory End of File (wrong if IOA.KDIR)
+chn_spr  equ    $0070 ;         $30 bytes spare
+chn_fend equ    $00a0 ;         File system channel end (QDOS)
+
+chn_nchk equ    $00b0 ;         no 'in use' check in OS open code
+chn.nchk equ    'NCHK'  ;       ... if set to this value
+        list

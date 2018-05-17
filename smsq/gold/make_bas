@@ -1,0 +1,114 @@
+100 REMark Please read the "How To" document before using these procedures
+110 :
+120 DEFine PROCedure qmake_it
+130   EW qmake ;'\c dev8_smsq_gold_host_ \b \0 all \1 \2'
+140   EW qmake ;'\c dev8_smsq_gold_hwinit_ \b \0 all \1 \2'
+150   EW qmake ;'\c dev8_smsq_gold_nasty_ \b \0 all \1 \2'
+160   EW qmake ;'\c dev8_smsq_gold_nasty_s_ \b \0 all \1 \2'
+170   EW qmake ;'\c dev8_smsq_gold_driver_ql_ \b \0 all \1 \2'
+180   EW qmake ;'\c dev8_smsq_gold_driver_most_ \b \0 all \1 \2'
+190   EW qmake ;'\c dev8_smsq_gold_driver_nd_ \b \0 all \1 \2'
+200   EW qmake ;'\c dev8_smsq_gold_driver_nds_ \b \0 all \1 \2'
+210   EW qmake ;'\c dev8_smsq_gold_driver_dv3_ \b \0 all \1 \2'
+220   EW qmake ;'\c dev8_smsq_gold_kbd_lang_ \b \0 all \1 \2'
+230   EW qmake ;'\c dev8_smsq_gold_kbd_abc_lng_ \b \0 all \1 \2'
+240   EW qmake ;'\c dev8_smsq_gold_kbd_abc_ \b \0 all \1 \2'
+250   EW qmake ;'\c dev8_smsq_gold_roms_ \b \0 all \1 \2'
+260   EW qmake ;'\c dev8_smsq_gold_qimi_ \b \0 all \1 \2'
+270 END DEFine qmake_it
+280 :
+290 DEFine PROCedure qmake_it_full
+300   EW qmake ;'\c dev8_smsq_gold_host_ \b \0 all \1 \2'
+310   EW qmake ;'\c dev8_smsq_gold_hwinit_ \b \0 all \1 \2'
+320   EW qmake ;'\c dev8_smsq_gold_nasty_ \b \0 all \1 \2'
+330   EW qmake ;'\c dev8_smsq_gold_nasty_s_ \b \0 all \1 \2'
+340   EW qmake ;'\c dev8_smsq_gold_driver_ql_ \b \0 all \1 \2'
+350   EW qmake ;'\c dev8_smsq_gold_driver_most_ \b \0 all \1 \2'
+360   EW qmake ;'\c dev8_smsq_gold_driver_nd_ \b \0 all \1 \2'
+370   EW qmake ;'\c dev8_smsq_gold_driver_nds_ \b \0 all \1 \2'
+380   EW qmake ;'\c dev8_smsq_gold_driver_dv3_ \b \0 all \1 \2'
+390   EW qmake ;'\c dev8_smsq_gold_kbd_lang_ \b \0 all \1 \2'
+400   EW qmake ;'\c dev8_smsq_gold_kbd_abc_lng_ \b \0 all \1 \2'
+410   EW qmake ;'\c dev8_smsq_gold_kbd_abc_ \b \0 all \1 \2'
+420   EW qmake ;'\c dev8_smsq_gold_roms_ \b \0 all \1 \2'
+430   EW qmake ;'\c dev8_smsq_gold_qimi_ \b \0 all \1 \2'
+440 :
+450   EW qmake ;'\c dev8_smsq_smsq_loader_ \b \0 all \1 \2'
+452   EW qmake ;'\c dev8_smsq_smsq_vers_ \b \0 all \1 \2'
+460   EW qmake ;'\c dev8_smsq_smsq_ \b \0 all \1 \2'
+470   EW qmake ;'\c dev8_smsq_smsq_cache_ \b \0 all \1 \2'
+480   EW qmake ;'\c dev8_smsq_sbas_ \b \0 all \1 \2'
+490   EW qmake ;'\c dev8_smsq_smsq_lang_ \b \0 all \1 \2'
+500   EW qmake ;'\c dev8_smsq_sbas_lang_ \b \0 all \1 \2'
+510   EW qmake ;'\c dev8_smsq_sbas_procs_ \b \0 all \1 \2'
+520   EW qmake ;'\c dev8_smsq_smsq_wman_ \b \0 all \1 \2'
+530   EW qmake ;'\c dev8_smsq_smsq_hotkey_ \b \0 all \1 \2'
+540 END DEFine qmake_it_full
+550 :
+560 DEFine PROCedure make_it
+570   compile_and_check 'dev8_smsq_gold_host_ \b \0 all \1 \2'
+580   compile_and_check 'dev8_smsq_gold_hwinit_ \b \0 all \1 \2'
+590   compile_and_check 'dev8_smsq_gold_nasty_ \b \0 all \1 \2'
+600   compile_and_check 'dev8_smsq_gold_nasty_s_ \b \0 all \1 \2'
+610   compile_and_check 'dev8_smsq_gold_driver_ql_ \b \0 all \1 \2'
+620   compile_and_check 'dev8_smsq_gold_driver_most_ \b \0 all \1 \2'
+630   compile_and_check 'dev8_smsq_gold_driver_nd_ \b \0 all \1 \2'
+640   compile_and_check 'dev8_smsq_gold_driver_nds_ \b \0 all \1 \2'
+650   compile_and_check 'dev8_smsq_gold_driver_dv3_ \b \0 all \1 \2'
+660   compile_and_check 'dev8_smsq_gold_kbd_lang_ \b \0 all \1 \2'
+670   compile_and_check 'dev8_smsq_gold_kbd_abc_lng_ \b \0 all \1 \2'
+680   compile_and_check 'dev8_smsq_gold_kbd_abc_ \b \0 all \1 \2'
+690   compile_and_check 'dev8_smsq_gold_roms_ \b \0 all \1 \2'
+700   compile_and_check 'dev8_smsq_gold_qimi_ \b \0 all \1 \2'
+710 END DEFine make_it
+720 :
+730 DEFine PROCedure make_it_full
+740   compile_and_check 'dev8_smsq_gold_host_link'
+750   compile_and_check 'dev8_smsq_gold_hwinit_link'
+760   compile_and_check 'dev8_smsq_gold_nasty_link'
+770   compile_and_check 'dev8_smsq_gold_nasty_s_link'
+780   compile_and_check 'dev8_smsq_gold_driver_ql_link'
+790   compile_and_check 'dev8_smsq_gold_driver_most_link'
+800   compile_and_check 'dev8_smsq_gold_driver_nd_link'
+810   compile_and_check 'dev8_smsq_gold_driver_nds_link'
+820   compile_and_check 'dev8_smsq_gold_driver_dv3_link'
+830   compile_and_check 'dev8_smsq_gold_kbd_lang_link'
+840   compile_and_check 'dev8_smsq_gold_kbd_abc_lng_link'
+850   compile_and_check 'dev8_smsq_gold_kbd_abc_link'
+860   compile_and_check 'dev8_smsq_gold_roms_link'
+870   compile_and_check 'dev8_smsq_gold_qimi_link'
+880 :
+890   compile_and_check 'dev8_smsq_smsq_loader_link'
+895   compile_and_check 'dev8_smsq_smsq_vers_link'
+900   compile_and_check 'dev8_smsq_smsq_link'
+910   compile_and_check 'dev8_smsq_smsq_cache_link'
+920   compile_and_check 'dev8_smsq_sbas_link'
+930   compile_and_check 'dev8_smsq_smsq_lang_link'
+940   compile_and_check 'dev8_smsq_sbas_lang_link'
+950   compile_and_check 'dev8_smsq_sbas_procs_link'
+960   compile_and_check 'dev8_smsq_smsq_wman_link'
+970   compile_and_check 'dev8_smsq_smsq_hotkey_link'
+980 END DEFine make_it_full
+990 :
+1000 DEFine PROCedure sa
+1010   SAVE_O dev8_smsq_gold_make_bas
+1020 END DEFine sa
+1030 :
+1040 DEFine PROCedure compile_and_check (a$)
+1050 LOCal chan%,is_ok$,ch_len
+1060   EXEP_W "make";a$&" -w"
+1070   is_ok$=a$(1 TO LEN(a$)-4)
+1080   chan%=FOP_IN(is_ok$&'log'):  REMark open log file
+1090   IF chan%<0
+1100      PRINT a$& " : "&"couldn't open log file"
+1110      RETurn
+1120   END IF
+1130   ch_len=FLEN(#chan%)
+1140   GET#chan%\ch_len-10
+1150   INPUT#chan%,is_ok$
+1160   CLOSE#chan%
+1170   IF NOT is_ok$=="No errors"
+1180     PRINT a$ & " : Compile/link error!"
+1190   END IF
+1200 END DEFine compile_and_check
+1210 :

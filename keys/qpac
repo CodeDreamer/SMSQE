@@ -1,0 +1,69 @@
+; Keys for qpac menus
+        nolist
+qp_prchn equ    $00     ; long  primary channel ID
+qp_wmvec equ    $04     ; long  window manager vector address
+qp_slorg equ    $08     ; long  sleep origin
+qp_wsize equ    $0c     ; long  window size x,y
+qp_worg  equ    $10     ; long  window origin x,y (-ve if to be set)
+qp_jbnam equ    $14     ; long  pointer to job name
+qp_list  equ    $18     ; long  pointer to item list
+qp_titl  equ    $1c     ; long  pointer to title
+qp_mkls  equ    $20     ; long  pointer to make list
+qp_drext equ    $24     ; long  pointer to draw extra bits
+qp_item  equ    $28     ; long  item type / offset in list
+qp_skey  equ    $2c     ; word  select key offset in list (-ve uppercase)
+qp_mact  equ    $2e     ; long  pointer to menu action routine
+qp_amen  equ    $32     ; long  pointer to adjust menu routine
+qp_slep  equ    $36     ; long  pointer to sleep action routine
+qp_nitem equ    $3a     ; word  number of items
+qp_menu  equ    $3c     ; long  pointer to menu definition table
+qp_mndef equ      $00     ; long  rel pointer to menu definition
+qp_mnwrk equ      $04     ; long  workspace required
+qp_mnstt equ      $08     ; word  offset of status area
+qp_mninc equ      $0c     ; 2 words x,y menu increments
+qp_mnmax equ      $10     ; 2 words x,y menu max size
+qp_myjob equ    $40     ; long  my job id
+qp_cntky equ    $44     ; byte  count of repeated selection keystrokes
+qp_lstky equ    $45     ; byte  last selection keystroke in menu
+qp_actky equ    $46     ; byte  set if keystroke is action (hit or do)
+qp_unset equ    $47     ; byte  set if menu action has unset window (any event)
+qp_qslwk equ    $48     ; byte  quit to sleep working flag
+qp_fxsiz equ    $49     ; byte  set if fixed size
+qp_apdrw equ    $4a     ; byte  msb set if just redraw application sub-window
+qp_sclrw equ    $4b     ; byte  sleep colourway
+qp_menur equ    $4c     ; long  pointer to menu routine
+qp_mstat equ    $50     ; long  pointer to main menu status area
+qp_sortl equ    $54     ; long  pointer to main menu sort list
+qp_mclrw equ    $58     ; byte  main colourway
+qp_aclrw equ    $59     ; byte  application sub-window colourway
+
+qp_ssize equ    $5c     ; 2 words screen size
+qp_stat  equ    $60     ; status area for main and sleep menus
+qp_work  equ   $100     ; job work area (includes status area for other menus)
+
+; menu description
+
+qpa_titl equ      $00     ; word  relative pointer to title
+qpa_mkls equ      $02     ; word  relative pointer to make list
+qpa_drxt equ      $04     ; word  relative pointer to draw extra bits
+qpa_item equ      $06     ; long  item type/offset in list
+qpa_skey equ      $0a     ; word  item select key in list (-ve uc)
+qpa_mact equ      $0c     ; word  relative pointer to menu action routine
+qpa_amen equ      $0e     ; word  relative pointer to adjust menu routine
+qpa_slep equ      $10     ; word  relative pointer to sleep action routine
+
+qpp.bclr equ    $00       ; button colour
+qpp.bpos equ    $01       ; button position
+qpp.bnam equ    $02       ; button name
+qpp.mclr equ    $03       ; menu colour
+
+qpp.menu equ    $00       ; menu
+qpp.optn equ    $01       ; options
+qpp.sort equ    $02       ; sort
+qpp.dir  equ    $03       ; directory
+
+qpp.hktp equ    $00       ; Hotkey type
+qpp.wake equ    $01       ; Wake type
+qpp.exec equ    $02       ; Exec type
+
+       list

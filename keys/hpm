@@ -1,0 +1,8 @@
+* Heap manager keys
+        nolist
+*
+hpm_len  equ    $0000   long    LENgth of space in heap (including header)
+hpm_nxfr equ    $0004   long    rel pointer (-4) to NeXt FRee space
+hpm.almn equ    $0008           ALlocation unit (MiNimum)
+hpm.achp equ    $0010           Allocation unit for Common HeaP
+        list

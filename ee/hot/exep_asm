@@ -1,0 +1,56 @@
+; Procedure to execute programs  V2.00     1988   Tony Tebby   QJUMP
+
+        section hotkey
+
+        xdef    exep
+
+        xref    hot_parm
+        xref    hot_ldit
+        xref    hot_thus
+        xref    hot_thfr
+        xref    hk_do
+
+        xref    gu_achp0
+        xref    gu_rchp
+        xref    gu_pause
+
+        include 'dev8_ee_hk_data'
+        include 'dev8_ee_hk_xhdr'
+
+;+++
+; EXEP filename |program name| |I| |G|P|U| |window|memory|
+;---
+exep
+        jsr     hot_parm                 ; standard parameter set
+        bne.s   ex_rts
+
+        moveq   #hkh.plen+hki_name+4,d0  ; allocate heap item
+        add.w   (a6,a1.l),d0             ; including variable length file name
+        jsr     gu_achp0
+        bne.s   ex_rts
+
+        jsr     hot_thus                 ; use hk
+        bne.s   ex_rchp
+
+        moveq   #hki.xthg,d6             ; execute thing
+        jsr     hot_ldit                 ; set up load item
+
+        move.l  a0,a1                    ; item
+        or.w    d2,d1                    ; any odd parameters?
+        bne.s   ex_do                    ; ... yes
+        jsr     hk_do
+        beq.s   ex_pause                 ; sehr gut
+ex_do
+        move.w  #hki.xfil,hki_type(a1)   ; tough, now try file
+        jsr     hk_do                    ; do it
+ex_pause
+        jsr     hot_thfr                 ; free
+        bne.s   ex_rchp                  ; oops
+        moveq   #25,d0                   ; half a second
+        jsr     gu_pause                 ; ... pause
+
+ex_rchp
+        jmp     gu_rchp                  ; done
+ex_rts
+        rts
+        end

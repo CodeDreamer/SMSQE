@@ -1,0 +1,245 @@
+* keys for EXTEN
+        nolist
+*
+myself   equ    -1
+err.nc   equ    -1
+err.nj   equ    -2
+err.no   equ    -6
+err.nf   equ    -7
+err.ex   equ    -8
+err.iu   equ    -9
+err.ef   equ    -10
+err.df   equ    -11
+err.bn   equ    -12
+err.bp   equ    -15
+err.xp   equ    -17
+err.ov   equ    -18
+err.ni   equ    -19
+err.ro   equ    -20
+mt.inf   equ    $00
+mt.cjob  equ    $01
+mt.jinf  equ    $02
+mt.frjob equ    $05
+mt.susjb equ    $08
+mt.activ equ    $0a
+mt.prior equ    $0b
+mt.alres equ    $0e
+mt.dmode equ    $10
+mt.ipcom equ    $11
+mt.rclck equ    $13
+mt.alchp equ    $18
+mt.rechp equ    $19
+mt.lschd equ    $1e
+mt.ldd   equ    $22
+sv_free  equ    $0c
+sv_basic equ    $10
+sv_ramt  equ    $20
+sv_pict  equ    $30
+sv_scrst equ    $33
+sv_pllst equ    $3c
+sv_shlst equ    $40
+sv_drlst equ    $44
+sv_ddlst equ    $48
+sv_keyq  equ    $4c
+sv_btbas equ    $58
+sv_bttop equ    $5c
+sv_chbas equ    $78
+sv_fdefo equ    $70     (offset to make file default addresses <128)
+sv_progd equ    $ac
+sv_datad equ    $b0
+sv_destd equ    $b4
+sv_mdrun equ    $ee
+sv_fsdef equ    $100
+jb_a7    equ    $5c
+bt_stat  equ    $00
+bt_filnr equ    $04
+bt_block equ    $06
+bt.empty equ    $01
+ch_owner equ    $08
+iod_ddlk equ    $18
+iod_iolk equ    $1c
+q_eoff   equ    $00
+q_nextq  equ    $00
+q_end    equ    $04
+q_nextin equ    $08
+q_nxtout equ    $0c
+q_queue  equ    $10
+io.open  equ    $01
+io.close equ    $02
+io.formt equ    $03
+io.delet equ    $04
+io.old   equ    $00
+io.share equ    $01
+io.new   equ    $02
+io.overw equ    $03
+io.dir   equ    $04
+io.fbyte equ    $01
+io.fline equ    $02
+io.fstrg equ    $03
+io.sbyte equ    $05
+io.sstrg equ    $07
+sd_xinc  equ    $26
+sd.extop equ    $09
+sd.chenq equ    $0b
+sd.bordr equ    $0c
+sd.wdef  equ    $0d
+sd.cure  equ    $0e
+sd.curs  equ    $0f
+sd.pos   equ    $10
+sd.pcol  equ    $13
+sd.fount equ    $25
+sd.setpa equ    $27
+sd.setst equ    $28
+sd.setin equ    $29
+fs_acces equ    $1c
+fs_drive equ    $1d
+fs_filnr equ    $1e
+fs_nblok equ    $20
+fs_nbyte equ    $22
+fs_eblok equ    $24
+fs_ebyte equ    $26
+fs_cblok equ    $28
+fs_updt  equ    $2c
+fs_fname equ    $32
+fs_spare equ    $58
+fs.nmlen equ    $24
+fs.hdlen equ    $40
+fs_drivr equ    $10
+fs_drivn equ    $14
+fs_files equ    $22
+fs.flush equ    $41
+fs.posab equ    $42
+fs.posre equ    $43
+fs.mdinf equ    $45
+fs.heads equ    $46
+fs.headr equ    $47
+fs.load  equ    $48
+fs.save  equ    $49
+fs.renam equ    $4a
+fs.trunc equ    $4b
+fh_len   equ    $00
+fh_acces equ    $04
+fh_type  equ    $05
+fh_data  equ    $06
+fh_xtra  equ    $0a
+fh_name  equ    $0e
+fh.nmlen equ    $24
+fh_updt  equ    $34
+md_map   equ    $28
+md_filmp equ    $28
+md_pendg equ    $228
+md_delen equ    $00
+md_denam equ    $0e
+md_deupd equ    $34
+bv_bfbas equ    $00
+bv_bfp   equ    $04
+bv_ntbas equ    $18
+bv_ntp   equ    $1c
+bv_nlbas equ    $20
+bv_vvbas equ    $28
+bv_chbas equ    $30
+bv_chp   equ    $34
+bv_rtbas equ    $38
+bv_rtp   equ    $3c
+bv_rip   equ    $58
+bv_ribas equ    $5c
+bv_linum equ    $68
+bv_stmnt equ    $6c
+bv_cont  equ    $6d
+bv_sing  equ    $6f
+bv_comch equ    $84
+bv_nxlin equ    $88
+bv_nxstm equ    $8a
+bv_stopn equ    $8c
+bv_brk   equ    $8f
+bv_cnstm equ    $91
+bv_cnlnd equ    $92
+bv_cnind equ    $98
+bv_cninl equ    $9a
+bv_print equ    $ab
+bv_undo  equ    $b8
+bv_lsfil equ    $ba
+bv_welin equ    $be     when error line number
+bv_werrp equ    $c0     when error processing flag
+bv_ernum equ    $c2
+bv_erlin equ    $c6
+bv_cheap equ    $e0     ******* common heap pointer
+*
+bv.clear equ    $00
+bv.new   equ    $02
+bv.stop  equ    $04
+bv.run   equ    $06
+bv.lrun  equ    $08
+bv.load  equ    $0a
+bv.mrun  equ    $0c
+bv.merge equ    $0e
+bv.cont  equ    $10
+*
+rt_parm  equ    -$18            first parameter pointer
+rt_local equ    -$14            first local var
+rt_type  equ    -$08            routine type
+*
+sp.comma equ    $10
+sp.semic equ    $20
+sp.backs equ    $30
+sp.exclm equ    $40
+sp.to    equ    $50
+*
+ch.id    equ    $00
+ch.width equ    $22
+ch.lench equ    $28
+*
+QL_vbase equ    $00c0          ; vector base
+qlv_jump equ    $4000          ; jump vector area
+qlv.off  equ    qlv_jump-(ql_vbase*3) ; JMP is offset + 3 * ql vector
+
+mm.rechp  equ    $c2  (supervisor mode call)
+ut..con   equ    $c6
+ut..scr   equ    $c8
+ut..err0  equ    $ca
+ut..err   equ    $cc
+ut..mint  equ    $ce
+ut..mtext equ    $d0
+ut..link  equ    $d2
+ut..unlnk equ    $d4
+io..qset  equ    $dc
+io..qtest equ    $de
+io..qin   equ    $e0
+io..qout  equ    $e2
+io..qeof  equ    $e4
+ut..cstr  equ    $e6
+cn..date  equ    $ec
+cn..day   equ    $ee
+cn..itod  equ    $f2
+cn..itobl equ    $f8
+cn..itohl equ    $fe
+bp..init  equ    $110
+ca..gtint equ    $112
+ca..gtfp  equ    $114
+ca..gtstr equ    $116
+ca..gtlin equ    $118
+bv..chrix equ    $11a
+ri..exec  equ    $11c
+ri..execb equ    $11e
+ri.nlint equ    $06
+ri.float equ    $08
+ri.mult  equ    $0e
+ri.div   equ    $10
+ri.dup   equ    $16
+ri.powfp equ    $30
+bp..let   equ    $120
+pr..list  equ    $138
+
+bvo_chbf equ    $1c     ******* offset of check buffer from check ri
+bvo_chch equ    $2c     ******* offset of check channel from check ri
+*
+* messages
+*
+ms.yn    equ    $00     Y or N?
+ms.ynaq  equ    $02     Y/N/A/Q?
+ms.to    equ    $04      TO 
+ms.exist equ    $06      exists
+ms.overw equ    $08     OK to overwrite
+ms.sctrs equ    $0a      sectors
+ms.jhead equ    $0c     job tag    owner priority
+        list

@@ -1,0 +1,8 @@
+program dev8_smsq_atari_hwinit
+
+input   dev8_smsq_atari_hwinit_rel
+library dev8_smsq_atari_prtype_rel
+library dev8_smsq_atari_disptype_rel
+library dev8_util_gut_lib
+library dev8_smsq_smsq_version_rel
+library dev8_smsq_smsq_end_rel

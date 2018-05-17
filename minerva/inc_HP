@@ -1,0 +1,15 @@
+* SYS.HP                            common heap header definition
+        nolist
+*
+*
+HP_LEN    EQU    $00 long           length of definition block
+HP_DRIVR  EQU    $04 long           address of driver to free block when
+*                                   owner is deleted (-CH_CLOSE)
+HP_NEXT   EQU    $04 long           pointer to next free space
+HP_OWNER  EQU    $08 long           owner job (0 if free space)
+HP_RFLAG  EQU    $0C long           address to be set when space released
+HP_END    EQU    $10
+*
+HP_CLOSE  EQU    $C                 offset of close entry point WRT driver add
+*
+        list

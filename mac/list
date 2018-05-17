@@ -1,0 +1,35 @@
+; List handling macros
+
+        nolist
+
+slinka  macro   ai,ar            ; simple link ai after ar
+        slinkh  [ai],[ar]
+        endm
+
+slinkh  macro   ai,al            ; simple link ai to head of al
+
+        move.l  ([al]),([ai])    ; copy head link to new item
+        move.l  [ai],([al])      ; and link in new item
+        endm
+
+sunlk   macro   ai,al,dx         ; simple unlink ai from al using dx
+
+        move.l  [al],[dx]        ; entry
+
+        move.l  [dx],[al]        ; next
+        move.l  ([al]),[dx]
+        cmp.l   [ai],[dx]        ; is next ours?
+        bne.s   *-6              ; ... no
+        move.l  ([ai]),([al])    ; link past
+        endm
+
+sunlk_d macro   ai,al,dx         ; simple unlink ai from dx using al
+
+        move.l  [dx],[al]        ; next
+        move.l  ([al]),[dx]
+        cmp.l   [ai],[dx]        ; is next ours?
+        bne.s   *-6              ; ... no
+        move.l  ([ai]),([al])    ; link past
+        endm
+
+        list

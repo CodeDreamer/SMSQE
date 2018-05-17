@@ -1,0 +1,15 @@
+; data definitions for NUL device
+        nolist
+
+nld_end  equ    $34
+
+nlc_pos  equ    $18     ; long  file position
+nlc_key  equ    $1c     ; word  input operation key
+nlc.bp   equ      0     ;                            input is bad parameter
+nlc.file equ      2     ;                            null file
+nlc.zero equ      4     ;                            file filled with zeros
+nlc.line equ      6     ;                            file of null lines
+nlc.paus equ     -1     ;                            pause an all calls
+nlc_parm equ    $1e     ; word  parameter    0 = NUL, 1=NULF etc
+nlc_end  equ    $20
+        list

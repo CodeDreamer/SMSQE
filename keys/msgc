@@ -1,0 +1,8 @@
+; SMS Message codes group C - dates etc.
+        nolist
+
+gc        equ    $C<<5
+
+msgc.mth3 equ    -gc-1     ;       the months from JAN to DEC
+msgc.dow3 equ    -gc-2     ;       the day of week from SUN to SAT
+        list

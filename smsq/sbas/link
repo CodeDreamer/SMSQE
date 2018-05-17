@@ -1,0 +1,28 @@
+program dev8_smsq_sbas_control
+
+section header
+section base
+section cv
+section uq
+section qa
+
+section init
+
+section calendar
+section version
+section language
+section gen_util
+
+section sbas
+section sbas_x
+
+input   dev8_smsq_sbas_base_rel
+library dev8_smsq_sbas_lib
+library dev8_smsq_uq_lib
+library dev8_smsq_cr_lib
+library dev8_smsq_qa_lib
+library dev8_util_menus_lib
+library dev8_uti_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_smsq_smsq_end_rel

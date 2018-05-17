@@ -1,0 +1,251 @@
+;       Config macros
+
+        nolist
+
+* Macro's added are : mkcfstart, mkcfblend
+* The syntax is :
+* mkcfstart mkcfhead [mcfitem]... {mkcfblend mkcfhead [mkcfitem]...}... mkcfend
+* where [aaaa]... means : repeat 1 or more times and
+*       {aaaa}... means : repeat 0 or more times.
+* In the case of multiple blocks, the descriptions and attributes are generated
+* directly after the CONTIGUOUS pointer blocks, so a program searching for
+* config blocks does not need to search through the whole program : the search
+* starts at the ID of the first config block, and may end when a FFFF word is
+* found which is not followed by <<QCFX>>
+
+
+cf.string equ   $00
+cf.char   equ   $02
+cf.code   equ   $04
+cf.select equ   $06
+cf.byte   equ   $08
+cf.word   equ   $0a
+cf.long   equ   $0c
+cf.null   equ   $0e
+
+cfs.sspc  equ   %0000000000000001       ; string strip spaces
+cfs.file  equ   %0000000100000000       ; string is filename
+cfs.dir   equ   %0000001000000000       ; string is directory
+cfs.ext   equ   %0000001100000000       ; string is extension
+
+mkcf.apo macro  text
+mktxt   setstr {[text]}
+apost   setstr {'}
+blob    setstr {Ÿ}
+        ifnum [.instr(mktxt,apost)] = 0 goto mkcf.apend
+
+mkcf.blob  maclab
+stp     setnum [.instr(mktxt,apost)]
+        ifnum  [stp] = 0 goto mkcf.dble
+mktxt   setstr {[.left(mktxt,[stp]-1)][blob][.right(mktxt,[.len(mktxt)]-[stp])]}
+        goto mkcf.blob
+
+mkcf.dble  maclab
+stp     setnum [.instr(mktxt,blob)]
+        ifnum  [stp] = 0 goto mkcf.apend
+mktxt   setstr {[.left(mktxt,[stp]-1)]''[.right(mktxt,[.len(mktxt)]-[stp])]}
+        goto mkcf.dble
+
+mkcf.apend maclab
+        endm
+
+mkcfstart macro
+mkcf.itm  setnum    0
+mkcf.prm  setnum    0
+          endm
+
+mkcfcut   macro
+          dc.w   '<<QCFC>>'
+          endm
+
+mkcfhead  macro  name,version
+xname     setstr {[.lab]}
+          dc.w   '<<QCFX>>02'
+          ifstr {[.lab]} = {} goto mkcf_nms
+          xdef   nm_[.lab],vr_[.lab]
+nm_[.lab] dc.w   [.len(name)],'[name]'
+vr_[.lab]
+          goto   mkcf_vrs
+
+mkcf_nms  maclab
+          dc.w   [.len(name)],'[name]'
+
+mkcf_vrs  maclab
+mkcf_us   setstr {_}
+          ifnum [.instr(version,mkcf_us)] = 0 goto mkcf_hds
+
+          dc.w   4
+          dc.l  [version]
+          goto mkcf_hdi
+
+mkcf_hds  maclab
+vr_[name] dc.w   [.len(version)],'[version]'
+
+mkcf_hdi maclab
+;;;mkcf.itm setnum 0
+;;;mkcf.prm setnum 0
+        endm
+
+mkcfitem macro  cfid,cftype,cfselk,cfitem,cfprep,cfposp
+mkcf.dsc setnum 7
+mkcf.itm setnum [mkcf.itm]+1
+
+        ifstr {[.lab]} = {} goto mkcf_typ
+cf.[.lab] setnum [mkcf.itm]
+
+mkcf_typ maclab
+          dc.l  [cfid]
+          dc.b  cf.[cftype]
+          dc.b  [cfselk]
+          dc.w  [cfitem]-*
+
+        ifstr {[cfprep]} = {} goto mkcf_pr0
+          xref  [cfprep]
+          dc.w  [cfprep]-*
+        goto mkcf_pos
+mkcf_pr0  maclab
+          dc.w  0
+
+mkcf_pos  maclab
+        ifstr {[cfposp]} = {} goto mkcf_po0
+          xref  [cfposp]
+          dc.w  [cfposp]-*
+        goto mkcf_des
+mkcf_po0  maclab
+          dc.w  0
+
+mkcf_des  maclab
+
+          dc.w  mkcf[mkcf.itm]d-*
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {mkcf[mkcf.itm]d dc.w   mkcf[mkcf.itm]e-*-2}
+
+mkcf_dlp  maclab
+          mkcf.apo {[.parm([mkcf.dsc])]}
+        ifstr {[.right(mktxt,1)]} <> {\} goto mkcf_den
+mkcf.len  setnum [.len(mktxt)]-1
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {        dc.b '[.left(mktxt,[mkcf.len])]',$a}
+mkcf.dsc  setnum [mkcf.dsc]+1
+        goto mkcf_dlp
+
+mkcf_den  maclab
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {        dc.b   '[mktxt]'}
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {mkcf[mkcf.itm]e}
+
+mkcf.atr  setnum [mkcf.dsc]+1
+
+        ifnum [mkcf.atr] > [.nparms] goto mkcf_at0
+        ifstr {[.left(.parm([mkcf.atr]),1)]} = {.} goto mkcf_atp
+          dc.w  mkcf[mkcf.itm]a-*
+        ifstr {[cftype]} = {string} goto mkcf_string
+        ifstr {[cftype]} = {char} goto mkcf_char
+        ifstr {[cftype]} = {code} goto mkcf_state
+        ifstr {[cftype]} = {select} goto mkcf_select
+        ifstr {[cftype]} = {byte} goto mkcf_byte
+        ifstr {[cftype]} = {word} goto mkcf_word
+        ifstr {[cftype]} = {long} goto mkcf_long
+        ifstr {[cftype]} = {null} goto mkcf_null
+        error [cftype] is not recognised 
+
+mkcf_atp  maclab      ; use previously defined attributes
+          dc.w  mkcf[cf[.parm([mkcf.atr])]]a-*
+        goto  mkcf_iend
+
+mkcf_at0  maclab      ; no attributes
+          dc.w  0
+        goto  mkcf_iend
+
+mkcf_null maclab
+mkcf_string maclab
+mkcf_char maclab
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr  {mkcf[mkcf.itm]a dc.w    [.parm([mkcf.atr])]}      
+        goto  mkcf_iend
+
+mkcf_state maclab
+mkcf_select maclab
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr  {mkcf[mkcf.itm]a  ds.w   0}
+
+mkcf_sloop maclab
+mkcf.pr0  setstr {[.parm([mkcf.atr])]}
+        ifstr {[.parm([mkcf.atr]+1)]} = {} goto mkcf_ank
+mkcf.pr1  setstr {'[.parm([mkcf.atr]+1)]'}
+        goto mkcf_pr2 
+mkcf_ank  maclab
+mkcf.pr1  setstr {0}
+mkcf_pr2  maclab
+          mkcf.apo {[.parm([mkcf.atr]+2)]}
+mkcf.pr2  setstr {[.len(.parm([mkcf.atr]+2))],'[mktxt]'}
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {        dc.w   [mkcf.pr0]<<8+[mkcf.pr1],[mkcf.pr2]}
+mkcf.atr  setnum [mkcf.atr]+3
+        ifnum [mkcf.atr] < [.nparms] goto mkcf_sloop
+
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {        dc.w -1}
+        goto  mkcf_iend
+
+mkcf_byte maclab
+mkcf.rng setstr  {mkcf[mkcf.itm]a dc.b }
+        goto  mkcf_vrng
+
+mkcf_word maclab
+mkcf.rng setstr  {mkcf[mkcf.itm]a dc.w }
+        goto  mkcf_vrng
+
+mkcf_long maclab
+mkcf.rng setstr  {mkcf[mkcf.itm]a dc.l }
+
+mkcf_vrng maclab
+mkcf.prm  setnum [mkcf.prm]+1
+mkcf[mkcf.prm] setstr {[mkcf.rng][.parm([mkcf.atr])],[.parm([mkcf.atr]+1)]}
+
+mkcf_iend maclab
+        endm
+
+mkcfblend macro
+          dc.w      -1
+          endm
+
+
+mkcfend   macro
+          dc.w    -1
+
+
+mkcf.prc  setnum 1
+mkcf_prl  maclab
+[mkcf[mkcf.prc]]
+mkcf.prc  setnum [mkcf.prc]+1
+        ifnum [mkcf.prc] <= [mkcf.prm] goto mkcf_prl
+        endm
+
+
+mkcfstr   macro name,len,string
+          xdef    met_[name]
+mxl_[name] dc.w [len]
+        mkcf.apo {[string]}
+met_[name] dc.w [.len(string)],'[mktxt]'
+mkcf.pad  setnum [len]-[.len(string)]
+        ifnum [mkcf.pad] <= 0 goto mkcfsend
+           dcb.b [mkcf.pad],0
+mkcfsend  maclab
+        endm
+
+mkcfxstr   macro name,char,len,string
+          xdef    met_[name]
+          xdef    mek.[name]
+mxl_[name] dc.w [len]
+        mkcf.apo {[string]}
+met_[name] dc.w [.len(string)],'[mktxt]'   ; mktxt always evens up!!!
+mkcf.pad  setnum [len]-[.len(string)]
+        ifnum [mkcf.pad] <= 0 goto mkcfxsend
+           dcb.b [mkcf.pad],0
+mkcfxsend  maclab
+mek.[name] equ  [char]
+        endm
+
+        list

@@ -1,0 +1,176 @@
+* Data definitions for dump routines
+        nolist
+*
+* Constant parameters
+*
+rd0      equ    $ffff
+rd1      equ    $ffff
+rd2      equ    $ffff
+rd3      equ    $ffff
+rd4      equ    $ffff
+rd5      equ    $ffff
+rd6      equ    $ffff
+rd7      equ    $ffff
+ra0      equ    $ffff   free
+ra1      equ    $ffff
+ra2      equ    $ffff
+ra3      equ    $ffff   free
+ra4      equ    $ffff
+ra5      equ    $ffff   data pointer
+*
+dpc_patt equ    $00     pattern pointer
+dpc_ptyp equ    $02     printer type
+dpc.pver equ      0     prints in vertical groups
+dpc.phor equ      2     prints in horizontal groups (eg ink jet)
+dpc..hor equ      1     bit one set for horizontal
+dpc.pves equ      4     prints in vertical groups with escape char
+dpc..esc equ      2     bit 2 set for escape byte
+dpc_pres equ    $03     preset byte (dpc_ptyp = 0 or 2)
+dpc_escb equ    $03     escape byte (dpc_ptyp = 4)
+dpc_dots equ    $04     number of dots per byte / word
+dpc_sbit equ    $05     start bit in byte
+dpc_biti equ    $06     bit increment
+dpc_byto equ    $07     byte order 
+
+dpc_pwid equ    $00     print width (1/10")
+dpc_npas equ    $02     number of passes
+dpc_hdpi equ    $04     horizontal dots/in
+dpc_vdpi equ    $06     vertical dots/in
+dpc_cctl equ    $08     pointer to colour ctrl definition
+dpc_cseq equ    $0a     start of control sequences
+dp.pre   equ    $00
+dp.rpre  equ    $02
+dp.cpre  equ    $04
+dp.ppre  equ    $06
+dp.pepi  equ    $08
+dp.cepi  equ    $0a
+dp.repi  equ    $0c
+dp.epi   equ    $0e
+*
+* control definitions
+*
+dp.end   equ    0
+dp.byte  equ    -2
+dp.hdtbh equ    -4
+dp.hdtbl equ    -6
+dp.hdota equ    -8
+dp.vdtbh equ    -$a
+dp.vdtbl equ    -$c
+dp.vdota equ    -$e
+dp.colr  equ    -$10
+dp.null  equ    -$12
+*
+* window parameters
+*
+dp_stadd equ    $0000   long    start address
+dp_stpix equ    $0004   word    start pixel
+dp_hdots equ    $0006   word    horizontal dots
+dp_vdots equ    $0008   word    vertical dots
+*
+dp_pstk  equ    $000c   long    pointer to stack on entry (supv mode)
+*
+* printer dependent parameters
+*
+dp_csequ equ    $0010   long    pointer to control sequences
+dp_addwd equ    $0014   long    constant to add to output word
+dp_nrows equ    $0018   word    number of rows
+dp_npass equ    $001a   word    number of passes
+dp_ncolr equ    $001c   word    number of colour passes
+dp_wrdrw equ    $001e   word    number of words/row
+dp_nbwrd equ    $0020   word    number of bits in byte
+dp_rbits equ    $0022   word    row bits (npass or npass*nbwrd)
+dp_bitst equ    $0024   byte    bit in word start position
+dp_bitnw equ    $0025   byte    bit in word end, normal word
+dp_bitlw equ    $0026   byte    bit in word end, last word in row
+dp_bitlr equ    $0027   byte    bit in word end, last row
+dp_bitlc equ    $0028   byte    bit in word end, last corner
+dp_bitin equ    $0029   byte    bit in word increment
+dp_bitil equ    $002a   byte    true if bits in line
+dp_msbyt equ    $002b   byte    true if msbyt first
+*
+dp_ptrnm equ    $0030   word    pattern row number
+dp_ptrin equ    $0032   word    pattern row increment
+dp_ptrsz equ    $0034   word    pattern row size
+dp_ptpnm equ    dp_ptrnm        pattern pass number
+dp_ptpin equ    dp_ptrin        pattern pass increment
+dp_ptpsz equ    dp_ptrsz        pattern pass size
+dp_ptwnm equ    $0036   word    pattern word number
+dp_ptwin equ    $0038   word    pattern word increment
+dp_ptwsz equ    $003a   word    pattern word size
+dp_ptbnm equ    $003c   word    pattern bit number
+dp_ptbin equ    $003e   word    pattern bit increment
+dp_ptbsz equ    $0040   word    pattern bit size
+*
+dp_pxrdc equ    $0048   word    pixel row decrement
+dp_pxpdc equ    dp_pxrdc        pixel pass decrement
+dp_pxwdc equ    $004a   word    pixel word decrement
+dp_pxbdc equ    $004c   word    pixel bit decrement
+*
+dp_rainc equ    $0050   long    row address increment
+dp_painc equ    dp_rainc        pass address increment
+dp_wainc equ    $0054   long    word address increment
+dp_bainc equ    $0058   (ra2)   bit address increment
+*
+dp_map   equ    $0060 16 bytes  pixel value map
+*
+dp_patt  equ    $0070   (ra4)   pointer to pattern (colour or dot)
+dp_mask  equ    $0074   (rd7)   pixel value mask
+dp.mask4 equ    %0101           4 colour, values 0,1,4,5
+dp.mask8 equ    %1011           8 colour, values 0,1,2,3,8,9,a,b
+
+dp_randi equ    $0076  (long)   random initial value (msbit set if rand)
+*
+* Variables
+*
+dp_rand  equ    rd4     word    random number
+dp.randa equ    $63b0           random number add constant
+dp.randr equ    3               random number rotate
+dp_rowc  equ    $0080   word    row count
+dp_passc equ    $0082   word    pass count
+dp_wrdct equ    $0084   word    word count
+dp_bitrp equ    rd2     byte    bit in word running pointer
+dp_bitwd equ    $0088   byte    last bit in word
+dp_bitwe equ    $0089   byte    last bit in word at end of row
+dp_biten equ    $008a   word    bit in word end pointer (this word)
+*
+dp_ptrpt equ    $0090   word    pattern row pointer
+dp_ptrct equ    $0092   word    pattern row counter
+dp_ptppt equ    $0094   word    pattern pass pointer
+dp_ptpct equ    $0096   word    pattern pass counter
+dp_ptwpt equ    $0098   word    pattern word pointer  
+dp_ptwct equ    $009a   word    pattern word counter
+dp_ptbpt equ    rd5     word    pattern bit pointer
+dp_ptbct equ    rd6     word    pattern bit counter
+*
+dp_pxrrp equ    $00a0   word    pixel row running pointer
+dp_pxprp equ    $00a2   word    pixel pass running pointer
+dp_pxwrp equ    $00a4   word    pixel word running pointer 
+dp_pxbrp equ    rd3     word    pixel bit running pointer
+*
+dp_raddr equ    $00b0   long    row address
+dp_paddr equ    $00b4   long    pass address
+dp_waddr equ    $00b8   long    word address
+dp_baddr equ    ra1     long    bit address
+*
+dp_rbitc equ    $00bc   word    row 'bit' counter
+dp_bits  equ    rd2     byte    bits in word counter
+dp_pixel equ    rd0     word    pixel value
+*
+dp_outwd equ    rd1     long    output word
+*
+* output buffer
+*
+dp_chan  equ    $00c0   long    output channel ID
+dp_supv  equ    $00c4   byte    true if supervisor mode operation
+dp_escb  equ    $00c5   byte    non zero if escape byte
+dp_bufpt equ    $00c6   word    buffer pointer
+dp_buffr equ    $00c8           buffer
+dp.bufln equ    $0020           buffer length (max 38)
+*
+dp.len   equ    $0100
+
+dp_save  equ    $0100           save area
+dp.sreg  reg    d1-d7/a0-a4     save regs
+dp_sstk  equ    $0130           stack save area
+dp.slen  equ    $0150           length including save area
+        list

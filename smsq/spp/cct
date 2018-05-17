@@ -1,0 +1,17 @@
+dev8_smsq_spp_init_rel
+dev8_smsq_spp_baud_rel
+dev8_smsq_spp_mouse_rel
+dev8_smsq_spp_io_rel
+dev8_smsq_spp_open_rel
+dev8_smsq_spp_close_rel
+dev8_smsq_spp_poll_rel
+dev8_smsq_spp_cknm_rel
+dev8_smsq_spp_cnam_rel
+dev8_smsq_spp_procs_rel
+dev8_smsq_spp_basic_rel
+dev8_smsq_spp_thing_rel
+dev8_smsq_spp_version_rel
+
+dev8_smsq_spp_com_rel
+dev8_smsq_spp_lpt_rel
+dev8_smsq_spp_68331s_rel

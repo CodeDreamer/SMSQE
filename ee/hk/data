@@ -1,0 +1,77 @@
+; HOTKEY linkage block
+        nolist
+hkd.dmy  equ    8       ; dummy linkage
+
+hkd.thg  equ    $38     ; thing linkage + name
+
+; 8 bytes thing header
+hkd_pllk equ    $0008   ;long    polling int linkage
+hkd_plad equ    $000c   ;long    polling int routine address
+hkd_id   equ    $0010   ;long    hotkey ID
+hkd.id   equ      'Hot%'
+hkd_vect equ    $0014   ;long    vectors
+
+hkd_sbfp equ    $003a   ;word    set to -1 by old hot_stuff
+hkd_sbfl equ    $003c   ;word    buffer length
+hkd.sbfl equ      $80
+hkd_sbfc equ    $003e   ;word    buffer count (string length)
+hkd_sbuf equ    $0040
+
+hkd_jbid equ    $00c0   ;long    hotkey job id
+hkd_key  equ    $00c4   ;word    hotkey key         
+hkd_act  equ    $00c6   ;byte    action in progress
+hkd_req  equ    $00c7   ;byte    hotkey request
+hkd_tk2x equ    $00c8   ;long    address of toolkit 2 re-assert
+hkd_bbas equ    $00cc   ;long    hotkey buffer base
+hkd_btop equ    $00d0   ;long    hotkey buffer top
+hkd_biid equ    $00d4   ;word    hki.id
+hkd_btyp equ    $00d6   ;word    hki.stbf
+hkd_bpnt equ    $00d8   ;long    hotkey buffer pointer
+hkd_bnam equ    $00dc   ;word    zero
+hkd_piid equ    $00de   ;word    hki.id
+hkd_ptyp equ    $00e0   ;word    hki.stpr
+hkd_ppnt equ    $00e2   ;long    pointer to stbf item buffer pointer
+hkd_pnam equ    $00e6   ;word    zero
+
+hkd_nxjb equ    $00ec   ;long    next job for pick
+hkd_tabl equ    $0100   ;256 byte hotkey table (-ve off, +ve index pointers)
+hkd_ptrb equ    $0200   ;        pointer table base 
+hkd_ptrt equ    $0400   ;        pointer table top
+
+hkd_buf1 equ    $0400   ; 256 byte buffer
+hkd_buf2 equ    $0508   ; 256 byte buffer
+hkd.bufl equ      $104  ; 256 bytes!!
+hkd_llrc equ    $0610   ; 64 bytes for last line recall item
+
+hkd.len  equ    $0650+hkd.thg
+
+; hotkey item block
+
+hki_id   equ    $0000   ;word    hotkey id
+hki.id   equ    'hi'
+hki_type equ    $0002   ;word    hotkey item type
+hki..trn equ      0       ;        bit set if item is transient thing
+hki.llrc equ     -8       ;        last line recall
+hki.stpr equ     -6       ;        stuff kbd with prevous string from buffer
+hki.stbf equ     -4       ;        stuff keyboard queue from buffer
+hki.stuf equ     -2       ;        stuff keyboard queue with string
+hki.cmd  equ      0       ;        pick SuperBASIC and stuff command
+hki.nop  equ      2       ;        just do code
+hki.xthg equ      4       ;        execute thing
+hki.xttr equ      5       ;        as hki.xthg but thing is transient
+hki.xfil equ      6       ;        execute file
+hki.pick equ      8       ;        pick job
+hki.wake equ     10       ;        pick and wake job (execute thing if fails)
+hki.wktr equ     11       ;        as hki.wake but thing is transient
+hki.wkxf equ     12       ;        pick and wake job (execute file if fails)
+
+hki_ptr  equ    $0004   ;long    pointer to (preprocessing) code, stuff buffer
+hki_name equ    $0008   ;string  item name
+hki.psep equ      ';'            ... parameter string separator
+hki.popn equ      '{'            ... parameter open bracket
+hki.pcls equ      '}'            ... parameter close bracket
+hki.pstf equ      ''            ... parameter stuff
+hki.wsep equ      '!'            ... wake separator
+hki.jsep equ      ','            ... job name separator
+hki.csep equ      '\'            ... channel separator
+        list

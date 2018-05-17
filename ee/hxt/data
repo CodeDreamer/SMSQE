@@ -1,0 +1,9 @@
+; HOTKEY Thing Extension Parameter Defs
+        nolist
+
+hxt_hkey equ    $00              ; Hotkey
+hxt_itnm equ    $08              ; Item name
+hxt_parm equ    $14              ; parameter
+hxt_jbnm equ    $20              ; Job name
+hxt_wknm equ    $2c              ; Wake name
+        list

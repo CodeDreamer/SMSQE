@@ -1,0 +1,53 @@
+; blitter hardware keys
+        nolist
+at_blit  equ    $ffff8a00
+bl_halft equ    $ffff8a00 w*16    HALFTone ram
+bl_sxinc equ    $ffff8a20 w       Source X INCrement
+bl_syinc equ    $ffff8a22 w       Source Y INCrement
+bl_saddr equ    $ffff8a24 l       Source ADDRess
+bl_mask1 equ    $ffff8a28 w       end MASK 1
+bl_mask2 equ    $ffff8a2a w       end MASK 2
+bl_mask3 equ    $ffff8a2c w       end MASK 3
+bl_dxinc equ    $ffff8a2e w       Destination X INCrement
+bl_dyinc equ    $ffff8a30 w       Destination Y INCrement
+bl_daddr equ    $ffff8a32 l       Destination ADDRess
+bl_xcnt  equ    $ffff8a36 w       X CouNT
+bl_ycnt  equ    $ffff8a38 w       Y CouNT
+bl_htop  equ    $ffff8a3a b       HalfTone OPeration
+bl_op    equ    $ffff8a3b b       OPeration
+bl_cmd   equ    $ffff8a3c b       line number and CoMmanD flags
+bll..sdg  equ        5               SmuDGe
+bll..hog  equ        6               HOG the bus
+bll..bsy  equ        7               BuSY
+bll..do   equ        7               DO it!
+bl_skew   equ    $ffff8a3d b       FLAGS
+bls..nfs  equ        6               No Final Source read
+bls..fxs  equ        7               Force Extra Source read
+
+; blitter operation keys
+
+blo.zero equ    $00     ZERO
+blo.sad  equ    $01     Source And Destination
+blo.sand equ    $02     Source And Not Destination
+blo.s    equ    $03     Source
+blo.nsad equ    $04     Not Source And Destination
+blo.d    equ    $05     Destination
+blo.sxd  equ    $06     Source Xor Destination
+blo.sod  equ    $07     Source Or Destination
+blo.nsan equ    $08     Not Source And Not destination
+blo.nsxd equ    $09     Not Source Xor Destination
+blo.nd   equ    $0a     Not Destination
+blo.sond equ    $0b     Source Or Not Destination
+blo.ns   equ    $0c     Not Source
+blo.nsod equ    $0d     Not Source Or Destination
+blo.nson equ    $0e     Not Source Or Not destination
+blo.set  equ    $0f     SET
+
+; halftone operation keys
+
+blho.set equ    %00     all bits SET
+blho.hto equ    %01     HalfTone data Only
+blho.src equ    %10     SouRCe data only
+blho.sah equ    %11     Source And Halftone
+
+         list

@@ -1,0 +1,26 @@
+; QLWA  Disk Drive Structure Keys
+        nolist
+qwa.map  equ    0               ; first map sector
+qwa_id   equ    $0000   ; long  ID
+qwa.id   equ      'QLWA'
+qwa.pflg equ      $01515741
+qwa_name equ    $0004   ; string up to 20 characters space padded name
+qwa_spr0 equ    $001a   ; 2 bytes spare - set to zero
+qwa_uchk equ    $001c   ; long  update check (removable media only)
+qwa_intl equ    $0020   ; word  interleave factor (0 SCSI)
+qwa_sctg equ    $0022   ; word  sectors per group
+qwa_sctt equ    $0024   ; word  sectors per track (0 SCSI)
+qwa_trkc equ    $0026   ; word  tracks per cylinder (number of heads) (0 SCSI)
+qwa_cyld equ    $0028   ; word  cylinders per drive
+qwa_ngrp equ    $002a   ; word  number of groups
+qwa_fgrp equ    $002c   ; word  number of free groups
+qwa_sctm equ    $002e   ; word  sectors per map
+qwa_nmap equ    $0030   ; word  number of maps
+qwa_free equ    $0032   ; word  first free group
+qwa_root equ    $0034   ; word  root directory number
+qwa_rlen equ    $0036   ; long  root directory length
+qwa_fcyl equ    $003a   ; word  first cylinder number (ST506)
+qwa_fsct equ    $003a   ; long  first sector for this partition (SCSI)
+qwa_park equ    $003e   ; word  park cylinder
+qwa_gmap equ    $0040   ; group map: each entry is number of next group or zero
+        list

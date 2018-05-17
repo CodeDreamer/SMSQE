@@ -1,0 +1,4 @@
+program dev8_smsq_qxl_ecache
+
+input   dev8_smsq_qxl_ecache_rel
+library dev8_smsq_smsq_end_rel

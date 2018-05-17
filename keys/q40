@@ -1,0 +1,63 @@
+; keys for Q40
+        nolist
+
+Q40_ROM     equ $FE000000       ; base of ROM
+Q40_screen  equ $FE800000       ; base of Screen
+q40.screen  equ 1024*512*2      ; screen size
+
+Q40_lowrom  equ $FF010000       ; set for read rom / write ram below 18000
+Q40_lowram  equ $FF018000       ; set for read ram / write protected 18000
+
+Q40_Master equ  $ff000000       ; master chip
+.       setstr  Q40_Master
+Q40_ir      equ [.]             ; interrupt reg
+Q40..kbd    equ    1              ; keyboard
+Q40..ser    equ    2              ; IRQ 3/4 (serial ports)
+Q40..frame  equ    3              ; 50 millisecond interrupt
+Q40..eint   equ    4              ; external interrupt bits 2..7
+Q40_eir     equ [.]+4           ; ext interrupt reg
+Q40..irq3   equ    0              ; IRQ 3 COM2/COM4
+Q40..irq4   equ    1              ; IRQ 4 COM1/COM3
+Q40..irq5   equ    2              ; IRQ 5
+Q40..irq6   equ    3              ; IRQ 6 FDC
+Q40..irq7   equ    4              ; IRQ 7 LPT1
+Q40..irq10  equ    5              ; IRQ 10 / IRQ 11
+Q40..irq14  equ    6              ; IRQ 14 (IDE)
+Q40..irq15  equ    7              ; IRQ 15 (IDE2)
+Q40_kie     equ [.]+8           ; keyboard interrupt enable
+Q40_sie     equ [.]+$0c         ; serial interrupt enable
+Q40_eie     equ [.]+$10         ; external interupt enable
+Q40_50uie   equ [.]+$14         ; 50 us interrupt enable
+Q40_dmode   equ [.]+$18         ; display mode
+Q40.d8      equ    0              ; QL mode 8
+Q40.d4      equ    1              ; QL mode 4
+Q40.ds      equ    2              ; Small screen
+Q40.dl      equ    3              ; Large screen
+Q40_kcod    equ [.]+$1c         ; keycode
+Q40_kack    equ [.]+$20         ; keycode acknowledge
+Q40_fack    equ [.]+$24         ; frame interrupt acknowledge
+Q40_50uack  equ [.]+$28         ; sample (50/100us) acknowledge
+Q40_srate   equ [.]+$2c         ; sample rate
+Q40.100us   equ    0              ; 100 us
+Q40.50us    equ    1              ; 50 us
+Q40_led     equ [.]+$30
+Q40_ebr     equ [.]+$34         ; reset extension bus
+
+q40_dacl    equ $ff008000       ; q40 left DAC
+q40_dacr    equ $ff008004       ; q40 right DAC
+
+Q40_rtc     equ $ff021fe0       ; real time clock
+Q40r_ctl    equ $00             ; control reg
+Q40r..read  equ   6               ; bit set to read
+Q40r..write equ   7               ; bit set to write
+Q40r_sec    equ $04             ; seconds (bcd)
+Q40r_min    equ $08             ; minutes (bcd)
+Q40r_hour   equ $0c             ; hours (bcd)
+Q40r_dow    equ $10             ; day of week (bcd)
+Q40r_day    equ $14             ; day of month (bcd)
+Q40r_month  equ $18             ; month (bcd)
+Q40r_year   equ $1c             ; year (bcd)
+
+
+
+         list

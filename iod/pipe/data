@@ -1,0 +1,31 @@
+; data definitions for PIPE device
+        nolist
+
+; linkage block definitions
+
+pil_list equ    $38              ; pointer to linked list of named pipes
+pil_defl equ    $3c              ; default pipe length
+pil.defl equ      1024
+pil_end  equ    $40
+
+; channel definitions
+
+pic_qin  equ    $18              ; pointer to input queue (0 if output pipe)
+pic_qout equ    $1c              ; pointer to output queue (0 if input pipe)
+pic_zero equ    $2c              ; number of users = 0,0!
+pic_dirf equ    $2c              ; -1, directory
+pic.len  equ    $30              ; length of channel block, no queue
+pic_qu   equ    $30
+pic_nrnm equ    $30              ; long  number of named pipes in directory
+pic_ptnm equ    $34              ; long  pointer to named pipe table (dir)
+pic_nmtb equ    $38              ; longs named pipe table (dir)
+
+; named pipe definitions
+
+pin_link equ    $00              ; link list pointer
+pin_name equ    $04              ; name of pipe
+pin.name equ      $1e
+pin_nin  equ    $2c              ; number of input users
+pin_nout equ    $2e              ; number of output users
+pin_qu   equ    $30              ; the pipe itself
+        list

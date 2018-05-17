@@ -1,0 +1,363 @@
+100 REMark $$asmb=flp1_configure_bin,0,10
+110 compiled=NOT IS_OPEN(#0)
+120 IF NOT compiled
+130   SCR_SIZE#0, xsz%,ysz%
+140   OUTLN#0,xsz%,ysz%-28,0,28
+150   WINDOW#0,256,30,xsz%-256,ysz%-30
+160   WINDOW#1,256,ysz%-58,xsz%-256,28
+170   WINDOW#2,xsz%-256,ysz%-28,0,28
+180   BORDER#0,1,4:PAPER#0,0:INK#0,7
+190   BORDER#1,1,4:PAPER#1,0: INK 7
+200   BORDER#2,1,4:PAPER#2,0:INK#2,7
+210   CLS#0:CLS#1:CLS#2
+220 END IF
+230 init
+240 main
+250 STOP
+260 :
+270 DEFine PROCedure main
+280   LOCal boucle,item%,event%,swnum%,xrel%,yrel%,poste
+290   IF compiled
+300      OPEN#1,'con'
+310      DR_PPOS main_defn,-1,-1,main_lfl%
+320   ELSE
+330      DR_PULD main_defn,-1,-1,main_lfl%
+340   END IF
+350   infochan%=FOPEN("con")
+360   PAPER#infochan%,menu_pap
+370   INK#infochan%,menu_ink
+380   DR_IWDF#infochan%,main_defn,3
+390   REPeat boucle
+400     RD_PTR main_defn,item%,swnum%,event%,xrel%,yrel%,main_lfl%
+410     poste=item%
+420     SELect ON poste
+430             =esc%     : EXIT boucle
+440             =deplace% : CH_WIN main_defn:DR_IWDF#infochan%,main_defn,-4
+450             =start%    : make_content_file
+460     END SELect
+470   END REPeat boucle
+480   CLOSE#infochan%
+490   DR_UNST main_defn
+500   IF compiled:CLOSE#1
+510   RECHP espace_vide
+520 END DEFine main
+530 :
+540 DEFine PROCedure sa
+550   SAVE_O dev8_extras_make_updates_bas
+560 END DEFine sa
+570 :
+580 DEFine PROCedure make_content_file
+590 LOCal totchan%
+600   IF new_drive$="":RETurn
+610   CLS#infochan%
+620   totchan%=FOP_OVER('ram1_contents')
+630   get_dir_structure new_drive$,totchan%
+640   CLOSE#totchan%
+650 END DEFine make_content_file
+660 :
+670 DEFine PROCedure get_dir_structure (dirr$,what_chan%)
+680 REMark this gets the entire content of a drive (or dir) into a file
+690 LOCal a$,lp%,chan%,device$,file$
+700 LOCal k%
+710   file$="ram1_ddir"&counter&"pkk"       : REMark temp file
+720   chan%=FOP_OVER(file$)
+730   IF chan%<0:RETurn                     : REMark oops
+740   PRINT#infochan%,"Parsing : ";dirr$
+750   WSTAT#chan%,dirr$
+760   PRINT#chan%
+770   CLOSE#chan%
+780   device$=dirr$(1 TO 4)&'_'
+790   chan%=FOP_IN(file$)
+800   IF chan%<0:RETurn
+810   REPeat lp%
+820     IF EOF(#chan%):EXIT lp%
+830     INPUT#chan%,a$
+840     IF a$="":NEXT lp%
+850     k%=LEN(a$)
+860     IF k%<4:NEXT lp%
+870     IF a$(k%-2 TO k%)=' ->'
+880       PRINT#what_chan%,a$
+890       counter=counter+1                 : REMark this is a new rep
+900       a$=device$&a$(1 TO k%-3)&"_"
+910       get_dir_structure a$,what_chan%
+920     ELSE
+930       PRINT#what_chan%,a$               : REMark print name of file
+940       INPUT#chan%,a$
+950       PRINT#what_chan%,a$               : REMark print length + date
+960     END IF
+970   END REPeat lp%
+980   CLOSE#chan%
+990   DELETE file$
+1000 END DEFine get_dir_structure
+1010 :
+1020 : REMark --------------------------------------------------------------------
+1030 : REMark a partir d'ici, des fonctions standard
+1040 : REMark --------------------------------------------------------------------
+1050 :
+1060 DEFine PROCedure make_colours (colourway%)
+1070 REMark Ceci intitialise les variables menu_pap, menu_brd, menu_ink
+1080 REMark et menu_bar selon le type-couleurs choisi
+1090 :
+1100 REMark 0= blanc/vert
+1110 REMark 1= noir/rouge
+1120 REMark 2= blanc/rouge
+1130 REMark 3= noir/vert
+1140 :
+1150   colway=colourway%&&3: REMark doit ‘tre entre 0 et 3
+1160   SELect ON colway
+1170     =0:                     : REMark blanc/vert
+1180             menu_pap=7
+1190             menu_brd=4
+1200             menu_ink=0
+1210             menu_bar=84
+1220     =1:                     : REMark noir/rouge
+1230             menu_pap=0
+1240             menu_brd=2
+1250             menu_ink=7
+1260             menu_bar=82
+1270     =2:                     : REMark blanc/rouge
+1280             menu_pap=7
+1290             menu_brd=2
+1300             menu_ink=0
+1310             menu_bar=98
+1320     =3:                     : REMark noir/vert
+1330             menu_pap=0
+1340             menu_brd=4
+1350             menu_ink=7
+1360             menu_bar=100
+1370   END SELect
+1380 END DEFine make_colours
+1390 :
+1400 DEFine PROCedure button (def_trav,menu_drap%,app_drap%,ctrl%,chaine$,type_col%)
+1410   DR_UNST main_defn
+1420   IF compiled: CLOSE#1
+1430   BTN chaine$,type_col%
+1440   IF compiled
+1450     OPEN#1,"CON_"
+1460     DR_PPOS def_trav,-1,-1,menu_drap%,app_drap%,ctrl%
+1470   ELSE
+1480     DR_PULD def_trav,-1,-1,menu_drap%,app_drap%,control%
+1490   END IF
+1500 END DEFine button
+1510 :
+1520 DEFine PROCedure init
+1530 : REMark quelques couleurs utiles
+1540   black=0:red=2:green=4:white=7:grey=255:pink=234:dark_red=210
+1550   dark_green=228:light_green=220:red_green=242:striped=19
+1560 :
+1570   text=0:sprite=2:blob=4:pattern=6
+1580   retr=256:retn=-256:sous1=text-2:sous2=text-4
+1590 :
+1600 : REMark les codes-type pour les ƒvnements
+1610   hit$=CHR$(1):do$=CHR$(2):cancel$=CHR$(3):sleep$=CHR$(7):wake$=CHR$(8)
+1620   help$=CHR$(4):move$=CHR$(5):size$=CHR$(6):cr$=CHR$(10)
+1630 :
+1640   xtaille=460:ytaille=220          : REMark tailles x et y: la taille x devrait
+1650                                    : REMark ‘tre un chiffre divisible par 4
+1660   lxs=24:lys=10                    : REMark tailles x et y pour postes standard
+1670   inf1y=lys+4                      : REMark posi. y de la fen. d'inf. intƒrieure
+1680   xesp=lxs+2
+1690   nbr_post%=2                      : REMark nombre de postes dans un coin
+1700   colourways%=0
+1710   make_colours colourways%
+1720 :
+1730   titre$="SMSQ/E Update Maker"
+1740   old_drive$="dev7_"
+1750   new_drive$="dev8_"
+1760 :
+1770   RESTORE
+1780 :
+1790 : REMark  Les attributes des postes dƒliƒs
+1800 :
+1810   DIM std_iattr(3,3)
+1820   RD_IATT std_iattr
+1830     DATA 1,menu_ink : REMark taille et couleur de bordure du poste courant
+1840     DATA menu_pap,menu_brd,0,0 : REMark papier et encre d'un poste indisponible
+1850     DATA menu_pap,menu_ink,0,0 : REMark disponible
+1860     DATA menu_brd,menu_ink,0,0 : REMark selectionnƒ
+1870 :
+1880   espace_vide=ALCHP(100)
+1890 :
+1900   main_sprite=RD_SPRT(0)           : REMark ici un masque normal
+1910     DATA 11,13,6,5,4
+1920     DATA '     www     '
+1930     DATA '     waw     '
+1940     DATA '     waw     '
+1950     DATA '     waw     '
+1960     DATA 'wwwwwa awwwww'
+1970     DATA 'waaaa   aaaaw'
+1980     DATA 'wwwwwa awwwww'
+1990     DATA '     waw     '
+2000     DATA '     waw     '
+2010     DATA '     waw     '
+2020     DATA '     www     '
+2030 :
+2040   move_sprite=RD_SPRT(1)           : REMark ici un masque 0
+2050     DATA 10,14,5,4,4
+2060     DATA 'aaaaaaaaaa    '
+2070     DATA 'awwwwwwwwa    '
+2080     DATA 'awwrrrrwwa    '
+2090     DATA 'awwrrrrwwaaaaa'
+2100     DATA 'awwrrwwwwwwwwa'
+2110     DATA 'awwwwwwwwrrwwa'
+2120     DATA 'aaaaawwrrrrwwa'
+2130     DATA '    awwrrrrwwa'
+2140     DATA '    awwwwwwwwa'
+2150     DATA '    aaaaaaaaaa'
+2160 :
+2170 zzz_sprite= RD_SPRT(1)             : REMark ici un masque 0
+2180     DATA 7,15,0,0,4
+2190     DATA 'wwwww          '
+2200     DATA '   w           '
+2210     DATA '  w  wwww      '
+2220     DATA ' w     w       '
+2230     DATA 'wwwww w  wwww  '
+2240     DATA '     wwww  w   '
+2250     DATA '          wwww '
+2260 :
+2270  wake_sprite=RD_SPRT(1)            : REMark ici un masque 0
+2280     DATA 9,14,0,0,4
+2290     DATA "             w"
+2300     DATA "            w "
+2310     DATA "      w   ww  "
+2320     DATA "     ww www   "
+2330     DATA "    wwwwww    "
+2340     DATA "   www ww     "
+2350     DATA "  w   w      "
+2360     DATA " w            "
+2370     DATA "w             "
+2380 :
+2390   yinf1y=inf1y+4
+2400   esc%=0:move%=esc%+1
+2410   start%=move%+1:oldd%=start%+1:newd%=oldd%+1
+2420 :
+2430   main_lit=4:DIM main_lfl%(main_lit)       : REMark on veut 4 postes
+2440   main_lot=RD_LOT(std_iattr,main_lit)
+2450     DATA lxs,lys,4+xesp*0,2,0,0,cancel$,text+retr,'ESC'
+2460     DATA lxs,lys,4+xesp*1,2,0,0,move$,sprite+retr,move_sprite
+2470     DATA lxs*2,lys,xtaille-2-xesp*2,2,0,0,"S",text-2+retr,'Start'
+2480     DATA 50*6,lys,112,inf1y+8,1,0,'O',text+retr,old_drive$
+2490     DATA 50*6,lys,112,inf1y+24,1,0,'N',text+retr,new_drive$
+2500 :
+2510   longueur_titre=LEN(titre$)*6             : REMark on calcule la taille et la
+2520   titre_x=INT((xtaille-longueur_titre)/2)  : REMark position x de cet objet
+2530   main_iot1=RD_IOT(0)
+2540     DATA longueur_titre,lys,4,INT((lys-10)/2),text,menu_ink,0,0,titre$
+2550   sub_iot=RD_IOT(1)
+2560     DATA 70,lys,0,8, text-2,menu_ink,0,0,"Old content file:"
+2570     DATA 70,lys,0,24,text-2,menu_ink,0,0,"New SMSQ/E is on:"
+2580 :
+2590   main_iwt=RD_IWT(3)               : REMark on veut 3 sous-fen. d'info
+2600 :
+2610     DATA xtaille-8-(2*nbr_post%*xesp),lys+2,xesp*nbr_post%+4,0  : REMark taille x,y, origines x,y
+2620     DATA 0,0,menu_brd,menu_bar     : REMark ombre, taille & couleur bordure
+2630                                    : REMark puis couleur papier
+2640     DATA 0                         : REMark pointeur vers objets
+2650 :
+2660 :
+2670     DATA longueur_titre+8,lys,titre_x-2,2   : REMark on utilise titre_x etc
+2680     DATA 0,0, menu_brd,menu_pap
+2690     DATA main_iot1                 : REMark un objet, le titre
+2700 :
+2710     DATA xtaille-8,ytaille-inf1y-2,4,inf1y
+2720     DATA 0,1, menu_brd,menu_pap
+2730     DATA 0
+2740 :
+2750     DATA xtaille-8,50,4,inf1y
+2760     DATA 0,1, menu_brd,menu_pap
+2770     DATA sub_iot
+2780 :
+2790   main_defn=RD_WDEF
+2800     DATA 2,1,menu_ink,menu_pap: REMark ombre, larg. & coul. bord., coul. papier
+2810     DATA xtaille,ytaille,10,10 : REMark taille x,y et position pointeur
+2820     DATA main_sprite,main_lot,main_iwt,0
+2830 :
+2840 END DEFine init
+2850 :
+2860 DEFine FuNction RD_SPRT(drap%)
+2870 REMark drap% determne si masque 0
+2880   LOCal tmp_patt$(32,32)
+2890   LOCal xs,ys,xo,yo, md, l
+2900   READ ys,xs,xo,yo,md
+2910   DIM tmp_patt$(ys,xs)
+2920   FOR l=0 TO ys-1:READ tmp_patt$(l)
+2930   l=ALCHP(SPRSP(xs,ys))
+2940   SPSET l,xo,yo,md,tmp_patt$(0 TO ys-1,1 TO xs)
+2950   IF drap%
+2960     POKE_L l+16,espace_vide-(l+16)
+2970   END IF
+2980   RETurn l
+2990 END DEFine RD_SPRT
+3000 :
+3010 DEFine FuNction RD_WDEF
+3020   LOCal ldef%(3), lspr, lloose, linfo, lappl, lattr%(3)
+3030   RD_WATT lattr%
+3040   READ ldef%(0), ldef%(1), ldef%(2), ldef%(3)
+3050   READ lspr, lloose, linf, lappl
+3060   RETurn MK_WDEF (ldef%, lattr%, lspr, lloose, linf, lappl)
+3070 END DEFine RD_WDEF
+3080 :
+3090 DEFine FuNction RD_LOT (lattr,nitem)
+3100   LOCal count(3)
+3110   LOCal item, ltyp, a$, lsk$
+3120   LOCal ldef%(nitem,6), lptr(3,nitem), lstr$(nitem,85)
+3130   lsk$=''
+3140   FOR item = 0 TO nitem
+3150     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+3160     READ ldef%(item,4), ldef%(item,5)
+3170     READ a$: lsk$=lsk$ & a$
+3180     READ ltyp
+3190     ldef%(item,6)=ltyp: ltyp=(ltyp MOD 256)/2
+3200     IF ltyp>10:ltyp=0
+3210     IF ltyp
+3220       READ lptr(ltyp,count(ltyp))
+3230     ELSE
+3240       READ lstr$(count(0))
+3250     END IF
+3260     count(ltyp)=count(ltyp)+1
+3270   END FOR item
+3280   RETurn MK_LIL (lattr, ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), ldef%(TO, 4 TO 5), lsk$, ldef%(TO, 6), lstr$, lptr(1), lptr(2), lptr(3))
+3290 END DEFine RD_LOT
+3300 :
+3310 DEFine FuNction RD_IWT(nitem)
+3320   LOCal item
+3330   LOCal ldef%(nitem,3), latt%(nitem,3), lptr(nitem)
+3340   FOR item = 0 TO nitem
+3350     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+3360     READ latt%(item,0), latt%(item,1), latt%(item,2), latt%(item,3)
+3370     READ lptr(item)
+3380   END FOR item
+3390   RETurn MK_IWL (ldef%, latt%, lptr)
+3400 END DEFine RD_IWT
+3410 :
+3420 DEFine FuNction RD_IOT(nitem)
+3430   LOCal count(3)
+3440   LOCal item, ltyp, work1, work2
+3450   LOCal ldef%(nitem,4), lptr(3,nitem), lstr$(nitem,85)
+3460   FOR item = 0 TO nitem
+3470     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+3480     READ ltyp
+3490     ldef%(item,4)=ltyp: ltyp=(ltyp MOD 256)/2
+3500     IF ltyp >10:ltyp=0
+3510     IF ltyp
+3520       READ lptr(0,item),lptr(ltyp,count(ltyp))
+3530     ELSE
+3540       READ work1
+3550       READ work2: work1=work1*256+work2
+3560       READ work2: lptr(0,item)=work1*256+work2
+3570       READ lstr$(count(0))
+3580     END IF
+3590     count(ltyp) = count(ltyp) + 1
+3600   END FOR item
+3610   RETurn MK_IOL (ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), lptr(0), ldef%(TO, 4), lstr$, lptr(1), lptr(2), lptr(3))
+3620 END DEFine RD_IOT
+3630 :
+3640 DEFine PROCedure RD_IATT (lattr)
+3650   LOCal i
+3660   READ lattr(0,0), lattr(0,1)
+3670   FOR i=1 TO 3: READ lattr(i,0), lattr(i,1), lattr(i,2), lattr(i,3)
+3680 END DEFine RD_IATT
+3690 :
+3700 DEFine PROCedure RD_WATT (lattr%)
+3710   READ lattr%(0), lattr%(1), lattr%(2), lattr%(3)
+3720 END DEFine RD_WATT

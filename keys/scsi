@@ -1,0 +1,58 @@
+; SCSI command set
+        nolist
+
+scc_opcd equ    $00     ; byte      OPeration CoDe
+scc_blok equ    $00     ; long      BLOcK number ORed into long word
+scc_lun  equ    $01     ; bits 5-7  Logical Unit Number
+scc.luns equ      5       ;           Logical Unit Number Shift
+scc_blkh equ    $01     ; bits 0-4  BLocK High bits
+scc_blkm equ    $02     ; byte      BLocK Middle byte
+scc_blkl equ    $03     ; byte      BLocK Low byte
+scc_nblk equ    $04     ; byte      Number of BLocKs (0=256)
+
+; SCSI commands
+
+scc.test equ      $00     ; TEST unit
+scc.rest equ      $01     ; RESTore / recalibrate
+
+scc.reqs equ      $03     ; REQuest Sense
+scc.frmt equ      $04     ; FoRMaT unit
+
+scc.read equ      $08     ; READ
+scc.read1 equ     $28     ; READ group 1
+scc.writ equ      $0a     ; WRITe
+scc.writ1 equ     $2a     ; WRITe group 1
+
+scc.inqr equ      $12     ; inquiry
+scci_remv equ  $01          ; msb set if removable
+
+scc.msel equ      $15     ; Mode SELect
+
+scc.msns equ      $1a     ; Mode SeNSe
+sccm_wprt equ  $02          ; msb set if write protected
+scc.stst equ      $1b     ; STart STop
+scc.strt equ        $01000001 ; start (immediate)
+scc.stop equ        $01000000 ; stop (immediate)
+scc.lkun equ      $1e     ; LocK UNlock
+scc.lock equ        $01   ; lock parameter
+scc.unlk equ        $00   ; unlock parameter
+scc.stsv equ      $1f     ; start stop on vortex
+
+; Status codes
+
+scc.cond equ      $02     ; check CONDition
+
+; Sense keys
+
+scs_key  equ    $02     ; sense key
+sck.ok   equ      $00     ; OK
+sck.recv equ      $01     ; Recovered error
+sck.nrdy equ      $02     ; Not Ready
+sck.fail equ      $03     ; Operation Failed
+sck.herr equ      $04     ; Hardware ERRor
+sck.icmd equ      $05     ; Invalid CoMmanD
+sck.attn equ      $06     ; ATTeNtion
+sck.rdon equ      $07     ; ReaD ONly
+sck.abrt equ      $0b     ; aborted
+scs.prty equ        $47     ; with parity error
+        list

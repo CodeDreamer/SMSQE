@@ -1,0 +1,35 @@
+; Data definitions for RAM disk
+        nolist
+
+; RAM disk linkage block
+
+rdd_driv equ    $b0-4   ; 8*long  pointers to RAM disks
+rdd_emul equ    $d0-4   ; 8*w+w   emulation drive / size
+
+rdd_end  equ    $f0
+
+; RAM disk physical definition
+
+rdd_map  equ    $40     ; long  pointer to first map sector
+rdd.plen equ    $50
+
+
+; RAM disk sector block
+
+rdb_free equ   -$08     ; long  pointer to free space list
+rdb_fsec equ   -$04     ; word  free sectors
+rdb_tsec equ   -$02     ; word  total sectors
+rdb.slen equ    $08           ; length of static ram disc header
+
+rdb_slst equ    $00     ; long  sector linked list
+
+rdb_stat equ    $0b     ; byte  static ram disk (set in first sector of map)
+rdb_bad  equ    $0b     ; byte  bad sector flag
+rdb_id   equ    $0c     ; word  file id
+rdb_sect equ    $0e     ; word  sector number
+rdb_data equ    $10           ; start of data
+rdb.data equ    $200          ; length of data block
+rdb.len  equ    rdb.data+rdb_data ; length of sector in memory
+rdb.sft  equ      7           ; shift to convert position to block / byte
+rdb.nfls equ    rdb.data/4    ; number of files in a sector
+        list

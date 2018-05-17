@@ -1,0 +1,18 @@
+* SMS2 primary stack frame (pointer a5) and all register stack frame
+        nolist
+*
+*
+psf_d7   equ    $0000   long    saved value of d7
+psf_a5   equ    $0004   long    saved value of a5
+psf_a6   equ    $0008   long    saved value of a6
+psf_sr   equ    $000c   word    saved value of status register
+psf_ccr  equ    $000d   word    saved value of condition code register
+psf_pc   equ    $000e   long    saved value of program counter
+psf_top  equ    $12
+psf..sup equ    5               supervisor mode bit in status register
+
+psf.reg  reg    d7/a5/a6        primary stack frame regs
+psf.oreg reg    d0-d6/a0-a4     and the others
+
+psfa_sr  equ    15*4            status register when all registers are saved
+        list

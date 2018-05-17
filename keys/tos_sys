@@ -1,0 +1,22 @@
+   nolist
+;	 System Variables
+
+memvalid   equ	    $420  l if this equals mem.val then memtop is valid
+mem.val    equ $752019f3    magic longword for memtop
+resvalid   equ	    $426  l if this equals res.val then resvector is valid
+res.val    equ $31415926    magic longword for resvalid
+resvector  equ	    $42a  l reset vector
+phystop    equ	    $42e  l top of physical ST-RAM
+_membot    equ	    $432  l bottom of User memory
+_memtop    equ	    $436  l top of User memory
+memval2    equ	    $43a  l if this equals mem.val2 then memtop is valid
+mem.val2   equ $237698aa    magic longword for memvalid2
+vbasadd    equ	    $44e  l screen logical base address
+memval3    equ	    $51a  l if this equals mem.val3 then memtop is valid
+mem.val3   equ $5555aaaa    magic longword for memvalid3
+_longframe equ	    $59e  w if nonzero, a 680x0 with x>0 is running
+_p_cookies equ	    $5a0  l pointer to cookie jar
+ramtop	   equ	    $5a4  l top of physical TT-RAM
+ramvalid   equ	    $5a8  l if this equals ramtop.val then ramtop is valid
+ramtop.val equ $1357bd13    magic longword for ramvalid
+   list

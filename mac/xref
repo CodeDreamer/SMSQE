@@ -1,0 +1,33 @@
+        nolist
+
+xjsr    macro   name
+        xref    [name]
+        jsr     [name]
+        endm
+
+xbsr    macro   name
+        xref    [name]
+        bsr     [name]
+        endm
+
+xlea    macro   name,reg
+        xref    [name]
+        lea     [name],[reg]
+        endm
+
+xbra    macro   name
+        xref    [name]
+        bra     [name]
+        endm
+
+xbeq    macro   name
+        xref    [name]
+        beq     [name]
+        endm
+
+xbne    macro   name
+        xref    [name]
+        bne     [name]
+        endm
+
+        list

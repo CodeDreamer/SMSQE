@@ -1,0 +1,57 @@
+; keys for QD5 Thing interface
+
+        nolist
+qt_init equ     $0018   init code
+qt_tidy equ     $001c   tidy up code
+qt_f10  equ     $0020   F10 call code
+qt_f1   equ     $0024   help call code
+
+qd_info  equ    $0000   get QD's system variables
+qd_getln equ    $0004   get a line from into buffer
+qd_putln equ    $0008   put existing line from butter into text
+qd_insln equ    $000c   insert line from buffer into text
+qd_delln equ    $0010   delete line from text
+*
+qd_ptrln equ    $0014   point to a given line
+qd_nxtln equ    $0018   point to next line
+qd_prvln equ    $001c   point to previous line
+qd_1stln equ    $0020   point to first line
+qd_lstln equ    $0024   point to last line
+*
+qd_save  equ    $0028   save current file
+qd_load  equ    $002c   load current file
+qd_nwnm  equ    $0030   new filename
+*
+qd_prttxt equ   $0034   print text
+qd_curpos equ   $0038   position cursor
+qd_setwin equ   $003c   set window to edit window
+qd_redrtxt equ  $0040   redraw text
+qd_colrptr equ  $0044   get colour byte of line
+qd_flushtxt equ $0048   flush text from scre
+
+qv_bstln equ    $00  w  line number of block start, 0 = no block, -1 = undef.
+qv_bstch equ    $02  w  start character of block within first line
+qv_benln equ    $04  w  line number of block end, 0 = no block, -1 if undef.
+qv_bench equ    $06  w  end character of block
+qv_cscrx equ    $08  w  on-screen-cursor x-position * (if cursor is positioned)
+qv_cscry equ    $0a  w  on-screen-cursor y-position * (if cursor is positioned)
+qv_1stvl equ    $0c  w  line number of first visible line * (if text is redrawn)
+*
+qv_color equ    $10  b  colourways
+qv_lfmar equ    $12  w  left margin *
+qv_rtmar equ    $14  w  right margin *
+qv_tab   equ    $16  w  tab distance *
+qv_cnfrq equ    $18  b  set if confirmation requests required *
+qv_txtch equ    $1a  b  set if text changed ^
+*
+qv_sysv  equ    $20  l  pointer to machines system variables
+qv_wman  equ    $22  l  window manager vector
+qv_prmid equ    $24  l  primary window channel id
+*
+qv_filnm equ    $28  st filename *
+qv_hlpnm equ    $2a  st help filename *
+qv_dirnm equ    $2c  st local directory name *
+qv_extnm equ    $2e  st filename extension *
+qv_thgnm equ    $30  st thing name
+qv_prtnm equ    $32  st printer name *
+        list

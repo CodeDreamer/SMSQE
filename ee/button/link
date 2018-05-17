@@ -1,0 +1,13 @@
+program dev8_ee_button_#0
+common  dummy
+section base
+section sprite
+section menu
+section language
+
+input   dev8_ee_button_base_rel
+input   dev8_ee_button_#0_rel
+library dev8_ee_button_lib
+library dev8_iod_iou_lib
+library dev8_util_gut_lib
+library dev8_lang_#0_lib

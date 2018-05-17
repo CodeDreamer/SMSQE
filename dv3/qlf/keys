@@ -1,0 +1,11 @@
+; QL Format drive definition blocks
+        nolist
+
+qdf_mtop   equ  ddf_dtop        ; long  pointer to top of map
+
+qdf_msect  equ  ddf_dtop+$08    ; word  number of map sectors
+
+qdf_mupd   equ  ddf_dtop+$0c    ; 256+4 bytes for map updated 65536+ groups
+qdf.mupd   equ    256+4
+qdf_map    equ  ddf_dtop+$110   ;       the map is here
+        list

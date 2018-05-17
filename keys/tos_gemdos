@@ -1,0 +1,31 @@
+   nolist
+;        GEMDOS System calls (trap #1)
+
+call.gem   equ  1       trap number for GEMDOS calls
+
+cconin     equ  $01     input character from console
+conout     equ  $02     output character to console
+cauxin     equ  $03     read character from standard AUX
+cauxout    equ  $04     write character to standard AUX
+cprnout    equ  $05     write character to standard PRN
+crawio     equ  $06     raw I/O to standard input/output
+crawcin    equ  $07     raw input from standard input
+cnecin     equ  $08     read character from standard input, no echo
+cconws     equ  $09     write string to console
+cconrs     equ  $0a     read edited data from standard input
+cconis     equ  $0b     check status of standard input
+cconos     equ  $10     check status of standard output
+cprnos     equ  $11     check status of standard PRN
+cauxis     equ  $12     check status of standard AUX: input
+cauxos     equ  $13     check status of standard AUX: output
+dgetdrv    equ  $19     get default drive
+fsetdta    equ  $1a     set disk transfer address
+super      equ  $20     enter supervisor mode
+tgetdate   equ  $2a     get date
+tgettime   equ  $2c     get time
+fopen      equ  $3d     open a file
+fclose     equ  $3e     close a file
+fread      equ  $3f     read a file
+mshrink    equ  $4a     shrink size of allocated block
+fsfirst    equ  $4e     find first entry for file
+   list

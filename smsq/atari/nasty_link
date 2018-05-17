@@ -1,0 +1,11 @@
+program dev8_smsq_atari_nasty
+
+input   dev8_smsq_atari_nasty_rel
+library dev8_smsq_atari_poll_rel
+library dev8_smsq_atari_rtc_rel
+library dev8_smsq_atari_rtcset_rel
+library dev8_smsq_atari_hdop_lib
+library dev8_smsq_kbd_keyrow_rel
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_smsq_smsq_end_rel

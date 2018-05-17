@@ -1,0 +1,18 @@
+; HISTORY device versions
+
+	section version
+
+	xdef	history_vers
+
+; V2.00 first version!
+;
+; V2.01 ioa.cnam support
+
+history_vers equ    '2.01'
+
+history_wmess
+	dc.b	'History  V'
+	dc.l	history_vers
+	dc.b	' ',$a
+history_vmend
+	end

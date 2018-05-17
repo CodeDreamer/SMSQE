@@ -1,0 +1,71 @@
+; DV3 Standard Hard Disk Linkage and Drive Definition Blocks
+        nolist
+
+.v       equ  ddl_drive
+
+hdl_rsint  equ .v+$12   ; jmp      read sectors (internal)
+hdl_wsint  equ .v+$1a   ; jmp      write sectors (internal)
+
+hdl_ckrdy  equ .v+$22   ; jmp      check drive ready
+hdl_ckwp   equ .v+$2a   ; jmp      check write protect
+hdl_lock   equ .v+$32   ; jmp      lock
+hdl_unlock equ .v+$3a   ; jmp      unlock
+hdl_ststp  equ .v+$42   ; jmp      start / stop
+
+.          equ .v+$60
+
+hdl_maxd equ  .+$10     ; byte     maximum drive number
+hdl.maxd equ    $10
+hdl_npart equ   $11     ; byte     set when attempt to find partition fails
+
+hdl_acss equ  .+$16     ; byte     action suppressed  (-ve)
+hdl.acss equ       2      ; deduct this to suspend polling actions
+
+hdl_actm equ  .+$17     ; byte     action timer
+hdl.hold equ      -1      ; hold polling task
+hdl.flsh equ       1      ; one tick before flush
+hdl.acts equ       1      ; action timer decrement before stop / park
+hdl.actf equ       4      ; action timer decrement before flush
+
+hdl_apnd equ  .+$19     ; byte     action pending constant
+hdl.apnd equ     100      ; action pending
+
+hdl_freq equ  .+$1a     ; byte     set if flush required
+
+hdl_paus equ  .+$20     ; word     pause between operations (ACSI)
+
+hdl_ersp equ  .+$25     ; byte     error recovery and step rate bits (ST506)
+hdl.ersp equ      $07         ; standard error recovery and step bits
+hdl.nerr equ      $80         ; no error recovery
+hdl_ecyl equ  .+$28     ; word     error cylinder (ST506)
+hdl_eccl equ  .+$2a     ; byte     ecc length     (ST506)
+hdl.eccl equ      $05         ; recommended length
+hdl_err  equ  .+$2b     ; byte     error code (debugging)
+hdl_1sec equ  .+$2c     ; long     one second timer
+
+hdl_cach equ  .+$38     ; cache control reg saved value
+hdl_errs equ  .+$3c     ; error sense buffer
+hdl.errs equ     $14    ; length of error sense buffer
+hdl_info equ  .+$50     ; information / sense buffer
+hdl.mode equ     $30    ; length of mode sense buffer
+hdl.sens equ     $12    ; length of sense buffer
+
+hdl_remd equ  .+$80              ; 8 bytes set if drive removable
+hdl.remq equ       1                ; +1 for don't know
+hdl.remv equ      -1                ; -1 for removable
+hdl.vrtx equ      -2                ; or -2 for Vortex!
+hdl_nlok equ  hdl_remd+8         ; 8 bytes counting locked partitions on drive
+hdl_targ equ  hdl_nlok+8         ; hdl.maxd bytes target numbers
+hdl_unit equ  hdl_targ+hdl.maxd  ; hdl.maxd bytes unit numbers
+hdl_part equ  hdl_unit+hdl.maxd  ; hdl.maxd bytes partition numbers
+hdl_wprt equ  hdl_part+hdl.maxd  ; hdl.maxd bytes set if drive logically wprot
+                                 ; >0 if format allowed
+
+hdl_buff equ  .+$80+5*hdl.maxd
+hdl_end  equ  hdl_buff+$200
+
+; Physical definition
+
+..       equ     ddf_drive
+
+        list

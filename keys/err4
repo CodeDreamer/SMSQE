@@ -1,0 +1,101 @@
+; Group 4 error codes (SBASIC)
+
+g4         equ  4<<5
+
+ern4.iexp  equ  -1   ; syntax error in expression
+ern4.lpar  equ  -2   ; missing left parenthesis
+ern4.rpar  equ  -3   ; missing right parenthesis
+ern4.lno   equ  -4   ; error in line number
+ern4.bstr  equ  -5   ; bad string: missing delimiter
+ern4.edef  equ  -6   ; incorrect procedure or function definition
+ern4.idef  equ  -7   ; procedure or function definition not allowed here
+ern4.bdef  equ  -8   ; DEFines may not be within other clauses
+ern4.bedf  equ  -9   ; misplaced END DEFine
+ern4.bloc  equ  -10  ; misplaced LOCal
+ern4.bret  equ  -11  ; RETurn not in procedure or function
+ern4.rcwh  equ  -12  ; WHEN clauses may not be nested
+ern4.endw  equ  -13  ; misplaced END WHEN
+ern4.else  equ  -14  ; misplaced ELSE
+ern4.endi  equ  -15  ; misplaced END IF
+ern4.xstr  equ  -16  ; program structures nested too deeply, my brain aches
+ern4.inif  equ  -17  ; incomplete IF clause
+ern4.insl  equ  -18  ; incomplete SELect clause
+ern4.indf  equ  -19  ; incomplete DEFine
+ern4.inwh  equ  -20  ; incomplete WHEN clause
+ern4.bfor  equ  -21  ; unacceptable loop variable
+ern4.unlp  equ  -22  ; unable to find an open loop
+ern4.blvr  equ  -23  ; undefined loop control variable
+ern4.bsel  equ  -24  ; incorrectly structured SELect clause
+ern4.ends  equ  -25  ; misplaced END SELect
+ern4.dtcl  equ  -26  ; DATA in command line has no meaning
+ern4.brds  equ  -27  ; unacceptable parameters for READ
+ern4.recr  equ  -28  ; SBASIC cannot perform READs within DATA expressions
+ern4.eod   equ  -29  ; end of DATA
+ern4.bprc  equ  -30  ; unknown procedure
+ern4.bref  equ  -31  ; unknown function or array
+ern4.bdim  equ  -32  ; only arrays may be dimensioned
+ern4.pdim  equ  -33  ; procedure and function parameters may not be dimensioned
+ern4.dmng  equ  -34  ; SBASIC cannot put up with negative dimensions
+ern4.dmov  equ  -35  ; dimensional overflow - you cannot be serious!
+ern4.eind  equ  -36  ; error in index list
+ern4.xind  equ  -37  ; too many indexes
+ern4.asar  equ  -38  ; cannot assign to sub-array
+ern4.iind  equ  -39  ; unacceptable array index list
+ern4.inor  equ  -40  ; array index out of range
+ern4.narr  equ  -41  ; only arrays or strings may be indexed
+ern4.basg  equ  -42  ; assignment can only be to a variable or array element
+ern4.mist  equ  -43  ; MISTake in program
+ern4.wher  equ  -44  ; during when processing
+ern4.pfcl  equ  -45  ; PROC/FN cleared
+ern4.atln  equ  -46  ; at line (no <NL>)
+ern4.fatl  equ  -47  ; Fatal error in SBASIC interpreter
+
+err4.null  equ  -g4
+err4.iexp  equ  -g4+ern4.iexp
+err4.lpar  equ  -g4+ern4.lpar
+err4.rpar  equ  -g4+ern4.rpar
+err4.lno   equ  -g4+ern4.lno
+err4.bstr  equ  -g4+ern4.bstr
+err4.edef  equ  -g4+ern4.edef
+err4.idef  equ  -g4+ern4.idef
+err4.bdef  equ  -g4+ern4.bdef
+err4.bedf  equ  -g4+ern4.bedf
+err4.bloc  equ  -g4+ern4.bloc
+err4.bret  equ  -g4+ern4.bret
+err4.rcwh  equ  -g4+ern4.rcwh
+err4.endw  equ  -g4+ern4.endw
+err4.else  equ  -g4+ern4.else
+err4.endi  equ  -g4+ern4.endi
+err4.xstr  equ  -g4+ern4.xstr
+err4.inif  equ  -g4+ern4.inif
+err4.insl  equ  -g4+ern4.insl
+err4.indf  equ  -g4+ern4.indf
+err4.inwh  equ  -g4+ern4.inwh
+err4.bfor  equ  -g4+ern4.bfor
+err4.unlp  equ  -g4+ern4.unlp
+err4.blvr  equ  -g4+ern4.blvr
+err4.bsel  equ  -g4+ern4.bsel
+err4.ends  equ  -g4+ern4.ends
+err4.dtcl  equ  -g4+ern4.dtcl
+err4.brds  equ  -g4+ern4.brds
+err4.recr  equ  -g4+ern4.recr
+err4.eod   equ  -g4+ern4.eod
+err4.bprc  equ  -g4+ern4.bprc
+err4.bref  equ  -g4+ern4.bref
+err4.bdim  equ  -g4+ern4.bdim
+err4.pdim  equ  -g4+ern4.pdim
+err4.dmng  equ  -g4+ern4.dmng
+err4.dmov  equ  -g4+ern4.dmov
+err4.eind  equ  -g4+ern4.eind
+err4.xind  equ  -g4+ern4.xind
+err4.asar  equ  -g4+ern4.asar
+err4.iind  equ  -g4+ern4.iind
+err4.inor  equ  -g4+ern4.inor
+err4.narr  equ  -g4+ern4.narr
+err4.basg  equ  -g4+ern4.basg
+err4.mist  equ  -g4+ern4.mist
+err4.wher  equ  -g4+ern4.wher
+err4.pfcl  equ  -g4+ern4.pfcl
+err4.atln  equ  -g4+ern4.atln
+err4.fatl  equ  -g4+ern4.fatl
+        list

@@ -1,0 +1,366 @@
+; Parser Keys
+        nolist
+; Byte item codes
+
+tki.null equ      $00
+
+tki.end  equ      $01     ; END
+tki.for  equ      $02     ; FOR
+tki.rep  equ      $03     ; REPeat
+tki.if   equ      $04     ; IF
+tki.sel  equ      $05     ; SELect
+tki.when equ      $06     ; WHEN
+tki.def  equ      $07     ; DEFine
+tki.proc equ      $08     ; PROCedure
+tki.fun  equ      $09     ; FuNction
+tki.fn   equ      $0a     ; FN
+tki.go   equ      $0b     ; GO
+tki.to   equ      $0c     ; TO
+tki.sub  equ      $0d     ; SUB
+
+tki.err  equ      $0e     ; ERRor
+
+tki.rest equ      $11     ; RESTORE
+tki.next equ      $12     ; NEXT
+tki.exit equ      $13     ; EXIT
+tki.else equ      $14     ; ELSE
+tki.on   equ      $15     ; ON
+tki.ret  equ      $16     ; RETurn
+tki.rmdr equ      $17     ; REMAINDER
+tki.data equ      $18     ; DATA
+tki.dim  equ      $19     ; DIM
+tki.loc  equ      $1a     ; LOCal
+tki.let  equ      $1b     ; LET
+tki.then equ      $1c     ; THEN
+tki.step equ      $1d     ; STEP
+tki.rem  equ      $1e     ; REMark
+tki.mist equ      $1f     ; MISTake
+
+tki.lequ equ      $21     ; (LET) =
+tki.coln equ      $22     ; :
+tki.hash equ      $23     ; #
+tki.cmma equ      $24     ; ,
+tki.lpar equ      $25     ; (
+tki.rpar equ      $26     ; )
+tki.lbrc equ      $27     ; {
+tki.rbrc equ      $28     ; }
+tki.spce equ      $29     ; space (significant) ***** does not occur *****
+tki.eol  equ      $2a     ; end of line
+
+tki.plus equ      $31     ; +
+tki.minu equ      $32     ; -
+tki.mulf equ      $33     ; *
+tki.divf equ      $34     ; /
+tki.ge   equ      $35     ; >=
+tki.gt   equ      $36     ; >
+tki.apeq equ      $37     ; ==
+tki.eq   equ      $38     ; =        ***** pre-empted by tki.lequ *****
+tki.ne   equ      $39     ; <>
+tki.le   equ      $3a     ; <=
+tki.lt   equ      $3b     ; <
+tki.bor  equ      $3c     ; ||
+tki.band equ      $3d     ; &&
+tki.bxor equ      $3e     ; ^^
+tki.pwr  equ      $3f     ; ^
+tki.cnct equ      $40     ; &
+tki.or   equ      $41     ; OR
+tki.and  equ      $42     ; AND
+tki.xor  equ      $43     ; XOR
+tki.mod  equ      $44     ; MOD
+tki.div  equ      $45     ; DIV
+tki.inst equ      $46     ; INSTR
+
+tki.neg  equ      $47     ; negate     ***** pre-empted by diadic *****
+tki.pos  equ      $48     ; positive!! ***** pre-empted by diadic *****
+tki.bnot equ      $49     ; ~~
+tki.not  equ      $4a     ; NOT
+
+tki.name equ      $4b
+
+tki.quot equ      $4c     ; delimited by "quotes"
+tki.apst equ      $4d     ; delimited by 'apostrophes'
+
+tki.text equ      $4e     ; text
+
+tki.lno  equ      $4f     ; line number
+
+tki.scom equ      $51     ; separator comma  ***** pre-empted by symbol , *****
+tki.scol equ      $52     ; semicolon
+tki.bsol equ      $53     ; back solidus
+tki.excl equ      $54     ; exclamation mark
+tki.sto  equ      $55     ; separator TO    ***** pre-empted by symbol TO *****
+
+tki.efor equ      $62     ; ENDFOR
+tki.eif  equ      $63     ; ENDIF
+tki.erep equ      $64     ; ENDREPeat
+tki.esel equ      $65     ; ENDSELect
+tki.ewhn equ      $66     ; ENDWHEN
+tki.edef equ      $67     ; ENDDEFine
+tki.dprc equ      $68     ; DEFinePROCedure
+tki.dfn  equ      $69     ; DEFineFuNction
+
+tki.goto equ      $6b     ; GOTO
+tki.gsub equ      $6c     ; GOSUB
+
+tki.val  equ      $7f     ; value
+
+; Graph entries:  at each graph point there is a table of possibilties.
+;                 if the item is accepted by the called graph or code, or
+;                 if the item is within the range of items (option)
+;                   the item is accepted, the next item is encoded and
+;                   the "next" graph entry is processed.
+;                 if an item range is 0,0 then the "next" graph entry is
+;                    processed without accepting the item: i.e. it is GOTO.
+;
+;                 Any calls to code must be at the start of a table of
+;                 possibilities to prevent the parser attempting to decode
+;                 an unrecognisable item. To prevent problems, a sub-graph
+;                 should not start with a code item, nor should a GOTO goto
+;                 a code item.
+;
+;                 A call to a graph can appear anywhere in a table of
+;                 of possibilities.
+;
+;                 A GOTO can only be the last item in a table. This is also
+;                 true of an EXIT. An EXIT as the last item in a table indicates
+;                 that the item being processed is not allowed in the context
+;                 of the sub-graph: it could be an error, or it could indicate
+;                 the sub-graph is complete and the item belongs outside the
+;                 graph. An EXIT as the first (and only) item in a table of
+;                 possibilities is a positive indication of completion of the
+;                 graph: in this case the current item is not decoded before
+;                 returning.
+;
+sbg_gtyp equ    $00     ; graph entry type
+sbg.call   equ    $00     ; call
+sbg.optn   equ    $01     ; option
+sbg.nret   equ    $03     ; option is point of no return
+sbg.exit   equ    $80     ; exit - possibly error
+sbg.err    equ    $ff     ; exit is error
+
+; call graph
+
+sbg_flag equ    $01     ; call flags
+sbg.grph equ      $80     ; call graph
+sbg.code equ      $00     ; call code
+sbg_call equ    $02     ; word  rel address of routine or subgraph
+
+; option
+
+sbg_subi equ    $01     ; byte  substitute item number
+sbg_mini equ    $02     ; byte  lowest item number of interest
+sbg_maxi equ    $03     ; byte  highest item number of interest
+
+; call or option
+
+sbg_next equ    $04     ; word  rel address of next graph entry
+sbg.gent equ    $06     ; length of graph entry
+
+; exit
+
+sbg_err  equ    $01     ; error code (exit or error)
+
+sbe.none equ    0       ; ... no specific error
+sbe.expr equ    -1      ; syntax error in expression
+sbe.lpar equ    -2      ; missing left parenthesis
+sbe.rpar equ    -3      ; missing right parenthesis
+sbe.lno  equ    -4      ; error in line number
+sbe.bstr equ    -5      ; bad string: missing delimiter
+sbe.bdef equ    -6      ; bad procedure or function definition
+sbe.idef equ    -7      ; procedure or function definition not allowed here
+
+
+; Double Item Definition (character keywords only)
+
+sbg_ditm equ    $00     ; byte  double item internal code
+sbg_dabb equ    $01     ; byte  double item abbreviation length
+sbg_itm1 equ    $02     ; byte  first item internal code
+sbg_itm2 equ    $03     ; byte  second item internal code
+sbg_abb1 equ    $04     ; byte  first item abbreviation length
+sbg_abb2 equ    $05     ; byte  second item abbreviation length
+sbg_nam1 equ    $06     ; word  pointer to first item name
+sbg_nam2 equ    $08     ; word  pointer to second item name
+sbg.ditm equ    $0a
+
+; Item Definition (character keywords and symbols)
+
+sbg_item equ    $00     ; byte  item internal code
+sbg_iabb equ    $01     ; byte  item abbreviation length
+sbg_name equ    $02     ; word  pointer to item name
+sbg.item equ    $04
+
+; TOKENS
+
+tkb.spce equ    $80     ; spaces - two bytes: token,count
+
+tkb.key  equ    $81     ; keywords - two bytes: token, key
+tkk.end  equ      $01     ; END
+tkk.for  equ      $02     ; FOR
+tkk.if   equ      $03     ; IF
+tkk.rep  equ      $04     ; REPeat
+tkk.sel  equ      $05     ; SELect
+tkk.when equ      $06     ; WHEN
+tkk.def  equ      $07     ; DEFine
+tkk.proc equ      $08     ; PROCedure
+tkk.fn   equ      $09     ; FuNction
+tkk.go   equ      $0a     ; GO
+tkk.to   equ      $0b     ; TO
+tkk.sub  equ      $0c     ; SUB
+
+tkk.err  equ      $0e     ; ERRor
+
+tkk.rest equ      $11     ; RESTORE
+tkk.next equ      $12     ; NEXT
+tkk.exit equ      $13     ; EXIT
+tkk.else equ      $14     ; ELSE
+tkk.on   equ      $15     ; ON
+tkk.ret  equ      $16     ; RETurn
+tkk.rmdr equ      $17     ; REMAINDER
+tkk.data equ      $18     ; DATA
+tkk.dim  equ      $19     ; DIM
+tkk.loc  equ      $1a     ; LOCal
+tkk.let  equ      $1b     ; LET
+tkk.then equ      $1c     ; THEN
+tkk.step equ      $1d     ; STEP
+tkk.rem  equ      $1e     ; REMark
+tkk.mist equ      $1f     ; MISTake
+
+tkw.end  equ      $8101     ; END
+tkw.for  equ      $8102     ; FOR
+tkw.if   equ      $8103     ; IF
+tkw.rep  equ      $8104     ; REPeat
+tkw.sel  equ      $8105     ; SELect
+tkw.when equ      $8106     ; WHEN
+tkw.def  equ      $8107     ; DEFine
+tkw.proc equ      $8108     ; PROCedure
+tkw.fn   equ      $8109     ; FuNction
+tkw.go   equ      $810a     ; GO
+tkw.to   equ      $810b     ; TO
+tkw.sub  equ      $810c     ; SUB
+
+tkw.err  equ      $810e     ; ERRor
+
+tkw.rest equ      $8111     ; RESTORE
+tkw.next equ      $8112     ; NEXT
+tkw.exit equ      $8113     ; EXIT
+tkw.else equ      $8114     ; ELSE
+tkw.on   equ      $8115     ; ON
+tkw.ret  equ      $8116     ; RETurn
+tkw.rmdr equ      $8117     ; REMAINDER
+tkw.data equ      $8118     ; DATA
+tkw.dim  equ      $8119     ; DIM
+tkw.loc  equ      $811a     ; LOCal
+tkw.let  equ      $811b     ; LET
+tkw.then equ      $811c     ; THEN
+tkw.step equ      $811d     ; STEP
+tkw.rem  equ      $811e     ; REMark
+tkw.mist equ      $811f     ; MISTake
+
+tkb.sym  equ    $84     ; symbol - two bytes: token, symbol
+tks.lequ equ      $01     ; (LET) =
+tks.coln equ      $02     ; :
+tks.hash equ      $03     ; #
+tks.cmma equ      $04     ; ,
+tks.lpar equ      $05     ; (
+tks.rpar equ      $06     ; )
+tks.lbrc equ      $07     ; {
+tks.rbrc equ      $08     ; }
+tks.spce equ      $09     ; space (significant)
+tks.eol  equ      $0a     ; end of line
+tkw.lequ equ      $8401     ; (LET) =
+tkw.coln equ      $8402     ; :
+tkw.hash equ      $8403     ; #
+tkw.cmma equ      $8404     ; ,
+tkw.lpar equ      $8405     ; (
+tkw.rpar equ      $8406     ; )
+tkw.lbrc equ      $8407     ; {
+tkw.rbrc equ      $8408     ; }
+tkw.spce equ      $8409     ; space (significant)
+tkw.eol  equ      $840a     ; end of line
+
+tkb.op   equ    $85     ; operators (diadic) - 2 bytes: token, operator
+tko.plus equ      $01     ; +
+tko.minu equ      $02     ; -
+tko.mulf equ      $03     ; *
+tko.divf equ      $04     ; /
+tko.ge   equ      $05     ; >=
+tko.gt   equ      $06     ; >
+tko.apeq equ      $07     ; ==
+tko.eq   equ      $08     ; =
+tko.ne   equ      $09     ; <>
+tko.le   equ      $0a     ; <=
+tko.lt   equ      $0b     ; <
+tko.bor  equ      $0c     ; ||
+tko.band equ      $0d     ; &&
+tko.bxor equ      $0e     ; ^^
+tko.pwr  equ      $0f     ; ^
+tko.cnct equ      $10     ; &
+tko.or   equ      $11     ; OR
+tko.and  equ      $12     ; AND
+tko.xor  equ      $13     ; XOR
+tko.mod  equ      $14     ; MOD
+tko.div  equ      $15     ; DIV
+tko.inst equ      $16     ; INSTR
+tkw.plus equ      $8501     ; +
+tkw.minu equ      $8502     ; -
+tkw.mulf equ      $8503     ; *
+tkw.divf equ      $8504     ; /
+tkw.ge   equ      $8505     ; >=
+tkw.gt   equ      $8506     ; >
+tkw.apeq equ      $8507     ; ==
+tkw.eq   equ      $8508     ; =
+tkw.ne   equ      $8509     ; <>
+tkw.le   equ      $850a     ; <=
+tkw.lt   equ      $850b     ; <
+tkw.bor  equ      $850c     ; ||
+tkw.band equ      $850d     ; &&
+tkw.bxor equ      $850e     ; ^^
+tkw.pwr  equ      $850f     ; ^
+tkw.cnct equ      $8510     ; &
+tkw.or   equ      $8511     ; OR
+tkw.and  equ      $8512     ; AND
+tkw.xor  equ      $8513     ; XOR
+tkw.mod  equ      $8514     ; MOD
+tkw.div  equ      $8515     ; DIV
+tkw.inst equ      $8516     ; INSTR
+
+tkb.mono equ    $86     ; monadic operators - two bytes: token, operator
+tkm.neg  equ      $01     ; negate
+tkm.pos  equ      $02     ; positive!!
+tkm.bnot equ      $03     ; ~~
+tkm.not  equ      $04     ; NOT
+tkw.neg  equ      $8601     ; negate
+tkw.pos  equ      $8602     ; positive!!
+tkw.bnot equ      $8603     ; ~~
+tkw.not  equ      $8604     ; NOT
+
+tkb.name equ    $88     ; name - four bytes: token, 0, word index to NT
+tkw.name equ      $8800
+
+tkb.strg equ    $8b     ; string - four + n (+1) bytes: token, delim, length, +n
+tks.quot equ      $22     ; delimited by "quotes"
+tks.apst equ      $27     ; delimited by 'apostrophes'
+tkw.quot equ      $8b22     ; delimited by "quotes"
+tkw.apst equ      $8b27     ; delimited by 'apostrophes'
+
+tkb.text equ    $8c     ; string - four + n (+1) bytes: token, zero, length, +n
+tkw.text equ      $8c00
+
+tkb.lno  equ    $8d     ; line number - four bytes: token, zero, line number
+tkw.lno  equ      $8d00
+
+tkb.sep  equ    $8e     ; separator
+tks.scom equ      $01     ; separator comma
+tks.scol equ      $02     ; semicolon
+tks.bsol equ      $03     ; back solidus
+tks.excl equ      $04     ; exclamation mark
+tks.sto  equ      $05     ; separator TO
+tkw.scom equ      $8e01     ; separator comma
+tkw.scol equ      $8e02     ; semicolon
+tkw.bsol equ      $8e03     ; back solidus
+tkw.excl equ      $8e04     ; exclamation mark
+tkw.sto  equ      $8e05     ; separator TO
+
+tkb.flot equ    $d0      ; floating point $d0 up to $ff
+
+        list

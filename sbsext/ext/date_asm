@@ -1,0 +1,107 @@
+; DATE / DATE$ / DAY$ / SDATE / ADATE	  V2.00      1990  Tony Tebby	 QJUMP
+;
+;	DATE (date | y,m,d,h,m,s)
+;	DATE$ (date | y,m,d,h,m,s)
+;	DAY$ (date | y,m,d,h,m,s)
+;	SDATE y,m,d,h,m,s
+;	ADATE s
+;
+	section exten
+
+	xdef	date
+	xdef	date$
+	xdef	day$
+	xdef	sdate
+	xdef	adate
+
+	xref	ut_gxli1		 ; get one long integer
+	xref	ut_gtint		 ; get integers
+	xref	ut_chkri
+	xref	ut_retst
+	xref	ut_rtfd1
+
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_sbasic'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_err'
+
+date
+	bsr.s	get_date
+	jmp	ut_rtfd1
+
+date$
+	move.l	cv.ildat*3+qlv.off+2,a4  ; convert to date
+	bra.s	date_get
+day$
+	move.l	cv.ilday*3+qlv.off+2,a4  ; convert to day of week
+date_get
+	bsr.s	get_date
+	move.l	d1,-(sp)
+	moveq	#30,d1
+	jsr	ut_chkri		 ; get space on stack
+	move.l	(sp)+,d1
+
+	jsr	(a4)			 ; convert it
+	jmp	ut_retst		 ; return string
+
+sdate
+	bsr.s	get_date
+	moveq	#sms.srtc,d0
+	bra.s	date_trap
+
+adate
+	jsr	ut_gxli1		 ; get adjustment
+	bne.s	date_rts
+	move.l	(a6,a1.l),d1
+	moveq	#sms.artc,d0
+
+date_trap
+	trap	#do.sms2
+date_rts
+	rts
+
+
+
+get_date
+	move.l	a5,d0
+	sub.l	a3,d0			 ; any param?
+	beq.s	getd_rrtc
+	subq.w	#8,d0			 ; one param?
+	beq.s	getd_long
+	sub.w	#5*8,d0 		 ; 6 params?
+	beq.s	getd_ints		 ; ... yes
+	addq.w	#8,d0			 ; 5 params
+	bne.s	getd_ipar		 ; ... no
+	move.l	sb_arthp(a6),a1
+	subq.l	#2,a1
+	clr.w	(a6,a1.l)
+	move.l	a1,sb_arthp(a6) 	 ; fake 0 seconds
+
+getd_ints
+	jsr	ut_gtint		 ; get integers
+	bne.s	getd_rt4
+	add.l	a6,a1
+	jsr	cv.datil*3+qlv.off	 ; convert y,m,d, h,m,s to long word
+	sub.l	a6,a1
+	bra.s	getd_arthp
+
+getd_long
+	jsr	ut_gxli1		 ; one long int
+	bne.s	getd_rt4
+	move.l	(a6,a1.l),d1
+	addq.l	#4,a1			 ; pop it
+getd_arthp
+	move.l	a1,sb_arthp(a6)
+	rts
+
+getd_rrtc
+	moveq	#sms.rrtc,d0		 ; read date from real time clock
+	trap	#do.sms2
+	rts
+
+getd_ipar
+	moveq	#err.ipar,d0
+getd_rt4
+	addq.l	#4,sp
+	rts
+	end

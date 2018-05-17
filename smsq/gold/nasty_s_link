@@ -1,0 +1,5 @@
+program dev8_smsq_gold_nasty_s
+
+input   dev8_smsq_gold_nasty_rel
+library dev8_smsq_gold_rtc_s_rel
+library dev8_smsq_smsq_end_rel

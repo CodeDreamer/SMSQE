@@ -1,0 +1,323 @@
+; Draw PAN and SCROLL bars   V1.00   1989  Tony Tebby  QJUMP
+
+        section wman
+
+        xdef    wm_drbar
+        xdef    wm_upbar
+
+        xref    wm_trap3
+
+        include 'dev8_keys_wwork'
+        include 'dev8_keys_wstatus'
+        include 'dev8_keys_qdos_io'
+
+;+++
+; Update pan/scroll bars
+;
+;       d0 cr   msw/lsw x/y section to update (-1 none)
+;       a0 c  p channel ID of window
+;       a3 c  p pointer to sub-window definition
+;       a4 c  p pointer to working definition
+;
+;               all other registers preserved
+;---
+wm_upbar
+reglist reg d1-d7/a1-a4
+frame   equ 8
+        movem.l reglist,-(sp)
+        subq.l  #frame,sp
+        move.l  sp,a1
+        move.l  d0,d6                    ; keep section info
+        swap    d6
+        tst.w   d6                       ; do any section?
+        blt.s   wub_doy                  ; ... no
+        move.l  wwa_part(a3),d0          ; any x control?
+        beq.s   wub_doy                  ; ... no
+        move.l  d0,a2
+        tst.w   (a2)                     ; any sections?
+        beq.s   wub_doy
+
+        moveq   #0,d7                    ; item border
+        moveq   #0,d5
+
+        move.l  wwa_psbc(a3),d4          ; colours
+        beq.s   wub_doy                  ; ... none
+        swap    d4
+
+        move.w  wwa_xsiz(a3),d0          ; pan bar window size
+        move.w  wwa_xorg(a3),d2
+        moveq   #ww.pnbar,d1
+        move.w  wwa_yorg(a3),d3
+        add.w   wwa_ysiz(a3),d3
+        add.w   wwa_watt+wwa_borw(a3),d3
+        bsr.l   wdb_wdef
+        bne.l   wdb_ok                   ; always set OK exit
+
+        move.w  d6,d3
+        move.w  (a2)+,d6
+        sub.w   d3,d6                    ; number of sections after our section
+        mulu    #wss.ssln,d3
+        add.l   d3,a2                    ; our section control
+        sne     d3
+        ext.w   d3
+        neg.w   d3
+
+        move.w  #ww.pnbar,2(a1)          ; y block size
+        clr.w   6(a1)                    ; y block position
+        move.w  wwa_ncol(a3),d5          ; number of columns
+        bsr.l   wdb_oner
+
+wub_doy
+        moveq   #0,d7
+        moveq   #0,d5
+        swap    d6
+        tst.w   d6                       ; y section to be drawn
+        blt.l   wdb_ok                   ; ... no
+        move.l  wwa_part+wwa.clen(a3),d0 ; any y control?
+        beq.l   wdb_ok                   ; ... no
+        move.l  d0,a2
+        tst.w   (a2)
+        beq.l   wdb_ok                   ; ... no sections
+
+        move.l  wwa_psbc+wwa.clen(a3),d4 ; colours
+        beq.l   wdb_ok                   ; ... none
+        swap    d4
+
+        move.w  wwa_ysiz(a3),d1          ; pan bar window size
+        move.w  wwa_yorg(a3),d3
+        moveq   #ww.scbar,d0
+        move.w  wwa_watt+wwa_borw(a3),d2
+        add.w   d2,d2
+        add.w   wwa_xorg(a3),d2
+        add.w   wwa_xsiz(a3),d2
+        bsr.l   wdb_wdef
+        bne.l   wdb_ok                   ; always set OK exit
+
+        move.w  d6,d3
+        move.w  (a2)+,d6
+        sub.w   d3,d6                    ; number of sections after our section
+        mulu    #wss.ssln,d3
+        add.l   d3,a2                    ; our section control
+        sne     d3
+        ext.w   d3
+        neg.w   d3
+
+        move.w  #ww.scbar,(a1)           ; x block size
+        clr.w   4(a1)                    ; x block position
+        move.w  wwa_nrow(a3),d5          ; number of rows
+        moveq   #2,d7                    ; ... offset to y position
+        bsr.l   wdb_oner
+        bra.l   wdb_ok
+
+;+++
+; Draw pan/scroll bars
+;
+;       d0  r   error return
+;       a0 c  p channel ID of window
+;       a3 c  p pointer to sub-window definition
+;       a4 c  p pointer to working definition
+;
+;               all other registers preserved
+;---
+wm_drbar
+        move.l  wwa_part+wwa.clen(a3),d0 ; get y part control pointer
+        or.l    wwa_part(a3),d0          ; get x part control pointer
+        bne.s   wdb_do                   ; ... controlled
+        rts
+
+wdb_do
+        movem.l reglist,-(sp)
+        subq.l  #frame,sp
+        move.l  sp,a1
+        move.l  wwa_part(a3),d0          ; any x control?
+        beq.s   wdb_doy                  ; ... no
+        move.l  d0,a2
+
+        move.w  wwa_watt+wwa_borw(a3),d7 ; item border
+        move.w  d7,d5
+        add.w   d5,d5                    ; doubled
+
+        move.l  wwa_psbc(a3),d4          ; colours
+        beq.s   wdb_doy                  ; ... none
+        swap    d4
+
+        move.w  wwa_xsiz(a3),d0          ; pan bar window size
+        move.w  wwa_xorg(a3),d2
+        moveq   #ww.pnbar,d1
+        move.w  wwa_yorg(a3),d3
+        add.w   wwa_ysiz(a3),d3
+        add.w   d7,d3
+        bsr.l   wdb_wdef
+        bne.s   wdb_ok                   ; always set OK exit
+        move.w  (a2)+,d6                 ; how many sections?
+        ble.s   wdb_clrx                 ; ... none
+
+        move.w  #ww.pnbar,2(a1)          ; y block size
+        clr.w   6(a1)                    ; y block position
+        move.w  wwa_ncol(a3),d5          ; number of columns
+        moveq   #0,d7                    ; ... no offset to x position
+        bsr.s   wdb_range
+        bra.s   wdb_doy
+
+wdb_clrx
+        moveq   #iow.clra,d0             ; clear all
+        bsr.l   wdb_trap3
+
+wdb_doy
+        move.l  wwa_part+wwa.clen(a3),d0 ; any y control?
+        beq.s   wdb_ok                   ; ... no
+        move.l  d0,a2
+
+        move.w  wwa_watt+wwa_borw(a3),d7 ; item border
+        move.w  d7,d5
+        add.w   d5,d5                    ; doubled
+
+        move.l  wwa_psbc+wwa.clen(a3),d4 ; colours
+        beq.s   wdb_ok                   ; ... none
+        swap    d4
+
+        move.w  wwa_ysiz(a3),d1          ; pan bar window size
+        move.w  wwa_yorg(a3),d3
+        moveq   #ww.scbar,d0
+        move.w  wwa_xorg(a3),d2
+        add.w   wwa_xsiz(a3),d2
+        add.w   d5,d2
+        bsr.l   wdb_wdef
+        bne.s   wdb_ok                   ; always set OK exit
+        move.w  (a2)+,d6                 ; how many sections?
+        ble.s   wdb_clry                 ; ... none
+
+        move.w  #ww.scbar,(a1)           ; x block size
+        clr.w   4(a1)                    ; x block position
+        move.w  wwa_nrow(a3),d5          ; number of rows
+        moveq   #2,d7                    ; ... offset to y position
+        bsr.s   wdb_range
+        bra.s   wdb_ok
+
+wdb_clry
+        moveq   #iow.clra,d0             ; no sections, clear area
+        bsr.l   wdb_trap3
+
+wdb_ok
+        moveq   #0,d0
+        addq.l  #frame,sp
+        movem.l (sp)+,reglist
+wdb_rts
+        rts
+
+
+wdb_range
+        moveq   #0,d3
+wdb_rloop
+        bsr.s   wdb_oner
+        moveq   #1,d3                    ; offset for extra sections
+        tst.w   d6
+        ble.s   wdb_rts
+
+        move.w  d4,4(a1,d7.w)            ; position of separator
+        move.w  #2,(a1,d7.w)             ; ... and size
+        move.w  wwa_watt+wwa_borc(a3),d1
+        bsr.l   wdb_blok                 ; and draw block
+        bra.s   wdb_rloop
+
+wdb_oner
+        add.w   (a2)+,d3                 ; start pixel position
+        move.w  (a2)+,d1                 ; start item number
+        move.w  (a2)+,d2                 ; number of items visible in section
+        move.w  wwa_xsiz(a3,d7.w),d4     ; end pixel position?
+        subq.w  #1,d6                    ; last section?
+        beq.s   wdb_srng                 ; ... yes
+        move.w  (a2),d4                  ; ... no, end position
+        subq.w  #1,d4
+wdb_srng
+        move.w  d4,d0                    ; pixel range
+        sub.w   d3,d0
+        sub.w   d2,d5                    ; item range not occupied by visible
+        cmp.w   d1,d5                    ; less than start?
+        bge.s   wdb_vrng                 ; ... no
+        move.w  d1,d5                    ; ... yes, reset it
+wdb_vrng
+        move.w  d4,-(sp)
+        move.w  d5,d4
+        add.w   d2,d4                    ; back to total range again
+
+        mulu    d0,d2                    ; find length of block
+        beq.s   wdb_incb                 ; ... none, increase the block length
+        subq.w  #1,d2
+        divu    d4,d2                    ; rounded up
+wdb_incb
+        addq.w  #1,d2
+        move.w  (sp)+,d4
+        sub.w   d2,d0                    ; pixel range not occupied by visible
+
+        mulu    d0,d1                    ; find start of range
+        beq.s   wbd_offb
+        divu    d5,d1                    ; rounded down
+wbd_offb
+        add.w   d3,d1
+        move.w  d1,4(a1,d7.w)            ; set start of block
+        move.w  d2,(a1,d7.w)             ; and width
+
+        movem.l d1/d2,-(sp)
+        move.l  d4,d1
+        swap    d1
+        bsr.s   wdb_blok                  ; draw block outline
+        move.w  wwa_watt+wwa_papr(a3),d1
+        move.l  #$00020001,d2             ; and set up inner fill
+        add.l   d2,4(a1)
+        add.l   d2,d2
+        sub.l   d2,(a1)
+        tst.w   (a1)                      ; any inner?
+        ble.s   wbd_rstb                  ; ... no
+        tst.w   2(a1)
+        ble.s   wbd_rstb                  ; ... no
+        bsr.s   wdb_blok
+wbd_rstb
+        add.l   d2,(a1)
+        lsr.l   #1,d2
+        sub.l   d2,4(a1)
+        movem.l (sp)+,d1/d2
+
+        add.w   d1,d2                    ; end of block
+
+        move.w  d3,4(a1,d7.w)            ; start of blank
+        sub.w   d3,d1                    ; length of blank
+        move.w  d1,(a1,d7.w)
+
+        bsr.s   wdb_bbak
+
+        move.w  d2,4(a1,d7.w)            ; start of other blank
+        neg.w   d2
+        add.w   d4,d2
+        move.w  d2,(a1,d7.w)             ; length of blank
+
+wdb_bbak
+        move.w  wwa_watt+wwa_papr(a3),d1 ; paper colour
+
+wdb_blok
+        moveq   #iow.blok,d0
+        bra.s   wdb_trap3
+
+wdb_wdef
+        add.w   d5,d0
+        add.w   d5,d0                    ; real x size
+        add.w   d5,d1                    ;      y size
+        sub.w   d5,d2                    ;      x origin
+        add.w   ww_xorg(a4),d2           ;      ... abs
+        sub.w   d7,d3                    ;      y origin
+        add.w   ww_yorg(a4),d3           ;      ... abs
+
+        movem.w d0-d3,(a1)               ; window def
+        move.w  wwa_watt+wwa_borc(a3),d1
+        move.w  d7,d2
+        moveq   #iow.defw,d0
+
+wdb_trap3
+        movem.l d3/a1,-(sp)
+        moveq   #forever,d3
+        trap    #do.io
+        movem.l (sp)+,d3/a1
+        tst.l   d0
+        rts
+
+        end

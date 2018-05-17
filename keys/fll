@@ -1,0 +1,35 @@
+; Keys for General Utilities File List
+        nolist
+
+fll_dtyp equ    $00     ; word  driver type 0=mdv, 1=other, 2=version 2
+fll_ftyp equ    $02     ; word  file type 0 as fll_type, 1=SuperBASIC, 2=QSAVE
+fll_flen equ    $04     ; long  file length
+fll_accs equ    $08     ; byte  access byte
+fll_type equ    $09     ; byte  file type
+fll_data equ    $0a     ; long  executable data space
+fll_date equ    $12     ; long  update date
+fll_vers equ    $16     ; word  version
+fll_uday equ    $18     ; word  update day
+fll_bkup equ    $1a     ; long  backup date
+fll_fnln equ    $1e     ; word  file name (saved) length
+fll_name equ    $20     ; string  complete file name
+fll_fnam equ    $24     ; string  file name when first created
+fll_flch equ    $24     ; char  file flag
+fll_nmch equ    $26     ; chars file name
+fll.extr equ      30    ; extra length of name (before and after)
+fll.elen equ    $80
+
+; Make file list control block
+
+gmf_chan equ    $00               ; long   directory channel ID
+gmf_chek equ    $04               ; long   checking routine
+gmf_dlst equ    $08               ; long   directory list pointer (-ve if V2)
+gmf_dtyp equ    $0c               ; word   directory type
+gmf_dtpt equ    $0e               ; word   directory tree pointer (-ve no tree)
+gmf_dnam equ    $10               ; string directory name
+gmf_dtls equ    $50               ; longs  directory tree list of IDs
+gmf_dvnl equ    $a0               ; word   directory device name length
+gmf_dvnm equ    $a2               ; string device / sub-directory name
+gmf_end  equ    $f0               ; enough room
+
+        list

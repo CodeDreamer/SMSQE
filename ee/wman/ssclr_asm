@@ -1,0 +1,41 @@
+* Set Single Colour Patterns   V0.00    1986  Tony Tebby   QJUMP
+*
+        section wman
+*
+        xdef    wm_ssclr
+*
+        include dev8_keys_wstatus
+*
+*       d1 c s  (word) colour number 0 to 7
+*       a1 c  p pointer to window status area
+*       a2 c  p pointer to pattern ($20 bytes long) 
+*
+wm_ssclr
+        move.w  ws_wmode(a1),(a2)+      set mode of pattern
+        clr.w   (a2)+                   no adaption required
+        move.l  #$00100001,(a2)+        16x1
+        clr.l   (a2)+                   origin zero
+        moveq   #$c,d0
+        move.l  d0,(a2)+                set relative pointer to pattern
+        move.l  d0,(a2)+                ... and mask
+        clr.l   (a2)+
+*
+        and.w   #$07,d1                 0 to 7 only
+        add.w   d1,d1                   all patterns are a word
+        tst.b   ws_wmode+1(a1)          4 colour mode?
+        beq.s   wmp_pset                ... yes
+        add.w   #wmp_8c-wmp_4c,d1
+wmp_pset
+        move.w  wmp_4c(pc,d1.w),d0      get pattern
+        move.w  d0,(a2)+                set one word
+        move.w  d0,(a2)+                and next
+        moveq   #-1,d0
+        move.l  d0,(a2)+                set mask
+*
+        sub.w   #$20,a2
+        moveq   #0,d0                   done
+        rts
+*
+wmp_4c  dc.w    $0000,$0000,$00ff,$00ff,$ff00,$ff00,$ffff,$ffff
+wmp_8c  dc.w    $0000,$0055,$00aa,$00ff,$aa00,$aa55,$aaaa,$aaff
+        end

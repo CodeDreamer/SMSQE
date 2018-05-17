@@ -1,0 +1,117 @@
+; Compiler Keys
+        nolist
+
+init_token macro
+tokn    setnum  0
+        endm
+
+btoken  macro   width
+tokn    setnum  [tokn]+1
+[.lab]  equ     [tokn]<<8+[width]-2
+        endm
+
+ctoken  macro
+tokn    setnum  [tokn]+2
+[.lab]  equ     [tokn]
+        endm
+
+        init_token
+
+; Statement type tokens
+
+tkc.mist ctoken 2   ; MISTake
+tkc.dfpr ctoken 4   ; DEF PROC + name index
+tkc.dffn ctoken 4   ; DEF FUNCTION + name index
+tkc.lcal ctoken 4   ; LOCAL + name index            repeatable
+tkc.dim  ctoken 4   ; DIMENSION + name index        repeatable
+tkc.ret  ctoken 2   ; RETURN
+tkc.endd ctoken 4   ; END DEFINE + name index
+tkc.if   ctoken 2   ; IF
+tkc.else ctoken 2   ; ELSE
+tkc.endi ctoken 2   ; ENDIF
+tkc.for  ctoken 4   ; FOR + name index
+tkc.rep  ctoken 4   ; REPEAT + name index
+tkc.repu ctoken 2   ; REPEAT (unnamed)
+tkc.uoff equ    tkc.repu-tkc.rep    ; offset of unnamed tokens from normal
+tkc.next ctoken 4   ; NEXT + name index
+tkc.nxtu ctoken 2   ; NEXT (unnamed)
+tkc.exit ctoken 4   ; EXIT + name index
+tkc.xitu ctoken 2   ; EXIT (unnamed)
+tkc.endf ctoken 4   ; END FOR + name index
+tkc.ndfu ctoken 2   ; END FOR
+tkc.endr ctoken 4   ; END REPEAT + name index
+tkc.ndru ctoken 2   ; END REPEAT (unnamed)
+tkc.sel  ctoken 2   ; SELECT
+tkc.onsl ctoken 4   ; ON + name index
+tkc.onsu ctoken 2   ; ON (unnamed)
+tkc.ends ctoken 2   ; END SELECT
+tkc.when ctoken 2   ; WHEN
+tkc.endw ctoken 2   ; END WHEN
+tkc.goto ctoken 2   ; GO TO
+tkc.gosb ctoken 2   ; GO SUB
+tkc.ongo ctoken 2   ; ON ... GO TO
+tkc.ongs ctoken 2   ; ON ... GO SUB
+tkc.data ctoken 2   ; DATA
+tkc.rest ctoken 2   ; RESTORE
+tkc.letv ctoken 4   ; (LET) variable + name index
+tkc.leta ctoken 4   ; (LET) array element + name index
+tkc.call ctoken 4   ; (call) procedure + name index
+tkc.ambs ctoken 4   ; ambiguous statement tkc.leta or tkc.call
+
+tkc.lbrc ctoken 2   ; {
+tkc.rbrc ctoken 2   ; }
+tkc.hash ctoken 2   ; #
+tkc.cmma ctoken 2   ; ,
+tkc.scol ctoken 2   ; ;
+tkc.bsol ctoken 2   ; \
+tkc.excl ctoken 2   ; !
+tkc.to   ctoken 2   ; TO
+tkc.sepf equ tkc.cmma
+tkc.sepl equ tkc.to
+
+tkc.step ctoken 2   ; STEP
+
+tkc.rmdr ctoken 2   ; REMAINDER
+
+tkc.lpar ctoken 2   ; (
+tkc.rpar ctoken 2   ; )
+
+tkc.rfna ctoken 4   ; (reference) function or array + name index
+tkc.refn ctoken 4   ; (reference) name + name index
+
+tkc.int  ctoken 4   ; int (NOT value)
+tkc.fp6  ctoken 8   ; floating point constant + 6 byte fp
+tkc.str  ctoken 6   ; string constant + pointer to string
+tkc.conf equ tkc.int
+tkc.conl equ tkc.str
+
+tkc.neg  ctoken 2   ; - monadic
+tkc.bnot ctoken 2   ; ~~
+tkc.not  ctoken 2   ; NOT
+tkf.monf equ tkc.neg
+tkf.monl equ tkc.not
+
+tkc.plus ctoken 2   ; +
+tkc.minu ctoken 2   ; -
+tkc.mulf ctoken 2   ; *
+tkc.divf ctoken 2   ; /
+tkc.ge   ctoken 2   ; >=
+tkc.gt   ctoken 2   ; >
+tkc.apeq ctoken 2   ; ==
+tkc.eq   ctoken 2   ; =
+tkc.ne   ctoken 2   ; <>
+tkc.le   ctoken 2   ; <=
+tkc.lt   ctoken 2   ; <
+tkc.bor  ctoken 2   ; ||
+tkc.band ctoken 2   ; &&
+tkc.bxor ctoken 2   ; ^^
+tkc.pwr  ctoken 2   ; ^
+tkc.cnct ctoken 2   ; &
+tkc.or   ctoken 2   ; OR
+tkc.and  ctoken 2   ; AND
+tkc.xor  ctoken 2   ; XOR
+tkc.mod  ctoken 2   ; MOD
+tkc.div  ctoken 2   ; DIV
+tkc.inst ctoken 2   ; INSTR
+tkc.opf  equ tkc.plus
+        list

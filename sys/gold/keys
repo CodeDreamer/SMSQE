@@ -1,0 +1,107 @@
+; Keys for Gold card odd facilities
+        nolist
+
+ql_clock equ $18000     QL clock address
+
+glk_bas0 equ $1c000     assumed base reg
+
+glo_rtcc equ $00        rtc control register
+glk.rtcs equ %01010000  rtc Stop
+glk.rtcg equ %00010000  rtc GO
+glo_ten  equ $04        rtc 1/10s of seconds
+glo_s01  equ $08        rtc seconds units
+glo_s10  equ $0c        rtc seconds tens
+glo_d01  equ $20        rtc days units
+glo_y10  equ $34        rtc years tens
+glo_dow  equ $38        rtc day of week
+glo_rtcs equ $3c        rtc clock setting register
+glk..24h equ   4          rtc 24 hours mode
+glk..pm  equ   5          rtc pm
+glk.lpsf equ   6          leap year shift
+
+glk.rtca equ   4        rtc address spacing
+
+glo_rena equ $60        RAM enable
+glo_rdis equ $64        RAM disable
+
+sgo_x068 equ $68        SGC (ref at c03c in ROM)
+
+glo_poll equ $e0        Frame interrupt bit (bit 7)
+
+sgo_slug equ $00
+sgo_prtc equ $04
+sgo_x06 equ $06     (ref at 8320)
+sgo_x08 equ $08     (ref at 0076 in ROM)
+sgo_x0b equ $0b     (ref at 010e in ROM)
+sgo_cache equ $0c
+
+sgo_x200 equ $200     (ref at c03c in ROM)
+sgo_x3ff4 equ $3ff4   (ref at c0a2 in ROM)
+sgo.x3ff4 equ $1a1a1a1a
+
+glk_gold equ $40000     base of GOLD section of ROM
+glx_gold equ $10000     new base of gold section of ROM
+glk.gold equ  $8000     size of GOLD section of ROM
+glk_ptch equ $48000     base of patch section of ROM
+;glx_ptch equ $1c100     new base of patch section of ROM
+sgx_work equ $1c100     work area
+sgx_ptch equ $1c200     .... SGC
+;glk.ptch equ  $3f00     size of patch section of ROM
+sgk.ptch equ  $3e00     .... SGC
+glk_boot equ $4c000     base of boot section of ROM
+glk_strt equ glk_boot+$a start address in boot section
+glx_boot equ $50000     new base of boot section of ROM
+glk.boot equ  $4000     size of boot section of ROM
+
+sgk_qlrom equ $400000    base of QLROM in SGC
+
+; patch number
+
+glk.base equ    $00     base address
+glk.time equ    $04     speed constant (2=16 Mhz)
+glk.proc equ    $06     prcessor type (sgc)
+
+glk.mdvt equ    $08     MDV timing table
+glk.mdrd equ    $0a     MDV read sector
+glk.mdwr equ    $0c     MDV write sector
+glk.mdvr equ    $0e     MDV verify sector
+glk.mdsh equ    $10     MDV read sector header
+glk.mdf  equ    $12     MDV format
+glk.mdsl equ    $14     MDV select
+glk.mdds equ    $16     MDV deselect
+
+glk.extr equ    $1a     Extension ROM entry point
+glk.chan equ    $1c     SuperBASIC channel open
+glk.graf equ    $1e     MG Graphics patch
+sgk.xx20 equ    $20   (ref 0036 in ROM)
+glk.I2Ce equ    $24     I2C entry
+glk.I2C  equ    $26     I2C raw code
+glk.sdly equ    $28     Serial transmit delay
+
+sgk.xx30 equ    $30   (ref 0020 in ROM)
+
+glk_trp11 equ   $34     trap one intercept
+
+glk.I22ce equ   $52     more I2C
+glk.I22c  equ   $54     more I2C
+glk_xx56  equ   $56     patch
+
+glk_trp12 equ   $5c     another trap #1 intercept
+
+glk_ptop  equ   $98     top most patch
+
+glp.end  equ    $00     end of patch list
+glp.word equ    $02     patch word in ROM
+glp.trap equ    $04     trap intercept
+glp.vect equ    $06     insert vector (JMP xxxx.l) to new code
+glp.moff equ      $4000   Microdrive vector offset
+glp.ptch equ    $08     insert patch (JSR xxxx.l)
+glp.time equ    $0a     patch timing constants
+
+glp_type equ    $00     type of patch
+glp_addr equ    $02     addr in ROM to patch or jump or ...
+glp_calc equ    $02     ... NOT offset of address calc
+glp_oldw equ    $04     old word at address or ...
+glp_calp equ    $04     ... address calculation parameter
+glp_ptch equ    $06     patch data or patch number
+        list

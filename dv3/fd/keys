@@ -1,0 +1,84 @@
+; DV3 Standard Floppy Linkage and Drive Definition Blocks
+        nolist
+
+.        equ  ddl_drive
+fdl_sadd equ  .+$04     ; long     sector address required
+fdl_trak equ  .+$05     ; byte     track required
+fdl_side equ  .+$06     ; byte     side required
+fdl_sect equ  .+$07     ; byte     sector required
+fdl_selc equ  .+$08     ; byte     drive selected (0=none)
+fdl_stpb equ  .+$09     ; byte     bit clear for drive stopped since last check
+fdl_eras equ  .+$0a     ; bit 7    set on write (erase on) cleared on seek/rid
+
+fdl_fmtb equ  .+$0c     ; long     pointer to format buffer
+fdl_maxd equ  .+$10     ; byte     maximum drive number
+fdl.maxd equ      2
+fdl_offd equ  .+$11     ; byte     offset to drive
+fdl_maxt equ  .+$12     ; word     maximum track number
+fdl.maxt equ      80
+fdl_defd equ  .+$14     ; byte     default density 1=standard, 2=high 3=extended
+fdl_sec  equ  .+$15     ; byte     security - set if flush immediate
+
+fdl_drvs equ  .+$16     ; byte     drive start / stop status
+                        ;          - when all stopped
+                        ;          0 when runup
+                        ;          + when running up (counter)
+fdl_actm equ  .+$17     ; byte     action timer
+                        ;          - when disk is in use
+                        ;          0 when no action pending
+                        ;          + when counting
+fdl.hold equ      -1      ; hold polling task
+fdl.flsh equ       1      ; one tick before flush
+fdl.acts equ       1      ; action timer decrement before stop
+fdl.actf equ       4      ; action timer decrement before flush
+fdl_rnup equ  .+$18     ; byte     runup constant
+fdl.rnup equ    $0020            ; runup (wait before write)
+fdl_apnd equ  .+$19     ; byte     action pending constant
+fdl.apmc equ     100      ; action pending (with motor control)
+fdl.apam equ     127      ; action timer (with auto motor on)
+
+fdl_freq equ  .+$1a     ; byte     set if flush required
+fdl_ridd equ  .+$1b     ; byte     set if read ID should try all densities
+
+fdl_mxdns equ .+$1c     ; byte     maximum density (for auto detection)
+fdl_step equ  .+$20     ; 4 bytes  step rate
+fdl_tstep equ .+$24     ; 4 bytes  temporary step rate
+fdl_sltab equ .+$28     ; 4 bytes  drive selection table
+fdl_1sec equ  .+$2c     ; long     1 second timeout constant for polling
+fdl_cmdb equ  .+$30     ; 9 bytes  command buffer (765 controllers)
+fdl_resb equ  .+$39     ; 7 bytes  result buffer  (765 controllers)
+fdl_stt0 equ  .+$39     ; byte     status byte 0
+fdl_stt1 equ  .+$3a     ; byte     status byte 1
+fdl_stt2 equ  .+$3b     ; byte     status byte 2
+fdl_strk equ  .+$3c     ; byte     status track number
+fdl_ssid equ  .+$3d     ; byte     status side
+fdl_ssct equ  .+$3e     ; byte     status sector
+fdl_sslf equ  .+$3f     ; byte     status sector length flag
+
+fdl_buff equ  .+$40
+fdl_end2 equ  .+$240    ; (512 max sector length)
+fdl_end4 equ  .+$840    ; (2k max sector length)
+
+
+; Physical definition
+
+..       equ     ddf_drive
+
+fdf_ctrk  equ ..+$00    ; byte  current track (set by seek and read ID)
+fdf_slen  equ ..+$01    ; byte  sector length (set by read ID)
+fdf_dirct equ ..+$02    ; byte  msb set if last open was direct access
+fdf_serr  equ ..+$03    ; byte  seek error count down (starts at $ff)
+fdf.srec  equ    64       ; subtracted from fdf_serr every failed seek
+                          ; 1 is added each seek (limited to $ff)
+fdf_fslen equ ..+$04    ; byte  format sector length
+fdf_fstrk equ ..+$05    ; byte  format sectors per track
+fdf_fgap  equ ..+$06    ; byte  format gap between sectors
+
+; conventional status retuns
+
+fdcs.orun   equ   1              ; overrun
+fdcs.derr   equ   2              ; bad sector (data error, no data)
+fdcs.seke   equ   3              ; seek error (wrong cylinder)
+fdcs.nadd   equ   4              ; no address mark
+
+        list

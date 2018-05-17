@@ -1,0 +1,244 @@
+* Keys for Network
+        nolist
+*
+myself  equ     -1
+* 
+err.nc  equ     -1
+err.or  equ     -4
+err.bo  equ     -5
+err.nf  equ     -7
+err.ex  equ     -8
+err.iu  equ     -9
+err.ef  equ     -10
+err.df  equ     -11
+err.bn  equ     -12
+err.ff  equ     -14
+err.bp  equ     -15
+err.fe  equ     -16
+err.ni  equ     -19
+err.ro  equ     -20
+*
+mt.inf   equ    $00
+mt.susjb equ    $08
+mt.ipcom equ    $11
+mt.alchp equ    $18
+mt.rechp equ    $19
+mt.lxint equ    $1a
+mt.lschd equ    $1e
+mt.lpoll equ    $1c
+mt.liod  equ    $20
+mt.ldd   equ    $22
+*
+sv_free  equ    $0c
+sv_basic equ    $10
+sv_pcint equ    $35
+sv_netnr equ    $37
+sv_iolst equ    $44
+sv_ddlst equ    $48
+sv_btpnt equ    $54
+sv_btbas equ    $58
+sv_bttop equ    $5c
+sv_tmode equ    $a0
+sv_timo  equ    $a6
+sv_mdrun equ    $ee
+sv_fsdef equ    $100
+sv_fslst equ    $140
+*
+pc_tctrl equ    $18002
+pc_netrd equ    $18020
+pc_intr  equ    $18021
+pc.intrf equ      $08
+*
+pc.mdvmd equ    %00010000
+pc.netmd equ    %00011000
+pc.notmd equ    %11100111
+*
+pc..diro equ    7
+pc..diri equ    0
+*
+ch_owner equ    $08
+*
+io.open  equ    $01
+io.close equ    $02
+io.delet equ    $04
+*
+io.old   equ    $00
+io.share equ    $01
+io.new   equ    $02
+io.overw equ    $03
+io.dir   equ    $04
+*
+io.pend  equ    $00
+io.fbyte equ    $01
+io.fline equ    $02
+io.fstrg equ    $03
+io.edlin equ    $04
+io.sbyte equ    $05
+io.sstrg equ    $07
+*
+sd.extop equ    $09
+sd.pxenq equ    $0a
+sd.chenq equ    $0b
+sd.wdef  equ    $0d
+sd.cure  equ    $0e
+sd.recol equ    $26
+sd.fill  equ    $2e
+sd.point equ    $30
+sd.gcur  equ    $36
+*
+fs.check equ    $40
+fs.flush equ    $41
+fs.posab equ    $42
+fs.posre equ    $43
+fs.mdinf equ    $45
+fs.heads equ    $46
+fs.headr equ    $47
+fs.load  equ    $48
+fs.save  equ    $49
+fs.renam equ    $4a
+fs.trunc equ    $4b
+*
+fs_next  equ    $18
+fs_acces equ    $1c
+fs_drive equ    $1d
+fs_filnr equ    $1e
+fs_nblok equ    $20
+fs_nbyte equ    $22
+fs_eblok equ    $24
+fs_ebyte equ    $26
+fs_cblok equ    $28
+fs_updt  equ    $2c
+*
+fs_fname equ    $32
+fs_spare equ    $58
+nf_chblk equ    $58     pointer to true channel block for remote file
+fs_end   equ    $a0
+*
+fs.nmlen equ    $24
+fs.hdlen equ    $40
+*
+bv_bfbas equ    $00
+*
+mm.alchp equ    $c0
+mm.rechp equ    $c2
+ut.mtext equ    $d0
+ut.unlnk equ    $d4
+io.qtest equ    $de
+io.qout  equ    $e2
+io.serq  equ    $e8
+io.serio equ    $ea
+cn.dtoi  equ    $102
+bp.init  equ    $110
+ca.gtstr equ    $116
+io.name  equ    $122
+*
+* Network physical layer - linkage
+*
+ndd_ddlk equ    $18     link for directory devices
+ndd_iolk equ    $1c     link to io routine
+ndd_oplk equ    $20     link to open routine
+ndd_cllk equ    $24     link to close routine
+ndd_ends equ    $28     end of nsv linkage block
+ndd.lens equ    ndd_ends-ndd_ddlk
+*
+* Linkage block for io driver
+*
+ndd_test equ    $28     link to test input
+ndd_fbyt equ    $2c     link to fetch byte
+ndd_sbyt equ    $30     link to send byte
+ndd_rts  equ    $34     RTS
+ndd_endi equ    $36     end of IOD linkage block
+ndd.leni equ    ndd_endi-ndd_ddlk
+*
+* Linkage block for directory driver
+*
+ndd_frmt equ    $34     entry for format (in use)
+ndd_pdln equ    $38     length of physical definition
+ndd_name equ    $3c     name (standard string 1 character)
+ndd_fser equ    $40     directory serial IO addresses
+*        to     $4e
+* timing constants
+ndt_ctab equ    $50
+ndt_wgap equ    $50     wait for gap constant                200us
+ndt_lsct equ    $52     look for scout                     20000us
+ndt_bace equ    $52     look for broadcast acknowledge end 20000us
+ndt_csct equ    $54     check scout                        30;40us
+ndt_esct equ    $56     end of scout                     475;485us
+ndt_wsct equ    $58     wait to send scout                  3000us
+ndt_tsct equ    $5a     timer for scout active / inactive   4;59(2)
+ndt_bsct equ    $5c     broadcast scout detect               500us
+ndt_back equ    $5c     broadcast acknowledge detect         500us
+ndt_xsct equ    $5e     extension to scout                  5000us
+ndt_xack equ    $5e     (extension to) acknowledge          5000us
+ndt_bnak equ    $60     broadcast NACK delay                 200us
+ndt_stmo equ    $62     serial port timout                 20000us
+ndt_paus equ    $64     pause before send                120;140us
+ndt_send equ    $66     send loop timer                     2;33(0)
+ndt_rtmo equ    $68     receive timout                      2500us
+ndt_rbto equ    $6a     receive bit timout                    80us
+ndt_rdly equ    $6c     receive delay start bit to bit 0    6;63(0)
+ndt_rbit equ    $6e     receive bit loop timer              5;32(0)
+ndt_ctop equ    $70
+
+ndd_endf equ    $70     end of net file linkage block
+ndd.lenf equ    ndd_endf-ndd_ddlk
+*
+ndd_unam equ    $3c+ndd.lenf
+ndd.nuln equ      $20                length of net use table entry
+ndd.nusf equ      5                  shift to index table
+ndd_nunr equ    $42+ndd.lenf         net node number per device (*8)
+ndd_nudr equ    $44+ndd.lenf         use directory name per device (*8)
+ndd_endu equ    $142
+ndd.lenu equ    ndd_endu-ndd_ddlk
+*
+* Network physical layer definitions
+*
+fs_drivr equ    $10     pointer to driver linkage
+fs_drivn equ    $14     drive number
+*
+fs_mname equ    $16     word+10 bytes medium name!!
+fs_files equ    $22     number of files open
+nf_plend equ    $24     end of physical layer linkage for remote file
+*
+* Network channel definitions
+*
+nd_rpnt  equ    $18     network running pointer
+nd_epnt  equ    $1c     network end pointer
+nf_bfbot equ    $20     bottom position in buffer
+nf_bffil equ    $24     filled position in buffer
+nf_bftop equ    $28     top position in buffer
+nf_bfpnt equ    $2c     running position pointer
+nf_eofpt equ    $30     end of file pointer
+nf_valid equ    $34  b  buffer is valid (-1 updated, 0 invalid, +1 valid)
+nf_acces equ    $35  b  0 is read only
+nf_sonly equ    $36  b  <>0 is serial only
+nf_eoff  equ    $37  b  <>0 is eof set
+nf_chid  equ    $38     remote channel ID
+nf_nnum  equ    $3c  w  N number
+*
+nd_hedr  equ    $40     network header
+nd_dest  equ    $40     network destination (or source!!!)
+nd_self  equ    $41     my net station number
+nd_blkl  equ    $42     block number (low)
+nd_blkh  equ    $43     block number (high)
+nd_type  equ    $44     1 recv eof, 0 recv ok, -1 xmit
+nd_nbyt  equ    $45     1 to 255 (what about 0??)
+nd_dchk  equ    $46     data checksum
+nd_hchk  equ    $47     header checksum
+*
+nd_data  equ    $48     data block
+nf_buffr equ    $54     remote file buffer (512 bytes)
+nd_end   equ    $148
+nd_fend  equ    $254    end of remote file extra long block
+nf.rblk  equ    -1      read whole block
+nf.sblk  equ    -2      send whole block
+*
+* directory definitions
+*
+fs_delen equ    $00     length of file
+fs_denam equ    $0e     name of file
+fs_deupd equ    $34     update date
+fs_deend equ    $40     end of entry
+fs.desft equ    6
+*
+        list

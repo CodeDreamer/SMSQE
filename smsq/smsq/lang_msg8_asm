@@ -1,0 +1,125 @@
+; SMSQ_LANG_MSG8  Messages Tables - Group 8  V2.0   1994  Tony Tebby
+
+	section language
+
+	xdef	smsq_msg8
+
+	xref	smsq_msgc
+
+	include 'dev8_keys_ldm'
+	include 'dev8_mac_text'
+
+; SMSQ group 8 message tables
+
+smsq_msg8
+	dc.w	ldm.msgt,8,44	 ; English
+	dc.w	6
+	dc.l	msg_eng-*
+
+	dc.w	ldm.msgt,8,49	 ; German
+	dc.w	6
+	dc.l	msg_deu-*
+
+	dc.w	ldm.msgt,8,33	 ; French
+	dc.w	smsq_msgc-*
+	dc.l	msg_fra-*
+
+; message tables
+
+msg_eng dc.w	44
+	dc.w	eng_fmtq-msg_eng
+	dc.w	eng_abrt-msg_eng
+	dc.w	eng_grab-msg_eng
+	dc.w	eng_llrc-msg_eng
+	dc.w	eng_ynch-msg_eng
+	dc.w	eng_yn-msg_eng
+	dc.w	eng_ynaq-msg_eng
+	dc.w	eng_to-msg_eng
+	dc.w	eng_exst-msg_eng
+	dc.w	eng_ovrw-msg_eng
+	dc.w	eng_scts-msg_eng
+	dc.w	eng_jobh-msg_eng
+	dc.w	eng_nabt-msg_eng
+	dc.w	eng_infl-msg_eng
+
+eng_fmtq mkstr	{To FORMAT the disk, press }
+eng_abrt mkstr	{******* ABORTED *******}
+eng_grab mkstr	{Working memory allocation (kilobytes)> }
+eng_llrc mkstr	{last line recall}
+eng_ynch mkstr	{YNAQ}
+eng_yn	 mkstr	{..Y or N? }
+eng_ynaq mkstr	{..Y/N/A/Q? }
+eng_to	 mkstr	{ TO }
+eng_exst mkstr	{ exists, }
+eng_ovrw mkstr	{OK to overwrite}
+eng_scts mkstr	{ sectors\}
+eng_jobh mkstr	{Job tag    owner priority\}
+eng_nabt mkstr	{net aborted\}
+eng_infl mkstr	{K in files\}
+
+msg_deu dc.w	49
+	dc.w	deu_fmtq-msg_deu
+	dc.w	deu_abrt-msg_deu
+	dc.w	deu_grab-msg_deu
+	dc.w	deu_llrc-msg_deu
+	dc.w	deu_ynch-msg_deu
+	dc.w	deu_yn-msg_deu
+	dc.w	deu_ynaq-msg_deu
+	dc.w	deu_to-msg_deu
+	dc.w	deu_exst-msg_deu
+	dc.w	deu_ovrw-msg_deu
+	dc.w	deu_scts-msg_deu
+	dc.w	deu_jobh-msg_deu
+	dc.w	deu_nabt-msg_deu
+	dc.w	deu_infl-msg_deu
+
+deu_fmtq mkstr	{Zum FORMATIEREN der Platte, dr‡cke }
+deu_abrt mkstr	{******* ABGEBROCHEN *******}
+deu_grab mkstr	{Arbeitsspeichergr„œe (Kilobytes)> }
+deu_llrc mkstr	{Letzte Zeile zur‡ckerhalten}
+deu_ynch mkstr	{JNAQ}
+deu_yn	 mkstr	{..J oder N? }
+deu_ynaq mkstr	{..J/N/A/Q? }
+deu_to	 mkstr	{ ZU }
+deu_exst mkstr	{ gibt es schon, }
+deu_ovrw mkstr	{OK zum ‡berschreiben}
+deu_scts mkstr	{ Sektoren\}
+deu_jobh mkstr	{Job Tag Besitzer Priorit€t\}
+deu_nabt mkstr	{Net abgebrochen\}
+deu_infl mkstr	{K im Dataien\}
+
+msg_fra dc.w	33
+	dc.w	fra_fmtq-msg_fra
+	dc.w	fra_abrt-msg_fra
+	dc.w	fra_grab-msg_fra
+	dc.w	fra_llrc-msg_fra
+	dc.w	fra_ynch-msg_fra
+	dc.w	fra_yn-msg_fra
+	dc.w	fra_ynaq-msg_fra
+	dc.w	fra_to-msg_fra
+	dc.w	fra_exst-msg_fra
+	dc.w	fra_ovrw-msg_fra
+	dc.w	fra_scts-msg_fra
+	dc.w	fra_jobh-msg_fra
+	dc.w	fra_nabt-msg_fra
+	dc.w	fra_infl-msg_fra
+
+
+fra_fmtq mkstr	{Pour FORMATER le disque, appuyez sur }
+fra_abrt mkstr	{******* INTERROMPU *******}
+fra_grab mkstr	{Allocation de mƒmoire de travail (en kilo-octets)> }
+fra_llrc mkstr	{rappel de la ligne prƒcƒdente}
+fra_ynch mkstr	{ONTQ}
+fra_yn	 mkstr	{..O ou N? }
+fra_ynaq mkstr	{..O/N/T/Q? }
+fra_to	 mkstr	{ VERS }
+fra_exst mkstr	{ existe dƒj, }
+fra_ovrw mkstr	{je l'ƒcrase}
+fra_scts mkstr	{ secteurs\}
+fra_jobh mkstr	{Job ƒtiq. prop. prioritƒ\}
+fra_nabt mkstr	{Net interrompu\}
+fra_infl mkstr	{K en fichiers\}
+
+	ds.w	0
+
+	end

@@ -1,0 +1,7 @@
+* SMS2 utility vectors
+        nolist
+*
+smsv_stt equ    $1000    ; clear of MEGA STE protected area
+smsv_end equ    $1200    ; room for 512/6=85 (there are about 60 at the moment)
+*
+        list

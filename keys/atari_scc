@@ -1,0 +1,134 @@
+at_scc   equ    $ffff8c81        ; serial communications controller
+scc_ctra equ    at_scc+$00       ; control register channel a
+                                 ; first access selects register, 2nd is data
+scc_data equ    at_scc+$02       ; data register channel a (r/w)
+scc_ctrb equ    at_scc+$04       ; control register channel b
+scc_datb equ    at_scc+$06       ; data register channel b (r/w)
+
+scc_wcmd equ    0                ; command register (register 0) (write)
+sccc.resm equ     %11111000        ; reset mask
+sccc.rrxc equ     %01000000        ; reset Rx CRC check generator
+sccc.rtxc equ     %10000000        ; reset Tx CRC check generator
+sccc.rtxu equ     %11000000        ; reset Tx Underrun
+sccc.rint equ     %00010000        ; reset interrupt status
+sccc.snda equ     %00011000        ; send abort (SDLC/HDLC)
+sccc.eirx equ     %00100000        ; enable interrupt on next Rx character
+sccc.rtxi equ     %00101000        ; reset Tx Int pending
+sccc.rerr equ     %00110000        ; error reset
+sccc.rhiu equ     %00111000        ; reset highest IUS bit
+scc_wint equ    1                ; interrupt/mode register (write)
+scci.eint equ     %00000001        ; enable interrupts
+scci.etint equ    %00000010        ; enable transmission interrupt
+scci.perrs equ    %00000100        ; parity error is special condition
+scci.erinf equ    %00001000        ; enable Rx int on first character
+scci.erine equ    %00010000        ; enable Rx int on every character
+scci.erins equ    %00011000        ; Rx int on special condition only
+scci.waitd equ    %00100000        ; wait/DMA for send and receive
+scci.ewait equ    %10000000        ; enable wait or DMA request
+scc_wvec equ    2                ; interrupt vector register (write)
+scc.wvec equ    $80
+scc_wrctl equ   3                ; receiver control register (write)
+sccr.enb equ      %00000001        ; receiver enabled
+sccr.isyn equ     %00000010        ; ignore sync characters for fifo
+sccr.srch equ     %00000100        ; address search mode (SDLC/HDLC only)
+sccr.ecrc equ     %00001000        ; enable CRC
+sccr.acsr equ     %00010000        ; activate search mode
+sccr.ects equ     %00100000        ; activate Rx/Tx by _DCD and _CTS
+sccr.5bit equ     %00000000        ; 5 bits/character
+sccr.7bit equ     %01000000        ; 7 bits/character
+sccr.6bit equ     %10000000        ; 6 bits/character
+sccr.8bit equ     %11000000        ; 8 bits/character
+scc_wmode equ   4                ; mode register for receiver/transmitter
+sccm.epar equ     %00000001        ; enable parity
+sccm.podd equ     %00000000        ; odd parity
+sccm.pevn equ     %00000010        ; even parity
+sccm.1stp equ     %00000100        ; 1 stop bit
+sccm.lstp equ     %00001000        ; long stop bit
+sccm.2stp equ     %00001100        ; 2 stop bits
+sccm.clk1 equ     %00000000        ; clock = 1 * data rate
+sccm.cl16 equ     %01000000        ; clock = 16 * data rate
+sccm.cl32 equ     %10000000        ; clock = 32 * data rate
+sccm.cl64 equ     %11000000        ; clock = 64 * data rate
+scc_wtctl equ   5                ; transmitter control register (write)
+scct.ecrc equ     %00000001        ; enable CRC
+scct.rts  equ     %00000010        ; RTS
+scct.crct equ     %00000100        ; CRC-16 if set, otherwise CRC-CCITT
+scct.enb  equ     %00001000        ; enable transmitter
+scct.sbrk equ     %00010000        ; send BREAK
+scct.5bit equ     %00000000        ; 5 bits/character
+scct.7bit equ     %00100000        ; 7 bits/character
+scct.6bit equ     %01000000        ; 6 bits/character
+scct.8bit equ     %01100000        ; 8 bits/character
+scct.dtr  equ     %10000000        ; DTR
+scc_sync equ    6                ; Sync character (SDLC/HDLC mode) (write)
+scc_sync2 equ   7                ; Sync flag (SDLC/HDLC mode) (write)
+scc_wmictl equ   9               ; Master interrupt control register (write)
+scci.vis equ      %00000001        ; vector includes status
+scci.nv  equ      %00000010        ; no vector
+scci.dlc equ      %00000100        ; disable lower chain
+scci.mie equ      %00001000        ; master interrupt enable
+scci.shil equ     %00010000        ; status high/low
+scci.iack equ     %00100000        ; ignore interrupt acknowledge
+scci.resa equ     %01000000        ; reset SCC channel A
+scci.resb equ     %10000000        ; reset SCC channel B
+scci.rest equ     %11000000        ; hardware reset
+scc_wvctl equ   10               ; Various control bits (write)
+scc_wclk equ    11               ; Clock register (write)
+sccc.trci equ     %00000000        ; TRxC is input
+sccc.trco equ     %00000100        ; TRxC is output
+sccc.tcrt equ     %00000000        ; transmit clock comes from RTxC
+sccc.tctr equ     %00001000        ; transmit clock comes from TRxC
+sccc.tcbd equ     %00010000        ; transmit clock comes from baudrate gen.
+sccc.tcdp equ     %00011000        ; transmit clock comes from DPLL output
+sccc.rcrt equ     %00000000        ; receive clock comes from RTxC
+sccc.rctr equ     %00100000        ; receive clock comes from TRxC
+sccc.rcbd equ     %01000000        ; receive clock comes from baudrate gen.
+sccc.rcdp equ     %01100000        ; receive clock comes from DPLL output
+sccc.rtin equ     %10000000        ; RTxC is input
+scc_divl equ   12                ; Clock divider low (read/write)
+scc_divh equ   13                ; Clock divider high (read/write)
+scc_wgctl equ   14               ; General control bits (write)
+sccg.ebdg equ     %00000001        ; enable baudrate generator
+sccg.csrc equ     %00000010        ; clock source (if set, 8Mhz)
+sccg.aech equ     %00001000        ; auto echo
+sccg.llop equ     %00010000        ; local loop
+scc_ictl equ   15                ; interrupt control register (read/write)
+scci.ewr7 equ     %00000001        ; enable write register 7'
+scci.0cnt equ     %00000010        ; interrupt on zero count
+scci.idcd equ     %00001000        ; DCD interrupt
+scci.icts equ     %00100000        ; CTS interrupt
+scci.txur equ     %01000000        ; Tx underrun interrupt
+scci.brk  equ     %10000000        ; interrupt on break
+scc_rstat equ   0                ; status register (read)
+sccs..char equ    0                ; character received
+sccs..0cnt equ    1                ; zero count reached
+sccs..temp equ    2                ; transmit register empty
+sccs..dcd  equ    3                ; DCD status
+sccs..sync equ    4                ; SYNC status
+sccs..cts  equ    5                ; CTS status
+sccs..txun equ    6                ; Tx underrun
+sccs..brk  equ    7                ; break received
+scc_rspst equ   1                ; special status register (read)
+sccs..alls equ    0                ; all sent
+sccs..pare equ    4                ; parity error
+sccs..rxov equ    5                ; Rx overrun
+sccs..crce equ    6                ; CRC error
+scc_rvec equ    2                ; interrupt vector register (read)
+scc_rpint equ   3                ; pending interrrupt register (read)
+sccp..stb equ     0                ; status interrupt channel B
+sccp..txb equ     1                ; transmitter interrupt channel B
+sccp..rxb equ     2                ; receiver interrupt channel B
+sccp..sta equ     3                ; status interrupt channel A
+sccp..txa equ     4                ; transmitter interrupt channel A
+sccp..rxa equ     5                ; receiver interrupt channel A
+
+; Vectored Interrupt Offsets
+
+vio_scbte equ   $00              ; SCC channel B transmit buffer empty
+vio_scbxs equ   $08              ; SCC channel B external status
+vio_scbrc equ   $10              ; SCC channel B receive condition
+vio_scbsc equ   $18              ; SCC channel B special condition
+vio_scate equ   $20              ; SCC channel A transmit buffer empty
+vio_scaxs equ   $28              ; SCC channel A external status
+vio_scarc equ   $30              ; SCC channel A receive condition
+vio_scasc equ   $38              ; SCC channel A special condition

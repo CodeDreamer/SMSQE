@@ -1,0 +1,14 @@
+; Vector macro (relative word address with automatic XREF)
+        nolist
+
+vec     macro   name
+        ifstr [.def([name])] = TRUE goto vec_def
+        xref    [name]
+vec_def maclab
+        dc.w    [name]-*
+        endm
+
+novec   macro
+        dc.w    0
+        endm
+        list

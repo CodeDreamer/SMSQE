@@ -1,0 +1,7 @@
+; SuperBASIC variables area
+        nolist
+bv_bfbas equ    $00
+bv.bufl  equ    $80
+bv_rip   equ    $58
+bv_ribas equ    $5c
+        list

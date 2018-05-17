@@ -1,0 +1,990 @@
+; Gold card  QL ROM Versions
+
+	section ver
+
+	xdef	ver_list
+	xdef	ver_indep
+	xdef	ver_addr
+
+	include 'dev8_sys_gold_keys'
+	include 'dev8_keys_68000'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qdos_sms'
+
+jsrp	macro	romad,old,patch
+	dc.w	glp.ptch,[romad],[old],[patch]
+	endm
+
+jmpp	macro	romad,offset,patch
+	dc.w	glp.vect,[romad],[offset],[patch]
+	endm
+
+word	macro	romad,old,patch
+	dc.w	glp.word,[romad],[old],[patch]
+	endm
+
+trapint macro	calc,romad,patch
+	dc.w	glp.trap,[calc],[romad],[patch]
+	endm
+
+vector	macro	calc,offset,patch
+	dc.w	glp.vect,[calc],[offset],[patch]
+	endm
+
+time	macro	patch
+	dc.w	glp.time,0,0,[patch]
+	endm
+
+ver_list
+	dc.w	ver_ah-*,'02'	 AH
+	dc.w	ver_jm-*,'03'	 JM
+	dc.w	ver_js-*,'10'	 JS
+	dc.w	ver_jsu-*,'10'	 JSU - same as JS but patches have moved
+	dc.w	ver_jsp-*,'10'	 JS  - patched version
+	dc.w	ver_mg-*,'13'	 MG
+	dc.w	ver_fp-*,'13'	 FP - same as MG!! but patches are different
+	dc.w	0,0		 NO version dependent patches
+
+ver_js
+	word	$4ac4,$000c,$0001	     ; ROM check
+	word	$4ad0,$0010,$0001
+
+	word	$0254,$d6c0,$d7c0	     ; MM .w to .l
+	word	$3230,$d2c0,$d3c0
+
+	word	$4356,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$662e,$6c0e,glk.chan	     ; patch channel check
+ver_none
+	dc.w	glp.end
+
+ver_jsp
+	word	$4ac4,$0003,$0001	     ; ROM check
+	word	$4ac6,$8000,$0000	     ; check all from
+
+	word	$0254,$d6c0,$d7c0	     ; MM .w to .l
+	word	$3230,$d2c0,$d3c0
+
+	word	$4356,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$662e,$6c0e,glk.chan	     ; patch channel check
+	dc.w	glp.end
+
+ver_jsu
+	word	$4b0e,$000c,$0001	     ; ROM check
+	word	$4b1a,$0010,$0001
+
+	word	$0256,$d6c0,$d7c0	     ; MM .w to .l
+	word	$327a,$d2c0,$d3c0
+
+	word	$43a0,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$668c,$6c0e,glk.chan	     ; patch channel check
+
+	dc.w	glp.end
+
+ver_ah
+	word	$4b04,$000c,$0001	     ; ROM check
+;***	    word    $4b10,$0010,$0001
+
+	word	$0252,$d6c0,$d7c0	     ; MM .w to .l
+	word	$312c,$d2c0,$d3c0
+
+	word	$43ae,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$6040,$6c0e,glk.chan	     ; patch channel check
+
+	dc.w	glp.end
+
+ver_jm
+	word	$4b44,$000c,$0001	     ; ROM check
+;***	    word    $4b50,$0010,$0001
+
+	word	$0252,$d6c0,$d7c0	     ; MM .w to .l
+	word	$3142,$d2c0,$d3c0
+
+	word	$43ee,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$6088,$6c0e,glk.chan	     ; patch channel check
+
+	dc.w	glp.end
+
+ver_mg
+	word	$4ab2,$000c,$0001	     ; ROM check
+	word	$4abe,$0010,$0001
+
+	word	$0254,$d6c0,$d7c0	     ; MM .w to .l
+	word	$32ac,$d2c0,$d3c0
+
+	word	$4344,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	jsrp	$2324,$4267,glk.graf	     ; patch point and short line
+
+	dc.w	glp.end
+
+ver_fp
+	word	$4abe,$000c,$0001	     ; ROM check
+	word	$4aca,$0010,$0001
+
+	word	$0254,$d6c0,$d7c0	     ; MM .w to .l
+	word	$32b8,$d2c0,$d3c0
+
+	word	$4350,$9002,$9802	     ; ATAN, ASIN, ACOS, ARC .w to .l
+
+	dc.w	glp.end
+
+; version independent patches
+
+ver_indep
+	word	min.tabl,0,0		     ; patch minerva table setup
+	time	glk.mdvt		     ; mdv timings
+	vector	mdv.frmt,'MD',glk.mdf	     ; format
+	vector	ver.vect,$124,glk.mdrd	     ; ... and vectors
+	vector	ver.vect,$126,glk.mdwr
+	vector	ver.vect,$128,glk.mdvr
+	vector	ver.vect,$12a,glk.mdsh
+	vector	ver.look,mdvq_sel-ver_patch,glk.mdsl ; try QL second patch first
+	vector	ver.look,mdvq_des-ver_patch,glk.mdds ; try QL first
+	vector	ver.look,mdvm_sel-ver_patch,glk.mdsl ; try Minerva 1.89 patches
+	vector	ver.look,mdvm_des-ver_patch,glk.mdds ;
+	vector	ver.look,mdvo_sel-ver_patch,glk.mdsl ; try Other!!! patches
+	vector	ver.look,mdvo_des-ver_patch,glk.mdds ;
+
+	vector	I2C.vect,$172,glk.I2Ce		     ; Minerva I2C (1.89+)
+	vector	I2C.vect,$170,glk.I2C
+	vector	I2C.vct2,$172,glk.I22Ce 	     ; Minerva I2C (again)
+	vector	I2C.vct2,$170,glk.I22C
+
+	jsrp	ser.look,0,glk.sdly		; serial transmit delay
+
+	word	min.rest,0,$4e71	     ; patch minerva RESET to NOP
+	vector	xxx.xx26,0,glk_xx56
+	trapint xxx.xx18,exv_trp1,glk_trp12  ; trap 1 intercept
+	trapint xxx.xx14,exv_trp1,glk_trp11  ; or this one trap 1 intercept
+
+	dc.w	$0E,$0015,$0088,$0036
+	dc.w	$0E,$0015,$000C,$0042
+	dc.w	$0E,$0015,$0014,$0044
+	dc.w	$0E,$0015,$0018,$0046
+	dc.w	$0E,$0015,$001C,$0048
+	dc.w	$04,$0015,$0020,$0022
+	dc.w	$0E,$0015,$0024,$004A
+	dc.w	$06,$000F,$0000,$002A
+	dc.w	$08,$0011,$0000,$002C
+	dc.w	$0C,$0013,$0080,$002E
+	dc.w	$0E,$0021,$0080,$004C
+	dc.w	$0E,$0057,$008C,$0032
+	dc.w	$0E,$0015,$0090,$0050
+	dc.w	$0E,$0015,$0068,$0040
+	dc.w	$08,$0017,$0000,$003E
+	dc.w	$06,$001D,$0000,$003C
+	dc.w	$06,$001B,$0000,$0038
+	dc.w	$06,$001F,$0000,$003A
+	dc.w	$0E,$0015,$0010,$0060
+	dc.w	$0E,$0015,$0094,$0062
+	dc.w	$0E,$0015,$0098,$0064
+	dc.w	$0E,$0015,$009C,$0066
+	dc.w	$0E,$0015,$00A0,$0068
+	dc.w	$0E,$0015,$00A4,$006A
+	dc.w	$0E,$0015,$00A8,$006C
+	dc.w	$0E,$0015,$00AC,$006E
+	dc.w	$0E,$0015,$00B0,$0070
+	dc.w	$0E,$0015,$00B4,$0072
+	dc.w	$0E,$0015,$00B8,$0074
+	dc.w	$0E,$0015,$00BC,$0076
+	dc.w	$0E,$0021,$0028,$0058
+	dc.w	$0E,$0021,$002C,$005A
+	dc.w	$06,$0029,$0000,$0078
+	dc.w	$06,$0029,$0000,$007C
+	dc.w	$08,$0029,$0000,$0080
+	dc.w	$08,$002B,$0000,$0084
+	dc.w	$02,$002F,$0000,$0048
+	dc.w	$02,$002D,$0000,$004A
+	dc.w	$08,$0031,$0000,$0086
+	dc.w	$02,$0033,$0000,$D9C1
+	dc.w	$02,$0035,$0000,$5441
+	dc.w	$02,$003D,$0000,$004E
+	dc.w	$02,$003F,$0000,$0100
+	dc.w	$02,$0041,$0000,$0400
+	dc.w	$02,$0043,$0000,$0200
+	dc.w	$02,$0045,$0000,$004E
+	dc.w	$02,$0047,$0000,$004E
+	dc.w	$02,$0049,$0000,$0100
+	dc.w	$02,$004B,$0000,$FF00
+	dc.w	$02,$004D,$0000,$0100
+	dc.w	$02,$004F,$0000,$0100
+	dc.w	$08,$0051,$0000,$0088
+	dc.w	$08,$0053,$0000,$008A
+	dc.w	$0E,$0055,$008C,$008C
+	dc.w	$08,$0059,$0004,$0094
+	dc.w	$06,$005B,$0004,$0096
+	dc.w	glp.end
+
+ver_addr
+mdv.frmt equ	*-ver_addr+1
+	dc.w	mdv_frmt-*
+ver.vect equ	*-ver_addr+1
+	dc.w	ver_vect-*
+I2C.vect equ	*-ver_addr+1
+	dc.w	I2C_vect-*
+ver.look equ	*-ver_addr+1
+	dc.w	ver_look-*
+ser.look equ	*-ver_addr+1
+	dc.w	ser_look-*
+min.rest equ	*-ver_addr+1
+	dc.w	min_rest-*
+min.tabl equ	*-ver_addr+1
+	dc.w	min_tabl-*
+xxx.xx0e equ	*-ver_addr+1
+	dc.w	x0e-*
+xxx.xx10 equ	*-ver_addr+1
+	dc.w	x10-*
+xxx.xx12 equ	*-ver_addr+1
+	dc.w	x12-*
+xxx.xx14 equ	*-ver_addr+1
+	dc.w	x14-*
+xxx.xx16 equ	*-ver_addr+1
+	dc.w	x16-*
+xxx.xx18 equ	*-ver_addr+1
+	dc.w	x18-*
+xxx.xx1a equ	*-ver_addr+1
+	dc.w	x1a-*
+xxx.xx1c equ	*-ver_addr+1
+	dc.w	x1c-*
+xxx.xx1e equ	*-ver_addr+1
+	dc.w	x1e-*
+xxx.xx20 equ	*-ver_addr+1
+	dc.w	x20-*
+xxx.xx22 equ	*-ver_addr+1
+	dc.w	x22-*
+i2c.vct2 equ	*-ver_addr+1
+	dc.w	i2c_vct2-*
+xxx.xx26 equ	*-ver_addr+1
+	dc.w	x26-*
+xxx.xx28 equ	*-ver_addr+1
+	dc.w	x28-*
+xxx.xx2a equ	*-ver_addr+1
+	dc.w	x2a-*
+xxx.xx2c equ	*-ver_addr+1
+	dc.w	x2c-*
+xxx.xx2e equ	*-ver_addr+1
+	dc.w	x2e-*
+xxx.xx30 equ	*-ver_addr+1
+	dc.w	x30-*
+xxx.xx32 equ	*-ver_addr+1
+	dc.w	x32-*
+xxx.xx34 equ	*-ver_addr+1
+	dc.w	x34-*
+xxx.xx36 equ	*-ver_addr+1
+x36	   dc.w    x36-*
+xxx.xx38 equ	*-ver_addr+1
+x38	   dc.w    x38-*
+xxx.xx3a equ	*-ver_addr+1
+x3a	   dc.w    x3a-*
+xxx.xx3c equ	*-ver_addr+1
+	dc.w	x3c-*
+xxx.xx3e equ	*-ver_addr+1
+	dc.w	x3e-*
+xxx.xx40 equ	*-ver_addr+1
+	dc.w	x40-*
+xxx.xx42 equ	*-ver_addr+1
+	dc.w	x42-*
+xxx.xx44 equ	*-ver_addr+1
+	dc.w	x44-*
+xxx.xx46 equ	*-ver_addr+1
+	dc.w	x46-*
+xxx.xx48 equ	*-ver_addr+1
+	dc.w	x48-*
+xxx.xx4a equ	*-ver_addr+1
+	dc.w	x4a-*
+xxx.xx4c equ	*-ver_addr+1
+	dc.w	x4c-*
+xxx.xx4e equ	*-ver_addr+1
+	dc.w	x4e-*
+xxx.xx50 equ	*-ver_addr+1
+	dc.w	x50-*
+xxx.xx52 equ	*-ver_addr+1
+	dc.w	x52-*
+xxx.xx54 equ	*-ver_addr+1
+	dc.w	x54-*
+xxx.xx56 equ	*-ver_addr+1
+	dc.w	x56-*
+xxx.xx58 equ	*-ver_addr+1
+	dc.w	x58-*
+xxx.xx5a equ	*-ver_addr+1
+	dc.w	x5a-*
+
+mdv_frmt
+	lea	8(a4),a0
+	moveq	#3,d1
+	move.w	#($c000-8)/2-1,d0
+mdv_lfbyt
+	cmp.w	(a0)+,d2
+	dbeq	d0,mdv_lfbyt
+	bne.l	ver_bad
+	cmp.w	-4(a0),d1
+	bne.s	mdv_lfbyt   (should be dbra)
+	cmp.w	#'67',d5
+	ble.s	mdv_late
+	sub.l	a4,a0
+	lea	-10(a0),a1
+	add.w	-10(a4,a0.l),a1
+	bra.s	ver_ok
+mdv_late
+	move.l	-12(a0),a1
+	bra.s	ver_ok
+I2c_vct2
+	cmp.w	#'89',d5
+	blo.l	ver_np
+	tst.w	d7
+	beq.s	ver_vect
+	bra.s	ver_np
+I2c_vect
+	cmp.w	#'89',d5
+	blo.s	ver_np
+	tst.w	d7
+	beq.s	ver_np
+ver_vect
+	move.w	d2,a1			 ; vector number
+	move.w	(a4,a1.l),a1		 ; vector
+	add.w	#$4000,a1		 ; + offset
+ver_ok
+	moveq	#0,d2			 ; we've used this now
+	rts
+
+min_tabl
+	cmp.w	#'13',d5
+	ble.s	ver_np
+	movem.l min_tdck,d1-d4		 ; eight bytes patch / eight bytes mask
+	bsr.s	ver_mlm
+	movem.w min_tdpt,d0/d1		 ; data register setup
+	beq.s	min_tabp		 ; patch it
+
+	movem.l min_tack,d1-d4		 ; eight bytes patch / eight bytes mask
+	bsr.s	ver_mlm
+	movem.w min_tapt,d0/d1		 ; address register setup
+	bne.s	ver_np
+
+min_tabp
+	add.l	a4,a1
+	move.w	(a1,d0.w),d2
+	eor.w	d1,d2			 ; change add word to add long
+	sub.l	a4,a1
+	move.w	d2,(a1,d0.w)
+	bra.s	ver_np
+ver_mam
+	move.w	#8,a1			 ; search through all rom
+	move.l	#$c000,a0
+	bra.s	ver_mchk
+
+ver_mlm
+	move.w	#$200,a1		 ; search through lower rom
+	move.w	#$600,a0
+
+ver_mchk
+	move.l	d3,d0
+	and.l	(a4,a1.l),d0		 ; masked 4 bytes
+	cmp.l	d1,d0			 ; match?
+	bne.s	ver_mnxt		 ; ... no
+	move.l	d4,d0
+	and.l	4(a4,a1.l),d0		 ; masked next four bytes
+	cmp.l	d2,d0			 ; match?
+	beq.s	ver_ok
+ver_mnxt
+	addq.l	#2,a1
+	cmp.l	a0,a1			 ; end of scan
+	blt.s	ver_mchk
+
+ver_np
+	moveq	#1,d2			 ; no patch
+	rts
+
+min_tdck dc.w	 $20c0,$20c0,$d040,$2080   set tables using data register
+	 dc.w	 $f1f8,$f1f8,$f1f8,$f1b8   mask out registers used
+min_tdpt dc.w	 4,%0000000011000000	   patch 4/5 bytes
+min_tack dc.w	 $20c8,$20c8,$d0c0,$2088   set tables using address register
+	 dc.w	 $f1f8,$f1f8,$f1f8,$f1b8   mask out registers used
+min_tapt dc.w	 4,%0000000100000000	   patch 4/5 bytes
+
+ser_look
+	movem.l ser_trns+2,d1/d2	 ; ser xmit load address (omitting lea)
+	bsr.l	ver_lkal
+	bne.l	ver_bad
+	move.w	ser_trns,d2
+	subq.l	#2,a1
+	cmp.w	(a4,a1.l),d2		 ; and lea
+	bne.l	ver_bad
+ver_ok1
+	moveq	#0,d2
+	rts
+
+ser_trns
+	 lea	$18020,a1		; ser test transmit empty bit
+	 btst	#1,(a1)
+
+x26
+	cmp.w	#'13',d5
+	ble.s	ver_np
+	movem.l min_rst3,d1/d2		; another version reset
+	bsr.s	ver_lrst
+	bne.s	ver_np
+	addq.l	#2,a1
+ver_ok2
+	moveq	#0,d2
+	rts
+
+min_rest
+	cmp.w	#'13',d5
+	ble.s	ver_np
+	movem.l min_rst1,d1/d2		 ; early version reset
+	bsr.s	ver_lrst
+	beq.s	min_prst		 ; patch old reset code
+	movem.l min_rst2,d1/d2
+	bra.s	ver_lrst		 ; try new version
+
+min_prst
+	cmp.l	#$ffffffff,8(a4,a1.l)	 ; is next long word FFFFFFFF as well?
+	bne	ver_np			 ; ... no, give up
+	lea	min_nrst,a0
+	move.l	(a0)+,(a1)+		 ; put new rest code on old
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+		 ; do not save old code!
+	bra	ver_np			 ; no patch now
+
+ver_lrst
+	move.w	#$180,a0		 ; search area of reset
+	moveq	#$10,d3
+	bra.s	ver_lkrg
+
+min_rst1 RESET				; old Minerva RESET code
+	 dc.w	 $ffff,$ffff,$ffff
+min_rst2 RESET				; current Minerva RESET code
+	 MOVEM.L 0,a0/a1
+	 JMP	 (a1)
+min_nrst MOVE.W  #$2700,sr		; new code for old
+	 MOVEM.L 0,a0/a1
+	 JMP	 (a1)
+min_rst3 TRAP #0			; another reste
+	 MOVE.L  $5c,a5
+	 RESET
+
+ver_look
+	movem.l ver_patch(pc,d2.w),d1/d2 ; search pattern
+ver_lkal
+	move.w	#$5ffc,d3
+	move.w	#$8,a0			 ; search through rom
+ver_lkrg
+	sub.l	a1,a1
+	add.l	a4,a0
+ver_swap
+	swap	d1
+ver_check
+	cmp.w	(a0)+,d1		 ; match?
+	dbeq	d3,ver_check
+	bne.s	ver_done
+	swap	d1
+	cmp.w	(a0),d1
+	bne.s	ver_swap
+	cmp.l	2(a0),d2
+	bne.s	ver_swap
+
+	move.l	a1,-(sp)
+	move.l	(sp)+,a1
+	bne.l	ver_bad 		 ; two patches found!!
+
+	lea	-2(a0),a1
+	bra.s	ver_swap		 ; try again
+
+ver_done
+	move.l	a1,d2			 ; any thing found?
+	beq.l	ver_np			 ; ... no
+	sub.l	a4,a1
+ver_ok3
+	moveq	#0,d2
+	rts
+
+ver_patch
+mdvq_des dc.w	$7402,$7207,$6004
+mdvq_sel dc.w	$7403,$5341,$1682,$7039
+mdvm_sel dc.w	$7403,$5341,$6004
+mdvm_des dc.w	$7207,$7402,$1682,$7039
+mdvo_sel dc.w	$7403,$5341,$6004
+mdvo_des dc.w	$7207,$7402,$1682,$703a
+
+
+x0e
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'67',d5
+	bgt.l	ver_np
+	movem.l x0e_old+2,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#2,a1
+ver_ok4
+	moveq	#0,d2
+	rts
+
+x0e_old OR.B	SYS_QLIR(A6),D7
+	MOVE.B	D7,1(A0)
+	RTE
+x10_old MOVE.W	SR,-(A7)
+	OR.W	#$0700,SR
+	SF	D4
+x10
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'67',d5
+	bgt.l	ver_np
+	movem.l x10_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	cmp.w	#$4e73,10(a4,a1.l)
+	bne.s	ver_bad
+	move.w	#$4e75,10(a1)
+ver_ok5
+	moveq	#0,d2
+	rts
+x12
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'13',d5
+	bgt.l	ver_np
+	move.w	d2,a1
+ver_ok6
+	moveq	#0,d2
+	rts
+x14
+	tst.w	d7
+	bne.l	ver_np
+	move.w	d2,a1
+	moveq	#0,d2
+	rts
+x16
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'67',d5
+	ble.l	ver_np
+	movem.l x16_old,d1/d2
+	bsr	ver_lkal
+	bne.s	ver_bad
+	moveq	#0,d2
+	rts
+
+x16_old MOVE.W #$2580,D1
+	MOVEQ  #$12,D0
+	TRAP   #1
+x18
+	tst.w	d7
+	beq.l	ver_np
+	move.w	d2,a1
+	moveq	#0,d2
+	rts
+x1a
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'67',d5
+	ble.l	ver_np
+	movem.l x1a_old,d1/d2
+	bsr	ver_lkal
+	beq.l	ver_ok
+ver_bad
+	moveq	#-1,d2
+	rts
+x1c
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'67',d5
+	bgt.l	ver_np
+	movem.l x1c_old,d1/d2
+	bsr	ver_lkal
+	bne.s	ver_bad
+	moveq	#0,d2
+	rts
+
+x1c_old MOVEM.L $20(A0),D0-D7/A0-A6
+	RTE
+x1A_old MOVEM.L -$3C(A0),D0-D7/A0-A6
+	RTE
+x1e
+	tst.w	d7
+	bne.l	ver_np
+	move.l	$68(a4),a1
+	move.l	#$c000,a0
+	movem.l x1e_old,d1-d4
+	bsr.l	ver_mchk
+	addq.l	#2,a1
+	bne.s	ver_bad
+	moveq	#0,d2
+	rts
+
+x1e_old
+	DC.W	0
+	MOVEM.L (SP)+,D7/A5/A6
+	RTE
+	DC.W	$0000,$FFFF,$FFFF,$FFFF
+
+x20
+	tst.w	d7
+	bne.l	ver_np
+	cmp.w	#'13',d5
+	ble.l	ver_np
+	move.w	d2,a1
+	moveq	#0,d2
+	rts
+
+x22
+	cmp.w	#'13',d5
+	bgt.l	ver_np
+	movem.l x22_old,d1/d2
+	bsr	ver_lkal
+	addq.l	#2,a1
+	bne.l	ver_bad
+	moveq	#0,d2
+	rts
+
+x22_old MOVEQ	#0,D0
+	BTST	#5,$C(A7)
+
+x28
+	tst.w	d7
+	bne.l	ver_np
+	move.w	(a2),d1
+	lea	2(a3,d1.w),a1
+	add.w	(a1),a1
+	moveq	#0,d2
+	rts
+
+x2a
+	cmp.w	#'13',d5
+	bgt.l	ver_np
+	movem.l x2a_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	moveq	#0,d2
+	rts
+
+x2a_old MOVEQ	#1,D0
+	MOVEQ	#-1,D3
+	TRAP	#3
+	MOVEQ	#0,D6
+
+x2c
+	tst.w	d7
+	bne.s	ver_np6
+	move.l	#$10000,a0
+	move.w	(a2),d1
+	lea	(a0,d1.w),a0
+	add.w	(a0),a0
+	move.w	#4,(a0)
+	move.l	#'PARD',2(a0)
+ver_np6
+	moveq	#1,d2
+	rts
+
+x2e
+	tst.w	d7
+	bne.s	ver_np7
+	move.l	#$10000,a0
+	move.w	(a2),d1
+	lea	(a0,d1.w),a0
+	add.w	(a0),a0
+	move.l	#'PAR ',2(a0)
+ver_np7
+	moveq	#1,d2
+	rts
+x30
+	subq.l	#4,sp
+	cmp.w	#'13',d5
+	bgt.s	ver_np4
+	movem.l x30_ol1,d1/d2
+	bsr	ver_lkal
+	bne.s	ver_np4
+	lea	-22(a1),a1
+	move.l	x30_ol2,d1
+	cmp.l	-4(a4,a1.l),d1
+	bne.s	ver_np4
+	move.l	a1,(a7)
+	movem.l x30_ol3,d1-d4
+	bsr.l	ver_mam
+	bne.s	ver_np4
+	move.w	(a2),d1
+	addq.l	#2,a1
+	lea	(a3,d1.w),a0
+	add.w	(a0),a0
+	addq.l	#6,a0
+	move.l	a1,(a0)
+	move.l	(a7)+,a1
+	moveq	#0,d2
+	rts
+ver_np4
+	addq.l	#4,sp
+	moveq	#1,d2
+	rts
+
+x30_ol1 MOVE.B	-7(A6,A3.l),$1(A6,A2.l)
+	MOVE.L	A3,$1C(A6)
+x30_ol2 MOVE.L	$1C(A6),A3
+x30_ol3 DC.W	$6000,$7208,$741C,$6000
+	DC.W	$FF00,$FFFF,$FFFF,$FF00
+
+x32
+	cmp.w	#'13',d5
+	ble.s	ver_np8
+	movem.l x32_old,d1/d2
+	bsr	ver_lkal
+	bne.s	ver_np8
+	addq.l	#6,a1
+	moveq	#0,d2
+	rts
+ver_np8
+	moveq	#1,d2
+	rts
+x32_old LSL.L	#3,D1
+	MOVE.L	SYS_SBTB(A6),A4
+	ADD.W	D1,A4
+x34
+	cmp.w	#'13',d5
+	ble.s	ver_np9
+	movem.l x34_old,d1/d2
+	bsr	ver_lkal
+	bne.s	ver_np9
+	addq.l	#6,a1
+	moveq	#0,d2
+	rts
+ver_np9
+	moveq	#1,d2
+	rts
+x34_old SF	D2
+	MOVE.B	D2,$EF(A6)
+	ADDQ.B	#2,D1
+
+ver_13ck
+	cmp.w	#'13',d5
+	bgt.s	ver_13np
+	tst.l	d6
+	bmi.s	ver_13rts
+ver_13np
+	addq.l	#4,sp
+	moveq	#1,d2
+ver_13rts
+	rts
+
+x3c
+	bsr.s	ver_13ck
+	movem.l x3c_old,d1/d2
+	bsr	ver_lkal
+	addq.l	#2,a1
+	moveq	#0,d2
+	rts
+
+x3c_old MOVE.L	#$20000,(A2)+
+
+x3e_old MOVE.W	#$80,$64(A0)
+	LEA	$3E(A0),A1
+
+x3e
+	bsr.s	ver_13ck
+	movem.l x3e_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#2,a1
+	moveq	#0,d2
+	rts
+
+x40
+	bsr.s	ver_13ck
+	movem.l x40_old,d1-d4
+	bsr	ver_mam
+	bne.l	ver_bad
+	addq.l	#2,a1
+	moveq	#0,d2
+	rts
+
+x40_old
+	DC.W	$0C44,$0200,$6200,$3801
+	DC.W	$FFFF,$FFFF,$FF00,$FFFF
+x42
+	bsr.s	ver_13ck
+	movem.l x42_old,d1-d4
+	bsr	ver_mam
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x42_old
+	DC.W	$6500,$0C44,$0100,$6200
+	DC.W	$FF00,$FFFF,$FFFF,$FF00
+
+x44
+	bsr.l	ver_13ck
+	movem.l x44_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#2,a1
+	moveq	#0,d2
+	rts
+
+x44_old MOVE.L	#$20000,A5
+	LSL.L	#7,D1
+
+x46
+	bsr.l	ver_13ck
+	movem.l x46_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#2,a1
+	moveq	#0,d2
+	rts
+
+x46_old MOVE.L	#$20000,A1
+	ADD.W	D1,A1
+
+x48
+	bsr.l	ver_13ck
+	movem.l x48_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x48_old ADD.L	A1,A2
+	MOVE.W	#$80,A3
+	LSR.W	#2,D1
+
+x4a
+	bsr.l	ver_13ck
+	movem.l x4a_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x4a_old EXG	A1,A2
+	MOVE.W	#-$80,A3
+	ADD.L	A3,A1
+
+x4c
+	bsr.l	ver_13ck
+	movem.l x4c_old,d1-d4
+	bsr	ver_mam
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x4c_old
+	DC.W	$DBFC,$0000,$0080,$6000
+	DC.W	$FFFF,$FFFF,$FFFF,$FF00
+
+x4e
+	bsr.l	ver_13ck
+	movem.l x4e_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x4e_old SUB.L	#$80,A5
+	SWAP	D3
+
+x50
+	bsr.l	ver_13ck
+	movem.l x50_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x50_old MOVE.W	#$1FFF,D0
+	CLR.L	-(A6)
+	DBF	D0,*-2
+
+ver_13nck
+	cmp.w	#'13',d5
+	ble.s	ver_13nnp
+	tst.l	d6
+	bmi.s	ver_13nrts
+ver_13nnp
+	addq.l	#4,sp
+	moveq	#1,d2
+ver_13nrts
+	rts
+
+x52
+	bsr.s	ver_13nck
+	movem.l x52_old,d1/d2
+	bsr	ver_lkal
+	bne.l	ver_bad
+	addq.l	#4,a1
+	moveq	#0,d2
+	rts
+
+x52_old MOVE.W	#$1FFF,D0
+	CLR.L	(a1)+
+	DBF	D0,*-2
+
+x54
+	tst.l	d6
+	bpl.l	ver_np
+	move.w	d2,a1
+	moveq	#0,d2
+	rts
+
+x56
+	tst.w	d7
+	bne.l	ver_np
+	tst.l	d6
+	bmi.l	ver_np
+	move.w	d2,a1
+	moveq	#0,d2
+	rts
+
+x58
+	bsr.l	ver_13ck
+	move.l	(a4,d2.w),a1
+	lea	$1a(a1),a1
+	moveq	#0,d2
+	rts
+
+x5a
+	bsr.s	ver_13nck
+	move.l	(a4,d2.w),a1
+	movem.l x5a_old,d1/d2
+	cmp.l	(a4,a1.l),d1
+	bne.s	x5a_np
+	rol.l	#8,d2
+	cmp.b	4(a4,a1.l),d2
+	bne.s	x5a_np
+	move.b	5(a4,a1.l),d2
+	cmp.b	#$ff,d2
+	beq.s	x5a_np
+	tst.b	d2
+	beq.s	x5a_np
+	addq.l	#6,a1
+	ext.w	d2
+	ext.l	d2
+	add.l	a1,d2
+	move.w	(a2),d1
+	lea	(a3,d1.w),a0
+	adda.w	(a0),a0
+	move.l	d2,-4(a0)
+	move.w	(a0)+,d1
+	move.l	a1,(a0,d1.w)
+	move.l	a0,-(a1)
+	move.w	#$4ef9,-(a1)
+x5a_np
+	moveq	#1,d2
+	rts
+
+x5a_old
+	cmpa.l	$5c,a5
+	beq.l	*+2
+
+	end

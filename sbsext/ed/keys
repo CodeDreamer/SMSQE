@@ -1,0 +1,93 @@
+* Keys for editor
+        nolist
+*
+err.nc   equ    -1      not complete
+err.or   equ    -4      out of range
+err.bo   equ    -5      buffer overflow
+err.ni   equ    -19     not implemented
+err.bl   equ    -21     bad line
+*
+mt.inf   equ    $00     system information
+mt.dmode equ    $10     get display mode
+mt.alchp equ    $18     allocate in common heap
+mt.rechp equ    $19     return to common heap
+*
+io.fbyte equ    $01     fetch a byte
+io.sbyte equ    $05     send a byte
+io.sstrg equ    $07     send a string
+*
+sd.extop equ    $09     external operation
+sd.pxenq equ    $0a     pixel enquiry
+sd.chenq equ    $0b     charactyer enquiry
+sd.cure  equ    $0e     enable cursor
+sd.curs  equ    $0f     suppress the cursor
+sd.pos   equ    $10     set cursor position
+sd.tab   equ    $11     set x cursor position
+sd.scrol equ    $18     scroll all of window
+sd.scrtp equ    $19     scroll top
+sd.scrbt equ    $1a     scroll bottom of window
+sd.panln equ    $1e     pan line
+sd.panrt equ    $1f     pan right hand end of line
+sd.clear equ    $20     clear window
+sd.clrbt equ    $22     clear bottom of window
+sd.clrln equ    $23     clear line
+sd.clrrt equ    $24     clear right hand end of line
+sd.setpa equ    $27     set paper colour
+sd.setst equ    $28     set strip colour
+sd.setin equ    $29     set ink colour
+sd.csize equ    $2d     set character size
+*
+bv_bfbas equ    $00     buffer
+bv_bfp   equ    $04
+bv_tkbas equ    $08     tokenised buffer
+bv_tkp   equ    $0c     
+bv_pfbas equ    $10     program file
+bv_pfp   equ    $14
+bv_chbas equ    $30     channel table
+bv_chp   equ    $34
+bv_rtbas equ    $38     return stack
+bv_rtp   equ    $3c     
+*
+bv_cont  equ    $6d  b  true to continue, 00 to stop
+bv_sing  equ    $6f  b  true if single line command
+bv_stopn equ    $8c  w  stop number
+bv_edit  equ    $8e  b  program edited
+bv_unrvl equ    $90  b  need to unravel
+bv_lsbef equ    $9c  w  line number before top
+bv_lsbas equ    $9e  w  bottom line number
+bv_lsaft equ    $a0  w  line number after bottom
+bv_auto  equ    $aa  b  true for auto
+bv_print equ    $ab  b  true to print untokenized line
+bv_edlin equ    $ac  w  next line to edit
+bv_undo  equ    $b8  b  undo return stack and retry
+bv_arrow equ    $b9  b  up or down
+bv_erpos equ    $cc  l  position of error in line
+
+tk_lno   equ    $02  w  line number in token list
+*
+pf_link  equ    $00  w  link list in program file
+pf_lno   equ    $04  w  line number in program file
+*
+QL_vbase equ    $00c0          ; vector base
+qlv_jump equ    $4000          ; jump vector area
+qlv.off  equ    qlv_jump-(ql_vbase*3) ; JMP is offset + 3 * ql vector
+
+ut..err   equ    $cc     write message to channel a0
+cn..itod  equ    $f2     integer to string
+bp..init  equ    $110    initialise BP
+ca..gtint equ    $112    get integers
+bv..chrix equ    $11a    allocate space in RI stack
+pa..graph equ    $12c    parse using graph
+pa..table equ    $12e    tables for BASIC
+pa..strip equ    $132    strip blanks
+ed..newln equ    $136    edit a new line into file
+pr..list  equ    $138    list (detokenise) a line
+pro_list  equ        $4   offset of PR_LIST from pr..list
+pa..ini   equ    $13a    initialise parser (1.04 onwards)
+pao_ini   equ      $138   offset of PA_INI from PA.GRAPH (1.03 and earlier)
+*
+bvo_chbf equ    $1c     offset of CHBF from CHRIX
+*
+ed.xoff  equ    $04     indent for extra rows of a line
+*
+        list

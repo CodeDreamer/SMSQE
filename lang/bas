@@ -1,0 +1,224 @@
+1000 REMark - Make complete language module for alternative English
+1010 :
+1020 fch = FOP_OVER (win1_lang_rext)
+1030 :
+1040 WPUT #fch, $7030, $43FA, $6, $4E41, $4E75
+1060 ldm_link = 0    : REMark no language dependent links yet
+1070 :
+1080 make_ldm 0,0, 440, ldm_link, eng_pref   : REMark - set up LDM preference header
+1090 make_ldm 1,0, 440, ldm_link, eng_kbd    : REMark - set up LDM keyboard header
+1100 make_ldm 3,0, 440, ldm_link, eng_ms0    : REMark - set up LDM message g0 header
+1110 make_ldm 3,4, 440, ldm_link, eng_ms4    : REMark - set up LDM message g4 header
+1120 make_ldm 3,8, 440, ldm_link, eng_ms8    : REMark - set up LDM message g8 header
+1130 make_ldm 3,12, 440, ldm_link, eng_ms12  : REMark - set up LDM message g12 header
+1140 :
+1150 set_ldm_pointer eng_pref                : REMark - set pointer to pref table
+1160 BPUT #fch, 'GBA '                       : REMark - set modified car registration
+1170 WPUT #fch, 440,44,0                     : REMark - and preferences
+1180 :
+1190 set_kbd_header eng_kbd, 440,512         : REMark - set IBM PC size keyboard
+1200 :
+1210   BPUT #fch,   0,$1B,'1','2','3','4','5','6','7','8','9','0','-','=',$C2,$9
+1220   BPUT #fch, 'q','w','e','r','t','y','u','i','o','p','[',']',$A,  0,'a','s'
+1230   BPUT #fch, 'd','f','g','h','j','k','l',';',$27,$9F,  0,'#','z','x','c','v'
+1240   BPUT #fch, 'b','n','m',',','.','/',  0,'*',  0,' ',$E0,$E8,$EC,$F0,$F4,$F8
+1250   BPUT #fch, $D1,$D3,$D7,$D9,$DB,  0,$F9,'7','8','9','-','4','5','6','+','1'
+1260   BPUT #fch, '2','3','0','.',  0,  0,'\',$DF,$E1,  0,  0,  0,  0,  0,  0,  0
+1270   BPUT #fch,   0,  0,  0,  0,  0,  0,  0,$D5,$D0,$D4,  0,$C0,  0,$C8,  0,$DD
+1280   BPUT #fch, $D8,$DC,$EB,$CA,  0,'/',  0,  0,  0,  0,  0,  0,$A,  0,  0,  0
+1290 :
+1300   BPUT #fch,   0,'','!','"','`','$','%','^','&','*','(',')','_','+',$C6,$FD
+1310   BPUT #fch, 'Q','W','E','R','T','Y','U','I','O','P','{','}',$FE,  0,'A','S'
+1320   BPUT #fch, 'D','F','G','H','J','K','L',':','@',$B5,  0,'~','Z','X','C','V'
+1330   BPUT #fch, 'B','N','M','<','>','?',  0,'*',  0,$FC,$E4,$EA,$EE,$F2,$F6,$FA
+1340   BPUT #fch, $D1,$D3,$D7,$D9,$DB,  0,$F9,'7','8','9','-','4','5','6','+','1'
+1350   BPUT #fch, '2','3','0','.',  0,  0,'|',$DF,$E1,  0,  0,  0,  0,  0,  0,  0
+1360   BPUT #fch,   0,  0,  0,  0,  0,  0,  0,$D5,$D4,$D4,  0,$C4,  0,$CC,  0,$DD
+1370   BPUT #fch, $DC,$DC,$EB,$CE,  0,'/',  0,  0,  0,  0,  0,  0,$FE,  0,  0,  0
+1380 :
+1390   BPUT #fch, $FF,'€','‘','’','“','”','•','–','—','˜','™','','','',$C2,$9
+1400   BPUT #fch, $11,$17,$5,$12,$14,$19,$15,$9,$F,$10,'»','½',$A,  0,$1,$13
+1410   BPUT #fch, $4,$6,$7,$8,$A,$B,$C,'›','‡',  0,  0,  0,$1A,$18,$3,$16
+1420   BPUT #fch, $2,$E,$D,'Œ','Ž','',  0,'*',  0,$FF,$E2,$E9,$ED,$F1,$F5,$F9
+1430   BPUT #fch, $D1,$D3,$D7,$D9,$DB,  0,$F9,'7','8','9','-','4','5','6','+','1'
+1440   BPUT #fch, '2','3','0','.',  0,  0,'\',$DF,$E1,  0,  0,  0,  0,  0,  0,  0
+1450   BPUT #fch,   0,  0,  0,  0,  0,  0,  0,$D5,$D2,$D6,  0,$C2,  0,$CA,  0,$DD
+1460   BPUT #fch, $DA,$DE,$EB,$CA,  0,'/',  0,  0,  0,  0,  0,  0,$A,  0,  0,  0
+1470 :
+1480   BPUT #fch, $FF,$1F,'',' ','ƒ','„','…','¾','†','Š','ˆ','‰','¿','‹',$C6,$FD
+1490   BPUT #fch, '±','·','¥','²','´','¹','µ','©','¯','°',$1B,$1D,$FE,  0,'¡','³'
+1500   BPUT #fch, '¤','¦','§','¨','ª','«','¬','š','‚',$1B,  0,'|','º','¸','£','¶'
+1510   BPUT #fch, '¢','®','­','œ','ž','Ÿ',  0,'*',  0,' ',$E6,$EB,$EF,$F3,$F7,$FB
+1520   BPUT #fch, $D1,$D3,$D7,$D9,$DB,  0,$F9,'7','8','9','-','4','5','6','+','1'
+1530   BPUT #fch, '2','3','0','.',  0,  0,'\',$DF,$E1,  0,  0,  0,  0,  0,  0,  0
+1540   BPUT #fch,   0,  0,  0,  0,  0,  0,  0,$D5,$D6,$D6,  0,$C6,  0,$CE,  0,$DD
+1550   BPUT #fch, $DE,$DE,$EB,$CE,  0,'/',  0,  0,  0,  0,  0,  0,$FE,  0,  0,  0
+1560 :
+1570   BPUT #fch, FILL$(CHR$(0),$D0)         : REMark - fill up to non-spacing chars
+1580   BPUT #fch, 0,14,0,28,0,0,0,42         : REMark - the seven non-spacing chars
+1590   BPUT #fch, 0,56,0,70,0,0,0,84
+1600   BPUT #fch, 0,98
+1610   BPUT #fch, FILL$(CHR$(0),$FF-$E1)     : REMark - fill the rest with 0
+1620 :
+1630   BPUT #fch, 'aeioucnAEOUCN',0          : REMark - the modifiable characters
+1640   BPUT #fch, 'Œƒ“–™cnA£OUCN',0          : REMark - acute accents
+1650   BPUT #fch, 'Ž‘•˜›cnAEOUCN',0          : REMark - circumflex accents
+1660   BPUT #fch, '”—šcnAEOUCN',0          : REMark - grave accents
+1670   BPUT #fch, 'ei…uc‰¡E¥UC©',0          : REMark - tilde
+1680   BPUT #fch, '€’„‡cn E¤§CN',0          : REMark - umlaut or diaeresis
+1690   BPUT #fch, '‚ei†un¢E¦UCN',0          : REMark - º or /
+1700   BPUT #fch, 'Šei‹uˆnªE«U¨N',0          : REMark = +e
+1710 :
+1720 :
+1730 :
+1740 set_message_header eng_ms0, 440,22      : REMark - message group 0 header
+1750 :
+1760   message_nl 'I have not finished yet!' : REMark - not complete
+1770   message_nl 'invalid Job ID'
+1780   message_nl 'insufficient memory'
+1790   message_nl 'value out of range'
+1800   message_nl 'buffer full'
+1810   message_nl 'invalid channel ID'
+1820   message_nl 'not found'
+1830   message_nl 'already exists'
+1840   message_nl 'is in use'
+1850   message_nl 'end of file'
+1860   message_nl 'medium is full'
+1870   message_nl 'invalid name'
+1880   message_nl 'transmission error'
+1890   message_nl 'format failed'
+1900   message_nl 'invalid parameter'
+1910   message_nl 'medium check failed'
+1920   message_nl 'error in expression'
+1930   message_nl 'arithmetic overflow'
+1940   message_nl 'not implemented'
+1950   message_nl 'write protected'
+1960   message_nl 'invalid syntax'
+1970   message_nl 'unknown message'
+1980 :
+1990 set_message_header eng_ms4, 440,47      : REMark - message group 4 header
+2000 :
+2010   message_nl 'you screwed it up again'  : REMark - syntax error in expression
+2020   message_nl 'missing left parenthesis'
+2030   message_nl 'missing right parenthesis'
+2040   message_nl 'error in line number'
+2050   message_nl 'bad string: missing delimiter'
+2060   message_nl 'incorrect procedure or function definition'
+2070   message_nl 'procedure or function definition not allowed here'
+2080   message_nl 'DEFines may not be within other clauses'
+2090   message_nl 'misplaced END DEFine'
+2100   message_nl 'misplaced LOCal'
+2110   message_nl 'RETurn not in procedure or function'
+2120   message_nl 'WHEN clauses may not be nested'
+2130   message_nl 'misplaced END WHEN'
+2140   message_nl 'misplaced ELSE'
+2150   message_nl 'misplaced END IF'
+2160   message_nl 'program structures nested too deeply, my brain aches'
+2170   message_nl 'incomplete IF clause'
+2180   message_nl 'incomplete SELect clause'
+2190   message_nl 'incomplete DEFine'
+2200   message_nl 'incomplete WHEN clause'
+2210   message_nl 'unacceptable loop variable'
+2220   message_nl 'unable to find an open loop'
+2230   message_nl 'undefined loop control variable'
+2240   message_nl 'incorrectly structured SELect clause'
+2250   message_nl 'misplaced END SELect'
+2260   message_nl 'DATA in command line has no meaning'
+2270   message_nl 'unacceptable parameters for READ'
+2280   message_nl 'SBASIC cannot perform READs within DATA expressions'
+2290   message_nl 'end of DATA'
+2300   message_nl 'unknown procedure'
+2310   message_nl 'unknown function or array'
+2320   message_nl 'only arrays may be dimensioned'
+2330   message_nl 'procedure and function parameters may not be dimensioned'
+2340   message_nl 'SBASIC cannot put up with negative dimensions'
+2350   message_nl 'dimensional overflow - you cannot be serious!'
+2360   message_nl 'error in index list'
+2370   message_nl 'too many indexes'
+2380   message_nl 'cannot assign to sub-array'
+2390   message_nl 'unacceptable array index list'
+2400   message_nl 'array index out of range'
+2410   message_nl 'only arrays or strings may be indexed'
+2420   message_nl 'assignment can only be to a variable or array element'
+2430   message_nl 'MISTake in program'
+2440   message_nl 'during when processing'
+2450   message_nl 'PROC/FN cleared'
+2460   message    'At line '
+2470   message_nl 'fatal error in SBASIC interpreter'
+2480 :
+2490 set_message_header eng_ms8, 440,13      : REMark - message group 8 header
+2500 :
+2510   message 'To destroy the UNIVERSE, press ' : REMark - To FORMAT the disk, press
+2520   message '******* ABORTED *******'
+2530   message 'Working memory allocation (kilobytes)> '
+2540   message 'last line recall'
+2550   message 'YNAQ'
+2560   message '..Y or N? '
+2570   message '..Y/N/A/Q? '
+2580   message ' TO '
+2590   message ' exists, '
+2600   message 'OK to overwrite'
+2610   message_nl ' sectors'
+2620   message_nl 'Job tag    owner priority'
+2630   message_nl 'net aborted'
+2640 :
+2650 set_message_header eng_ms12, 440,2      : REMark -  message group 12 header
+2660 :
+2670   message 'JanFebMarAprMayJunJulAugSepOctNovDec'
+2680   message 'SunMonTueWedThuFriSat'
+2690 :
+2700 CLOSE #fch
+2710 :
+2720 :
+2730 :
+2740 DEFine PROCedure make_ldm (type, group, lang, link, pointer)
+2750   LOCal old_link
+2760   old_link = link
+2770   link = FPOS (#fch)
+2780   IF old_link: WPUT #fch\old_link, link-old_link : REMark - fill in old link
+2790   WPUT #fch\link, type, group, lang     : REMark - fill in type of LDM
+2800   pointer = link + 2          : REMark - link is updated and so is pointer
+2810 :
+2820   WPUT #fch\(link), 0,0,0               : REMark - fill in blanks but
+2830 :                                       : REMark - do not change value of link
+2840 END DEFine make_ldm
+2850 :
+2860 DEFine PROCedure set_ldm_pointer (pointer)
+2870   LOCal here
+2880   here = FPOS (#fch)
+2890   LPUT #fch\(pointer), here-pointer     : REMark - set relative pointer
+2900   BPUT #fch\(here)                      : REMark - and reset file pointer
+2910 END DEFine set_ldm_pointer
+2920 :
+2930 DEFine PROCedure set_kbd_header (pointer, lang, size)
+2940   set_ldm_pointer pointer
+2950   WPUT #fch, lang, 4, size+2            : REMark - keyboard table follows
+2960 END DEFine set_kbd_header
+2970 :
+2980 DEFine PROCedure set_message_header (pointer, lang, size)
+2990   LOCal i
+3000 :
+3010   set_ldm_pointer pointer
+3020 :
+3030   message_table_base = FPOS (#fch)      : REMark - base of table
+3040   WPUT #fch, lang                       : REMark - set language
+3050   message_table_pointer = FPOS (#fch)   : REMark - message table starts here
+3060   FOR i = 1 TO size: WPUT #fch, 0       : REMark - empty table
+3070   message_text_pointer = FPOS (#fch)    : REMark - messages here
+3080 END DEFine set_message_header
+3090 :
+3100 DEFine PROCedure message (msg$)
+3110   WPUT #fch\message_table_pointer, message_text_pointer - message_table_base
+3120             REMark - sets the message table entry and updates the table pointer
+3130   PUT #fch\message_text_pointer, msg$           : REMark - put message
+3140   IF LEN(msg$) && 1: BPUT #fch\message_text_pointer, 0
+3150             REMark - all messages must be an even number of bytes long
+3160 END DEFine message
+3170 :
+3180 DEFine PROCedure message_nl (msg$)
+3190   WPUT #fch\message_table_pointer, message_text_pointer - message_table_base
+3200             REMark - sets the message table entry and updates the table pointer
+3210   PUT #fch\message_text_pointer, msg$ & CHR$(10) : REMark - put message + <NL>
+3220   IF NOT (LEN(msg$) && 1): BPUT #fch\message_text_pointer, 0
+3230             REMark - all messages must be an even number of bytes long
+3240 END DEFine message_nl

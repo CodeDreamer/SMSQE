@@ -1,0 +1,29 @@
+100 p
+110 :
+120 DEFine PROCedure p
+130 LOCal dat$,prg$,destt$
+140   d
+150   dat$=DATAD$
+160   prg$=PROGD$
+170   destt$=DESTD$
+180   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+190   REMark EW dev1_progs_zip;" -r9  win4_smsqe.zip changes_txt readme_txt styleguide_txt uti_lib dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*"
+195   EW dev1_progs_zip;" -r9  win4_smsqe.zip dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib"
+200   DATA_USE dat$
+210   PROG_USE prg$
+220   DEST_USE destt$
+230 END DEFine p
+240 :
+250 DEFine PROCedure sa
+260   SAVE_O dev8_extras_zip_it_bas
+270 END DEFine sa
+280 :
+290 DEFine PROCedure d
+300   DELETE win4_smsqe.zip
+310 END DEFine d
+320 :
+330 DEFine PROCedure s
+340   DEST_USE dev1_
+350   DATA_USE dev1_basic_
+360   PROG_USE dev1_progs_
+370 END DEFine s

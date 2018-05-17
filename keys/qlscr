@@ -1,0 +1,5 @@
+; QL screen keys
+        nolist
+scr_base equ    $20000
+scr_incr equ    $80
+        list

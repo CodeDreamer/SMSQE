@@ -1,0 +1,302 @@
+         How to compile SMSQ/E for your machine
+         
+         
+         
+         The  purpose of this document is to  help you to recompile a valid
+         SMSQ/E system  for your machine.  You can compile  SMSQ/E for most
+         machines, QPC being the exception, for obvious reasons.
+         
+         Please note  that this document may seem  a bit longwinded in some
+         cases,  as it probably explains things that you may find obvious -
+         but others won't.
+         
+         Also please remember that qxl.win type container files copied from
+         a  CD are often read only -  change the read attribute (e.g. under
+         windows) to be able to save any changes to this container!
+         Content:
+         
+         
+         
+         I - What you need
+         
+              A - The Dev device
+              B - The Assembler
+              C - The Linker, cctf and Make programs and how to use them
+                   1 - Make
+                   2 - Linker
+                   3 - CCTF
+                   4 - CCT
+              D - Using QMAKE
+         
+         
+         II - How to compile for your target
+         
+              A - The "make_bas" SBasic program
+                   1 - Using the supplied linker and make
+                   2 - Using QMAKE
+         
+              B - the "flp_bas" Sbasic program
+         
+         
+         
+         
+         I- What you need
+         
+         
+         You will  need  a  "dev"  device,  an  assembler,  a  linker  and,
+         preferrably, a "make" program, plus a concatenator. The last three
+         are  supplied together  with the  sources, the  DEV device  can be
+         found in  SMSQ/E, but you will have  to supply your own Assembler.
+         Instaed of using these last three,  you  can  also  use  QMAKE,  a
+         commercially available program (from Jochen Merz).
+         
+         A - The DEV device
+         
+         The  source files are set up in such  a way that they expect to be
+         found on a device called "DEV8_".
+         
+         Dev is the usual SMSQ/E "dev" device which can refer to any actual
+         physical device, and you should use DEV_USE 8, xxx to set this up.
+         Thus, if the source files are or, say , win6, use:
+         
+         DEV_USE 8, win6_.
+         
+         
+         B - The assembler         
+         You  will also need an assembler  to compile the individual source
+         files into  what  are  know  as  "_rel"  files,  i.e.  relocatable
+         compiled files, which are later bound together by a linker.
+         
+         For the time being, the assembler must be the QMAC Assembler. This
+         is available from Jochen Merz, or from Quanta.
+         
+         It should be version 1.00 or higher (1.06 or higher with QMAKE).
+         
+         
+         C - The linker, cctf and make programs and how to use them.
+         
+         
+         On the source CD,  in the  "exe" subdirectpry,  you will  find the
+         Linker, Cctf and Make programs.
+         
+         It is  recommended,  but  not  strictly  necessary,  to  load  the
+         assembler, the  linker and the make  programs as resident programs
+         via hotkeys, such as:
+         
+         ert hot_load('z',<device>_make)
+         ert hot_remv('z')
+         ert hot_load ('z',<device>_linker)
+         ert hot_remv('z')
+         ert hot_load ('z',<device>_QMAC)
+         
+         You don't HAVE to do this, but the Make program always attempts to
+         execute the  Assembler and Linker from  an executable thing rather
+         than an executable file first.
+         
+         
+         If  you don't do that, you must  make sure that these programs can
+         be found in the "prog_use" path.  If  they  acannot  be  found  as
+         executable things, nor in the  prog_use  path,  the  make  program
+         won't be able to find them and will crash.
+         
+         The cctf program should lie in the normal prog_use path.
+         
+         
+         
+         1 - The Make Program
+         
+         
+         This software takes a  simple  linker  command  file  (_link)  and
+         checks which files have to  be  re-assembled,  it  then  assembles
+         them, and causes the linker to be executed.
+         
+         The presumes that  your computer  keeps a  correct time  and date,
+         since  the files' timestamps are used by the make program to check
+         whether they need to be re-compiled or not.
+         
+         The Make program also presumes that you have a program called QMAC
+         to compile all files that need to be compiled, a piece of software
+         called   Linker  to  link  them  and  a  program  called  cctf  to
+         concatenate libraries.
+         
+         
+         The  make is a compiled Sbasic program.  The source of that can be
+         found in  the "exe" directory  under the "source"  directory - you
+         can thus change it to your  heart's  content.  It  also   needs  a
+         special  toolkit, which is called OUTPTR_BIN and can also be found
+         under the "source" subdirectory.
+         
+                  2 - The linker
+         
+         The  linker is responsible for linking the _rel files generated by
+         the  assembler. It will generally be  called from the Make program
+         and should be loaded as mentioned above.
+         
+         
+         3 - CCTF
+         
+         The  purpose of the cctf program is to concatenate _rel files into
+         libraries. It should simply be put into your normal prog_use path.
+         If you want to use it by hand, use it as follows: 
+         
+         EX <device>_cctf,cct$,lib$
+         
+         cct$  is a file only containing only the names of the rel files to
+         be concatenated.
+         
+         lib$ is the name of  the  resulting  library  file  that  will  be
+         created.
+         
+         
+         4 - cct
+         
+         There is also a small cct program which you will need for the QXL.
+         This can be found in the exe directory and should be put into your
+         program path.
+         
+         
+         
+         D - Using QMAKE
+         
+         Instead of  using the make program as  supplied here, you may also
+         wish to use the QMAKE program, as sold by Jochen Merz. 
+         
+         This, of  course, is entirely  possible, but please  note that you
+         will need, apparently, at least QMAC v.1.06.
+         
+         Please  note that I do not have QMAKE, so that the descriptions on
+         how to obtain your  sources with  the QMAKE  program are  based on
+         some assumptions.
+         
+         
+         
+         II - How to compile for your target
+         
+         
+         SMSQ/E,  as delivered now, comes with the sources completely ready
+         for compilation.
+         
+         There are 4 "machines" for which SMSQ/E can be compiled:
+         
+         The Atari series.
+         The GoldCard series.
+         The Q40/Q60 series.
+         The QXL series.
+         
+         
+         For  each machine (each "target"), there  is a subdirectory in the
+         "smsq" directory:
+         
+         smsq_atari
+         smsq_gold
+         smsq_q40
+         smsq_qxl         
+         
+         In each such subdirectory, there are two important basic programs,
+         which will help you compile the sources for your target.
+         
+         The basic files  are  "make_bas"  and  "flp_bas".  The  "make_bas"
+         program is  used to compile/link  files for your  target. In doing
+         so, it makes  the  individual  modules.  The  flp_bas  inks  these
+         modules tgether.
+         
+         
+         
+         A - The "Make_bas" Sbasic program
+         
+         
+         Please note that  this Sbasic program  has nothing to  do with the
+         "Make"  program already described above - they are two independant
+         and  very different programs - one actuallly calls upon the other.
+         
+         The make_bas as  supplied to  me with  the original  sources would
+         work only with QMAKE. I thus have made some changes to it.
+         
+         The make_bas program is responsible for causing the compilation of
+         all the files necessary to obtain all of the modules necessary for
+         your target.
+         
+         This program is just a normal SBasic program which you should LOAD
+         in the normal way. 
+         
+         Then you  have four procedures at your  disposal, two each for use
+         with  the supplied make and linker on  the one hand, or with QMAKE
+         on the other hand.
+         
+         
+         a - Using the supplied linker and make
+         
+         
+         Once  you have loaded the SBasic "make_bas" program, there are two
+         procedures you can use:
+         
+         "make_it" and "make_it_full".
+         
+         The difference between  these  two  is  that  "make_it_full"  will
+         compile  all of the modules needed  for your target, including the
+         SMSQ/E generic ones,  which  are  the  same  accross  all  of  the
+         targets.
+         
+         "make_it" will  only compile  those modules  that are  specific to
+         your target.
+         
+         Please   note  that  both  procedures   presume  that  the  "make"
+         executable is set up as an executable thing, as set out above. 
+         
+         If this is the case,  you  will  also  need  the  special  toolkit
+         "outptr_bin", which you can find in the 'exe_source' subdirectory.
+         It should  be loaded  with LRESPR  and gives  you the  new keyword
+         "exep_w".
+         
+         If  this is not the case, you  don't need this special keyword and
+         should change the second line in the "compile_and check" procedure
+         from 'exep_w' to "ew".
+         
+         
+         
+         b - Using QMAKE         
+          
+         Once  you have loaded the SBasic "make_bas" program, there are two
+         procedures you can use:
+         
+         "qmake_it" and "qmake_it_full".
+         
+         The difference between these  two  is  that  "qmake_it_full"  will
+         compile  all of the modules needed  for your target, including the
+         SMSQ/E generic ones,  which  are  the  same  accross  all  of  the
+         targets.
+         
+         
+         "qmake_it"  will only compile  those modules that  are specific to
+         your target.
+         
+         
+         Please note  that,as I don't have QMAKE,  I wans'table to test the
+         procedures fully,  but there is no reason  they should not work as
+         expected. If you DO have a problem, please let me know!
+         
+         
+         
+         B - The "flp_bas" program
+         
+         This is used to combine  the  different  modules  in  the  correct
+         order, so that you finally obtain the compiled file which contains
+         the SMSQ/E for your machine.
+         
+         
+         Just run this program and hit ENTER at the prompt.
+         
+         Look  at the source code  of this basic program,  it will tell you
+         what the resulting file is called.
+         
+         
+         If you have a Q40/Q60 and which to blow this file into Eproms, you
+         can then use the  (simple!)  program  "dev8_smsq_q40_rrom_bas"  to
+         make the two images necessary for blowing your eproms.
+         
+         Please just note that you may want to change the default filenames
+         for the resulting files.
+         
+         
+         W. Lenerz
+         

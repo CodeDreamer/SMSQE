@@ -1,0 +1,10 @@
+* General utility keys
+        nolist
+
+; job exectution keys
+
+guk.noac equ    0       ; bit for do not activate job
+guk.depn equ    1       ; bit for new job dependent
+guk.wjob equ    2       ; bit to wait for job to complete
+
+        list

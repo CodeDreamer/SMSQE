@@ -1,0 +1,68 @@
+; Atari hardware keys for real time clock
+        nolist
+; keys for ATARI ST(E)
+at_mrtc  equ      $fffffc20      ; mega ST realtime clock
+rtc_seco equ    at_mrtc+$01; byte  seconds digit one
+rtc.seco equ      $0000000f      ; seconds digit one mask
+rtc_sect equ    at_mrtc+$03; byte  seconds digit ten
+rtc.sect equ      $00000007      ; seconds digit ten mask
+rtc_mino equ    at_mrtc+$05; byte  minutes digit one
+rtc.mino equ      rtc.seco
+rtc_mint equ    at_mrtc+$07; byte  minutes digit ten
+rtc.mint equ      rtc.sect
+rtc_hro  equ    at_mrtc+$09; byte  hours digit one
+rtc.hro  equ      rtc.seco
+rtc_hrt  equ    at_mrtc+$0b; byte  hours digit ten
+rtc.hrt  equ      $00000003
+rtc_day  equ    at_mrtc+$0d; byte  day of week
+rtc.day  equ      rtc.sect
+rtc_dayo equ    at_mrtc+$0f; byte  day digit one
+rtc.dayo equ      rtc.seco
+rtc_dayt equ    at_mrtc+$11; byte  day digit ten
+rtc.dayt equ      rtc.hrt
+rtc_mono equ    at_mrtc+$13; byte  month digit one
+rtc.mono equ      rtc.seco
+rtc_mont equ    at_mrtc+$15; byte  month digit ten
+rtc.mont equ      $00000001
+rtc_yro  equ    at_mrtc+$17; byte  year digit one
+rtc.yro  equ      rtc.seco
+rtc_yrt  equ    at_mrtc+$19; byte  year digit ten (0=80, 1=81 ...)
+rtc.yrt  equ      rtc.seco
+rtc_mode equ    at_mrtc+$1b; modus register
+rtc..bk1 equ      0             ; set to select bank 1
+rtc..alm equ      2             ; alarm if set
+rtc..stp equ      3             ; stop clock if reset
+rtc_rest equ    at_mrtc+$1f; reset register
+rtc..ars equ      0             : alarm reset
+
+rtc_24h  equ    at_mrtc+$15; 24 or 12 h mode
+rtc..24h equ      0             ; set means 24h mode
+
+; keys for ATARI TT realtime clock
+at_trtc  equ    $ffff8960       ; TT realtime clock
+rtc_sreg equ    at_trtc+$01     ; register select
+rtc_data equ    at_trtc+$03     ; data
+rtt.secs equ      $0              ; seconds
+rtt.mins equ      $2              ; minutes
+rtt.hours equ     $4              ; hours
+rtt.dow  equ      $6              ; day of week
+rtt.day  equ      $7              ; day
+rtt.month equ     $8              ; month
+rtt.year equ      $9              ; year
+rtt.ctla equ      $a              ; control register a
+rtt.32768 equ      $20              ; 32768 Hz
+rtt.rt10 equ        $a              ; rate 10
+rtt..upd equ         7              ; update in progress
+rtt.ctlb equ      $b              ; control register b
+rtt..dle equ         0              ; daylight save enable
+rtt..24h equ         1              ; 24h mode
+rtt.24h  equ         2
+rtt..bin equ         2              ; data binary
+rtt.bin  equ         4
+rtt..sqwe equ        3              ; square wave output enable
+rtt.sqwe equ         8
+rtt..set equ         7              ; set date/time
+rtt.set equ        $80
+rtt.ctld equ      $d              ; control register d
+rtt..vrt equ         7              ; valid RAM and time
+        list

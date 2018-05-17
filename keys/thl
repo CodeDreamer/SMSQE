@@ -1,0 +1,10 @@
+; Keys for General Utilities Thing List
+        nolist
+
+thl_thgl equ    $00     ; long  thing linkage
+thl_thg  equ    $04     ; long  thing
+thl_type equ    $08     ; long  thing type
+thl_name equ    $10     ; string  complete Thing name
+thl.elen equ    $50
+thl.maxn equ    thl.elen-thl_name-2
+        list

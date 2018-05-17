@@ -1,0 +1,10 @@
+* Chunk list format
+        nolist
+chk_next equ    $00     ; link to next
+chk_maxe equ    $04     ; max possible entries in this chunk
+chk_nent equ    $06     ; actual entries in this chunk
+chk_entl equ    $08     ; entry length (first chunk)
+chk_totl equ    $0a     ; total number of entries (first chunk)
+
+chk.hdrl equ    $10
+        list

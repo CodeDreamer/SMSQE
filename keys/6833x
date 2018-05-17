@@ -1,0 +1,208 @@
+; Bits and pieces for the 6833x
+	nolist
+
+gpt_gptmcr  equ $fffff900 ; word  GPT configuration register
+gpt.gptmcr  equ     $0080          ; standard config --- add arbitration prior
+gpt.gptmcr2 equ     $0082          ; standard config, arbitration 2
+gpt.gptmcrc equ     $008C          ; standard config, high priory arbitration $c
+
+gpt_icr     equ $fffff904 ; word  GPT interrupt configuration register
+gpt..vba      equ       0          ; shift for vector base (n*16)
+gpt..ipl      equ       8          ; shift for interrupt priority level
+gpt..pab      equ      $c          ; shift for priority adjust
+gpt.vba       equ     $80          ; standard vector base
+gpt.int4      equ   $0480          ; GPT interrupt level 4, vectors $80-$8b
+gpt.adjv      equ       0          ; adjusted channel vector
+gpt.ic1v      equ       1          ; input capture 1 vector
+gpt.ic2v      equ       2          ; input capture 2
+gpt.ic3v      equ       3          ; input capture 3
+gpt.oc1v      equ       4          ; output compare 1
+gpt.oc2v      equ       5          ; output compare 2
+gpt.oc3v      equ       6          ; output compare 3
+gpt.oc4v      equ       7          ; output compare 4
+gpt.i4o5v     equ       8          ; input capture 4 output compare 5
+gpt.tov       equ       9          ; timer overflow
+gpt.paovv     equ      $a          ; pulse accumulator overflow
+gpt.paiv      equ      $b          ; pulse accumulator input
+
+gpt_pdir    equ $fffff906 ; byte  GPT port data direction
+gpt_port    equ $fffff907 ; byte  GPT port
+
+gpt_tcnt    equ $fffff90a ; word  timer counter
+
+gpt_tic1    equ $fffff90e ; word  timer input capture 1
+gpt_tic2    equ $fffff910 ; word  timer input capture 2
+gpt_tic3    equ $fffff912 ; word  timer input capture 3
+gpt_toc1    equ $fffff914 ; word  timer output compare 1
+gpt_toc2    equ $fffff916 ; word  timer output compare 2
+gpt_toc3    equ $fffff918 ; word  timer output compare 3
+gpt_toc4    equ $fffff91a ; word  timer output compare 4
+gpt_tt4o5   equ $fffff91c ; word  timer input capture 4 / output compare 5
+gpt.1m14.68   equ   $0e00          ; 1ms (1/1024) timer at 14.68 MHz
+gpt_ctl     equ $fffff91e ; word  timer control
+gpt.dis       equ     %00          ; disconnect / diable
+gpt.toggle    equ     %01          ; toggle output
+gpt.clear     equ     %10          ; clear output
+gpt.set       equ     %11          ; set output
+gpt.rise      equ     %01          ; detect rising edge
+gpt.fall      equ     %10          ; detect falling edge
+gpt.any       equ     %11          ; detect any edge
+gpt_tmsk    equ $fffff920 ; word  timer interrupt mask (and prescaler)
+gpt_tmskt   equ $fffff920 ; byte  normal timer interrupt mask
+gpt_tmsko   equ $fffff921 ; byte  odd timer interrupt mask
+gpt.mxrate    equ       0          ; standard setting for prescaler
+gpt_tflg    equ $fffff922 ; word  timer interrupt flags
+gpt_tflgt   equ $fffff922 ; byte  normal timer interrupt flags
+gpt_tflgo   equ $fffff923 ; byte  odd timer interrupt flags
+gpt..paif     equ       4 ; odd      pulse accumulator input
+gpt..paovf    equ       5 ; odd      pulse accumulator overflow
+gpt..tof      equ       7 ; odd      timer overflow
+gpt..ic1f     equ       8 ; normal   input capture 1
+gpt..ic2f     equ       9 ; normal   input capture 2
+gpt..ic3f     equ      $a ; normal   input capture 3
+gpt..oc1f     equ      $b ; normal   output compare 1
+gpt..oc2f     equ      $c ; normal   output compare 2
+gpt..oc3f     equ      $d ; normal   output compare 3
+gpt..oc4f     equ      $e ; normal   output compare 4
+gpt..i4o5f    equ      $f ; normal   input capture 4 output compare 5
+
+sim_simcr   equ $fffffa00 ; word  SIM configuration register
+sim.simcr   equ     $00c0          ; standard config --- add arbitration prior
+sim.simcr8  equ     $00c8          ; standard config, arbitration 8
+
+sim_syncr   equ $fffffa04 ; word  Clock synthesiser control
+sim.14.68   equ     $7700          ; 14.68 MHz
+sim..slock  equ         3          ; synthesiser locked bit
+
+sim_porte   equ $fffffa11 ; byte  Port E
+sim_porte1  equ $fffffa13 ; byte  Port E1 (identical to port E)
+sim_ddre    equ $fffffa15 ; byte  Port E data direction
+sim_pepar   equ $fffffa17 ; byte  Port E assignment
+sim_portf   equ $fffffa19 ; byte  Port F
+sim_portf1  equ $fffffa1b ; byte  Port F1 (identical to port F)
+sim_ddrf    equ $fffffa1d ; byte  Port F data direction
+sim_pfpar   equ $fffffa1f ; byte  Port F assignment
+sim_sypcr   equ $fffffa21 ; byte  System protection control register
+sim.nowd    equ       $04          ; no watchdog
+sim.1swd    equ       $b4          ; one second watchdog
+sim.8swd    equ       $bc          ; eight seconds watchdog
+sim_picr    equ $fffffa22 ; word  periodic interrupt control
+sim.pi7f    equ     $071f          ; interrupt level 7 vector 1F = auto
+sim_pitr    equ $fffffa24 ; word  periodic interrupt timer
+sim.pihalfs equ     $0108          ; half second
+sim.pi1s    equ     $0110          ; 1 second
+sim.pi4s    equ     $0140          ; 4 seconds
+sim_swsr    equ $fffffa26 ; byte  software service register (to feed watchdog)
+sim.swsr0   equ       $55          ; first software service register value
+sim.swsr1   equ       $aa          ; second software service register value
+
+sim_portc   equ $fffffa41 ; byte  port C
+
+sim_cspar   equ $fffffa44 ; long  chip select assignment registers
+sim.boot8   equ     $00020000      ; 8 bit boot ROM
+sim.boot16  equ     $00030000      ; 16 bit boot ROM
+sim.pco     equ     $0000          ; port C output
+sim.std     equ     $0001          ; standard output (control or address line)
+sim.cs8b    equ     $0002          ; 8 bit chip select
+sim.cs16b   equ     $0003          ; 16 bit chip select
+sim..cs0    equ        18          ; shift for cs0
+sim..cs1    equ        20          ; shift for cs1
+sim..cs2    equ        22          ; shift for cs2
+sim..cs3    equ        24          ; shift for cs3
+sim..cs4    equ        26          ; shift for cs4
+sim..cs5    equ        28          ; shift for cs5
+sim..cs6    equ         0          ; shift for cs6
+sim..cs7    equ         2          ; shift for cs7
+sim..cs8    equ         4          ; shift for cs8
+sim..cs9    equ         6          ; shift for cs9
+sim..cs10   equ         8          ; shift for cs10
+sim_cspar0  equ $fffffa44 ; word  chip select assignment register 0
+sim_cspar1  equ $fffffa46 ; word  chip select assignment register 1
+sim_csbarbt equ $fffffa48 ; word  boot ROM base address and size
+sim_csorbt  equ $fffffa4a ; word  boot ROM options
+sim_csbar0  equ $fffffa4c ; word  CS0 base address and size
+sim_csor0   equ $fffffa4e ; word  CS0 options
+sim_csbar1  equ $fffffa50 ; word  CS1 base address and size
+sim_csor1   equ $fffffa52 ; word  CS1 options
+sim_csbar2  equ $fffffa54 ; word  CS2 base address and size
+sim_csor2   equ $fffffa56 ; word  CS2 options
+sim_csbar3  equ $fffffa58 ; word  CS3 base address and size
+sim_csor3   equ $fffffa5a ; word  CS3 options
+sim_csbar4  equ $fffffa5c ; word  CS4 base address and size
+sim_csor4   equ $fffffa5e ; word  CS4 options
+sim_csbar5  equ $fffffa60 ; word  CS5 base address and size
+sim_csor5   equ $fffffa62 ; word  CS5 options
+sim_csbar6  equ $fffffa64 ; word  CS6 base address and size
+sim_csor6   equ $fffffa66 ; word  CS6 options
+sim_csbar7  equ $fffffa68 ; word  CS7 base address and size
+sim_csor7   equ $fffffa6a ; word  CS7 options
+sim_csbar8  equ $fffffa6c ; word  CS8 base address and size
+sim_csor8   equ $fffffa6e ; word  CS8 options
+sim_csbar9  equ $fffffa70 ; word  CS9 base address and size
+sim_csor9   equ $fffffa72 ; word  CS9 options
+sim_csbar10 equ $fffffa74 ; word  CS10 base address and size
+sim_csor10  equ $fffffa76 ; word  CS10 options
+simc..basft equ          8         ; shift base address right
+simc.2k     equ         $0         ; 2k block size
+simc.8k     equ         $1         ; 8k block size
+simc.16k    equ         $2         ; 16k block size
+simc.64k    equ         $3         ; 64k block size
+simc.128k   equ         $4         ; 128k block size
+simc.256k   equ         $5         ; 256k block size
+simc.512k   equ         $6         ; 512k block size
+simc.1m     equ         $7         ; 1M block size
+simc.avec   equ      $0001         ; autovector
+simc.cpu    equ      $0000         ; cpu space
+simc.user   equ      $0010         ; user space
+simc.supv   equ      $0020         ; supervisor space
+simc.0w     equ      $0000         ; zero wait states
+simc.1w     equ      $0040         ; one wait state
+simc.2w     equ      $0080         ; two wait states
+simc.3w     equ      $00c0         ; three wait states
+simc.4w     equ      $0100         ; four wait states
+simc.8w     equ      $0200         ; eight wait states
+simc.fast   equ      $0380         ; fast termination
+simc.astb   equ      $0000         ; cs = address strobe
+simc.dstb   equ      $0400         ; cs = data strobe
+simc.read   equ      $0800         ; read access
+simc.write  equ      $1000         ; write access
+simc.lbyte  equ      $2000         ; lower byte
+simc.ubyte  equ      $4000         ; upper byte
+simc.bbyte  equ      $6000         ; both bytes
+
+qsm_qsmcr   equ $fffffc00 ; word  qsm configuration
+qsm.qsmcr   equ      $0080         ; standard setup, add interrupt arbitration
+qsm.qsmcr4  equ      $0084         ; standard setup, arbitration 4
+qsm_qir     equ $fffffc04 ; word  qsm interrupt control
+qsm..vba    equ          0         ; shift for vector base (n*16)
+qsm..iqspi  equ         11         ; shift to qspi interrupt level
+qsm..isci   equ          8         ; shift to sci interrupt level
+qsm.vba     equ        $8c         ; standard vector base
+qsm.int4    equ      $248c         ; interrupt level 4, vectors $8c-$8d
+
+qsm.ivec    equ    qsm.vba<<2+4    ; QSM vector
+qsm_portqs  equ $fffffc15 ; byte  qs port data
+qsm_pqspar  equ $fffffc16 ; byte  pqs pin assignemnt register
+qsm_ddrqs   equ $fffffc17 ; byte  qs port data direction register
+
+sci.ivec    equ    qsm.vba<<2      ; SCI vector
+sci_sccr0   equ $fffffc08 ; word  sci control register (baud rate divider)
+sci.baud    equ     458752         ; set baud rate divider to (sci.baud+b/2)/b
+sci_sccr1   equ $fffffc0a ; word  miscellaneous control
+sci.rtint   equ      $00ac         ; standard serial port with rx/tx interrupts
+sci.rxint   equ      $002c         ; standard serial port with rx interrupts
+sci.noint   equ      $000c         ; standard serial port with no interrupts
+sci_scsr    equ $fffffc0c ; word  serial port status register (a bit special)
+sci..pe     equ          0         ; parity error bit
+sci..fe     equ          1         ; framing error
+sci..ne     equ          2         ; noise error
+sci..or     equ          3         ; overrun on input
+sci..idle   equ          4         ; sci receive idle
+sci..ra     equ          5         ; receiver active
+sci..rdrf   equ          6         ; receiver data buffer fuff
+sci..tc     equ          7         ; transmission complete
+
+sci..tdre   equ          8         ; transmit data register empty
+sci_scdrw   equ $fffffc0e ; word  sci_data register
+sci_scdr    equ $fffffc0f ; byte  (word according to manual) sci_data register
+	list

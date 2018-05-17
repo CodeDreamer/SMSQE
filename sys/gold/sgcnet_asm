@@ -1,0 +1,103 @@
+; SUPER GOLD CARD PATCHES
+
+	section sgc
+
+	xdef	sgc_ndsp
+	xdef	sgc_ndrp
+	xdef	sgc_ndscp
+
+	include 'dev8_sys_gold_keys'
+
+
+sgc_ndsp
+b024	 move.w  ndt_paus(a3),d0
+b028	 dbf	 d0,b028
+b02c	 move.w  ndt_send(a3),d0
+b030	 moveq	 #-1,d3
+b032	 move.b  (a1)+,d3
+b034	 lsl.w	 #1,d3
+b036	 rol.l	 #2,d3
+b038	 lsl.l	 #8,d3
+b03a	 moveq	 #$c,d1
+b03c	 move.b  d6,d3
+b03e	 asr.l	 #1,d3
+b040	 move.b  d3,(a4)
+b042	 move.w  d0,d7
+b044	 move.w  d0,d7
+b046	 move.w  d0,d7
+b048	 move.w  d0,d7
+b04a	 move.w  d0,d7
+b04c	 subq.w  #1,d7
+b04e	 bne.s	 b04c
+b050	 dbf	 d1,b03c
+b054	 subq.w  #1,d2
+b056	 bne.s	 b032
+b058	 move.b  d6,d3
+b05a	 lsr.b	 #1,d3
+b05c	 move.b  d3,(a4)
+b05e	 rts
+
+sgc_ndrp
+b060	 move.w  ndt_rtmo(a3),d3
+b064	 moveq	 #$0,d4
+	 assert  ndt_rdly,ndt_rbit-2
+b066	 move.l  ndt_rdly(a3),d0
+b06a	 swap	 d0
+b06c	 moveq	 #$7,d1
+b06e	 btst	 d7,(a5)
+b070	 dbne	 d3,b06e
+b074	 beq.s	 b0b2
+b076	 btst	 d7,(a5)
+b078	 dbeq	 d3,b076
+b07c	 bne.s	 b0b2
+b07e	 move.w  d0,d7
+b080	 subq.w  #1,d7
+b082	 bne.s	 b080
+b084	 swap	 d0
+b086	 move.w  d0,d7
+b088	 move.w  d0,d7
+b08a	 move.w  d0,d7
+b08c	 subq.w  #1,d7
+b08e	 bne.s	 b08c
+b090	 move.b  (a5),d3
+b092	 ror.w	 #1,d3
+b094	 move.w  d0,d7
+b096	 move.w  d0,d7
+b098	 move.w  d0,d7
+b09a	 subq.w  #1,d7
+b09c	 bne.s	 b09a
+b09e	 dbf	 d1,b086
+b0a2	 lsr.w	 #8,d3
+b0a4	 move.b  d3,(a1)+
+b0a6	 add.w	 d3,d4
+b0a8	 move.w  ndt_rbto(a3),d3
+b0ac	 subq.w  #1,d2
+b0ae	 bne.s	 b066
+b0b0	 rts
+
+b0b2	 moveq	 #-1,d0
+b0b4	 rts
+
+sgc_ndscp
+b0b6	 addi.l  #$1c,(sp)
+b0bc	 moveq	 #$2,d0
+b0be	 move.b  d6,d3
+b0c0	 lsr.l	 #1,d3
+b0c2	 move.b  d3,(a4)
+b0c4	 blt.s	 b0d4
+b0c6	 move.w  d2,d7
+b0c8	 subq.w  #1,d7
+b0ca	 bne.s	 b0c8
+b0cc	 btst	 d7,(a5)
+b0ce	 dbne	 d0,b0c6
+b0d2	 bra.s	 b0e2
+b0d4	 move.w  d2,d7
+b0d6	 subq.w  #1,d7
+b0d8	 bne.s	 b0d6
+b0da	 btst	 d7,(a5)
+b0dc	 dbf	 d0,b0d4
+b0e0	 moveq	 #$0,d0
+b0e2	 dbne	 d1,b0bc
+b0e6	 rts
+
+	end

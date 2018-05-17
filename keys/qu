@@ -1,0 +1,13 @@
+* queue header keys
+        nolist
+*
+qu_eoff  equ    $00     byte    bit 7 End Of File Flag
+qu.eoff  equ      7
+qu_nextq equ    $00     long    pointer to NEXT Queue
+qu_endq  equ    $04     long    pointer to END of Queue
+qu_nexti equ    $08     long    pointer to NEXT Input byte
+qu_nexto equ    $0c     long    pointer to NEXT Output byte
+qu_strtq equ    $10             STaRT of Queue
+qu.hdlen equ    $10             length of queue header
+*
+        list

@@ -1,0 +1,165 @@
+* Window Definition
+        nolist
+*
+*   Window definition table
+*
+wdt_menu equ    $00   long   relative pointer to menu definition
+*
+wdt_size equ    $00   long   space required for layout
+wdt_stat equ    $04   word   offset of status area in global status area
+wdt_mode equ    $06          preferred/allowed mode for this layout
+wdt_mprf equ    $06   byte   preferred mode
+wdt_mall equ    $07   byte   allowed modes
+*
+*   fixed part of window definition
+*
+wd_xsize equ    $00   word   default window x size (width) in pixels
+wd_ysize equ    $02   word   default window y size (height) in pixels
+wd_xorg  equ    $04   word   x origin of window
+wd_yorg  equ    $06   word   y origin of window
+wd_wattr equ    $08          window attributes
+wd_psprt equ    $10   word   pointer to pointer sprite for this window
+wd_lattr equ    $12          loose menu item attributes
+wd_help  equ    $2e   word   pointer to help window
+wd_rbase equ    $30          base of repeated part of window definition
+*
+*   repeated part of window definition
+*
+wd..vsiz equ    $e           bit set in xmin or ymin if variable size permitted
+wd_xmin  equ    $00   word   x minimum size for this layout
+wd_ymin  equ    $02   word   y minimum size for this layout
+wd_pinfo equ    $04   word   pointer to information sub-window definition list
+wd_plitm equ    $06   word   pointer to loose menu item list
+wd_pappl equ    $08   word   pointer to application sub-window definition list
+wd.elen  equ    $0a          repeated entry length
+*
+* Window Attributes
+*
+wda_clfg equ    $00   byte   msb set if window not cleared when first drawn
+wda_shdd equ    $01   byte   shadow depth
+wda_borw equ    $02   word   border width
+wda_borc equ    $04   word   border colour
+wda_papr equ    $06   word   paper colour
+*
+* Menu Item Attributes
+*
+wda_curw equ    $00   word   current item border width
+wda_curc equ    $02   word   current item border colour
+wda_attr equ    $04          attribute records
+wda_unav equ    $04          item unavailable
+wda_aval equ    $0c          item available
+wda_selc equ    $14          item selected
+wda.elen equ    $1c          menu item attribute entry length
+*
+*   attribute record
+*
+wda_back equ    $00   word   item background colour
+wda_ink  equ    $02   word   text object ink colour 
+wda_blob equ    $04   word   pointer to blob for pattern
+wda_patt equ    $06   word   pointer to pattern for blob
+*
+* Loose Menu Items List
+*
+wdl_xsiz equ    $00   word   hit area x size (width) + scaling
+wdl_ysiz equ    $02   word   hit area y size (height) + scaling
+wdl_xorg equ    $04   word   hit area x origin + scaling
+wdl_yorg equ    $06   word   hit area y origin + scaling 
+wdl_xjst equ    $08   byte   object x justification rule
+wdl_yjst equ    $09   byte   object y justification rule
+wdl_type equ    $0a   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wdl_skey equ    $0b   byte   selection keystroke
+wdl_pobj equ    $0c   word   pointer to object
+wdl_item equ    $0e   word   item number 
+wdl_pact equ    $10   word   pointer to action routine
+wdl.elen equ    $12          loose menu item list entry length
+*
+* Information Sub-Window
+*
+wdi_xsiz equ    $00   word   sub-window x size (width) in pixels + scaling
+wdi_ysiz equ    $02   word   sub-window y size (height) in pixels + scaling
+wdi_xorg equ    $04   word   sub-window x origin + scaling
+wdi_yorg equ    $06   word   sub-window y origin + scaling
+wdi_watt equ    $08          sub-window attributes
+wdi_pobl equ    $10   word   pointer to information object list
+wdi.elen equ    $12          information list entry length
+*
+* Information Object List
+*
+wdo_xsiz equ    $00   word   object x size (width) in pixels + scaling
+wdo_ysiz equ    $02   word   object y size (height) in pixels + scaling
+wdo_xorg equ    $04   word   object x origin + scaling
+wdo_yorg equ    $06   word   object y origin + scaling 
+wdo_type equ    $08   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wdo_spar equ    $09   byte   spare
+wdo_ink  equ    $0a   word   text ink colour
+wdo_csiz equ    $0c   word   text character size (two bytes)
+wdo_comb equ    $0a   word   pattern or blob to combine
+wdo_pobj equ    $0e   word   pointer to object
+wdo.elen equ    $10          information object list entry length
+*
+* Application sub-window definition
+*
+wda_xsiz equ    $00   word   sub-window x size (width) in pixels + scaling
+wda_ysiz equ    $02   word   sub-window y size (height) in pixels + scaling
+wda_xorg equ    $04   word   sub-window x origin + scaling
+wda_yorg equ    $06   word   sub-window y origin + scaling
+wda_watt equ    $08          sub-window attributes
+wda_pspr equ    $10   word   pointer to pointer sprite for this sub-window
+wda_setr equ    $12   word   pointer to application sub-window setup routine
+wda_draw equ    $14   word   pointer to application sub-window draw routine
+wda_hit  equ    $16   word   pointer to application sub-window hit routine
+wda_ctrl equ    $18   word   pointer to application sub-window control routine
+wda_nxsc equ    $1a   word   maximum number of x control sections
+wda_nysc equ    $1c   word   maximum number of y control sections
+wda_skey equ    $1e   byte   application sub-window selection keystroke
+wda_ext  equ    $1f   byte   zero
+wda.blen equ    $20          application sub-window basic definition length
+*
+*   pannable and scrollable sub-windows only (wda_nxsc or wda_nysc <>0)
+*
+wda_part equ    $00   word   pointer to the part window control block (or 0)
+wda_insz equ    $02   word   index hit size + scaling
+wda_insp equ    $04   word   index spacing left or above sub-window + scaling
+wda_icur equ    $06   long   index current item attribute (border width, colour)
+wda_iiat equ    $0a          index item attribute record
+wda_psac equ    $12   word   pan or scroll arrow colour
+wda_psbc equ    $14   word   pan or scroll bar colour
+wda_pssc equ    $16   word   pan or scroll bar section colour
+wda.clen equ    $18          application sub-window control definition length
+*
+*   menu sub-windows only (processed by WM.SMENU called from application setup)
+*
+wda_mstt equ    $00   word   pointer to menu status block
+wda_iatt equ    $02          item attributes
+wda_ncol equ    $1e   word   number of actual columns
+wda_nrow equ    $20   word   number of actual rows
+wda_xoff equ    $22   word   x offset of start of menu (section)
+wda_yoff equ    $24   word   y offset of start of menu (section)
+wda_xspc equ    $26   word   pointer to x (column) spacing list
+wda_yspc equ    $28   word   pointer to y (row) spacing list
+wda_xind equ    $2a   word   pointer to x (column) index list
+wda_yind equ    $2c   word   pointer to y (row) index list
+wda_rowl equ    $2e   word   pointer to menu row list
+wda.mlem equ    $30          sub-window menu definition length
+*
+*   menu object spacing list
+*
+wdm_size equ    $00   word   object hit size + scaling
+wdm_spce equ    $02   word   object spacing + scaling
+wdm.slen equ    $04          object spacing list element length
+*
+*   menu row list
+wdm_rows equ    $00   word   pointer to object row list start
+wdm_rowe equ    $02   word   pointer to object row list end
+wdm.rlen equ    $04          menu row list element length
+*
+*   menu object / index list
+wdm_xjst equ    $00   byte   object x justification rule
+wdm_yjst equ    $01   byte   object y justification rule
+wdm_type equ    $02   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wdm_skey equ    $03   byte   selection keystroke
+wdm_pobj equ    $04   word   pointer to object
+wdm_item equ    $06   word   item number (-1 for index)
+wdm_pact equ    $08   word   pointer to action routine (zero for index)
+wdm.olen equ    $0a          menu object / index list entry length
+        list

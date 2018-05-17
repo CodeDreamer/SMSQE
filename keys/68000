@@ -1,0 +1,105 @@
+; Bits and pieces for the 68000
+; those for 680x0 are marked with ^
+        nolist
+;
+;       Status register
+;
+sr.t    equ     %1000000000000000       ; trace flag for single trace
+sr.tflw equ     %0100000000000000       ; trace on change of flow control ^
+sr.s    equ     %0010000000000000       ; supervisor flag
+sr.mast equ     %0001000000000000       ; master stack flag ^
+sr.i7   equ     %0000011100000000       ; interrupt level 7
+sr.i6   equ     %0000011000000000       ; interrupt level 6
+sr.i5   equ     %0000010100000000       ; interrupt level 5
+sr.i4   equ     %0000010000000000       ; interrupt level 4
+sr.i3   equ     %0000001100000000       ; interrupt level 3
+sr.i2   equ     %0000001000000000       ; interrupt level 2
+sr.i1   equ     %0000000100000000       ; interrupt level 1
+sr.x    equ     %0000000000010000       ; extend flag
+sr.n    equ     %0000000000001000       ; negative flag
+sr.z    equ     %0000000000000100       ; zero flag
+sr.v    equ     %0000000000000010       ; overflow flag
+sr.c    equ     %0000000000000001       ; carry flag
+;
+;       Masks
+;
+sr.user equ     %1100111111111111       ; revert to user mode
+;
+;       Bits
+;
+sr..t   equ     15                      ; trace bit
+sr..tflw equ    14                      ; trace bit for flow control ^
+sr..s   equ     13                      ; supervisor bit
+sr..mast equ    12                      ; master stack bit ^
+sr..x   equ     04                      ; extend bit
+sr..n   equ     03                      ; negative bit
+sr..z   equ     02                      ; zero bit
+sr..v   equ     01                      ; overflow bit
+sr..c   equ     00                      ; carry bit
+;
+;       Exception vectors
+;
+exv_issp equ    $0000   ; Initial Supervisor Stack Pointer
+exv_ipc  equ    $0004   ; Initial Program Counter
+exv_berr equ    $0008   ; Bus ERRor
+exv_accf equ    exv_berr; ACCess Fault
+exv_aerr equ    $000c   ; Address ERRor
+exv_ilin equ    $0010   ; ILlegal INstruction
+exv_div0 equ    $0014   ; DIVision by 0
+exv_chk  equ    $0018   ; CHK
+exv_trpv equ    $001c   ; TRaPV
+exv_prvv equ    $0020   ; PRiVilege Violation
+exv_trac equ    $0024   ; TRACe
+exv_alin equ    $0028   ; Opcode 1010 (A-LINe) emulation
+exv_flin equ    $002c   ; Opcode 1111 (F-LINe) emulation
+;                       ; reserved by Motorola
+exc_cppv equ    $0030   ; Coprocessor protocol violation ^
+exc_fmte equ    $0034   ; Format error ^
+exc_unio equ    $0038   ; Uninitialised I/O ^
+exc_unin equ    $0038   ; Uninitialised interrupt ^
+;                       ; reserved by Motorola
+exv_ispu equ    $0060   ; Interrupt level 0 (SPUrious)
+exv_i1   equ    $0064   ; Interrupt level 1
+exv_i2   equ    $0068   ; Interrupt level 2
+exv_i3   equ    $006c   ; Interrupt level 3
+exv_i4   equ    $0070   ; Interrupt level 4
+exv_i5   equ    $0074   ; Interrupt level 5
+exv_i6   equ    $0078   ; Interrupt level 6
+exv_i7   equ    $007c   ; Interrupt level 7
+exv_trp0 equ    $0080   ; TRAP #0
+exv_trp1 equ    $0084   ; TRAP #1
+exv_trp2 equ    $0088   ; TRAP #2
+exv_trp3 equ    $008c   ; TRAP #3
+exv_trp4 equ    $0090   ; TRAP #4
+exv_trp5 equ    $0094   ; TRAP #5
+exv_trp6 equ    $0098   ; TRAP #6
+exv_trp7 equ    $009c   ; TRAP #7
+exv_trp8 equ    $00a0   ; TRAP #8
+exv_trp9 equ    $00a4   ; TRAP #9
+exv_trpa equ    $00a8   ; TRAP #A
+exv_trpb equ    $00ac   ; TRAP #B
+exv_trpc equ    $00b0   ; TRAP #C
+exv_trpd equ    $00b4   ; TRAP #D
+exv_trpe equ    $00b8   ; TRAP #E
+exv_trpf equ    $00bc   ; TRAP #F
+exc_fbra equ    $00c0   ; Floating point coprocessor branch ^
+exv_fixr equ    $00c4   ; Floating point coprocessor inexact result ^
+exv_fdv0 equ    $00c8   ; Floating point coprocessor division by zero ^
+exv_fund equ    $00cc   ; Floating point coprocessor underflow ^
+exv_fope equ    $00d0   ; Floating point coprocessor operand error ^
+exv_fove equ    $00d4   ; Floating point coprocessor overflow ^
+exv_fnan equ    $00d8   ; Floating point signaling NAN ^
+;                       ; reserved by Motorola
+exv_pmcf equ    $00e0   ; PMMU configuration ^
+exv_pmop equ    $00e4   ; PMMU illegal operation ^
+exv_pmav equ    $00e8   ; PMMU access level violation ^
+;                       ; $00ec-$00ff reserved by Motorola
+;                       ; $0100-$03ff vectored interrupts
+exv_top  equ    $0400
+
+jmp.l    equ    $4ef9   ; absolute long address jmp
+jsr.l    equ    $4eb9   ; ... jsr
+push     equ    $48e7   ; movem.l xxxx,-(sp)
+lea3     equ    $47fa   ; lea xxxx(pc),a3
+rts     equ     $4e75   ; RTS
+        list

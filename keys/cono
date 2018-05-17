@@ -1,0 +1,22 @@
+* Extra keys for old console / pointer device
+        nolist
+*
+cn_lkbeg equ    $50
+*
+cn_xtotl equ    cn_lkbeg+$00    ; word  X total pixels
+cn_xvref equ    cn_lkbeg+$02    ; word  X visible reference for xtotl
+cn_ytotl equ    cn_lkbeg+$04    ; word  Y total pixels
+cn_yvref equ    cn_lkbeg+$06    ; word  Y visible reference for ytotl
+cn_frate equ    cn_lkbeg+$08    ; word  frame rate
+cn_spar0 equ    cn_lkbeg+$0a    ; word  spare
+cn_scren equ    cn_lkbeg+$0c    ; long  address of visible SCREeN
+cn_scrsz equ    cn_lkbeg+$10    ; long  SCReen SiZe in bytes
+cn_scinc equ    cn_lkbeg+$14    ; word  SCreen row INCrement
+cn_xscrs equ    cn_lkbeg+$16    ; word  X SCReen Size in pixels
+cn_yscrs equ    cn_lkbeg+$18    ; word  Y SCReen Size in pixels
+cn_sfnt1 equ    cn_lkbeg+$1a    ; long  pointer to Standard FoNT 1
+cn_sfnt2 equ    cn_lkbeg+$1e    ; long  pointer to Standard FoNT 2
+
+cn.dblen equ    cn_sfnt2+4
+
+        list

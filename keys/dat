@@ -1,0 +1,14 @@
+; Standard format date
+        nolist
+
+dat_sday equ     0      ; three character day
+dat_cent equ     4      ; two digit century
+dat_year equ     6      ; two digit year
+dat_mnth equ     9      ; three character month
+dat_iday equ    13      ; two digit day
+dat_hour equ    16      ; two digit hour
+dat_mint equ    19      ; two digit minute
+dat_sec  equ    22      ; two digit seconds
+
+dat.buf  equ    26      ; buffer required for date (includes length)
+        list

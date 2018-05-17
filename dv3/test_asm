@@ -1,0 +1,95 @@
+; DV3 Test Main Routinx
+
+	section base
+
+	include 'dev8_dv3_keys'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_chp'
+	include 'dev8_keys_qlv'
+
+
+	xref	dv3_init
+	xref	fd_init
+	xref	hd_init
+	xref	dv3_addfd
+	xref	qlf_table
+	xref	gu_rchp
+
+
+	bra.l	d3_wmess
+	section version
+d3_mess dc.w	d3_mend-*-2
+	dc.w	'DV3 Driver'
+	dc.b	' ',$a
+d3_mend
+	ds.w	0
+	section const
+	section language
+	section wn
+d3_wmess
+	sub.l	a0,a0			 ; write version message to command con
+	lea	d3_mess,a1
+	move.w	ut.wtext,a2
+	jsr	(a2)
+
+	move.l	#'FLP0',d6
+	bsr.s	d3_unlk
+	move.l	#'WIN0',d6
+	bsr.s	d3_unlk
+
+d3r_init
+	jsr	dv3_init	 ; initialise
+	jsr	fd_init
+	jsr	hd_init
+	lea	qlf_table,a1
+	jmp	dv3_addfd
+
+d3_unlk
+	move.w	sr,d7
+	trap	#0
+
+	moveq	#sms.info,d0
+	trap	#do.sms2
+
+	lea	sys_fsdl(a0),a3 	 ; search fsd list for FLP driver
+d3u_loop
+	move.l	(a3),d0
+	beq.s	d3u_rts
+	move.l	d0,a3
+	cmp.l	#'FLP0',ddl_dname+2-ddl_ddlk(a3) ; FLP?
+	bne.s	d3u_loop
+
+	lea	sys_fsdd(a0),a1 	 ; search ddef list for drive def
+	moveq	#15,d1
+d3d_loop
+	move.l	(a1)+,a0
+	lea	chp.len(a0),a0
+	cmp.l	ddf_ddlk-chp.len(a0),a3  ; our device?
+	bne.s	d3d_lend		 ; ... no
+	clr.l	-4(a1)			 ; ... yes
+	jsr	gu_rchp 		 ; ... remove it
+d3d_lend
+	dbra	d1,d3d_loop
+
+
+	move.l	a3,a0
+
+	moveq	#sms.rfsd,d0
+	trap	#do.sms2
+
+	subq.l	#ddl_ddlk-ddl_shlk,a0
+	moveq	#sms.rshd,d0
+	trap	#do.sms2
+
+	subq.l	#ddl_shlk-ddl_pllk,a0
+	moveq	#sms.rpol,d0
+	trap	#do.sms2
+
+	subq.l	#ddl_pllk,a0
+	jsr	gu_rchp 	; return linkage block
+
+d3u_rts
+	move.w	d7,sr
+	rts
+	end

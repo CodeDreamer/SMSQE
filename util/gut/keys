@@ -1,0 +1,68 @@
+* Keys for General Utilities
+        nolist
+*
+* Hotkey list
+*
+hkl_hotky equ   $00
+hkl_name  equ   $04
+hkl.maxn  equ   2+80
+hkl.elen  equ   hkl_name+hkl.maxn
+*
+* Job list
+*
+jbt_id   equ    $00
+jbt_base equ    $04
+jbt_susp equ    $08
+jbt_prty equ    $0b
+jbt_name equ    $0c
+jbt.maxn equ    80
+jbt.elen equ    jbt_name+jbt.maxn+2
+*
+* Files list
+*
+fl_headr equ    $00                     ; file header
+fl.headr equ    $40                     ; $$$$$$$$$$$$$$$$$$
+fl_destf equ    fl_headr+fl.headr       ; space for destination filename
+fl.destf equ    2+10+36                 ; max. length of that
+fl_data  equ    fl_destf+fl.destf       ; file information
+fl.data  equ    2+28
+fl.dirln equ    fl_data+fl.data
+*
+md_maps equ     $28                     ; offset of map in mdv pdb
+md.mapl equ     510                     ; max map entries
+*
+* String match data block
+*
+mt_source equ   $00                     ; source pattern
+mt_dest   equ   $04                     ; dest     "
+mt_name   equ   $08                     ; full name
+mt_copy   equ   $0c                     ; copy name
+mt_diff   equ   $10                     ; section difference
+mt_flist  equ   $14                     ; list of matched headers
+mt_file   equ   $18                     ; space for full name
+mt.nmlen  equ   $24+2+8                 ; space + length + device (N1_FLP1_)
+mt_match  equ   mt_file+mt.nmlen        ; pointer to match routine
+mt.frame  equ   mt_match+4
+*
+mt..mdvd  equ   0                       ; bit 0 set if mdv dest
+mt..netd  equ   1                       ; bit 1 set if net dest
+mt..mdvs  equ   2                       ; mdv source
+mt..nets  equ   3                       ; net source
+*
+*       Keys for channels menu
+*
+cht_chid equ    $00
+cht.chid equ    4
+cht_devn equ    cht_chid+cht.chid
+cht.devn equ    2+8+36
+cht_jbid equ    cht_devn+cht.devn
+cht.jbid equ    4
+cht_jbnm equ    cht_jbid+cht.jbid
+cht.jbnm equ    24
+cht.elen equ    cht_jbnm+cht.jbnm
+*
+se_portn equ    $18                     ; serial port offsets
+se_parit equ    $1a
+se_hands equ    $1c
+se_eofch equ    $1e
+        list

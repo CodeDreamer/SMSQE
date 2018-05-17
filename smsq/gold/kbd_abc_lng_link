@@ -1,0 +1,8 @@
+program dev8_smsq_gold_kbd_abc_lang
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+input   dev8_smsq_gold_kbd_abc_lang_rel
+library dev8_smsq_smsq_end_rel

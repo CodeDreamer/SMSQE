@@ -1,0 +1,43 @@
+; Slave block table definitions for SMS2
+        nolist
+
+; Slave block table entries
+
+; System entries - format is obligatory
+
+sbt_stat equ    $0000   ; byte    STATus of block
+
+; Filing system slave block entries - format is flexible
+; format below is for max 32 Mbyte drive
+
+sbt_phys equ    $0001   ; byte    PHYsical sector on drive
+sbt_phyg equ    $0002   ; word    PHYsical group on drive
+sbt_file equ    $0004   ; word    FILE number
+sbt_blok equ    $0006   ; word    BLOcK number
+sbt_end  equ    $0008
+
+sbt.len  equ    $0008           ; length of slave block table
+sbt.size equ    $0200           ; size of slave block
+sbt.mins equ    $1000           ; minimum size of slave area = 4 kbytes
+sbt.shft equ    6               ; block table address to block address SHiFT
+
+; status byte usage
+
+sbt.driv equ    %11110001+$ffffff00 ; mask of pointer to DRIVe
+sbt.drvv equ    %11110011+$ffffff00 ; mask of DRiVe Valid bits
+sbt.stat equ    %00001111           ; mask of STATus bits
+sbt.actn equ    %00001100           ; mask of ACTioN bits
+sbt.inus equ    %00001110           ; mask of IN USe bits
+
+; slave block status bits (least significant four)
+
+sbt..fsb equ    0                   ; Filing System Block
+sbt..rrq equ    3                   ; Read ReQuest
+sbt..wrq equ    2                   ; Write ReQuest
+sbt..vld equ    1                   ; block is VaLiD
+sbt.mpty equ    %0001               ; block eMPTY
+sbt.read equ    %1001               ; awaiting READ
+sbt.true equ    %0011               ; block is TRUE representation of file
+sbt.veri equ    %1011               ; awaiting VERIfy
+sbt.writ equ    %0111               ; awaiting WRITe (updated)
+        list

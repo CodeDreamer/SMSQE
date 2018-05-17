@@ -1,0 +1,135 @@
+; Gold Card Set Display Size	   2000	Tony Tebby
+
+	section init
+
+	xdef	cn_disp_size
+	xdef	au_sizes
+
+	xref	cn_disp_clear
+
+	include 'dev8_keys_aurora'
+	include 'dev8_keys_con'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qdos_sms'
+;	 include 'dev8_iod_bim_dddb_keys'  (exclusion - wl)
+	include 'dev8_keys_chn'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_err'
+	include 'dev8_keys_thg'
+	include 'dev8_mac_proc'
+	include 'dev8_mac_thg'
+	include 'dev8_mac_basic'
+	include 'dev8_mac_assert'
+
+
+	section driver
+
+
+*
+*	Table of data to be filled in - offset in dddb/word to set
+*
+cds_initbs
+	dc.l	$20000,$8000
+	dc.w	$80
+	dc.w	$200
+	dc.w	$100
+
+cds_initlc
+	dc.l	vram_base,640*480/4
+	dc.w	$100
+	dc.w	640
+	dc.w	480
+
+au_sizes
+	dc.w	512
+	dc.w	640
+	dc.w	768
+	dc.w	1024
+
+;+++
+; Set size
+;	d6 c  p width key + $80 for 4:3 (square pixels)
+;	d7 c  p 0
+;---
+cn_disp_size
+cds.reg reg	d1/d2/a4
+	movem.l cds.reg,-(sp)
+
+	lea	cds_initbs,a4		  ; standard display
+
+; Check which display
+
+	moveq	#$ffffffe0,d0
+	and.b	sys_mtyp(a6),d0	 ; check display type
+	beq.s	cds_set		 ; QL
+
+	cmp.b	#sys.mqlc,d0		 ; LCD
+	bne.s	cds_aurora		 ; ... no, aurora
+
+	lea	cds_initlc,a4
+	moveq	#$ffffff00+em.lcd,d0	 ; mode is fixed
+	move.b	d0,emcr
+	move.b	d0,sys_hstt(a6)	 ; set hardware status
+
+cds_set
+	move.l	(a4)+,pt_scren(a3)
+	move.l	(a4)+,pt_scrsz(a3)
+	move.w	(a4)+,pt_scinc(a3)
+	move.l	(a4)+,pt_xscrs(a3)
+	bra.s	cds_cls
+
+
+cds_aurora
+	moveq	#1<<sysqm..8,d0	 ; mode bit
+	assert	sysqm..8,em..m0
+	and.b	sys_qlmr(a6),d0	 ; in the same place !!!!!
+	assert	em..ar,7		 ; aspect ratio bit 7
+	or.b	d6,d0			 ; resolution + mode + square pixel
+	move.b	d0,emcr		 ; set display mode
+	move.b	d0,sys_hstt(a6)	 ; set hardware status
+
+	and.w	#3,d0			 ; size bits only
+	add.w	d0,d0			 ; index by 2s
+	move.w	au_sizes(pc,d0.w),d1	 ; X
+	move.w	d1,d2			 ; Y
+	lsr.w	#1,d2			 ; ... 2:1
+	tst.b	d6			 ; 4:3?
+	bpl.s	cds_maxy		 ; ... no
+	add.w	d1,d2			 ; ... 2:3
+	lsr.w	#1,d2			 ; ... 4:3
+
+cds_maxy
+	moveq	#%10101,d0		 ; jumper bits
+	and.b	emcr,d0
+	roxr.w	#2,d0
+	ror.w	#1,d0
+	lsr.b	#1,d0
+	rol.w	#2,d0
+	add.w	d0,d0
+	move.w	au_hmax(pc,d0.w),d0  ; max y size
+	cmp.w	d0,d2
+	bls.s	cds_setc
+	move.l	d0,d2
+
+cds_setc
+	move.l	#vram_base,pt_scren(a3)
+	move.l	#vram_size,pt_scrsz(a3)
+	move.w	#vram_llen,pt_scinc(a3)
+	movem.w d1/d2,pt_xscrs(a3)
+
+cds_cls
+	jsr	cn_disp_clear
+	movem.l (sp)+,cds.reg
+	rts
+
+au_hmax
+	dc.w	288	   max ql height, non-interlaced
+	dc.w	576	   max ql height, interlaced
+	dc.w	576	   max vga
+	dc.w	768	   max vga, intl
+	dc.w	576	   max svga
+	dc.w	768	   max svga, intl
+	dc.w	768	   max multisynch
+	dc.w	768	   max multisynch (diagnostic = 960 displayed)
+
+	end

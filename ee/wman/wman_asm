@@ -1,0 +1,51 @@
+* Link in the Window Manager Routines  V1.00   1986  Tony Tebby  QJUMP
+*
+        section base
+*
+        xref    wm_entry 
+        xref    met_nptr
+        xref    met_pver
+
+        xref.l  wm.pver
+
+*
+        include dev8_keys_qdos_io
+*
+pt_wman equ     $28
+*
+        bra.l   start
+        section language
+        section wman
+start
+        sub.l   a0,a0
+        moveq   #iop.pick,d0            pick command window
+        moveq   #0,d1
+        moveq   #0,d2
+        moveq   #-1,d3
+        trap    #3
+
+        moveq   #iop.pinf,d0            info
+        trap    #3
+        tst.l   d0
+        bne.s   wm_nptr
+        lea     met_pver,a1             error message
+        cmp.l   #wm.pver,d1             up to date?
+        blt.s   wm_perr                 ... no
+
+        pea     wm_entry(pc)            find our entry vector
+        move.l  sp,a1
+        moveq   #iop.slnk,d0            set linkage
+        moveq   #pt_wman,d1             the window manager vector
+        moveq   #4,d2                   4 bytes
+        trap    #3
+        addq.l  #4,sp                   clean up stack
+        tst.l   d0
+        beq.s   wm_rts
+wm_nptr
+        lea     met_nptr,a1
+wm_perr
+        move.l  a1,d0
+        bset    #31,d0
+wm_rts
+        rts
+        end

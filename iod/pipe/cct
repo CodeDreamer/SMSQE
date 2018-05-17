@@ -1,0 +1,6 @@
+dev8_iod_pipe_init_rel
+dev8_iod_pipe_io_rel
+dev8_iod_pipe_open_rel
+dev8_iod_pipe_close_rel
+dev8_iod_pipe_cnam_rel
+dev8_iod_pipe_version_rel

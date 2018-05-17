@@ -1,0 +1,501 @@
+100 REMark $$asmb=dev8_exe_source_outptr_bin,0,10
+110 title$='MAKE v1.25'
+120 IF JOB$(-1)<>''
+130   msgch=FOPEN('con_100x100a0x240'): INK #msgch,7
+140   mainch=FOPEN('nul')
+150   OUTLN#msgch,512,42,0,28
+160   REMark $$heap=4096
+170   REMark $$stak=2048
+180   REMark $$buff=256
+190 ELSE
+200   WINDOW#2,512,224,0,32
+210   msgch=4: OPEN #4,'con':mainch=5:OPEN#5,'con'
+220   cmd$='dev1_asm_lib_menus_lnk':INK #msgch,7
+230 END IF
+240 DIM subs$(7,30)
+250 WINDOW #msgch;512,42,0,28
+260 BORDER #msgch;1,2,0:PAPER #msgch;0
+270 IF cmd$<>'':PE_PRINT #msgch,cmd$:make cmd$:STOP
+280 REPeat l
+290   CLS #msgch
+300   PRINT #msgch;'Please enter linker command file name and options'\' (-i|f -p -c|l|x|n -r|w|q|t <name> -s<n> <name>)'\'Files possibly on "';DATAD$;'".'
+310   REPeat m
+320     INPUT #msgch;'Command ?:';x$
+330     IF x$='' : EXIT m
+340     IF x$=='stop' OR x$=='quit' : STOP
+350     make x$
+360   END REPeat m
+370 END REPeat l
+380 :
+390 DEFine PROCedure make(opt$)
+400 LOCal ext_len%,force_asm%,lnk_ext$,no_wait%
+410 : REMark  Set up required options
+420 :
+430   dev$='':prg$=PROGD$:CLS #msgch
+440   lnk_ext$='':ext_len%=0
+450   Q_ERR_ON "EW"
+460   a="_lnk" INSTR opt$
+470   IF a
+480      ext_len%=4:lnk_ext$='lnk'       : REMark try to find my extension
+490   ELSE
+500      a="_link" INSTR opt$: IF a:ext_len%=5:lnk_ext$='link'
+510   END IF
+520   IF a
+530     opt$=opt$ & '   '               : REMark if we have an extension, filter it out
+540     opt$=opt$(1 TO a-1)&opt$(a+ext_len% TO)
+550   ELSE
+560     a="_asm" INSTR opt$             : REMark called for a simple _asm file...
+570     IF a:logch=-1:rtflag%=do_simple_asm (opt$):IF NOT rtflag%:PRINT#msgch; "Errors !!! - tap a key":a$=INKEY$(#msgch,-1)
+580     RETurn
+590   END IF
+600   link$=get_item$(1,opt$)           : REMark get link file
+610   IF link$(1)=='-' : link$='':ELSE link$=link$&'_'
+620   REMark  Defaults are assemble only new files, allow assembly, no link
+630   force_asm%=0:xrf$='':no_asm%=0:do_link%=0:as_list%=0:log$=dev$&link$&'log':no_wait%=0
+640   prfch=-1
+650   csource=0:prog$=' \p':rle$='_rel': map=1: map$=' -nolist'
+660   fsource=0:fopt$=''
+670 :
+680 REMark now parse options of command string
+690 :
+700   IF '-f' INSTR opt$ : force_asm%=1     : REMark  Force assembly
+710   IF '-i' INSTR opt$ : no_asm%=1        : REMark  Inhibit assembly
+720   IF '-w' INSTR opt$ : no_wait%=1       : REMark don't stop after error
+730   IF '-l' INSTR opt$ : map$=' \m': do_link%=1 : REMark  Link if possible
+740   IF '-x' INSTR opt$ : map$=' \x': do_link%=1 : REMark  Produce xref
+750   IF '-n' INSTR opt$ : map$=''   : do_link%=1 : REMark  No map
+760   IF '-o' INSTR opt$
+770     fopt$='/'&get_item$(('-o' INSTR opt$)+2,opt$)
+780   END IF                                                : REMark  Compiler options
+790 :
+800   IF '-p' INSTR opt$ : as_list%=1                  : REMark  Listing file
+810 :
+820   spos=1                                                : REMark now do substitutes
+830   REPeat subs%
+840     IF '-s' INSTR opt$(spos TO)
+850       spos=('-s' INSTR opt$(spos TO))+1+spos
+860       snum='0'&opt$(spos)
+870       subs$(snum)=get_item$(spos+1,opt$)      : REMark parse out substitutes
+880       IF '-' INSTR subs$(snum)=1: subs$(snum)=''
+890     ELSE
+900       EXIT subs%
+910     END IF
+920   END REPeat subs%
+930 :
+940   IF '-e' INSTR opt$ THEN
+950     log1$=get_item$(('-e' INSTR opt$)+2,opt$) :  REMark  Set log file
+960     IF log$(1)<>'-' : log$=log1$
+970   END IF
+980   logch=FOP_OVER(log$)
+990   dt$=DATE$:dt$=dt$(5 TO 12)&dt$(1 TO 5)&'at'&dt$(12 TO)
+1000   plog title$&' on'&dt$&CHR$(10)&'Command string: '&opt$&CHR$(10)
+1010   IF dev$<>""
+1020     plog 'Source directory: '&dev$&CHR$(10)&CHR$(10) : REMark say hello
+1030   ELSE
+1040     plog 'Source directory: '&link$&CHR$(10)&CHR$(10)
+1050   END IF
+1060   IF logch<0 : plog 'Unable to open log file '&dev$&log$&'log'&CHR$(10)
+1070 :
+1080   in_rel$=''
+1090   IF '-r' INSTR opt$
+1100     in_rel$=dev$&get_item$(('-r' INSTR opt$)+2,opt$):  REMark       Input file to link
+1110     l=LEN(in_rel$):IF in_rel$(l-3 TO l)=='_REL': in_rel$=in_rel$(1 TO l-4)
+1120   END IF
+1130 :
+1140   IF '-q' INSTR opt$
+1150     csource=1:rle$='_rlc'               :  REMark    Input QC file to link
+1160     in_rel$=dev$&get_item$(('-q' INSTR opt$)+2,opt$)
+1170     l=LEN(in_rel$):IF in_rel$(l-3 TO l)=='_RLC': in_rel$=in_rel$(1 TO l-4)
+1180   END IF
+1190 :
+1200   IF '-t' INSTR opt$
+1210     fsource=1:rle$='_rlf'               :  REMark    Input Fortran file to link
+1220     in_rel$=dev$&get_item$(('-t' INSTR opt$)+2,opt$)
+1230     l=LEN(in_rel$):IF in_rel$(l-3 TO l)=='_RLF': in_rel$=in_rel$(1 TO l-4)
+1240   END IF
+1250 :
+1260   IF '-c' INSTR opt$
+1270     lcf$=dev$&link$&'lib'               :  REMark    Concatenate local library
+1280     l_nam=LEN(lcf$):do_link%=do_cctf(lcf$,as_list%,1)
+1290     IF logch>=0 : CLOSE #logch:PE_PRINT #msgch;'Log file closed.'
+1300     RETurn
+1310   END IF
+1320 :
+1330   lcf$=dev$&link$&lnk_ext$              : REMark make linker control file name
+1340 :
+1350 : REMark  Do any assemblies required
+1360 :
+1370   IF in_rel$<>'': IF try_asm('INPUT '&in_rel$&rle$,as_list%)<0: do_link%=-1
+1380   linkch=FOP_IN(lcf$)                   : REMark open linker control file
+1390   IF linkch<0
+1400     plog 'Error opening '&lcf$&' - aborting.'&CHR$(10)
+1410     IF logch>=0 : CLOSE #logch          : REMark OOOPS!
+1420     RETurn
+1430   END IF
+1440 :
+1450   REPeat gline%
+1460     IF EOF(#linkch): EXIT gline%        : REMark do until no more lines
+1470     INPUT #linkch;a$;                   : REMark get command
+1480     IF a$='' : NEXT gline%              : REMark skip blank lines
+1490     REPeat try_subs%
+1500       subs='#' INSTR a$                 : REMark try to do substitution
+1510       IF NOT subs: EXIT try_subs%       : REMark no need
+1520       subn=a$(subs+1)                   : REMark sub number
+1530       SELect ON subs
+1540         =1:a$=subs$(subn) & a$(3 TO)
+1550         =LEN(a$)-1: a$=a$(1 TO subs-1) & subs$(subn)
+1560         =REMAINDER : a$=a$(1 TO subs-1) & subs$(subn) & a$(subs+2 TO)
+1570       END SELect
+1580     END REPeat try_subs%
+1590     tterr= try_asm(a$,as_list%)         : REMark assemble file if necessary
+1600     IF (NOT tterr) AND (do_link%<>-1):do_link% =1:map$= " \m"
+1610     IF tterr<0 : do_link%=-1
+1620   END REPeat gline%
+1630   CLOSE #linkch                         : REMark close linker control file
+1640   plog CHR$(10)&'Linker command file closed.'&CHR$(10)
+1650 :
+1660 : REMark  Now link if necessary
+1670 :
+1680   rtflag%=0
+1690   SELect ON do_link%
+1700     =1: IF prog$==' \p'
+1710           prog$= lcf$(1 TO LEN(lcf$)-ext_len%)&'_exe': REMark resulting program file
+1720         END IF
+1730         mapf$=dev$ & link$ & lnk_ext$&'_map'  : REMark linker error (map) file
+1740         lcm$='\l ' & lcf$ & map$ &mapf$& ' \p'&prog$:REMark  linker command file
+1750         IF in_rel$<>'' : lcm$=in_rel$&rle$&' '&lcm$: mapf$=in_rel$ & '_map'
+1760         FOR subn=0 TO 7
+1770           IF subs$(subn)<>'': lcm$=lcm$ & ' \' & subn & ' ' & subs$(subn)
+1780         END FOR subn
+1790         plog 'Linking: '&lcm$&CHR$(10)
+1800         nm$=''
+1810         my_err=EXEPF_W('Linker',#mainch;lcm$) : REMark use linker thing
+1820         IF my_err=-7
+1830           plog 'Linker thing error: '&my_err&' ... now using linker file'
+1840           EW prg$&'Linker',#mainch;lcm$:nm$=''    : REMark if pb, use linker prog
+1850           my_err=Q_ERR
+1860         END IF
+1870         IF my_err
+1880           er=my_err: wr=0: ud=0         : REMark some error in linking
+1890         ELSE
+1900           erfch=FOP_IN(mapf$)           : REMark open linker error file
+1910           IF erfch>0
+1920              GET #erfch\FLEN(#erfch)-10:INPUT #erfch,a$
+1930              not_hex%=0
+1940              FOR mlp=1 TO 8: IF NOT a$(mlp) INSTR '0123456789abcdef':not_hex%=1
+1950              IF not_hex%
+1960                plog "linker didn't finish this file"
+1970                ud=0:wr=0:er=-1
+1980              ELSE
+1990                er=HEX(a$(1 TO 4))          : REMark get linker errors/warnings
+2000                wr=HEX(a$(5 TO 8))
+2010                ud=0
+2020                IF wr<0 OR er<0 : er=-1
+2030              END IF
+2040              CLOSE #erfch
+2050           ELSE
+2060              plog 'Unable to open linker error file "'&mapf$&'".'&CHR$(10)
+2070              ud=0:wr=0:er=-1
+2080           END IF
+2090         END IF
+2100         IF wr>0 : nm$=wr:er$=' warning'&FILL$('s',wr>1)
+2110         IF er>0 : nm$=er:er$=' error'&FILL$('s',er>1)
+2120         IF er<0 : nm$='Fatal':er$=' error'
+2130         IF nm$<>'' : plog nm$&er$&' found during link.'&CHR$(10):rtflag%=1
+2140     =0: plog 'Done.'&CHR$(10)                 : REMark no linking necessary
+2150     =-1:plog 'Errors - no link.'&CHR$(10):rtflag%=1:REMark OOOPS
+2160   END SELect
+2170   IF NOT rtflag%
+2180     plog "No errors" & CHR$(10)
+2190   END IF
+2200   IF logch>=0 : CLOSE #logch:PE_PRINT #msgch;'Log file closed.'
+2210   IF rtflag% AND NOT no_wait%:PRINT#msgch; "Errors !!! - tap a key":a$=INKEY$(#msgch,-1)
+2220 END DEFine make
+2230 :
+2240 DEFine FuNction get_item$(off,x$)
+2250 REMark this parses options and returns the string corresponding to one option
+2260 LOCal res$
+2270   res$=no_white$(x$(off TO LEN(x$)))&' ': REMark get rid of leading spaces
+2280   RETurn res$(1 TO ' ' INSTR res$-1)         : REMark return string until next space
+2290 END DEFine  get_item$
+2300 :
+2310 DEFine FuNction no_white$(x$)
+2320 REMark gets rid of leading spaces
+2330 LOCal lp%,res$:res$=x$
+2340   REPeat lp%
+2350     IF LEN(res$)<1 : EXIT lp%
+2360     IF res$(1)<>' ' : EXIT lp%
+2370     IF LEN(res$)>1 : res$=res$(2 TO LEN(res$))
+2380   END REPeat lp%
+2390   RETurn res$
+2400 END DEFine no_white$
+2410 :
+2420 DEFine FuNction try_asm(rel$,as_list%)
+2430 REMark this attempts to assemble/compile a file, if necessary
+2440 LOCal rlt,l_nam,ext$,ccr
+2450   IF rel$(1 TO 7)=='PROGRAM': prog$=' \p'&get_item$(8,rel$): RETurn 1
+2460   IF no_asm%: RETurn 1
+2470   IF NOT(rel$(1 TO 5)=='INPUT' OR rel$(1 TO 7)=='LIBRARY') : RETurn 1
+2480   rel$=no_white$(rel$(' ' INSTR rel$ TO LEN(rel$))):l_nam=LEN(rel$)
+2490   IF rel$='*' : RETurn 1
+2500   ext$=rel$(l_nam-3 TO l_nam):rlt=ext$ INSTR '_rel_lib_rlc_rlf_dnc'
+2510   SELect ON rlt
+2520     =17:IF FTEST(rel$)<>-7 : RETurn 1        : REMark dnc
+2530        plog rel$&' not found.'&CHR$(10):RETurn -1
+2540     =13:RETurn do_f77(rel$,as_list%)         : REMark fortran
+2550     =9:ccr=do_qc(rel$,as_list%)    : REMark c file
+2560        SELect ON ccr
+2570          =-1:RETurn -1             : REMark error
+2580          =0,1:RETurn do_asm(rel$,as_list%) : REMark now try to assemble
+2590        END SELect
+2600     =5:RETurn do_cctf(rel$,as_list%,1)       : REMark concatenate library
+2610     =1:RETurn do_asm(rel$,as_list%)          : REMark assemble file
+2620     =REMAINDER :plog 'File '&rel$&' is not a _REL file: ignored.'&CHR$(10)
+2630   END SELect
+2640   RETurn 1
+2650 END DEFine try_asm
+2660 :
+2670 DEFine FuNction do_cctf(lib$,as_list%,cctx)
+2680   LOCal rel$,asr,libdt
+2690   do_cct=0
+2700   cct$=lib$(1 TO l_nam-3):cct$=cct$&'cct':cctch=FOP_IN(cct$)
+2710   IF cctch=-7 AND cctx: cct$=cct$&'x': cctch=FOP_IN(cct$)
+2720   SELect ON cctch
+2730     =-7:plog 'No _CCT for '&lib$&' - assumed OK.'&CHR$(10):RETurn 1
+2740     =-999 TO -1
+2750       plog "Couldn't open _CCT file "&cct$&'.'&CHR$(10)
+2760       RETurn -1
+2770   END SELect
+2780   plog 'Processing '&cct$&'.'&CHR$(10)
+2790   IF FTEST(lib$)=-7
+2800     do_cct=1
+2810     libdt=0
+2820   ELSE
+2830     libdt=FUPDT(\lib$)
+2840     IF libdt<FUPDT(#cctch) : do_cct=1
+2850   END IF
+2860   REPeat read_cct
+2870     IF EOF(#cctch) : EXIT read_cct
+2880     INPUT #cctch;rel$
+2890     IF rel$='' : NEXT read_cct
+2900     IF NOT(rel$(1) INSTR 'abcdefghijklmnopqrstuvwxyz') : NEXT read_cct
+2910     rel$=get_item$(1,rel$)
+2920     asr=try_asm('INPUT '&rel$,as_list%)
+2930     IF FTEST(rel$) : asr=-1
+2940     SELect ON asr
+2950       =1:IF libdt<FUPDT(\rel$) AND do_cct>=0 : do_cct=1
+2960       =0:IF do_cct>=0 : do_cct=1
+2970       =-1:do_cct=-1
+2980     END SELect
+2990   END REPeat read_cct
+3000   CLOSE #cctch
+3010   SELect ON do_cct
+3020     =1: plog 'Concatenating '
+3030         EW prg$&'cctf',cct$,lib$
+3040         my_err=Q_ERR
+3050         IF my_err
+3060      plog '- fatal error.'&CHR$(10):RETurn -1
+3070         ELSE
+3080      plog '- OK.'&CHR$(10)
+3090         END IF
+3100     =0: plog 'Done.'&CHR$(10):RETurn 1
+3110     =-1:plog 'Assembler errors - no concatenation.'&CHR$(10):RETurn -1
+3120   END SELect
+3130   RETurn 0
+3140 END DEFine do_cctf
+3150 :
+3160 DEFine FuNction do_asm(rel$,as_list%)
+3170   REMark returns -1 if error, 0 if OK, 1 if no need to assemble
+3180   LOCal asm$,listf$,listo$,re_ass:l_nam=LEN(rel$)
+3190   asm$=rel$(1 TO l_nam-3):asm$=asm$&'asm'
+3200   IF as_list%=0
+3210     listf$=rel$(1 TO l_nam-3)&'err'
+3220     listo$=' -errors'
+3230   ELSE
+3240     listf$=rel$(1 TO l_nam-3)&'lst'
+3250     listo$=' -nosym'
+3260   END IF
+3270   re_ass=1
+3280   IF FTEST(rel$)=0 : re_ass=(FUPDT(\rel$)<FUPDT(\asm$))
+3290   IF re_ass OR force_asm%
+3300     plog 'Assembling '&asm$
+3310     my_err=EXEPF_W('QMac',#mainch;asm$&' '&listf$&' '&rel$&listo$)
+3320     IF my_err=-7
+3330      plog 'Qmac thing error: '&my_err
+3340      EW prg$&'Mac',#mainch;asm$&' '&listf$&' '&rel$&listo$
+3350      my_err=Q_ERR
+3360     END IF
+3370     IF my_err
+3380       er$='fatal':wr$='0'
+3390     ELSE
+3400       erfch=FOP_IN(listf$)
+3410       IF erfch<0 : plog " - can't open error file."&CHR$(10):RETurn -1
+3420       GET #erfch\FLEN(#erfch)-245
+3430       er$=numaft(#erfch,'total errors',14)
+3440       wr$=numaft(#erfch,'total warnings',17)
+3450       CLOSE #erfch
+3460     END IF
+3470     IF er$<>'0'
+3480       er$=' - '&er$&' error'&FILL$('s',(er$<>'1' AND er$<>'fatal'))&'.'&CHR$(10)
+3490       plog er$:DELETE rel$:RETurn -1
+3500     END IF
+3510     IF wr$<>'0'
+3520       wr$=' - '&wr$&' warning'&FILL$('s',wr$<>1)&'.'&CHR$(10):plog wr$
+3530       RETurn 0
+3540     END IF
+3550     plog ' - OK.'&CHR$(10)
+3560     IF listo$==' -errors' : DELETE listf$
+3570     RETurn 0
+3580   END IF
+3590   RETurn 1
+3600 END DEFine  do_asm
+3610 :
+3620 DEFine PROCedure plog(x$)
+3630   PE_PRINT #msgch;x$;
+3640   IF logch>=0 : PRINT #logch;x$;
+3650 END DEFine plog
+3660 :
+3670 DEFine FuNction numaft(ch,x$,off)
+3680   LOCal rd$,ans,l,m
+3690   rd$=FILL$(' ',200)
+3700   REPeat l
+3710     IF EOF(#ch) : RETurn -1
+3720     Q_ERR_ON 'input'
+3730     REPeat m
+3740       INPUT #ch;rd$;
+3750       ans=Q_ERR
+3760       IF ans=0 : EXIT m
+3770       IF ans<>-5 : RETurn 1000-ans
+3780     END REPeat m
+3790     Q_ERR_OFF 'input'
+3800     IF x$ INSTR rd$ : EXIT l
+3810   END REPeat l
+3820   ans=x$ INSTR rd$+off:IF ans<1 : ans=1
+3830   ans=rd$(ans TO)
+3840   RETurn ans
+3850 END DEFine numaft
+3860 :
+3870 DEFine FuNction do_qc(rel$,as_list%)
+3880   REMark returns -1 if error, 0 if OK, 1 if no need to compile
+3890   LOCal c$,asm$,listf$,listo$,re_ass,my_err:l_nam=LEN(rel$)
+3900   asm$=rel$(1 TO l_nam-3):c$=asm$&'c':asm$=asm$&'asm'
+3910   IF as_list%=0
+3920     listf$=rel$(1 TO l_nam-3)&'cer'
+3930     listo$=' -l '
+3940   ELSE
+3950     listf$=rel$(1 TO l_nam-3)&'cls'
+3960     listo$=' -c -l '
+3970   END IF
+3980   re_ass=1
+3990   IF FTEST(asm$)<>-7 : re_ass=(FUPDT(\asm$)<FUPDT(\c$))
+4000   IF re_ass OR force_asm%
+4010     plog 'Compiling '&c$
+4020     IF prfch>0 : PRINT #prfch;"spl '";listf$;"'"
+4030     my_err=EXEPF_W('qc',#mainch;c$&' '&listo$&listf$)
+4040     IF my_err=-7
+4050      plog 'QC thing not found'&CHR$(10)
+4060      EW prg$&'qc',#mainch;c$&' '&listo$&listf$
+4070      my_err=Q_ERR
+4080     END IF
+4090     IF my_err
+4100       DELETE asm$
+4110       er$=' - compiler error(s).'&CHR$(10)
+4120       plog er$:DELETE rel$:RETurn -1
+4130     ELSE
+4140       plog ' - OK.'&CHR$(10)
+4150       IF listo$==' -l ' : DELETE listf$
+4160       RETurn 0
+4170     END IF
+4180   END IF
+4190   RETurn 1
+4200 END DEFine do_qc
+4210 :
+4220 DEFine FuNction do_f77(rel$,as_list%)
+4230   REMark returns -1 if error, 0 if OK, 1 if no need to compile
+4240   LOCal ftn$,xfopt$,re_ass,fo$,lo$:l_nam=LEN(rel$)
+4250   ftn$=rel$(1 TO l_nam-4)
+4260   fo$='gu':lo$='l'
+4270   xfopt$=fopt$:IF xfopt$='' : xfopt$='/gu'
+4280   FOR i=1 TO 2:IF NOT(fo$(i) INSTR xfopt$) : xfopt$=xfopt$&fo$(i)
+4290   IF as_list%=1
+4300     FOR i=1 TO 1:IF NOT(lo$(i) INSTR xfopt$) : xfopt$=xfopt$&fo$(i)
+4310   END IF
+4320   re_ass=1
+4330   IF FTEST(rel$)<>-7 : re_ass=(FUPDT(\rel$)<FUPDT(\ftn$&'_for'))
+4340   IF re_ass OR force_asm%
+4350     plog 'Compiling '&ftn$
+4360     IF prfch>0 : PRINT #prfch;"spl '";ftn$;"_prn'"
+4370     DELETE ftn$&'_log'
+4380     my_err=EXEPF_W('f77';ftn$&xfopt$ )
+4390     IF my_err
+4400        plog 'QC thing not found'&CHR$(10)
+4410        EW prg$&'f77';ftn$&xfopt$
+4420        my_err=Q_ERR
+4430     END IF
+4440     IF my_err
+4450       er$=' - fatal error.'&CHR$(10)
+4460       plog er$:DELETE rel$:RETurn -1
+4470     END IF
+4480     erfch=FOP_IN(ftn$&'_log')
+4490     IF erfch<0 : plog " - fatal error."&CHR$(10):DELETE ftn$&'_rel':DELETE rel$:RETurn -1
+4500     GET #erfch\FLEN(#erfch)-300
+4510     wr=numaft(#erfch,'COMPILATION',-999)
+4520     er=numaft(#erfch,'FATAL COMPI',-999)
+4530     CLOSE #erfch:re_ass=(wr>0)+2*(er>0)
+4540     SELect ON re_ass
+4550       =0:plog ' - OK.'&CHR$(10)
+4560         IF NOT('l' INSTR xfopt$) : DELETE ftn$&'_LOG'
+4570         DELETE rel$:RENAME ftn$&'_rel' TO rel$:RETurn 0
+4580       =1:lo$=wr:lo$=' - '&lo$&' warning'&FILL$('s',wr>1)&'.'&CHR$(10)
+4590         plog lo$
+4600         DELETE rel$:RENAME ftn$&'_rel' TO rel$:RETurn 0
+4610       =2,3:lo$=er:lo$=' - '&lo$&' error'&FILL$('s',er>1)&'.'&CHR$(10)
+4620         plog lo$
+4630         DELETE rel$:DELETE ftn$&'_rel':RETurn -1
+4640     END SELect
+4650   END IF
+4660   RETurn 1
+4670 END DEFine do_f77
+4680 :
+4690 DEFine FuNction do_simple_asm(rel$)
+4700   REMark returns 0 if error, 1 if OK
+4710   LOCal er$,wr$
+4720   LOCal prg$,asm$,listf$,listo$,re_ass:l_nam=LEN(rel$)
+4730   er$="0":wr$="0"
+4740   prg$=PROGD$
+4750   asm$=rel$:rel$=rel$(1 TO LEN(rel$)-3)
+4760   listf$=rel$&'err'
+4770   rel$=rel$&'exe'
+4780   listo$=' -errors -NOLINK'
+4790   plog 'Assembling '&asm$&" "&listf$&" "&rel$&listo$
+4800   my_err=EXEPF_W('QMac',#mainch;asm$&' '&listf$&' '&rel$&listo$)
+4810   IF my_err=-7
+4820      plog 'QMac thing not found'&CHR$(10)
+4830      EW prg$&'Mac',#mainch;asm$&' '&listf$&' '&rel$&listo$
+4840      my_err=Q_ERR
+4850   END IF
+4860   IF my_err
+4870       er$='fatal':wr$='0'
+4880   ELSE
+4890       erfch=FOP_IN(listf$)
+4900       IF erfch<0 : plog " - can't open error file."&CHR$(10):RETurn 0
+4910       GET #erfch\FLEN(#erfch)-245
+4920       er$=numaft(#erfch,'total errors',14)
+4930       wr$=numaft(#erfch,'total warnings',17)
+4940       CLOSE #erfch
+4950   END IF
+4960   IF er$<>'0'
+4970       er$=' - '&er$&' error'&FILL$('s',(er$<>'1' AND er$<>'fatal'))&'.'&CHR$(10)
+4980       plog er$:DELETE rel$:RETurn 0
+4990   END IF
+5000   IF wr$<>'0'
+5010       wr$=' - '&wr$&' warning'&FILL$('s',wr$<>1)&'.'&CHR$(10):plog wr$
+5020   END IF
+5030   plog ' - OK.'&CHR$(10)
+5040   IF er$='0' AND wr$='0':DELETE listf$
+5050   RETurn 1
+5060 END DEFine  do_simple_asm
+5070 :
+5080 DEFine PROCedure sa
+5090   SAVE_O dev1_asm_smsq_make_bas
+5100 END DEFine

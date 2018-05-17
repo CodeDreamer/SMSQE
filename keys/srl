@@ -1,0 +1,23 @@
+; Sinclair Relocatable Format
+        nolist
+srl.flag equ    $fffffffb
+
+srl.eof  equ    $00      ; end of file
+srl.srce equ    $01      ; source information
+srl.comt equ    $02      ; comment
+srl.org  equ    $03      ; org directive
+srl.sect equ    $04      ; section directive
+srl.offs equ    $05      ; offset directive
+srl.xdef equ    $06      ; external definition
+srl.xref equ    $07      ; external reference
+srlx.byt equ      $01      ; byte
+srlx.wrd equ      $02      ; word
+srlx.lng equ      $04      ; long
+srlx.len equ      $07      ; mask of length bits
+srlx.sgn equ      $08      ; add if value is known to be signed
+
+srl.defx equ    $10      ; define symbol
+
+srl.comm equ    $12      ; common
+srl.endm equ    $13      ; end module
+        list

@@ -1,0 +1,69 @@
+* SYS.RI.SA arithmetic interpreter op codes
+        nolist
+
+RI.TERM  equ $00  0 end of block
+RI.ONE   equ $01 -6 constant one
+RI.NINT  equ $02 +4 nearest short integer
+RI.ZERO  equ $03 -6 constant zero
+RI.INT   equ $04 +4 truncate towards negative to give a short integer
+RI.N     equ $05 -6 plus a signed byte to push FP -128 to 127
+RI.NLINT equ $06 +2 nearest long integer
+RI.K     equ $07 -6 plus a byte, nibbles selects mantissa and adjust exponent
+RI.FLOAT equ $08 -4 float a short integer
+RI.FLONG equ $09 -2 float a long integer
+RI.ADD   equ $0A +6 NOS - TOS
+
+RI.SUB   equ $0C +6 NOS + TOS
+RI.HALVE equ $0D  0 TOS / 2
+RI.MULT  equ $0E +6 NOS * TOS
+RI.DOUBL equ $0F  0 TOS * 2
+RI.DIV   equ $10 +6 NOS / TOS
+RI.RECIP equ $11  0 1 / TOS
+RI.ABS   equ $12  0 abs(TOS)
+RI.ROLL  equ $13  0 (TOS)B, C, A -> (TOS)A, B, C (roll 3rd to top)
+RI.NEG   equ $14  0 -TOS
+RI.OVER  equ $15 -6 NOS
+RI.DUP   equ $16 -6 TOS
+RI.SWAP  equ $17  0 NOS <--> TOS
+RI.COS   equ $18  0 cos(TOS)
+
+RI.SIN   equ $1A  0 sin(TOS)
+
+RI.TAN   equ $1C  0 tan(TOS)
+
+RI.COT   equ $1E  0 cot(TOS)
+
+RI.ASIN  equ $20  0 arcsin(TOS)
+
+RI.ACOS  equ $22  0 arccos(TOS)
+
+RI.ATAN  equ $24  0 arctan(TOS)
+RI.ARG   equ $25 +6 arg(TOS,NOS) = a, solves TOS = k*cos(a) and NOS = k*sin(a)
+RI.ACOT  equ $26  0 arccot(TOS)
+RI.MOD   equ $27 +6 sqrt(TOS^2 + NOS^2)
+RI.SQRT  equ $28  0 sqrt(TOS)
+RI.SQUAR equ $29  0 TOS * TOS
+RI.LN    equ $2A  0 ln(TOS)
+
+RI.LOG10 equ $2C  0 log10(TOS)
+
+RI.EXP   equ $2E  0 e ^ TOS
+RI.POWER equ $2F +2 NOS ^ TOS, where TOS is a signed short integer
+RI.POWFP equ $30 +6 NOS ^ TOS
+
+RI.MAXOP equ $30
+
+RI.LOAD  equ $00                load operand key
+RI.STORE equ $01                store operand key (sets bit 0)
+
+* For use after RI.K
+
+RI.PI180 equ $56
+RI.LOGE  equ $69
+RI.PI6   equ $79
+RI.LN2   equ $88-$100
+RI.SQRT3 equ $98-$100
+RI.PI    equ $A8-$100
+RI.PI2   equ $A7-$100
+
+        list

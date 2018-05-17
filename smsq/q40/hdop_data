@@ -1,0 +1,28 @@
+* Q40 HDOP interface definitions
+        nolist
+
+ho_bptim equ    $20     ; word  beep timer
+ho_bppit equ    $22     ; word  pitch
+ho_bphgh equ    $24     ; word  high pitch
+ho_bplow equ    $26     ; word  low pitch
+ho_bpstp equ    $28     ; word  step in pitch
+ho_bpint equ    $2a     ; word  interval between step changes
+ho_bpict equ    $2c     ; word  interval counter
+ho_bpwrp equ    $2e     ; word  wrap
+ho_bpwct equ    $30     ; word  wrap counter
+
+ho_work  equ    $32     ; working space
+ho_carry equ    $3c     ; number of cycles to carry forward
+ho_end   equ    $40
+
+ho.bpoff equ      920/50                ; beep 0            (50us period)
+ho.bpscl equ      12224/50-ho.bpoff     ; beep 128 - beep 0 (50us period)
+ho.bpssf equ      7                     ; /128
+
+; for q40, duration is in half ticks
+
+ho.bpfa  equ      ho.bpscl/128*325*2*2  ; duration = (125 + a/(b+2*pitch)) * QL*2
+ho.bpfb  equ      ho.bpscl/128*5*2-ho.bpoff*2
+ho.bpfo  equ      125*2
+
+        list

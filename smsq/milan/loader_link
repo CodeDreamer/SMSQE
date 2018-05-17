@@ -1,0 +1,10 @@
+program dev8_smsq_milan_loader
+
+input   dev8_smsq_milan_loader_rel
+library dev8_smsq_smsq_version_rel
+* library dev8_smsq_atari_emu_mmutab_rel
+* library dev8_smsq_atari_init_hw_rel
+* library dev8_smsq_atari_dtype_rel
+* library dev8_smsq_atari_type_rel
+library dev8_util_gut_lib
+library dev8_smsq_milan_loader_end_rel

@@ -1,0 +1,37 @@
+	; ASCII keys
+	nolist
+asc.nul equ	0	Null
+asc.soh equ	1	Start of Header
+asc.stx equ	2	Start of Text
+asc.etx equ	3	End of Text
+asc.eot equ	4	End of Transmission
+asc.enq equ	5	Enquiry
+asc.ack equ	6	Acknowledge
+asc.bel equ	7	Bell
+asc.bs	equ	8	Backspace
+asc.ht	equ	9	Horizontal tab
+asc.lf	equ    10	Line Feed
+asc.vt	equ    11	Vertical tab
+asc.ff	equ    12	Form Feed
+asc.cr	equ    13	Carriage Return
+asc.so	equ    14	Shift out
+asc.si	equ    15	Shift in
+asc.dle equ    16	Data Link Escape
+asc.dc1 equ    17	Device Control 1
+asc.dc2 equ    18	Device Control 2
+asc.dc3 equ    19	Device Control 3
+asc.dc4 equ    20	Device Control 4
+asc.nak equ    21	Negative Acknowledge
+asc.syn equ    22	Synchronous Idle
+asc.etb equ    23	End of Transmission Block
+asc.can equ    24	Cancel
+asc.em	equ    25	End of Medium
+asc.sub equ    26	Substitute Character
+asc.esc equ    27	Escape
+asc.fs	equ    28	File Separator
+asc.gs	equ    29	Group Separator
+asc.rs	equ    30	Record Separator
+asc.us	equ    31	Unit Separator
+asc.sp	equ    32	Space
+asc.del equ   127	Delete
+	list

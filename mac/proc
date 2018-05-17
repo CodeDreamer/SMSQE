@@ -1,0 +1,46 @@
+;       PROC FN table entry
+        nolist
+
+proc_stt macro
+proc.cnt setnum 0
+proc.len setnum 0
+proc.nam setstr {proc[.l]}
+        dc.w   [proc.nam]
+        endm
+
+proc_def macro name,entry
+proc.cnt setnum [proc.cnt]+1
+proc.len setnum [proc.len]+[.len(name)]+1
+proc.ent setstr {[entry]}
+         ifstr {[proc.ent]} <> {} goto proc_set
+proc.ent setstr {[name]}      
+
+proc_set maclab
+         xref   [proc.ent]
+         dc.w   [proc.ent]-*
+         dc.b   [.len(name)],'[name]'
+        endm
+
+proc_ref macro name,entry
+proc.cnt setnum [proc.cnt]+1
+proc.len setnum [proc.len]+[.len(name)]+1
+proc.ent setstr {[entry]}
+         ifstr {[proc.ent]} <> {} goto proc_set
+proc.ent setstr {[name]}
+
+proc_set maclab
+         dc.w   [proc.ent]-*
+         dc.b   [.len(name)],'[name]'
+        endm
+
+proc_end macro
+        ifnum [proc.cnt] = 0 goto proc_cnt
+proc.len setnum ([proc.len]+9)/8
+        ifnum [proc.cnt] >= [proc.len] goto proc_cnt
+proc.cnt setnum [proc.len]
+proc_cnt maclab
+[proc.nam] equ  [proc.cnt]
+        dc.w    0
+        endm
+
+        list

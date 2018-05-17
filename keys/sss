@@ -1,0 +1,12 @@
+; SMSQ Sampled Sound System
+        nolist
+
+sss_flag   equ  $00
+sss.flag   equ    'SSSS'
+sss_add1   equ  $04             ; entry for add one sample
+sss_setm   equ  $08             ; entry for set up to add multiple
+sss_addm   equ  $0c             ; add multiple
+sss_kill   equ  $10             ; kill sound
+sss_sample equ  $14             ; how many samples?
+
+        list

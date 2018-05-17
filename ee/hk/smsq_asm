@@ -1,0 +1,44 @@
+; HOTKEY Texts etc for SMSQ   V2.00     1994  Tony Tebby
+
+	section hotkey
+
+	xdef	hk_smsq      ; to load it
+hk_smsq
+
+	xdef	hktx_llrc
+	xdef	hktx_grab
+
+	xdef	met_dnam
+	xdef	hk_stufc
+	xdef	hk_stufp
+	xdef	hk_stufl
+
+	include 'dev8_keys_msg8'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_mac_text'
+
+met_dnam dc.w	0
+hk_stufc dc.b	' '
+hk_stufp dc.b	$fc
+hk_stufl dc.l	$200
+
+  mktext hks2,{HOTKEY System 2\}
+  mktext spce,{SPACE}
+  mktext exec,{EXEC}
+  mktext load,{LOAD}
+  mktext pick,{PICK}
+  mktext wake,{WAKE}
+  mktext cmd,{CMD}
+  mktext key,{KEY}
+
+
+hktx_llrc
+	move.w	#msg8.llrc,a1
+	bra.s	hktx_set
+hktx_grab
+	move.w	#msg8.grab,a1
+hktx_set
+	moveq	#sms.mptr,d0
+	trap	#do.sms2
+	rts
+	end

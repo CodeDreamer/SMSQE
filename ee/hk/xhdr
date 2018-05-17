@@ -1,0 +1,19 @@
+;       executable program header definitions
+        nolist
+hkh.hlen equ    10      header length for zero length name
+hkh.plen equ    20      preamble length
+
+hkh.unlk equ    -1      guardian window size for unlockable
+hkh.nogd equ    0       guardian window size for no guardian
+
+hkh.jmpl equ    $4ef9
+hkh.flag equ    $4afb
+hkh.jsrl equ    $4eb9
+hkh.jpa6 equ    $4ed6
+hkh_jsgd equ    $00     jsr
+hkh_gard equ    $02     ... guardian
+hkh_wdef equ    $06     window definition
+hkh_frez equ    $0e     set for freeze
+hkh_gmem equ    $10     memory
+hkh_jpa6 equ    $12     jmp (a6)
+        list

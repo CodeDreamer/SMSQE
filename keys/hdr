@@ -1,0 +1,24 @@
+* file header structure
+        nolist
+
+hdr_flen equ    $00     ; long    File LENgth
+hdr_accs equ    $04     ; byte    access control byte
+hdr_type equ    $05     ; byte    file TYPE
+hdrt.exe equ      1       ; executable
+hdrt.rel equ      2       ; relocatable
+hdrt.ldr equ      3       ; loader re-locatable file
+hdrt.dir equ      $ff     ; directory
+hdr_info equ    $06     ; 8*bytes additional information
+hdr_data equ    $06     ; long    program DATA space
+hdr_xtra equ    $0a     ; long    extra info
+hdr_name equ    $0e     ; string  file name (up to 36 characters long)
+hdr.nmln equ      36
+hdr_date equ    $34     ; long    update date
+hdr_vers equ    $38     ; word    version number
+hdr_flid equ    $3a     ; word    File ID
+hdr_bkup equ    $3c     ; long    backup date
+hdr_end  equ    $40             ; end of header
+hdr.set  equ    $0e             ; length of header set
+hdr.len  equ    $40             ; length of header
+hdr.sft  equ    6               ; 1<<hdr.sft = hdr.len
+        list

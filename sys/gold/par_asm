@@ -1,0 +1,243 @@
+; SUPER GOLD PAR DRIVER
+
+	section sgc
+
+	xdef	par_init
+
+	xref	ut_gtnam
+
+	include 'dev8_sys_gold_keys'
+
+par_init
+ab18	 tst.w	 $1c204
+ab1e	 bne.s	 ab9a
+ab20	 move.l  #$90,d1
+ab26	 moveq	 #$0,d2
+ab28	 moveq	 #$18,d0
+ab2a	 trap	 #$1
+ab2c	 tst.l	 d0
+ab2e	 bne.s	 ab9a
+ab30	 move.l  a0,a4
+ab32	 lea	 $1c(a4),a3
+ab36	 lea	 par_io,a2
+ab3a	 move.l  a2,(a3)+
+ab3c	 move.l  a3,a1
+ab3e	 addq.l  #4,a3
+ab40	 lea	 par_close,a2
+ab44	 move.l  a2,(a3)+
+ab46	 lea	 par_bp,a2
+ab4a	 move.l  a2,(a3)+
+ab4c	 move.l  a2,(a3)+
+ab4e	 lea	 par_pbyt,a2
+ab52	 move.l  a2,(a3)+
+ab54	 move.w  par_rts,(a3)+
+ab58	 clr.w	 (a3)+
+ab5a	 move.l  #'PAR%',(a3)+
+ab60	 addq.l  #4,a3
+ab62	 move.l  a3,(a3)+
+ab64	 move.l  a3,(a1)
+ab66	 lea	 par_open,a2
+ab6a	 lea	 par_opdo,a1
+ab6e	 move.w  (a2)+,(a3)+
+ab70	 cmpa.l  a1,a2
+ab72	 blt.s	 ab6e
+ab74	 move.l  a2,-(a3)
+
+ab76	 lea	 par_sched,a2
+ab7a	 move.l  a2,$14(a4)
+ab7e	 lea	 $10(a4),a0
+ab82	 moveq	 #$1e,d0
+ab84	 trap	 #$1
+
+ab86	 lea	 $18(a4),a0
+ab8a	 moveq	 #$20,d0
+ab8c	 trap	 #$1
+
+ab8e	 lea	 par_procs,a1
+ab92	 move.w  $110,a2
+ab96	 jsr	 (a2)
+ab98	 moveq	 #$0,d0
+par_rts
+ab9a	 rts
+par_procs
+	 dc.w	1
+	 dc.w	par_use-*
+	 dc.b	7,'PAR_USE'
+	 dc.w	0,0,0
+
+par_use
+abae	 move.l  #'PAR0',d4
+abb4	 moveq	 #8,d0
+abb6	 add.l	 a3,d0
+abb8	 sub.l	 a5,d0
+abba	 bge.s	 abc0
+par_bp
+abbc	 moveq	 #-15,d0
+abbe	 rts
+abc0	 bgt.s	 abda
+abc2	 bsr.l	 ut_gtnam
+abc6	 bne.s	 abbc
+abc8	 cmpi.w  #$3,$0(a6,a1.l)
+abce	 bne.s	 abbc
+abd0	 move.l  $2(a6,a1.l),d4
+abd4	 andi.l  #$dfdfdfdf,d4
+abda	 moveq	 #$0,d0
+abdc	 trap	 #$1
+abde	 move.l  $44(a0),a0
+abe2	 move.l  #'PAR%',d2
+abe8	 cmp.l	 $20(a0),d2
+abec	 beq.s	 abf8
+abee	 move.l  (a0),d0
+abf0	 move.l  d0,a0
+abf2	 bne.s	 abe8
+abf4	 moveq	 #-7,d0
+abf6	 rts
+
+abf8	 move.l  d4,$42(a0)
+abfc	 moveq	 #$0,d0
+abfe	 rts
+
+par_open
+ac00	 move.l  a3,a4
+ac02	 lea	 -$10(sp),sp
+ac06	 move.l  a7,a3
+ac08	 move.w  $122,a2
+ac0c	 jsr	 (a2)
+ac0e	 bra.s	 ac40
+ac10	 bra.s	 ac40
+ac12	 bra.s	 ac46
+	 dc.w	3,'PAR'
+	 dc.w	8
+	 dc.w	-1,1
+	 dc.w	4,'OEMS'
+	 dc.w	2,'IH'
+	 dc.w	3,'RCA'
+	 dc.w	2,'TD'
+	 dc.w	2,'FZ'
+	 dc.w	' _',0
+	 dc.w	1,'K'
+
+ac40	 lea	 $10(sp),sp
+ac44	 rts
+ac46	 jmp	 $12345678
+
+par_opdo
+ac4c	 moveq	 #-9,d0
+ac4e	 tas	 $36(a4)
+ac52	 bne.s	 ac82
+ac54	 moveq	 #$1c,d1
+ac56	 move.w  $c0,a2
+ac5a	 jsr	 (a2)
+ac5c	 bne.s	 ac82
+ac5e	 movem.w (sp),d0/d1/d2/d3/d4/d5/d6/d7
+ac62	 tst.w	 d5
+ac64	 beq.s	 ac70
+ac66	 subq.w  #1,d5
+ac68	 beq.s	 ac6e
+ac6a	 moveq	 #$1a,d5
+ac6c	 bra.s	 ac70
+ac6e	 moveq	 #$c,d5
+ac70	 move.b  d5,$19(a0)
+ac74	 subq.w  #2,d3
+ac76	 move.b  d3,$18(a0)
+ac7a	 subq.w  #2,d4
+ac7c	 slt	 $1a(a0)
+ac80	 moveq	 #$0,d0
+ac82	 lea	 $10(sp),sp
+ac86	 rts
+
+par_close
+ac88	 tst.b	 $37(a3)
+ac8c	 bne.s	 ac94
+ac8e	 move.b  $19(a0),$37(a3)
+ac94	 sf	 $36(a3)
+ac98	 move.w  $c2,a2
+ac9c	 jmp	 (a2)
+
+par_io
+ac9e	 tst.b	 $37(a3)
+aca2	 bne.s	 acde
+aca4	 pea	 $28(a3)
+aca8	 move.w  $ea,a2
+acac	 jmp	 (a2)
+
+par_pbyt
+acae	 lea	 $40(a3),a2
+acb2	 cmpa.l  $40(a3),a2
+acb6	 bne.s	 acde
+acb8	 move.l  $1c200,a2
+acbe	 tst.b	 $e0(a2)
+acc2	 bpl.s	 acde
+acc4	 cmpi.b  #$a,d1
+acc8	 bne.s	 ace4
+acca	 tst.b	 $18(a0)
+acce	 bmi.s	 ace4
+acd0	 beq.s	 ace2
+acd2	 bchg	 #$1,$18(a0)
+acd8	 bne.s	 ace4
+acda	 bsr.s	 ace2
+acdc	 moveq	 #$a,d1
+acde	 moveq	 #-1,d0
+ace0	 rts
+ace2	 moveq	 #$d,d1
+ace4	 tst.b	 $1a(a0)
+ace8	 beq.s	 ad30
+acea	 tst.b	 $144(a6)
+acee	 beq.s	 ad30
+acf0	 move.l  $146(a6),a4
+acf4	 adda.w  $2(a4),a4
+acf8	 andi.w  #$ff,d1
+acfc	 beq.s	 ad30
+acfe	 move.b  $0(a4,d1.w),d0
+ad02	 beq.s	 ad08
+ad04	 move.b  d0,d1
+ad06	 bra.s	 ad30
+ad08	 move.l  $146(a6),a4
+ad0c	 adda.w  $4(a4),a4
+ad10	 move.b  (a4)+,d0
+ad12	 beq.s	 ad5c
+ad14	 cmp.b	 (a4)+,d1
+ad16	 beq.s	 ad1e
+ad18	 addq.l  #3,a4
+ad1a	 subq.b  #1,d0
+ad1c	 bra.s	 ad12
+ad1e	 lea	 $3d(a3),a2
+ad22	 move.b  (a4)+,(a2)+
+ad24	 move.b  (a4)+,(a2)+
+ad26	 move.b  (a4),(a2)
+ad28	 subq.l  #2,a2
+ad2a	 move.l  a2,$40(a3)
+ad2e	 bra.s	 ad5c
+ad30	 move.b  d1,$70(a2)
+ad34	 st	 $78(a2)
+ad38	 tst.l	 $18000
+ad3e	 tst.b	 $78(a2)
+ad42	 move.w  #$64,d0
+ad46	 tst.b	 $e0(a2)
+ad4a	 dbpl	 d0,ad46
+ad4e	 bmi.s	 ad5c
+ad50	 move.w  #$2710,d0
+ad54	 tst.b	 $e0(a2)
+ad58	 dbmi	 d0,ad54
+ad5c	 moveq	 #$0,d0
+ad5e	 move.b  d0,$70(a2)
+ad62	 rts
+
+par_sched
+ad64	 move.l  $1c200,a2
+ad6a	 tst.b	 $e0(a2)
+ad6e	 bpl.s	 ad62
+ad70	 lea	 $40(a3),a0
+ad74	 cmpa.l  $40(a3),a0
+ad78	 beq.s	 ad84
+ad7a	 move.l  (a0),a0
+ad7c	 move.b  (a0)+,d1
+ad7e	 move.l  a0,$40(a3)
+ad82	 bra.s	 ad30
+ad84	 move.b  $37(a3),d1
+ad88	 beq.s	 ad62
+ad8a	 sf	 $37(a3)
+ad8e	 bra.l	 ace4
+
+
+	end

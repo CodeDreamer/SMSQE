@@ -1,0 +1,231 @@
+; ByteBox keys
+
+        include 'dev8_keys_6833x'
+
+        nolist
+
+
+bb_ram0      equ  $00000000     first 1M static ram
+bb_ram1      equ  $00100000     second 1M static RAM
+bb_rom       equ  $00c00000     ROM
+bb_peri      equ  $00e00000     peripheral area
+bb_mmext     equ  $00ffe000     multimedia extension board
+
+bb_lcd_cmd   equ  bb_peri+$00000+$0000
+bb_lcd_data  equ  bb_peri+$00000+$0002
+bb_MIO       equ  bb_peri+$40000+$0000
+bb_pd67mem   equ  bb_peri+$80000+$0000
+bb_pd67io    equ  bb_peri+$c0000+$0000
+
+bb_rpcm_w    equ  $438           ; long  address of read from word wide pcm
+bb_rpcm_b    equ  $43c           ; long  address of read from byte wide pcm
+
+MIO_s        equ   1             ; Multi IO address shift
+
+bb_keysel    equ gpt_pdir        ; select column
+bb.kcoloff   equ   3               ; add to column number to set bit
+bb.kleft     equ   %00001000       ; left
+bb.klmid     equ   %00010000       ; left centre
+bb.krmid     equ   %00100000       ; right centre
+bb.kright    equ   %01000000       ; right
+bb.kacols    equ   %01111000       ; all selected
+bb_keypad    equ gpt_port
+bb.kupper    equ   %00000001       ; upper row
+bb.kumid     equ   %00000010       ; upper / middle
+bb.kbmid     equ   %00000100       ; below / middle
+bb.bottom    equ   %10000000       ; bottom row
+bb.arows     equ   %10000111       ; all rows
+
+bb.cs.a      equ sim.boot8+sim.cs16b<<sim..cs0+sim.cs16b<<sim..cs1+sim.cs16b<<sim..cs2
+bb.cs.b      equ sim.cs16b<<sim..cs3+sim.cs16b<<sim..cs4+sim.cs16b<<sim..cs5+sim.std<<sim..cs6
+bb.cs.c      equ sim.std<<sim..cs7+sim.std<<sim..cs8+sim.std<<sim..cs9+sim.cs16b<<sim..cs10
+bb.cs        equ bb.cs.a+bb.cs.b+bb.cs.c
+bb.cs10b     equ sim.cs8b  ; cs10 byte wide (write byte to CSPAR1)
+bb.cs10w     equ sim.cs16b ; cs10 word wide
+
+bb.csa.ram0  equ  bb_ram0>>8+simc.1m
+bb.csa.ram1  equ  bb_ram1>>8+simc.1m
+bb.csa.peri  equ  bb_peri>>8+simc.1m
+bb.csa.mmext equ  bb_mmext>>8+simc.2k
+bb.csa.avec  equ  $fff8                         ; autovector
+
+bb.csboot    equ simc.supv+simc.read+simc.bbyte+simc.2w
+bb.cswl      equ simc.user+simc.supv+simc.write+simc.lbyte
+bb.cswu      equ simc.user+simc.supv+simc.write+simc.ubyte
+bb.csrd      equ simc.user+simc.supv+simc.read+simc.bbyte
+bb.csmmstat  equ simc.supv+simc.read+simc.ubyte+simc.2w
+bb.csmmdata  equ simc.supv+simc.write+simc.ubyte+simc.2w
+bb.csperi    equ simc.supv+simc.read+simc.write+simc.bbyte+simc.2w
+bb.csperib   equ simc.supv+simc.read+simc.write+simc.lbyte+simc.2w
+bb.csperis   equ simc.supv+simc.read+simc.write+simc.bbyte+simc.8w
+bb.csavec    equ simc.avec+simc.cpu+simc.read+simc.lbyte
+bb.csavecw   equ simc.avec+simc.cpu+simc.read+simc.bbyte
+
+bb_power     equ  qsm_ddrqs              ; power control (data dir) port qs
+bb.powon     equ  1<<4+1<<5              ; power on bits set to output
+bb.powoff    equ  0
+
+; Multi IO definitions
+
+FDC       equ   bb_MIO+$3f0<<MIO_s
+IDEIO     equ   bb_MIO+1
+IDEIOW    equ   bb_MIO
+IDE0      equ   IDEIO+$1f0<<MIO_s
+IDE0A     equ   IDEIO+$3f6<<MIO_s
+IDE0W     equ   IDEIOW+$1f0<<MIO_s
+IDE1      equ   IDEIO+$170<<MIO_s
+IDE1A     equ   IDEIO+$376<<MIO_s
+IDE1W     equ   IDEIOW+$170<<MIO_s
+IRQ.ide   equ    14
+LPT1      equ   bb_MIO+$378<<MIO_s
+IRQ.lpt1  equ     7
+COM1      equ   bb_MIO+$3f8<<MIO_s
+IRQ.com1  equ     4
+COM2      equ   bb_MIO+$2f8<<MIO_s
+IRQ.com2  equ     3
+RTC       equ   bb_MIO+$070<<MIO_s
+KBD       equ   bb_MIO+$060<<MIO_s
+IRQ.kbd   equ     1
+GPA_index equ   bb_MIO+$0ea<<MIO_s
+GPA.gp1   equ     1     ; GPIO port 1
+GPA.gp2   equ     2     ; GPIO port 2
+GPA_data  equ   bb_MIO+$0eb<<MIO_s
+
+MIO_conf equ    bb_MIO+$370<<MIO_s
+MIO.conf equ      $55
+MIO.ncnf equ      $AA
+MIO_cind equ    MIO_conf
+MIO_cdat equ    MIO_conf+1<<MIO_s
+
+MIO_ldn  equ    $07              ; set logical device number
+MIO.fdd  equ      0                ; floppy disk
+MIO.ide  equ      1                ; IDE
+MIO.par  equ      3                ; parallel port
+MIO.ser1 equ      4                ; serial port 1
+MIO.ser2 equ      5                ; serial port 2
+MIO.rtc  equ      6                ; real time clock
+MIO.kbd  equ      7                ; keyboard
+MIO.gpio equ      8                ; general purpuse IO
+MIO_pctl equ    $22              ; power control
+MIO_pman equ    $23              ; power management
+MIO_osc  equ    $24              ; oscillator
+MIO.oson equ      0                ; oscillator and baud rate gen on
+MIO_actv equ    $30              ; activate device
+MIO.actv equ      1                ; activate it
+MIO_iobh equ    $60              ; IO base address (h)
+MIO.fdch  equ     $03              ; fdc address
+MIO.ideh  equ     $01              ; ide address
+MIO.lpt1h equ     $03              ; lpt1 address
+MIO.com1h equ     $03              ; com1 address
+MIO.com2h equ     $02              ; com2 address
+MIO.gpah  equ     $00              ; GPIO A register base
+MIO_iobl equ    $61              ; IO base address (l)
+MIO.fdcl  equ     $f0              ; fdc address
+MIO.idel  equ     $f0              ; ide address
+MIO.lpt1l equ     $78              ; lpt1 address
+MIO.com1l equ     $f8              ; com1 address
+MIO.com2l equ     $f8              ; com2 address
+MIO.gpal  equ     $ea              ; GPIO A register base
+MIO_ioxh equ    $62              ; IO extra address (h)
+MIO.idxh  equ     $03              ; ide address
+MIO_ioxl equ    $63              ; IO extra address (l)
+MIO.idxl  equ     $f6              ; ide address
+
+
+MIO_ints equ    $70              ; interrupt select
+MIO_intk equ    $72              ; keyboard special interrupt
+
+MIO_mode equ    $f0              ; mode
+MIO.midi equ      %00000001        ; midi mode
+MIO.hss  equ      %00000010        ; high speed serial mode
+MIO.ecp9 equ      %00010011        ; ECP EPP 1.9 mode (2 byte threshold)
+
+MIO_gp10 equ    $e0              ; config port gp10
+MIO_gp20 equ    $e8              ; config port gp20
+MIO.gpout equ     %00000000        ; GP port output
+MIO.gpin  equ     %00000001        ; GP port input
+MIO.inth  equ     %00000101        ; non inverting interrupt (high)
+MIO.intl  equ     %00000111        ; inverting interrupt (active low)
+MIO_gpint equ   $f0              ; GP interrupt control
+MIO..gpis equ     4                ; IRQn shift (IRQ1 = $10)
+MIO_gpen equ    $f1              ; enable GP
+MIO.gpaen equ     %00000001        ; GPA enabled
+MIO_optn equ    $f1              ; (SER) options
+
+        include 'dev8_keys_multiIO'
+
+        nolist
+
+pd67_cmd   equ  bb_pd67io+$3e0    ; word access, index in msb
+; pd67_data  equ  bb_pd67io+$3e0
+; pd67_index equ  bb_pd67io+$3e1
+
+pd67_pwrc  equ  $02              ; card power control
+pd67.pwron equ    %10010000        ; power on
+
+pd67_cint  equ  $03              ; card interrupt register
+pd67.cirq5 equ    %00000101        ; IRQ5
+pd67.cio   equ    %00100000        ; IO card
+pd67.cnrs  equ    %01000000        ; no reset
+
+pd67_mint  equ  $05              ; management interrupt register
+pd67.mirq5 equ    %01010000        ; IRQ5
+
+pd67_mena  equ  $06              ; mapping enable
+pd67.mena  equ    %01000001        ; io0 and mem0
+
+pd67_iowc  equ  $07              ; io window control
+pd67.iowc  equ    %00100010        ; standard auto detect width
+
+pd67_io0bl equ  $08              ; IO map 0 base address (low byte)
+pd67.io0bl equ    $00
+pd67_io0bh equ  $09              ; IO map 0 base address (high byte)
+pd67.io0bh equ    $00
+pd67_io0el equ  $0a              ; IO map 0 end address (low byte)
+pd67.io0el equ    $df
+pd67_io0eh equ  $0b              ; IO map 0 end address (high byte)
+pd67.io0eh equ    $03
+pd67_io0ol equ  $36              ; IO map 0 offset address (low byte)
+pd67.io0ol equ    $00
+pd67_io0oh equ  $37              ; IO map 0 offset address (high byte)
+pd67.io0oh equ    $00
+
+pd67_mem0bl equ $10              ; mem map 0 base address (low byte)
+pd67.mem0bl equ   $10              ; base at $1000 (word)
+pd67.mem0blb equ  $20              ; base at $2000 (byte)
+pd67_mem0bh equ $11              ; mem map 0 base address (high byte)
+pd67.mem0bh equ   $80              ; 16 bit access
+pd67.mem0bhb equ  $00              ; 8 bit access
+pd67_mem0el equ $12              ; mem map 0 end address (low byte)
+pd67.mem0el equ   $01f             ; 64 k byte window (word)
+pd67.mem0elb equ  $02f             ; 64 k byte window (word)
+pd67_mem0eh equ $13              ; mem map 0 end address (high byte)
+pd67.mem0eh equ   $00              ; ISA bus timing
+pd67_mem0ol equ $14              ; mem map 0 offset address (low byte)
+pd67_mem0oh equ $15              ; mem map 0 offset address (high byte)
+pd67.memoff equ   $10000           ; memory offset for address 0 on card (-ve)
+pd67.memoffb equ  $20000           ; memory offset for address 0 on card (-ve)
+pd67..memsft equ  12               ; memory address shift
+pd67.memmsk equ   $00003fff        ; mask of offset bits
+
+pd67_fifo   equ $17              ; FIFO
+pd67..fifo  equ   7                ; bit set if fifo empty
+
+pcm_io     equ  bb_pd67io+$00000  ; base of standard IO page
+pcm_mem    equ  bb_pd67mem+$10000 ; base of standard memory page
+pcm_memb   equ  bb_pd67mem+$20000 ; base of byte wide memory page
+
+
+lcd.init   equ    %00111000      ; function set, 8 bit, 2 line, 5x7
+lcd.off    equ    %00001000      ; lcd off
+lcd.curd   equ    %00001100      ; cursor disabled
+lcd.cure   equ    %00001110      ; cursor enabled
+lcd.norm   equ    %00000110      ; normal mode (increment, no shift)
+lcd.cgadr  equ    %01000000      ; set character generator address
+lcd.dline0 equ    %10000000      ; set display data address line 0
+lcd.dline1 equ    %11000000      ; set display data address line 1
+lcd..lshift equ   6              ; shift line number to address
+lcd.clear  equ    %00000001      ; lcd cleared
+
+
+        list

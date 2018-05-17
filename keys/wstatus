@@ -1,0 +1,87 @@
+* Window Status Area
+        nolist
+*
+*   window linkage area
+*
+ws_work  equ    $00   long   pointer to window working definition
+ws_wdef  equ    $04   long   pointer to window definition
+*
+*   window working area
+*
+ws_point equ    $08          pointer record (16 bytes)
+wsp_chid equ    $08   long   channel ID of window enclosing the pointer
+wsp_swnr equ    $0c   word   sub-window number enclosing pointer (or -1)
+wsp_xpos equ    $0e   word   pointer x pixel position
+wsp_ypos equ    $10   word   pointer y pixel position
+wsp_kstr equ    $12   byte   key stroke (or 0)
+wsp_kprs equ    $13   byte   key press (or 0)
+wsp_evnt equ    $14   long   event vector
+wsp_jeve equ    $14   byte   job byte of event vector
+wsp_weve equ    $15   byte   window byte of event vector
+wsp_seve equ    $16   byte   sub-window byte of event vector
+wsp_peve equ    $17   byte   pointer byte of event vector
+*
+ws_subdf equ    $18          sub_window definition (four words)
+wsp_xsiz equ    $18   word   sub-window x size (width)
+wsp_ysiz equ    $1a   word   sub-window y size (height)
+wsp_xorg equ    $1c   word   sub-window x origin
+wsp_yorg equ    $1e   word   sub-window y origin
+*
+ws_ptpos equ    $20   long   pointer position (absolute)
+ws_wmode equ    $24   word   window mode
+*
+ws_ciact equ    $2c   long   pointer to current item action routine
+ws_citem equ    $30   word   current item in sub-window
+ws_cibrw equ    $32   word   current item border width
+ws_cipap equ    $34   word   paper behind current hit item
+ws_cispr equ    $36
+ws_cihit equ    $38          current item hit area (absolute coordinates)
+ws_cihxs equ    $38   word      x size
+ws_cihys equ    $3a   word      y size
+ws_cihxo equ    $3c   word      x origin
+ws_cihyo equ    $3e   word      y origin
+*
+wsi.ctrl equ    $7000        start of control item numbers
+wsi.up   equ    $70          MSByte of item for up arrows  (LSByte is section)
+wsi.dn   equ    $71          MSByte of item for down arrows
+wsi.lt   equ    $72          MSByte of item for left arrows
+wsi.rt   equ    $73          MSByte of item for right arrows
+wsi.scr  equ    $78          MSByte of item for scroll bar
+wsi.pan  equ    $7a          MSByte of item for pan bar
+wsi..dnr equ    8            item bit set for down/right
+wsi..pan equ    9            item bit set for pan
+wsi..xt  equ    $a           item bit set for extra pan/scroll
+wsi..bar equ    $b           item bit set for bar
+*
+*   loose menu item status block
+*
+ws_litem equ    $40          one byte per loose item (1 = unavailable,
+*                             0 = available, -1 = selected)
+*
+*   sub-window menu item status block
+*
+wss_item equ    $00          one byte per menu item (1 = unavailable,
+*                             0 = available, -1 = selected)
+wss.ilen equ    $01          length of item status entry in status area
+*
+*   item flag values
+*
+wsi.unav equ    $10           unavailable
+wsi.avbl equ    $00           available
+wsi.slct equ    $80+$ffffff00 selected
+wsi.mkun equ    $11           re-draw, making unavailable
+wsi.mkav equ    $01           re-draw, making available
+wsi.mksl equ    $81+$ffffff00 re-draw, making selected
+wsi..chg equ    $00           bit 0 set if item status changed
+*
+*   sub-window section control block header
+*
+wss_nsec equ    $00   word   number of sections
+*
+*   sub-window section control block record
+*
+wss_spos equ    $00   word   section start pixel position
+wss_sstt equ    $02   word   section start column or row
+wss_ssiz equ    $04   word   section size (number of columns or rows)
+wss.ssln equ    $06          section status list entry length
+        list

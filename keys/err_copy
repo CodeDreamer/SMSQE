@@ -1,0 +1,29 @@
+; Basic error codes for SMS
+        nolist
+
+err.nc   equ    -1              operation Not Complete
+err.ijob equ    -2              Invalid JOB id
+err.imem equ    -3              Insufficient MEMory
+err.orng equ    -4              parameter Outside permitted RaNGe (c.f. err.ipar
+err.bffl equ    -5              BuFfer FuLl
+err.ichn equ    -6              Invalid CHaNnel id
+err.fdnf equ    -7              File or Device Not Found
+err.itnf equ    -7              ITem Not Found
+err.fex  equ    -8              File already EXists
+err.fdiu equ    -9              File or Device or In Use
+err.eof  equ    -10             End Of File
+err.drfl equ    -11             DRive FuLl
+err.inam equ    -12             Invalid file, device or thing name
+err.trns equ    -13             TRaNSmission error
+err.prty equ    -13             PaRiTY error
+err.fmtf equ    -14             ForMaT drive Failed
+err.ipar equ    -15             Invalid PARameter (c.f. err.orng)
+err.mchk equ    -16             file system Medium CHecK failed
+err.iexp equ    -17             Invalid EXPression
+err.ovfl equ    -18             arithmetic OVerFLow
+err.nimp equ    -19             operation Not IMPlemented
+err.rdo  equ    -20             ReaD Only permitted
+err.isyn equ    -21             Invalid SYNtax
+err.noms equ    -22             No error message
+err.accd equ    -23             Access denied
+        list

@@ -1,0 +1,48 @@
+          nolist
+;
+;         Window manager vectors
+;
+wm_vers   equ       $00
+wm.setup  equ       $04
+wm.smenu  equ       $08
+wm.prpos  equ       $0c
+wm.pulld  equ       $10
+wm.unset  equ       $14
+wm.wrset  equ       $18
+wm.wdraw  equ       $1c
+wm.mdraw  equ       $20
+wm.index  equ       $24
+wm.swdef  equ       $28
+wm.ldraw  equ       $2c
+wm.rptr   equ       $30
+wm.mhit   equ       $34
+wm.pansc  equ       $38
+wm.idraw  equ       $3c
+wm.chwin  equ       $40
+wm.drbdr  equ       $44
+wm.msect  equ       $48
+wm.stlob  equ       $4c
+wm.stiob  equ       $50
+wm.fsize  equ       $54
+wm.swinf  equ       $58
+wm.swlit  equ       $5c
+wm.swapp  equ       $60
+wm.swsec  equ       $64
+wm.rname  equ       $68
+wm.ename  equ       $6c
+wm.upbar  equ       $70
+wm.erstr  equ       $74
+wm.rptrt  equ       $78
+;
+wm.drall  equ       0           ; draw all
+wm.drsel  equ       -1          ; draw selectively
+;
+;         Keys for values in window manager data structures
+;
+textu     equ       -1
+text      equ       0
+sprite    equ       2
+blob      equ       4
+patt      equ       6
+;
+          list

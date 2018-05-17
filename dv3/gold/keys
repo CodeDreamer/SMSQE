@@ -1,0 +1,18 @@
+; keys for 8473 controller on GOLD card
+        nolist
+
+MIO_s    equ      5              ; shift pcf/8473 offsets to addresses
+
+FDC      equ      $1c000         ; base of FDC registers
+
+        include 'dev8_keys_multiIO'
+
+; special drive control values
+
+glk.moto equ      %01000110        ; motor on (no drive / drive 1 with disk ada)
+
+glk.mods equ      %10000000        ; standard mode
+glk.modh equ      %00000000        ; high density mode
+glk.mode equ      %00000000        ; extended density mode
+
+        list

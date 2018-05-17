@@ -1,0 +1,9 @@
+   nolist
+;        XBIOS System calls (trap #14)
+
+Getrez     EQU  $04             Get screen resolution
+Setscreen  EQU  $05             Set screen parameters
+Setpalete  EQU  $06             Set new colour pallette
+Rsconf     EQU  $0F             Configure RS232
+Ongibit    EQU  $1E
+   list

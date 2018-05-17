@@ -1,0 +1,19 @@
+; SMS Message codes group 8 - general enquiry
+        nolist
+
+g8        equ    8<<5
+
+msg8.fmtq equ    -g8-1     ;       request before format operation
+msg8.abrt equ    -g8-2     ;       operation aborted
+msg8.grab equ    -g8-3     ;       Grabber message
+msg8.llrc equ    -g8-4     ;       last line recall message
+msg8.ynch equ    -g8-5     ;       YNAQ characters
+msg8.yn   equ    -g8-6     ;       Y or N?
+msg8.ynaq equ    -g8-7     ;       Y/N/A/Q?
+msg8.to   equ    -g8-8     ;       TO
+msg8.exst equ    -g8-9     ;       exists
+msg8.ovrw equ    -g8-10    ;       OK to overwrite
+msg8.scts equ    -g8-11    ;       sectors <NL>
+msg8.jobh equ    -g8-12    ;       job tag    owner priority  <NL>
+msg8.nabt equ    -g8-13    ;       network aborted  <NL>
+        list

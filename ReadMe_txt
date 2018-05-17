@@ -1,0 +1,43 @@
+1 - Compiling the source code
+2 - Additional programs
+3 - Changes to the source code.
+
+
+1 - Compiling the source code
+
+
+There is a document called "HowTo" in the subdirectory "help".
+
+It exists either as a simple text file (HowTo_txt) or as a Quill Doc file
+(HowTo_doc).
+
+This tells you how to compile SMSQ/E for your target.  Some familiarity with
+assembling and linking is presumed.
+
+
+2 - Additional programs
+
+I have created three new subdirectories as compared to the original source
+code that came from Tony Tebby:
+
+ - help
+ - exe
+ - extras
+
+The help directory will contain the help files, as and when they are made.
+
+The exe diirectory contains additional programs that are useful or essential
+for compiling the source code.
+
+The extras directory contains additional programs, mostly those used by myself
+in an attempt to make compilation easier. Any program put into that directory
+should have a corresponding help file in the help directory.
+There is also a file called "contents" in this directory. This lists the entire
+contents of the drive containing SMSQ/E. This is used by some other programs
+in the "extras" subdirectory, e.g. to make update zip files
+
+
+3 - Changes to the source code.
+
+The document "changes_txt", in the root directory, tracks the changes to the
+source code as and when they are made.

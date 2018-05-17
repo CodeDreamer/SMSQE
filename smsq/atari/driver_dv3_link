@@ -1,0 +1,35 @@
+program dev8_smsq_atari_driver_dv3
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+section driver
+
+section language  ; language dependent parts
+
+section init      ; initialisation
+
+section dv3       ; DV3 drivers
+section adma      ; Atari DMA access routines
+
+section procs     ; SuperBASIC procedure table
+section defs      ; SuperBASIC extension (TK2) message and key definitions
+section exten     ; SuperBASIC extensions
+section ed        ; SuperBASIC editor
+section utils     ; SuperBASIC extension utilities
+
+input   dev8_smsq_atari_driver_dv3_rel
+library dev8_dv3_atari_lib
+library dev8_dv3_atari_achp0_rel
+library dev8_dv3_qlf_lib
+library dev8_dv3_msd_lib
+library dev8_dv3_dv3_lib
+
+library dev8_util_thg_parm_rel
+library dev8_util_thg_lib
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_end_rel

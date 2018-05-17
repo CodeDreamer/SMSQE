@@ -1,0 +1,13 @@
+; Xword macros
+        nolist
+
+xword   macro   dreg
+        ror.w   #8,[dreg]
+        endm
+
+xlong   macro   dreg
+        ror.w   #8,[dreg]
+        swap    [dreg]
+        ror.w   #8,[dreg]
+        endm
+        list

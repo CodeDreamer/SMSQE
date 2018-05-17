@@ -1,0 +1,24 @@
+; Multi IO chip keys for Q40
+        nolist
+
+Q40IO   equ     $ff400001       ; IO address space (byte)
+Q40IOw  equ     $ff400000       ; IO address space (word)
+
+MIO_s    equ     2              ; Multi IO address shift
+
+COM1    equ     Q40IO+$3f8<<MIO_s
+COM2    equ     Q40IO+$2f8<<MIO_s
+COM3    equ     Q40IO+$3e8<<MIO_s
+COM4    equ     Q40IO+$2e8<<MIO_s
+LPT1    equ     Q40IO+$378<<MIO_s
+LPT2    equ     Q40IO+$278<<MIO_s
+LPT3    equ     Q40IO+$3bc<<MIO_s
+FDC     equ     Q40IO+$3f0<<MIO_s
+IDE0    equ     Q40IO+$1f0<<MIO_s
+IDE1    equ     Q40IO+$170<<MIO_s
+IDE0A   equ     Q40IO+$3f6<<MIO_s
+IDE1A   equ     Q40IO+$376<<MIO_s
+
+        include 'dev8_keys_multiIO'
+
+         list

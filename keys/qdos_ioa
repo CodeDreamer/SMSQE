@@ -1,0 +1,30 @@
+* SMS2  IOSS allocation keys
+        nolist
+*
+do.ioa   equ    2               trap #2
+do.rlioa equ    4               trap #4
+*
+ioa.open equ    $01             OPEN IOSS channel
+ioa.clos equ    $02             CLOSe IOSS channel
+ioa.frmt equ    $03             FoRMaT medium on device
+ioa.delf equ    $04             DELete file from device 
+ioa.sown equ    $05             Set OWNer of channel
+ioa.cnam equ    $06             fetch Channel NAMe
+ioa.maxk equ    $06             MAXimum Key for qdos trap #2
+*
+* ownership keys
+*
+no.owner equ    0
+myself   equ    -1
+*
+* IOA.OPEN keys (d3.b)
+*
+ioa.kexc equ    $00             Key for EXClusive use (read/write)
+ioa.kshr equ    $01             Key for SHaRed access (read only)
+ioa.knew equ    $02             Key for NEW file (empty, read/write)
+ioa.kovr equ    $03             Key for OVeRwrite (delete contents if it exists)
+ioa.kdir equ    $04             Key for DIRectory file
+ioa.krnm equ    $05             Key for ReNaMe
+*
+ioa.maxo equ    $04             MAXimum Open key
+        list

@@ -1,0 +1,11 @@
+program dev8_smsq_gold_qimi
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+input   dev8_smsq_gold_qimi_rel
+library dev8_iod_con2_ptr_button3_rel
+library dev8_smsq_ioq_lib
+
+library dev8_smsq_smsq_end_rel

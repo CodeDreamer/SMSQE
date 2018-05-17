@@ -1,0 +1,132 @@
+; QXL - PC comms message keys
+        nolist
+qxm_id     equ  $00     ; byte  message number (odd from PC to QXL)
+qxm.setup    equ   $01          ; PC setup message (sent once only)
+qxm.flowqx   equ   $02          ; flow control (sent from qxl)
+qxm.flowpc   equ   $03          ; flow control (sent from pc)
+qxm.srtc     equ   $04          ; set RTC
+qxm.rtcu     equ   $05          ; RTC update
+qxm.rsetup   equ   $06          ; request PC setup
+qxm.kbdd     equ   $07          ; keyboard data
+qxm.vmode    equ   $08          ; set video mode
+qxm.vmack    equ   $09          ; acknowledge message 08
+qxm.pplu     equ   $0a          ; pixel plane update
+qxm.pkpu     equ   $0c          ; packed pixel update
+qxm.spal     equ   $0e          ; set palette map
+qxm.oport    equ   $10          ; open port
+qxm.cport    equ   $12          ; close port
+qxm.sport    equ   $14          ; set port
+qxm.txdata   equ   $16          ; send data
+qxm.rphys    equ   $18          ; read sector from physical device
+qxm.wphys    equ   $1c          ; write sector to physical device
+qxm.fdriv    equ   $30          ; format drive
+qxm.beep     equ   $34          ; beep
+
+; message 01            PC setup
+
+qxm_lpt    equ  $01     ; byte  bits 0 to 7 set for LPT1 to LPT8
+qxm_com    equ  $02     ; word  bits 0 to 15 set for COM1 to COM16
+qxm_dvmode equ  $04     ;       table of video mode definitions
+qxm_dvga4  equ  $04     ; byte  bits set for 4 bit VGA modes avaliable
+qxm_dvesa8 equ  $05     ; byte  bits set for 8 bit VESA modes avaliable
+qxm_dvesah equ  $06     ; byte  bits set for hi color VESA modes avaliable
+qxm_dvesaf equ  $07     ; byte  bits set for full color VESA modes avaliable
+
+; messages 02/03        Flow control
+
+; as PC setup +
+qxm_fatop  equ  $04     ; word  A to P able to accept data
+qxm_fmess  equ  $06     ; byte  message buffers 0 to 7 available
+qxm_fkbd   equ  $07     ; byte  keybaord LED status
+qxm.flowlen equ   8
+
+; messages 04/05        ; RTC
+
+qxm_ymdhms equ  $00     ; 1 word + 6 bytes - the year word is reduced to a
+                        ;         byte (base 1980) for the transaction
+
+; message 07    Keyboard data
+
+qxm_klen   equ  $01     ; byte  number of bytes of keyboard data
+qxm_kdat   equ  $02     ; data  starts here
+
+; message 08            Set VGA/VESA mode
+
+qxm_vclr   equ  $01     ; byte  colour mode
+qxmd.pixp    equ     0          ; (16 colour) pixel plane mode
+qxmd.8bit    equ     1          ; 256 colour mode
+qxmd.high    equ     2          ; high colour (65536) mode
+qxmd.full    equ     3          ; full colour mode
+
+qxm_vres   equ  $02     ; byte  resolution
+qxmd.640     equ     0          ; 640x480 display
+qxmd.800     equ     1          ; 800x600 display
+qxmd.1024    equ     2          ; 1024x768 display
+qxmd.1280    equ     3          ; 1280x960 display
+qxmd.1600    equ     4          ; 1600x1200 display
+qxmd.2048    equ     5          ; 2048x1536 display
+
+qxm_vspare   equ  $03     ; byte
+
+; message 0a/0c         VGA / VESA update
+
+qxm_pplm   equ  $01     ; byte  pixel plane mask
+qxm_vwin   equ  $02     ; word  window offset (x 64k)
+qxm_vadd   equ  $04     ; word  start address
+qxm_vlen   equ  $06     ; word  run length (in words, even)
+qxm_vdat   equ  $08     ; qxm_vlen words of data
+
+; message 0e            Set palette map
+
+qxm_vgap   equ  $01     ; byte  QL mode for VGA palette
+qxm_spof   equ  $02     ; byte  start address
+qxm_spnr   equ  $03     ; byte  number to set -1
+qxm_spd    equ  $04     ;       palette map data
+
+; messages 10-17        Serial IO
+
+qxm_portn  equ  $01     ; port number 0-7 LPT1-8  $80-$8f COM1-16
+qxm_pmode  equ  $02     ; port mode set for ignore handshaking / clear
+qxm_ndata  equ  $02     ; number of bytes of data
+qxm_txdata equ  $04     ; transmit data
+qxm_rxdata equ  $04     ; receive data
+
+qxm_datams equ  $04     ; offset of serial data message from base of alloc
+qxm.mxdata equ  256     ; max data to transfer
+qxm.rmdata equ  2*qxm.mxdata : minimum room
+qxm.bfdata equ  3*qxm.mxdata-1 : minimum rx buffer
+qxm.aldata equ  qxm.mxdata+qxm_datams+qxm_txdata; data message allocation
+
+; messages 18-1f        Physical read / write requests and replies
+
+qxm_phys   equ  $01     ; byte  physical device number 1-26, msb set if file
+qxm_err    equ  $01     ; byte  error number
+qxm_nerr   equ  $01     ; byte  = 0, no error
+qxm_sern   equ  $02     ; word  transaction serial number
+qxm_sector equ  $04     ; long  sector number (0-n or track, head, sector)
+qxm_rdata  equ  $04     ; 512 bytes data read
+qxm_wdata  equ  $08     ; 512 bytes data to write
+
+; message 30/31         Physical device format
+
+;qxm_phys  equ  $01     ; byte  physical device number 1-26, msb set if file
+;qxm_err   equ  $01     ; byte  error number
+;qxm_nerr  equ  $01     ; byte  = 0, no error
+;qxm_sern  equ  $02     ; word  transaction serial number
+;qxm_sector equ $04     ; long  number of sectors to format / total sectors
+qxm_ftype  equ  $08     ; long  format type ID (0 for unformatted)
+qxm_ngood  equ  $08     ; long  number of good sectors
+
+; message 33            Mouse update
+
+qxm_button equ  $01     ; byte  buttons pressed
+qxm_dx     equ  $02     ; word  x displacement
+qxm_dy     equ  $04     ; word  y displacement
+
+; message 34            Beep
+
+qxm_bstart equ  $01     ; byte  set to start beep
+qxm_bparm  equ  $02     ; 5 words of parameters
+
+
+        list

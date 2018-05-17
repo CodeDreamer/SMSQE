@@ -1,0 +1,29 @@
+; Data definitions for DEV
+        nolist
+
+; DEV linkage block
+
+dvd_thgl equ    $60
+
+dvd.entl equ      $20
+dvd.shft equ      5
+dvd_dnam equ    $90-dvd.entl      ; drive name (- dvl.entl cos dev starts at 1)
+dvd.dnam equ      4
+dvd_dnum equ    $96-dvd.entl      ; byte drive number
+dvd_next equ    $97-dvd.entl      ; next default
+dvd_fnam equ    $98-dvd.entl      ; directory file name
+dvd.fnam equ      $16
+
+dvd_save equ    dvd_dnam+dvd.entl*9
+dvd.svnm equ      38                  ; saved name length
+dvd_svnx equ    dvd_save+dvd.svnm     ; word saved next
+dvd_chck equ    dvd_save+dvd.svnm+2   ; dev's checked
+
+dvd_end  equ    dvd_save+dvd.svnm+4
+
+
+; DEV physical definition
+
+dvd.plen equ    $50
+
+        list

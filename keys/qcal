@@ -1,0 +1,80 @@
+* QCAL keys                     24 April 1986           1986 Jan Jones
+*
+        nolist
+*
+* variables offset on A6; base of ca variables
+*
+ca_bfbas        equ     $0      base of buffer (long)
+ca_bfp          equ     $4      running pointer (long) {used in LET}
+ca_bftop        equ     $8      top of buffer (long) {so far unused}
+ca_ribas        equ     $c      base of ri stack (long)
+ca_rip          equ     $10
+ca_ritop        equ     $14
+ca_opbas        equ     $18     base of operator stack (long)
+ca_opp          equ     $1c
+ca_optop        equ     $20
+*
+ca_abas         equ     $24     base of number A
+ca_atop         equ     $28
+ca_bbas         equ     $2c     base of number B
+ca_btop         equ     $30
+ca_cbas         equ     $34     base of temp number C = A op B
+ca_ctop         equ     $38
+ca_dbas         equ     $3c     base of number D (mult/div)
+ca_dtop         equ     $40
+ca_ebas         equ     $44     base of number E (mult/div)
+ca_etop         equ     $48
+ca_fbas         equ     $4c     base of number F (div)
+ca_ftop         equ     $50
+ca_gbas         equ     $54     base of number G (div) 
+ca_gtop         equ     $58
+*       
+ca_chan         equ     $5c     channel id to use (long)
+ca_conch        equ     $60     console channel id (long)         $$ check INI b
+ca_prtch        equ     $64     printer channel id (long)         $$ fore changi
+*
+ca_print        equ     $68     print at each step or not (byte)
+ca_imm          equ     $69     calculate immediately or not (byte)
+ca_expop        equ     $6a     expecting operator next (1) or number (0) (byte)
+*
+ca_base         equ     $7c     position of base of variable area (yes, this one
+ca.varsz        equ     $80     size of variable area
+*
+* vectors
+*
+ut.con          equ     $c6     open a console window
+cn.itod         equ     $f2     convert hex integer to ascii string
+cn.dtoi         equ     $102    convert ascii string to hex integer
+*
+* qdos parameters
+*
+io.open         equ     1       open a file or device
+io.close        equ     2       close a file or device
+io.edlin        equ     4       edit/fetch a line
+io.sbyte        equ     5       send a given byte
+io.sstrg        equ     7       send a given string
+sd.chenq        equ     $b      character position enquiry
+mt.frjob        equ     5       force remove job
+mt.alchp        equ     $18     allocate common heap
+mt.rechp        equ     $19     release common heap
+*
+myself          equ     -1      this job
+io.old          equ     0       old file or existing device
+qd.chhdl        equ     $10     header length of areas allocated in common heap
+*
+* QCAL keyboard constants
+*
+alt             equ     '^'     pseudo ALT key
+ca.qmon         equ     'm'     go into monitor
+ca.print        equ     'p'     toggle print
+ca.imm          equ     'e'     toggle calculate immediately/evaluate expression
+*
+* error codes
+*
+err.nf          equ     1       not found
+err.ov          equ     2       overflow (1/0)
+err.wr          equ     3       wrong (unset error)
+err.ro          equ     4       run out of space
+err.ex          equ     5       error in expression (normally cannot convert)
+*
+        list

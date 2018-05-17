@@ -1,0 +1,73 @@
+         nolist
+
+; Create a standard QDOS job header.
+; If start is omitted, the execution begins with the following statement.
+; If namespace is given, additional null bytes are created to fill in later
+; the real job name.
+qdosjob macro   name,mystart,namespace
+        ifstr   {[mystart]} <> {} goto myqjb
+        local   start
+[.lab]  bra.l   start
+        nop
+        dc.w    $4afb
+        dc.w    [.len(name)]
+        dc.b    '[name]'
+        ifstr   {[namespace]} = {} goto nnsp
+        ds.b    [namespace]-[.len(name)]
+nnsp    maclab
+start   ds.w    0
+        goto    jobend
+myqjb   maclab
+        bra.s   [mystart]
+        nop
+        nop
+        dc.w    $4afb
+        dc.w    [.len(name)]
+        dc.b    '[name]'
+        ifstr   {[namespace]} = {} goto nnsp2
+        ds.b    [namespace]-[.len(name)]
+nnsp2   maclab
+        ds.w    0
+jobend  maclab
+        endm
+
+; Create a standard QDOS string
+qstrg   macro   strg
+        noexpand
+[.lab]  dc.w    [.len(strg)],'[strg]'
+        ds.w    0
+        endm
+
+; Introduce a subroutine and save the given registers on stack (-> subend)
+subr    macro   regs
+rxx     setstr  [regs]
+[.lab]  movem.l [rxx],-(sp)
+        endm
+
+; Fetch the registers of the current subroutine and return.
+subend  macro
+[.lab]  movem.l (sp)+,[rxx]
+        rts
+        endm
+
+; Push a long register onto the stack.
+push    macro   reg
+[.lab]  move.l  [reg],-(sp)
+        endm
+
+; Push multiple registers onto the stack.
+pushm   macro   regs
+[.lab]  movem.l [regs],-(sp)
+        endm
+
+; Pop a register from the stack.
+pop     macro   reg
+[.lab]  move.l  (sp)+,[reg]
+        endm
+
+; Pop multiple registers from the stack.
+popm    macro   regs
+[.lab]  movem.l (sp)+,[regs]
+        endm
+
+        list

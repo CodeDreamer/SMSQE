@@ -1,0 +1,20 @@
+; CHECKSUM macros
+
+        nolist
+
+lwcksum macro   addr,dcount,dcheck,ds1,ds2 ; checksum dcount/2 words
+                                           ; from (addr) to dcheck
+        moveq   #7,[ds2]         ; rotate mask
+        moveq   #0,[ds1]         ; next word
+        moveq   #0,[dcheck]      ; checksum
+lwcs_loop
+        move.w  ([addr])+,[ds1]  ; next word
+        add.l   [ds1],[dcheck]   ; add to checksum
+        and.w   [ds2],[ds1]      ; find a small rotate
+        ror.l   [ds1],[dcheck]
+        subq.l  #2,[dcount]      ; another?
+        bgt.s   lwcs_loop
+
+        endm
+
+        list

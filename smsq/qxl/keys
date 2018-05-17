@@ -1,0 +1,111 @@
+; QXL Hardware Keys
+        nolist
+
+qxl_mtick_count equ   $280e4     ; tick counter for polling interrupt
+qxl.mticks      equ         40
+qxl_sstk        equ   $28480
+
+; we pinch some vectors for QXL constants
+
+qxl_clock      equ     $0380    ; word  assumed clock rate
+qxl_junk       equ     $0382    ; byte  set to junk all incoming messages
+qxl_junk1      equ     $0383    ; byte
+
+; Interrupt server buffers are in high memory
+
+qxl_qxpc_mess  equ     $0384    ; pointer to qxl to pc buffer
+qxl_qxpc.mess  equ       $4000    ; max length
+qxl_qxpc.alc   equ       $4010    ; allocation
+
+qxl_qxpc.ext   equ       $0010    ; qxl to pc buffer pre-extension length
+qxl_qxpc_eom   equ     -$04     ; end of messages (rel to qxl to pc buffer)
+qxl_qxpc_eob   equ     -$08     ; end of buffer
+qxl_rtc        equ     -$0C     ; rtc updated by pc (rel to qxl to pc buffer)
+qxl_qxpc_junk  equ     -$10     ; junk work area (testing only)
+
+qxl_pcqx_mess  equ     $0388    ; pointer pc to qxl buffer
+qxl_pcqx.mess  equ       $4000  ; max length
+qxl_pcqx.alc   equ       $4010  ; allocation
+
+qxl_qxpc_qu    equ     $038c    ; QXL to PC message queue
+qxl_qxpc.qu    equ       $100   ; more than enough
+
+qxl_message    equ     $0390    ; pointer to message area
+
+qxl_ms_spare      equ     -$04     ; word  spare word for qxl-pc messages
+qxl_ms_len        equ     -$02     ; word  length of message, 0 if taken
+qxl_ms_key        equ      $00     ; the key at the start of the message
+qxl_ms_pcset      equ     $000     ; 8 bytes copy of PC Setup message
+qxl_ms_vmode      equ     $00c     ; vesa / vga mode set
+qxl_ms_date       equ     $014     ; date
+qxl_ms_beep       equ     $024     ; beep
+qxl_ms_mouse      equ     $034     ; mouse
+qxl_ms_port       equ     $044     ; port open / close / set
+qxl_ms_flow       equ     $054     ; flow control
+qxl_ms_phys       equ     $064     ; physical read write message
+qxl_ms_vgap       equ     $274     ; vga palette setting
+
+qxl.message    equ      qxl_ms_vgap+6+256*3 ; size of message area
+
+qxl_scr_work   equ     $0394    ; pointer to screen work area
+qxl_scr.work   equ       $20    ; allocation for screen work area
+qxl_scra          equ      $00     ; long  screen allocation
+qxl_scrb          equ      $04     ; long  screen base
+qxl_scry          equ      $08     ; word  screen lines
+qxl_scrl          equ      $0a     ; word  screen line length
+qxl_vga0          equ      $0c     ; word  VGA address of line 0
+qxl_vgal          equ      $0e     ; word  VGA / VESA line length
+qxl_cpyb          equ      $10     ; long  pointer to base of copy area
+
+qxl_scrp          equ      $14     ; word  screen line pointer
+qxl_vfine         equ      $16     ; word  count of fine scan 0 = coarse
+qxl_vconv         equ      $18     ; word  set to convert display mode
+qxl.vdirect          equ       0           ; no conversion
+qxl.vc4vga           equ       2           ; convert QL 4 colour to VGA
+qxl.vc4vesa          equ       4           ; convert QL 4 colour to VESA
+qxl.vc8vga           equ       6           ; convert QL 8 colour to VGA
+qxl.vc8vesa          equ       8           ; convert QL 8 colour to VESA
+
+qxl_vhold         equ       $1a    ; byte  set to hold video updates
+qxl_vsize         equ       $1b    ; byte  size code (640x480 = 0)
+qxl_vcolr         equ       $1c    ; byte  colour code
+qxl_vql           equ       $1d    ; byte  QL colour mode 4 or 8
+qxl_vchek         equ       $1e    ; byte  max number of checks to make
+qxl.vchek            equ       3           ; default check
+qxl_vcopy         equ       $1f    ; byte  max number of lines to copy
+qxl.vcopy            equ       4           ; default copy
+
+qxl_kbd_link  equ     $0398     ; pointer to keyboard linkage
+qxl_spp_link  equ     $039c     ; pointer to SPP linkage
+spd_qxlflow   equ       $28        ; serial IO flow control in spp linkage
+
+; Network code area
+
+qxl_netc      equ   $1f000
+
+; Timer constants
+
+qxl.8tik  equ   1193181/50*8 ; PC eighth tick to QXL poll correction *65536
+
+; Interrupt vector
+
+qxl_intn  equ   $0001ffff  ; interrupt vector number stored here
+qxl.intn  equ     $1a      ; use the interrupt level 2 autovector
+qxl_ivec  equ     qxl.intn<<2
+
+; IO addresses
+
+qxl_start      equ $ff800000    ; startup
+qxl_ibyte      equ $ff900000    ; input byte
+qxl_oword      equ $ffa00002    ; output word - no handshake
+qxl_oword_wait equ $ffb00002    ; output word
+
+qxl_netl       equ $ffc00000    ; network low
+qxl_neth       equ $ffd00000    ; network high
+qxl_neti       equ $ffe00000    ; network in
+qxl_ninl       equ $00000000    ; location read on net low
+qxl_ninh       equ $00000004    ; location read on net high
+
+qxl_int_ack    equ $fff00000    ; interrupt acknowledge
+
+        list

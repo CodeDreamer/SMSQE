@@ -1,0 +1,66 @@
+          nolist
+*
+*         Standard colour palette for Menus
+*
+*         Main window colours
+*
+c.mbord   equ     $00      black
+c.mback   equ     $07      white               ; window attributes
+c.mhigh   equ     $00      black               ; item highlight
+c.bbord   equ     $04      green               ; button main window border
+*
+c.mfill   equ     $5c      greenwhite          ; main area fill
+c.mvert   equ     $9f      greenwhite          ; vertical area fill
+c.mshade  equ     $1f      whitegreen          ; shaded
+c.moutl   equ     $04      green               ; and outline
+*
+c.miunav  equ     $04      green               ; loose item - unavailable
+c.mpunav  equ     $07      white
+c.miavbl  equ     $00      black               ;            - available
+c.mpavbl  equ     $07      white
+c.mislct  equ     $07      white               ;            - selected
+c.mpslct  equ     $00      black
+c.mislc1  equ     $00      black               ;             (alt)
+c.mpslc1  equ     $04      green
+c.biavbl  equ     $00      black               ; and for buttons
+c.bpavbl  equ     $07      white
+c.bislct  equ     $07      white
+c.bpslct  equ     $00      black
+
+          ; information window colours
+
+c.ibord   equ     $04      green
+c.iback   equ     $07      white
+c.iink    equ     $00      black
+c.ilow    equ     $02      red
+
+          ; subsidiary information window colours
+
+c.sbord   equ     $07      white
+c.sback   equ     $04      green
+c.sink    equ     $00      black
+c.slow    equ     $07      white
+
+          ; White application sub-window colours
+
+c.wbord   equ     $04      green
+c.wback   equ     $07      white               ; window attributes
+c.wink    equ     $00      black
+c.whigh   equ     $00      black
+
+c.wiunav  equ     $04      green               ; item - unavailable
+c.wpunav  equ     $07      white
+c.wiavbl  equ     $00      black               ;      - available
+c.wpavbl  equ     $07      white
+c.wislct  equ     $00      black               ;      - selected
+c.wpslct  equ     $04      green
+
+c.wrrow   equ     $04      green               ; pan / scroll
+c.wbarb   equ     $07      white
+c.wbars   equ     $00      black
+
+        ; error colours
+
+c.erpap   equ     $02      red                 ; error paper
+c.erink   equ     $07      white               ; error ink
+          list

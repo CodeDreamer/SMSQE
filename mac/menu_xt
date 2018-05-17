@@ -1,0 +1,13 @@
+* Window Definition Extra Macros
+        nolist
+*
+* Introduce the Column List MENu portion of an
+* application sub-window definition
+*
+*       Labels                          Variables
+*       Defined/XREFfed    Used         Updated         Used
+*
+a_clmen macro
+        addwrk  wwa.mlen  ; stanard menu in working definition
+        endm
+        list

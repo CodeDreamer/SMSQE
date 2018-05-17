@@ -1,0 +1,37 @@
+* linkage for screen dump 
+        nolist
+*
+sdd_dmlk equ    $00     dummy polling linkage
+sdd_dmad equ    $04     dummy address of polling routine
+sdd_pllk equ    $08     polling interrupt linkage
+sdd_plad equ    $0c     address of polling routine
+sdd_shlk equ    $10     scheduler linkage
+sdd_shad equ    $14     address of scheduler routine
+sdd_iolk equ    $18     io driver linkage
+sdd_ioad equ    $1c     address of io routine
+sdd_open equ    $20     address of open
+sdd_clos equ    $24     address of close
+sdd_chan equ    $28     output channel ID
+sdd_skip equ    $2c     true to skip scheduler op
+sdd_go   equ    $2d     1 GO, -1 continue, 0 not going
+sdd_stat equ    $2e     status
+sdd_pptr equ    $2f     pointer to next parameter
+sdd_parm equ    $30
+sdd.maxp equ    9       max parameter number
+sdd_akey equ    $30     screen dump alt key
+sdd_prt  equ    $31     printer type
+sdd_scl  equ    $32     output scaling
+sdd_inv  equ    $33     true if inverse
+sdd_rnd  equ    $34     true if random
+sdd_rta  equ    $35     true if right angles
+*
+sdd_dev  equ    $38     output device name
+sdd.dlen equ    $26     max length
+*
+sdd_base equ    $60     base address of screen
+sdd_sinc equ    $64     screen increment
+sdd_size equ    $66     x,y size of screen
+
+sdd_work equ    $70     dump work area
+sdd_end  equ    $1c0
+        list

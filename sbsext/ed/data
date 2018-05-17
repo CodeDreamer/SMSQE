@@ -1,0 +1,34 @@
+* Data Structures for ED
+        nolist
+*
+ed_paini equ   $000     long    address of PA_INI
+ed_topad equ   $004     long    address of top line in window
+ed_xsize equ   $008     word    saved width of window
+ed_ysize equ   $00a     word    saved height of window
+ed_xinc  equ   $00c     word    x increment
+ed_yinc  equ   $00e     word    y increment
+ed_ncols equ   $010     word    number of columns in window
+ed_nrows equ   $012     word    number of rows in window
+ed_ncol1 equ   $014     word    number of columns in window (-1)
+ed_nrow1 equ   $016     word    number of rows in window (-1)
+ed_ncolx equ   $018     word    number of columns in extra rows of line
+*
+ed_high  equ   $01a     byte    set if highlight colours
+*
+ed_cline equ   $020     word    current line in buffer
+ed_topln equ   $022     word    length of current top line in window
+*
+ed_clear equ   $028     byte    set if channel 0 clear
+ed_chang equ   $029     byte    set if this line changed
+ed_overw equ   $02a     byte    set for overwrite mode
+ed_ccmd  equ   $02b     byte    current command byte
+ed_chno  equ   $02c     word    edit channel number
+*
+ed_rtab  equ   $030
+edr_lnr  equ   $030     word    line number of this row
+edr_rno  equ   $032     word    row within line
+edr_chs  equ   $034     word    position of first character in line
+edr_che  equ   $036     word    position of last character in line
+edr.len  equ    $08
+*
+        list

@@ -1,0 +1,502 @@
+; Atari ST hardware keys
+        nolist
+
+dsp.monf equ      71             ; monochrome display frequency
+
+mfp_vbas equ    $180  ; MFP vector base
+mfp2_vbas equ   $1c0  ; MFP2 (TT) vector base
+scc_vbas equ    $200  ; SCC vector base
+
+at_mconf equ    $ffff8001        ; byte  memory configuration
+at_stcnf equ    $ffff827e        ; byte  Stacy configuration
+atsc..dd equ      2                ; bit set to disable display
+atsc..do equ      3                ; bit set for light off
+
+; the SCU registers exist in Mega STEs and TTs only
+scu_smsk equ    $ffff8e01        ; System interrupt MaSK
+scu..soft equ     1                ; SOFTware interrupt
+scu..hsyn equ     2                ; HSYNc interrupt
+scu..vsyn equ     4                ; VSYNc interrupt
+scu..scc  equ     5                ; SCC interrupt
+scu..mfp  equ     6                ; MFP(s) interrupt
+scu..sysf equ     7                ; _SYSFail from VME
+scu_sstt equ    $ffff8e03        ; System interrupt STaTus
+scu_sint equ    $ffff8e05        ; set bit 0 to generate Software INTerrupt
+scu_vme3 equ    $ffff8e07        ; set bit 0 to generate VME-bus IRQ level 3
+scu_gpr1 equ    $ffff8e09        ; General Purpose register 1
+scu_gpr2 equ    $ffff8e0b        ; General Purpose register 2
+scu_vmsk equ    $ffff8e0d        ; VME bus interrupt MaSK
+scu_vstt equ    $ffff8e0f        ; VME bus interrupt STaTus
+
+at_stesp equ    $ffff8e21        ; byte  STE speed
+at.stesp equ      %11              ; mask of speed bits
+at.stesl equ      %00              ; slow
+at.stenc equ      %10              ; no cache (not very fast)
+at.stefs equ      %11              ; fast
+
+at_hc30e equ    $fffffff1        ; enable hypercache 030
+at.hc30e equ      3                ; OR with this
+at_adse  equ    $fff00000        ; enable adspeed cache
+
+at_dipsw equ    $ffff9200        ; word (top byte is DIP switch setting)
+dip..fhd equ      7                ; high density floppy disk installed
+
+vdr_sb1  equ    $ffff8201        ; video display register screen base byte 1
+vdr_sb2  equ    $ffff8203        ; ....................................... 2
+vdr_sa1  equ    $ffff8205        ; video display register screen address byte 1
+vdr_sa2  equ    $ffff8207        ; .......................................... 2
+vdr_sa3  equ    $ffff8209        ; .......................................... 3
+vdr_symd equ    $ffff820a        ; sync mode
+vdr.symf equ      %00000011      ; ... for Futura Datasenter QL emulator
+vdr.syme equ      %00000010      ; ... for Edwin Shifter Pickup
+
+vdr_palt equ    $ffff8240        ; palette map
+vdr_res  equ    $ffff8260        ; resolution
+vdr.lres equ      %00000000
+vdr.mres equ      %00000001
+vdr.hres equ      %00000010
+vdr.resf equ      vdr.mres       ; resolution for Futura QL emulator
+vdr.rese equ      vdr.mres       ; resolution for Edwin shifter pickup
+
+vde_desl equ    $ffff824c        ; byte  E clear to disable E registers
+vde_slct equ    $ffff825a        ; byte  E read 3 times to select E registers
+
+vde_left equ    $ffff824e        ; byte  E left margin
+vde.left equ      $a0
+vde_fr16 equ    $ffff8254        ; byte  E clear for 16 MHz
+vde_fr10 equ    $ffff8256        ; byte  E clear for 10.66 MHz
+vdel_fsl equ    vde_fr10
+vde_frsl equ    vde_fr16
+vde_top  equ    $ffff8258        ; byte  E top margin
+vde.top  equ      $1e
+vde_wrdl equ    $ffff825a        ; byte  E visible words/line - 1
+vdel.wdl equ      $3f
+vde.wrdl equ      $5f
+vde.bytl equ      (vde.wrdl+1)*2
+vde_lins equ    $ffff825c        ; byte(s) E lines (low byte then high byte)
+vdel.lnl equ      $00
+vde.linl equ      $18
+vdel.lnh equ      $01
+vde.linh equ      $01
+vde_init equ    $ffff825e        ; magic initialisation
+vde.in0  equ      $12
+vde.in1  equ      $b2
+vde.in2  equ      $5c
+
+vde.sb1  equ      $01            ; Edwin high res screen base
+vde.sb2  equ      $ae
+vde_scrn equ    $1ae00
+vde.ssiz equ      $d200
+vde.xhi  equ      $300
+vde.yhi  equ      $118
+
+vde_steb equ $fea00000           ; STE display base
+vde.stes equ    $40000           ; size
+vde.step equ      1024*1024         ; max pixels
+vde.stex equ      1600              ; max width
+vde.stey equ      1024              ; max height
+vde_stec equ    vde_steb+$40000  ; STE display control
+vde_accs equ    vde_stec+$d        ; Access byte
+vde_radr equ    vde_stec+$1        ; register address
+vde_rval equ    vde_stec+$3        ; register value
+vde_stem equ    vde_stec+$5        ; mode
+vde_stef equ    vde_stec+$9        ; frequency
+vde_stsf equ    vde_stec-$22       ; saved frequency
+vde_stsm equ    vde_stec-$21       ; saved mode
+vde_stsr equ    vde_stec-$20       ; saved register values
+
+vde.stal equ     $00
+vde.stah equ     $40
+vde.stql equ     $80
+vde.stqh equ     $c0
+
+
+
+vdm.bytl equ      80             ; mono mode bytes per line
+vdm.line equ     400             ; ... lines
+
+vdm.sb1  equ      $02            ; mono mode screen base
+vdm.sb2  equ      $00
+vdm_scrn equ    $20000
+vdm.ssiz equ     $7d00
+
+vdf.sb1  equ      2              ; futura screen base
+vdf.sb2  equ      0
+vdf_scrn equ    $20000
+vdf.ssiz equ     $8000
+
+at_mfp   equ    $fffffa01        ; multi function peripheral
+at_mfp2  equ    $fffffa81        ; second one
+
+mfp_port equ    $00              ; mfp port
+mfp_acte equ    $02              ; active edge register
+mfp.acte equ      %00000000        ; all edges high-low
+mfp_ddir equ    $04              ; data direction register
+mfp.ddir equ      %00000000        ; all input
+mfp_iena equ    $06              ; mfp interrupt enable a
+mfp_ienb equ    $08              ; mfp interrupt enable b
+mfp_pnda equ    $0a              ; mfp pending interrupt a
+mfp_pndb equ    $0c              ; mfp pending interrupt b
+mfp_isa  equ    $0e              ; mfp in service register a
+mfp_isb  equ    $10              ; mfp in service register b
+mfp_mska equ    $12              ; interrupt mask a
+mfp_mskb equ    $14              ; interrupt mask b
+mfp_vect equ    $16              ; vector register
+mfp.vect equ      $68               ; vector group 6 ($180-$1bc), soft end
+mfp2.vect equ     $78               ; vector group 7 ($1c0-$1ff), soft end
+mfp_actl equ    $18              ; timer A control
+mfp.1.6s equ      $01              ; 1.6us timer
+mfp.4us  equ      $02              ; 4 us timer
+mfp.80us equ      $07              ; 80 us timer
+mfp_bctl equ    $1a              ; timer B control
+mfp.div4 equ      $01              ; timer div 4
+mfp.d200 equ      $07              ; timer div 200
+mfp_cdct equ    $1c              ; timer CD control
+mfp_adat equ    $1e              ; timer A data
+mfp_bdat equ    $20              ; timer B data
+mfp_cdat equ    $22              ; timer C data
+mfp_ddat equ    $24              ; timer D data
+mfp_uctl equ    $28              ; mfp USART control
+mfp.npty equ      %00000000        ; no parity
+mfp.odd  equ      %00000100        ; odd parity
+mfp.even equ      %00000110        ; even parity
+mfp.sync equ      %00000000        ; synchronous
+mfp.1stp equ      %00001000        ; 1 stop
+mfp.lstp equ      %00010000        ; long stop
+mfp.2stp equ      %00011000        ; 2 stop bits
+mfp.8bit equ      %00000000        ; 8 bits
+mfp.7bit equ      %00100000        ; 7 bits
+mfp.6bit equ      %01000000        ; 6 bits
+mfp.5bit equ      %01100000        ; 5 bits
+mfp.adiv equ      %10000000        ; asynchronous clock divided by 16
+mfp_rstt equ    $2a              ; receiver status
+mfp.rxen equ      %00000001        ; receive enable
+mfp.rxer equ      %01111000        ; error bits
+mfp..rxr equ      7                ; receive ready
+mfp_tstt equ    $2c              ; transmitter status
+mfp.txen equ      %00000001        ; transmitter enable
+mfp.tbrk equ      %00001001        ; transmit break
+mfp..txr equ      7                ; transmitter ready
+mfp_sdat equ    $2e              ; rx tx data
+
+mfp_imra equ    at_mfp+mfp_mska  ; interrupt mask register a
+mfp_imrb equ    at_mfp+mfp_mskb  ; interrupt mask register b
+mfp_isra equ    at_mfp+mfp_isa   ; interrupt in service register a
+mfp_isrb equ    at_mfp+mfp_isb   ; interrupt in service register b
+mfp_iera equ    at_mfp+mfp_iena  ; interrupt enable register a
+mfp_ierb equ    at_mfp+mfp_ienb  ; interrupt enable register b
+mfp_ipra equ    at_mfp+mfp_pnda  ; interrupt pending register a
+mfp_iprb equ    at_mfp+mfp_pndb  ; interrupt pending register b
+mfp_vr   equ    at_mfp+mfp_vect  ; interrupt vector register
+
+mfp_dmi  equ    at_mfp+mfp_port  ; DMA IRQ
+mfp..dmi equ      5
+
+mfp_prd  equ    at_mfp+mfp_port  ; Printer ReaDy in
+mfp..prd equ      0
+mfp_dcd  equ    at_mfp+mfp_port  ; DCD in
+mfp..dcd equ      1
+mfp_cts  equ    at_mfp+mfp_port  ; CTS in
+mfp..cts equ      2              ; clear if clear to send
+mfp_dsk  equ    at_mfp+mfp_port  ; disk operation complete
+mfp..dsk equ      5
+mfp_mon  equ    at_mfp+mfp_port  ; clear if mono monitor
+mfp..mon equ      7
+
+mfp_txe  equ    at_mfp+mfp_iena  ; transmit buffer empty enable
+mfp_txs  equ    at_mfp+mfp_isa   ; transmit buffer empty in service
+mfp_txm  equ    at_mfp+mfp_mska  ; transmit buffer empty mask
+mfp..txi equ      2              ; transmit buffer empty interrupt bit
+mfp_rxe  equ    at_mfp+mfp_iena  ; receive buffer full enable
+mfp_rxs  equ    at_mfp+mfp_isa   ; receive buffer full in service
+mfp_rxm  equ    at_mfp+mfp_mska  ; receive buffer full mask
+mfp..rxi equ      4              ; receive buffer full interrupt bit
+mfp_data equ    at_mfp+mfp_adat  ; timer a data
+mfp_ctla equ    at_mfp+mfp_actl  ; timer a control
+mfp_tae  equ    at_mfp+mfp_iena  ; timer a enable
+mfp_tas  equ    at_mfp+mfp_isa   ; timer a in service
+mfp_tam  equ    at_mfp+mfp_mska  ; timer a mask
+mfp_tapi equ    at_mfp+mfp_pnda  ; timer a pending interrupt
+mfp..tai equ      5              ; timer a interrupt bit
+mfp.tapc equ      %11011111      ; timer a pending clear
+mfp_datb equ    at_mfp+mfp_bdat  ; timer b data
+mfp_ctlb equ    at_mfp+mfp_bctl  ; timer b control
+mfp_tbe  equ    at_mfp+mfp_iena  ; timer b enable
+mfp_tbs  equ    at_mfp+mfp_isa   ; timer b in service
+mfp_tbm  equ    at_mfp+mfp_mska  ; timer b mask
+mfp_tbpi equ    at_mfp+mfp_pnda  ; timer b pending interrupt
+mfp..tbi equ      0              ; timer b interrupt bit
+mfp.tbpc equ      %11111110      ; timer b pending clear
+mfp_datc equ    at_mfp+mfp_cdat  ; timer c data
+mfp_tce  equ    at_mfp+mfp_ienb  ; timer c enable
+mfp_tcs  equ    at_mfp+mfp_isb   ; timer c in service
+mfp_tcm  equ    at_mfp+mfp_mskb  ; timer c mask
+mfp_tcpi equ    at_mfp+mfp_pndb  ; timer c pending interrupt
+mfp..tci equ      5              ; timer c interrupt bit
+mfp.tcpc equ      %11011111      ; timer c pending clear
+mfp_ctcd equ    at_mfp+mfp_cdct  ; timer c/d control
+mfp_datd equ    at_mfp+mfp_ddat  ; timer d data
+mfp_tde  equ    at_mfp+mfp_ienb  ; timer d enable
+mfp_tds  equ    at_mfp+mfp_isb   ; timer d in service
+mfp_tdm  equ    at_mfp+mfp_mskb  ; timer d mask
+mfp_tdpi equ    at_mfp+mfp_pndb  ; timer d pending interrupt
+mfp..tdi equ      4              ; timer d interrupt bit
+mfp.tdpc equ      %11101111      ; timer d pending clear
+
+mfp_pre  equ    at_mfp+mfp_ienb  ; printer ready enable
+mfp_prs  equ    at_mfp+mfp_isb   ; printer ready in service
+mfp_prm  equ    at_mfp+mfp_mskb  ; printer ready mask
+mfp..pri equ      0              ; printer ready interrupt bit
+mfp_cse  equ    at_mfp+mfp_ienb  ; clear to send enable
+mfp_css  equ    at_mfp+mfp_isb   ; clear to send in service
+mfp_csm  equ    at_mfp+mfp_mskb  ; clear to send mask
+mfp..csi equ      2              ; clear to send interrupt bit
+mfp_ace  equ    at_mfp+mfp_ienb  ; acia enable
+mfp_acs  equ    at_mfp+mfp_isb   ; acia in service
+mfp_acm  equ    at_mfp+mfp_mskb  ; acia mask
+mfp..aci equ      6              ; acia interrupt bit
+mfp_hde  equ    at_mfp+mfp_ienb  ; hard disk enable
+mfp_hdpi equ    at_mfp+mfp_pndb  ; hard disk pending interrupt
+mfp..hdi equ      7              ; hard disk interrupt bit
+mfp.hdpc equ      %01111111      ; hard disk pending clear
+
+acia_ctl equ    $00              ; acia control reg
+acia..rr equ       0             ; receive data ready
+acia..tr equ       1             ; transmit data ready
+acia..cd equ       2             ; carrier detect
+acia..cs equ       3             ; clear to send
+acia..fe equ       4             ; framing error
+acia..or equ       5             ; overrun
+acia..pe equ       6             ; parity error
+acia..ir equ       7             ; interrupt request
+acia.err equ       %01110000     ; error bits
+
+acia_dat equ    $02              ; data reg
+
+at_kbd   equ    $fffffc00
+at_kbdc  equ    at_kbd+acia_ctl
+at_kbdd  equ    at_kbd+acia_dat
+
+at_midi  equ    $fffffc04
+at_midic equ    at_midi+acia_ctl
+at_midid equ    at_midi+acia_dat
+
+atm.nint equ    %00010101        ; no int, 8 bit 1 stop, /16
+
+vio_prdy equ      $00  ; vectored interrupt from printer ready
+vio_dcd  equ      $04  ; vectored interrupt from carrier detect
+vio_cts  equ      $08  ; vectored interrupt from clear to send
+vio_gpu  equ      $0c  ; vectored interrupt from GPU (blitter)
+vio_200h equ      $14  ; vectored interrupt from 200Hz timer
+vio_acia equ      $18  ; vectored interrupt from acia
+vio_acsi equ      $1c  ; vectored interrupt from FDC / ACSI
+vio_stbe equ      $28  ; vectored interrupt from serial transmit buffer empty
+vio_srbf equ      $30  ; vectored interrupt from serial receive buffer full
+vio_ri   equ      $38  ; vectored interrupt from ring indicator
+
+; keyboard commands
+
+kbc.mbut equ    $07              ; set mouse button format + one byte
+kbcm.key equ      %00000100      ;   treat as keys
+kbc.mrel equ    $08              ; set mouse relative movement
+kbc.mabs equ    $09              ; set mouse absolute
+kbc.mcur equ    $0a              ; set mouse = cursor keys!! + x,y bytes
+kbc.mthr equ    $0b              ; set mouse relative threshold
+kbc.msca equ    $0c              ; set mouse scaling
+kbc.rmab equ    $0d              ; read mouse absolute position
+kbc.smps equ    $0e              ; set mouse posn + 0 byte, x,y words
+kbc.yaxd equ    $0f              ; y axis down!!
+kbc.yaxu equ    $10              ; y axis up!!
+kbc.strt equ    $11              ; start data transfer
+kbc.moff equ    $12              ; mouse off
+kbc.stop equ    $13              ; stop data transfer
+kbc.auto equ    $14              ; automatic joystick
+kbc.naut equ    $15              ; non-automatic joystick
+kbc.rjoy equ    $16              ; read joystick
+kbc.jtim equ    $17              ; joystick timer + byte .01 secs
+kbc.fbut equ    $18              ; read fire button
+kbc.jcur equ    $19              ; joystick cursor emulation + 6 bytes
+kbc.joff equ    $1a              ; joystick off
+kbc.sclk equ    $1b              ; set clock + 6 bytes
+kbc.rclk equ    $1c              ; read clock
+
+kbc.lmem equ    $20              ; load mem + addr (word) + n (byte) + n bytes
+kbc.rmem equ    $21              ; read mem + addr (word)
+kbc.exec equ    $22              ; execute + addr (word)
+
+; keyboard headers
+
+kbk.hit  equ    $74              ; hit button
+kbk.do   equ    $75              ; do button
+
+kbh.stat equ    $f6              ; status packet
+kbhs.mem equ      $20            ;   memory status
+kbh.mabs equ    $f7              ; mouse absolute posn + 5 bytes
+kbh.mrel equ    $f8              ; mouse rel movement min
+kbh.mrmx equ    $fb              ; .................. max
+kbh.mrmk equ    $fffffffc        ; ..... mask
+kbh.clk  equ    $fc              ; clock time
+kbh.joy0 equ    $fe              ; joystick 0
+kbh.joy1 equ    $ff              ; joystick 1
+kbh.jymk equ    $fffffffe        ; ..... mask
+
+; sound and parallel port
+
+at_spp   equ    $ffff8800        ; sound and parallel port
+spp_ctrl equ    $00     ; byte     select register
+spp_read equ    $00     ; byte     read register
+spp_wrt  equ    $02     ; byte     write register
+
+gen_ctls equ    at_spp+spp_ctrl  ; general control select
+gen_ctlr equ    at_spp+spp_read  ; read
+gen.ctls equ      $0e
+gen_ctlw equ    at_spp+spp_wrt   ; ... write
+gen.init equ      %10111111      ; ... init (cache, no drive, RTS/DTR negated)
+gen..cch equ      7              ; cache is bit 7
+
+spp.pt1l equ      0              ; pitch 1 low byte
+spp.pt1h equ      1              ; pitch 1 high nibble
+spp.pt2l equ      2              ; pitch 2
+spp.pt2h equ      3
+spp.pt3l equ      4              ; pitch 3
+spp.pt3h equ      5
+spp.ptns equ      6              ; pitch of noise generator
+spp.ctrl equ      7              ; control reg
+spp.cnrm equ      %11111110      ; ports out, channel 1 sound on
+spp.amp1 equ      8              ; amplitude 1
+spp.amp2 equ      9              ; amplitude 2
+spp.amp3 equ      $a             ; amplitude 3
+fdc_ctls equ    at_spp+spp_ctrl  ; select fdc control reg
+fdc.ctls equ      $0e            ; ... port A
+fdc_ctlr equ    at_spp+spp_read
+fdc_ctlw equ    at_spp+spp_wrt
+fdc..sid equ      0              ; side select     (inverted)
+fdc..sla equ      1              ; select drive A  (active low)
+fdc..slb equ      2              ; select drive B  (active low)
+fdc.bits equ      %00000111      ; fdc bits
+
+mod_ctls equ    at_spp+spp_ctrl  ; select modem control reg
+mod.ctls equ      $0e            ; ... port A
+mod_ctlr equ    at_spp+spp_read
+mod_ctlw equ    at_spp+spp_wrt
+mod..rts equ      3              ; Request to send (active low)
+mod..dtr equ      4              ; Data Terminal Ready (active low)
+
+cen_ctls equ    at_spp+spp_ctrl  ; select centronics control reg
+cen.ctls equ      $0e            ; ... port A
+cen_ctlr equ    at_spp+spp_read
+cen_ctlw equ    at_spp+spp_wrt
+cen..stb equ      5              ; strobe (active low)
+cen_dats equ    cen_ctls         ; select centronics data reg
+cen.dats equ      $0f
+cen_datw equ    cen_ctlw         ; write to centronics data reg
+
+fdc_dens equ    $ffff860e        ; WORD  floppy DENSity select (STE, TT)
+fdc..16m equ      0                ; 16MHz to FDC
+fdc..hds equ      1                ; HD signal on floppy connecttor (pin 2)
+fdc.dd   equ      %00              ; Double Density
+fdc.hd   equ      %11              ; High Density
+
+at_dmad  equ    $ffff8600        ; dma / disk controller
+
+dma_scnt equ    at_dmad+$04; word  dma sector counter
+dma_data equ    at_dmad+$04; word  dma data port
+dma_mode equ    at_dmad+$06; word  dma mode
+dmm..ad1 equ      1              ; address line
+dmm..ad2 equ      2              ; address line
+dmm..hdc equ      3              ; access HDC
+dmm..sct equ      4              ; access sector count (+dmm..fdc)
+dmm..ndm equ      7              ; set: no DMA
+dmm..wrt equ      8              ; set: DMA write mode
+dmm.scnt equ      $0090          ; bits set for sector count
+
+dma.arct equ      $009a          ; set ACSI read sector count
+dma.awct equ      $019a          ; set ACSI write sector count
+dma.acmd equ      $0088          ; ACSI command byte
+dma.adat equ      $008a          ; ACSI data byte
+dma.aprd equ      $008a          ; set ACSI prepare to read
+dma.adrd equ      $000a          ; set ACSI dma read
+dma.apwr equ      $018a          ; set ACSI prepare to write
+dma.adwr equ      $010a          ; set ACSI dma write
+dma.fctl equ      $0080          ; access fdc control reg
+dma.fstt equ      $0080          ; access fdc status reg
+dma.ftrk equ      $0082          ; access fdc track reg
+dma.fsct equ      $0084          ; access fdc sector reg
+dma.fdat equ      $0086          ; access fdc data reg
+dma.frct equ      $0090          ; set floppy read sector count
+dma.fwct equ      $0190          ; set floppy write sector count
+dma.fdrd equ      $0080          ; set floppy DMA read (=dma.fctl)
+dma.fdwr equ      $0180          ; set floppy DMA write
+dma_stat equ    at_dmad+$06; word  dma status register
+dms..ok  equ      0              ; set if dma ok
+dms..sct equ      1              ; set if sector count>0 ???
+dms..drq equ      2              ; drq?
+dms.dmsk equ      %111           ; three sig bits
+dms.done equ      %001           ; ... ok
+
+dma_high equ    at_dmad+$09; byte  dma address counter
+dma_mid  equ    at_dmad+$0b; byte
+dma_low  equ    at_dmad+$0d; byte  set this first
+
+fdc.rest equ      $08            ; restore
+fdc.seek equ      $18            ; seek
+fdc.stin equ      $58            ; step in
+fdc.veri equ      $04            ; add to restore or seek for verify
+fdc.rsec equ      $ffffff88      ; read sector
+fdc.wsec equ      $ffffffaa      ; write sector (no precomp)
+fdc..prc equ        1            ; bit to clear for precomp
+fdc.radd equ      $ffffffc8      ; read address
+fdc.wtrk equ      $fffffffa      ; write track (no precomp)
+fdc.fint equ      $ffffffd0      ; force interrupt
+
+fds..bsy equ      0              ; fdc busy
+fds..drq equ      1              ; fdc drq
+fds..ind equ      1              ; fdc index pulse
+fds..los equ      2              ; fdc lost data
+fds..tr0 equ      2              ; fdc track 0
+fds..crc equ      3              ; fdc crc error
+fds..rnf equ      4              ; fdc record not found
+fds..ro  equ      6              ; read only
+fds..mo  equ      7              ; motor on
+
+fds.skok equ      %00000001      ; seek ok
+fds.rwok equ      %01011101      ; read/write ok
+
+fdc_rtrk equ    $00            ; byte     track in read address
+fdc_rsln equ    $03            ; byte     sector length in read address
+
+art.id   equ    $6002            ; first word of root
+art_pext equ    $156             ; extended partition table
+art_p0   equ    $1c6             ; partition 0
+art.plen equ      $0c              ; length of partition def
+art_pflg equ      $00            ; byte - bit 0 partn exists, bit 7 bootpart
+                                 ; long  byte flag + partition ID
+art.pval equ        0            ; bit set for partition valid
+art.pchk equ        $01ffffff      ; partition check mask
+art.gflg equ        $0147454d      ; GEM partition
+art.bflg equ        $0142474d      ; Big GEM partition
+art.qflg equ        $01515741      ; QL partition
+art.xflg equ        $0158474d      ; extended GEM partition
+art.zflg equ        $01242424      ; zapped partition
+art_pstt equ      $04            ; long  start sector of partition
+art_psiz equ      $08            ; long  size of partition
+art_ptop equ    $1f6             ; top of normal partition table
+
+snd_dmac equ    $ffff8900        ; sound dma control
+snd.off  equ       0               ; sound off
+snd.on   equ       1               ; sound on
+snd.rept equ       3               ; sound on, repeat
+snd_bash equ    snd_dmac+2       ; frame base address, high byte
+snd_basm equ    snd_dmac+4       ; frame base address, mid byte
+snd_basl equ    snd_dmac+6       ; frame base address, low byte
+snd_endh equ    snd_dmac+$e      ; frame end address, high byte
+snd_endm equ    snd_dmac+$10     ; frame end address, mid byte
+snd_endl equ    snd_dmac+$12     ; frame end address, low byte
+snd_mode equ    snd_dmac+$20     ; sound mode control
+snd.6khz equ       %00              ; 6258 Hz sampling rate
+snd.12khz equ      %01              ; 12517 Hz sampling rate
+snd.25khz equ      %10              ; 25033 Hz sampling rate
+snd.50khz equ      %11              ; 50066 Hz sampling rate
+snd.mono equ       %10000000        ; mono mode
+
+        list

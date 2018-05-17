@@ -1,0 +1,44 @@
+* Job control block definitions (QDOS)
+        nolist
+*
+jcb_len  equ    $0000   long    LENgth of job in tpa 
+jcb_strt equ    $0004   long    STaRT address
+jcb_ownr equ    $0008   long    OWNeR of this job
+jcb_rflg equ    $000c   long    pointer to job Released FLaG (cleared on rel)
+jcb_tag  equ    $0010   word    job TAG
+jcb_pacc equ    $0012   byte    Priority ACCumulator
+jcb_pinc equ    $0013   byte    Priority INCrement
+jcb_wait equ    $0014   word    job WAIT counter
+jcb_rela equ    $0016   byte    set if next IO call is RELative Address
+jcb_wjob equ    $0017   byte    Set if Job waiting
+jcb_wjid equ    $0018   long    Waiting Job ID
+jcb_exv  equ    $001c   long    pointer to EXception vector
+*
+jcb_save equ    $0020           job SAVE area
+jcb_d0   equ    $0020           saved d0
+jcb_d1   equ    $0024           saved d1
+jcb_d2   equ    $0028           saved d2
+jcb_d3   equ    $002c           saved d3
+jcb_d4   equ    $0030           saved d4
+jcb_d5   equ    $0034           saved d5
+jcb_d6   equ    $0038           saved d6
+jcb_d7   equ    $003c           saved d7
+jcb_a0   equ    $0040           saved a0
+jcb_a1   equ    $0044           saved a1
+jcb_a2   equ    $0048           saved a2
+jcb_a3   equ    $004c           saved a3
+jcb_a4   equ    $0050           saved a4
+jcb_a5   equ    $0054           saved a5
+jcb_a6   equ    $0058           saved a6
+jcb_a7   equ    $005c           saved a7
+jcb_sr   equ    $0060           saved sr
+jcb_ccr  equ    $0061           saved ccr
+jcb_pc   equ    $0062           saved pc
+*
+jcb_evts equ    $0066           8 bit event vector
+jcb_evtw equ    $0067           8 bit events waited for
+jcb_end  equ    $0068           end of header
+*
+jcb.wait equ    -1              wait forever
+jcb.wjob equ    -2              wait for job
+        list

@@ -1,0 +1,17 @@
+; d2 keys for calls to opdefx
+
+uod..prmt equ   0
+uod..typ0 equ   1
+uod..datd equ   2
+uod..prgd equ   3
+uod..dstd equ   4
+
+uod..extn equ   7
+
+uod.prmt  equ   $01
+uod.typ0  equ   $02
+uod.datd  equ   $04
+uod.prgd  equ   $08
+uod.dstd  equ   $10
+
+uod.extn  equ   $ffffff80

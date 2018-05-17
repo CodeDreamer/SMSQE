@@ -1,0 +1,39 @@
+* Keys for calendar table
+        nolist
+*
+* Conversion table format
+*
+cdt_ntab equ    $00     word    ; number of sub-tables
+*
+cdt_maxd equ    $00     long    ; maximum day number
+cdt_maxy equ    $04     long    ; maximum year number
+cdt_maxm equ    $08     word    ; maximum month number
+cdt_maxt equ    $0a     word    ; maximum date in month
+cdt_fudg equ    $0c     long    ; fudge factor
+cdt_dsct equ    $10     word    ; offset of discontinuity table
+cdt_dyim equ    $12     word    ;   "    "  days-in-month table
+cdt_leap equ    $14     word    ;   "    "  leap-year code
+cdt_divt equ    $16     word    ;   "    "  division table
+cdt.tlen equ    $18             ; length of sub-table entry
+*
+* Discontinuity table
+*
+cdt_ndsc equ    $00     word    ; number of discontinuities
+*
+cdt_dyer equ    $00     long    ;  year of discontinuity
+cdt_dmth equ    $04     word    ; month "       "
+cdt_dfmd equ    $06     word    ; first missing day
+cdt_dnmd equ    $08     word    ; number of missing days
+cdt.dlen equ    $0a             ; length of discontinuity entry
+*
+* Division table
+*
+cdt_ndiv equ    $00     word    ; number of divisions
+*
+cdt_undy equ    $00     long    ; number of days
+cdt_umxy equ    $04     long    ; maximum number of years
+cdt_unyr equ    $08     long    ; number of years
+cdt.ulen equ    $0c             ; length of division entry
+*
+        list
+

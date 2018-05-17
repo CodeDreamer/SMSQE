@@ -1,0 +1,157 @@
+;       Menu text macros
+        nolist
+
+mkapost macro  text
+mktxt   setstr {[text]}
+apost   setstr {'}
+blob    setstr {Ÿ}
+        ifnum [.instr(mktxt,apost)] = 0 goto mkapend
+
+mkblob  maclab
+stp     setnum [.instr(mktxt,apost)]
+        ifnum  [stp] = 0 goto mkdble
+mktxt   setstr {[.left(mktxt,[stp]-1)][blob][.right(mktxt,[.len(mktxt)]-[stp])]}
+        goto mkblob
+
+mkdble  maclab
+stp     setnum [.instr(mktxt,blob)]
+        ifnum  [stp] = 0 goto mkapend
+mktxt   setstr {[.left(mktxt,[stp]-1)]''[.right(mktxt,[.len(mktxt)]-[stp])]}
+        goto mkdble
+
+mkapend maclab
+        endm
+
+mktitl  macro   label,text
+            xdef met_[label],met.[label]
+        mkapost {[text]}
+met_[label] dc.w [.len(text)]
+            dc.b '[mktxt]'
+met.[label] equ  [.len(text)]*6
+        endm
+
+mktits  macro   label,text
+            xdef met_[label],met.[label]
+        mkapost {[text]}
+met_[label] dc.w [.len(text)]
+            dc.b '[mktxt]'
+met.[label] equ  [.len(text)]*3
+        endm
+
+mkxustr macro    label,selkey,text
+        mkxstr   {[label]},{[selkey]},{[text]}
+        expand
+        xdef     meu.[label]
+meu1    setstr   {[.ucase(.right(.left(selkey,2),1))]}
+meu2    setstr   {[.ucase(text)]}
+meu.[label] equ  [.instr(meu2,meu1)]
+        endm
+
+mkxstr  macro    label,selkey,text
+        mkapost  {[text]}
+        ifstr    {[selkey]} = {} goto noselk
+        xdef     mek.[label]
+mek.[label] equ  [.ucase(selkey)]
+noselk  maclab
+        xdef     met_[label]
+met_[label] dc.w [.len(text)]
+            dc.b '[mktxt]'
+met.[label] equ  [.len(text)]*3
+        endm
+
+mkselk  macro    label,selkey
+        xdef     mek.[label]
+mek.[label] equ  [.ucase(selkey)]
+        endm
+
+mktext  macro    label
+        xdef     met_[label]
+met_[label] dc.w mkte[.l]-mkts[.l]
+mkts[.l]
+mkt.prm   setnum 1
+mkt_loop  maclab
+mkt.prm   setnum [mkt.prm]+1
+          ifnum [mkt.prm] > [.nparms] goto mkt_end
+          mkapost {[.parm([mkt.prm])]}
+          ifstr {[.right(mktxt,1)]} = {\} goto mkt_nl
+         dc.b   '[mktxt]'
+          goto  mkt_loop 
+mkt_nl    maclab
+         dc.b   '[.left(mktxt,[.len(mktxt)]-1)]',$a
+          goto  mkt_loop
+mkt_end   maclab
+mkte[.l]
+         ds.w   0
+        endm
+
+
+mkstr   macro
+[.lab]  dc.w mkse[.l]-mkss[.l]
+mkss[.l]
+mks.prm   setnum 0
+mks_loop  maclab
+mks.prm   setnum [mks.prm]+1
+          ifnum [mks.prm] > [.nparms] goto mks_end
+          mkapost {[.parm([mks.prm])]}
+          ifstr {[.right(mktxt,1)]} = {\} goto mks_nl
+         dc.b   '[mktxt]'
+          goto  mks_loop
+mks_nl    maclab
+         dc.b   '[.left(mktxt,[.len(mktxt)]-1)]',$a
+          goto  mks_loop
+mks_end   maclab
+mkse[.l]
+         ds.w   0
+        endm
+
+
+mkiobl macro    label
+        xdef     met_[label]
+met_[label]
+mki.prm   setnum -1
+mki.itm   setnum -1
+mki_lp1   maclab
+mki.prm   setnum [mki.prm]+3
+mki.itm   setnum [mki.itm]+1
+          ifnum [mki.prm] > [.nparms] goto mki_end1
+         dc.w   [.parm([mki.prm])],[.parm([mki.prm]+1)]
+mktxt     setstr {[.parm([mki.prm]+2)]}
+          ifstr {[.left(mktxt,1)]} = {_} goto mki_ref
+          ifstr {[mktxt]} = {0} goto mki_nul
+          ifstr {[mktxt]} = {err} goto mki_err
+         dc.w   mki[mki.itm][.l]-* 
+          goto  mki_lp1
+mki_ref   maclab
+         dc.w   met[.parm([mki.prm]+2)]-*
+          goto  mki_lp1
+mki_nul   maclab
+         dc.w   0
+          goto  mki_lp1
+mki_err   maclab
+         dc.w   -1
+          goto  mki_lp1
+
+mki_end1  maclab
+         dc.w   -1
+
+mki.prm   setnum -1
+mki.itm   setnum -1
+mki_lp2   maclab
+mki.prm   setnum [mki.prm]+3
+mki.itm   setnum [mki.itm]+1
+          ifnum [mki.prm] > [.nparms] goto mki_end2
+          mkapost {[.parm([mki.prm]+2)]}
+          ifstr {[.left(mktxt,1)]} = {_} goto mki_lp2
+          ifstr {[mktxt]} = {0} goto mki_lp2
+          ifstr {[mktxt]} = {err} goto mki_lp2
+mki[mki.itm][.l] dc.w   [.len(.parm([mki.prm]+2))]
+          ifstr {[.right(mktxt,1)]} = {\} goto mki_nl
+         dc.w   '[mktxt]'
+          goto  mki_lp2 
+mki_nl    maclab
+         dc.b   '[.left(mktxt,[.len(mktxt)]-1)]',$a
+         ds.w   0
+          goto  mki_lp2
+mki_end2  maclab
+        endm
+        list

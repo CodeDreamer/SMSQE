@@ -1,0 +1,213 @@
+*  Window Working Definition
+        nolist
+*
+ww.shadx equ    $4           x shadow multiplier
+ww.shady equ    $3           y shadow multiplier
+ww.scarr equ    $4           scroll arrow height
+ww.scasp equ    $18          scroll arrow spacing
+ww.scawd equ    $a           scroll arrow width
+ww.pnarr equ    $8           pan arrow width
+ww.pnasp equ    $c           pan arrow spacing
+ww.pnaht equ    $5           pan arrow height
+ww.scbar equ    $6           width of scroll bar
+ww.pnbar equ    $4           height of pan bar
+ww.ptoff equ    $20002       offset of pointer for keystroke hits
+*
+ww_wstat equ    $00   long   pointer to window status area
+ww_wdef  equ    $04   long   pointer to window definition
+ww_chid  equ    $08   long   channel ID for window
+*
+ww_pprec equ    $0c   long   pointer to pointer record (24 bytes)
+ww_psave equ    $10   long   saved pointer position (absolute)
+*
+ww_spar1 equ    $14   long   window spare 1
+ww_spar2 equ    $18   word   window spare 2
+ww_spar3 equ    $1a   byte   window spare 3
+ww_pulld equ    $1b   byte   flag set if window is pulled down
+ww_splst equ    $1c   long   pointer to sub-window sprite list
+*
+ww_xsize equ    $20   word   window x size (width) in pixels
+ww_ysize equ    $22   word   window y size (height) in pixels
+ww_xorg  equ    $24   word   x origin of window
+ww_yorg  equ    $26   word   y origin of window
+ww_wattr equ    $28          window attributes
+ww_psprt equ    $30   long   pointer to pointer sprite for this window
+ww_lattr equ    $34          loose menu item attributes
+ww_help  equ    $5c   long   pointer to help definition
+ww_head  equ    $60          end of header
+*
+ww_ninfo equ    $60   word   number of information sub-windows
+ww_ninob equ    $62   word   number of information sub-window objects
+ww_pinfo equ    $64   long   pointer to information sub-window definition list
+ww_nlitm equ    $68   word   number of loose menu items
+ww_plitm equ    $6a   long   pointer to loose menu item list
+ww_nappl equ    $6e   word   number of application sub-windows
+ww_pappl equ    $70   long   pointer to application sub-window definition list
+ww_lists equ    $74          start of definition lists
+*
+* Window Attributes
+*
+wwa_clfg equ    $00   byte   clear flag
+wwa..cfl equ      7             ... in bit 7
+wwa_kflg equ    $00   byte   cursor key flag
+wwa..kfl equ      0             ... in bit 0
+wwa_shdd equ    $01   byte   shadow depth
+wwa_borw equ    $02   word   border width
+wwa_borc equ    $04   word   border colour
+wwa_papr equ    $06   word   paper colour
+*
+* Menu Item Attributes
+*
+wwa_curw equ    $00   word   current item border width
+wwa_curc equ    $02   word   current item border colour
+wwa_attr equ    $04          attribute records
+wwa_unav equ    $04          item unavailable
+wwa_aval equ    $10          item available
+wwa_selc equ    $1c          item selected
+wwa.elen equ    $28          menu item attribute entry length
+*
+*   attribute record
+wwa_back equ    $00   word   item background colour
+wwa_ink  equ    $02   word   text object ink colour 
+wwa_blob equ    $04   long   pointer to blob for pattern
+wwa_patt equ    $08   long   pointer to pattern for blob
+wwa.alen equ    $0c          attribute record length
+*
+* Loose Menu Items List
+*
+wwl_xsiz equ    $00   word   hit area x size (width)
+wwl_ysiz equ    $02   word   hit area y size (height)
+wwl_xorg equ    $04   word   hit area x origin
+wwl_yorg equ    $06   word   hit area y origin 
+wwl_xjst equ    $08   byte   object x justification rule
+wwl_yjst equ    $09   byte   object y justification rule
+wwl_type equ    $0a   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wwl_skey equ    $0b   byte   selection keystroke
+wwl_pobj equ    $0c   long   pointer to object
+wwl_item equ    $10   word   item number 
+wwl_pact equ    $12   long   pointer to action routine
+wwl.elen equ    $16          loose menu item list entry length
+*
+* Information Sub-Window
+*
+wwi_xsiz equ    $00   word   sub-window x size (width) in pixels
+wwi_ysiz equ    $02   word   sub-window y size (height) in pixels
+wwi_xorg equ    $04   word   sub-window x origin
+wwi_yorg equ    $06   word   sub-window y origin
+wwi_watt equ    $08          sub-window attributes
+wwi_pobl equ    $10   long   pointer to information object list
+wwi.elen equ    $14          information list entry length
+*
+* Information Object List
+*
+wwo_xsiz equ    $00   word   object x size (width) in pixels
+wwo_ysiz equ    $02   word   object y size (height) in pixels
+wwo_xorg equ    $04   word   object x origin
+wwo_yorg equ    $06   word   object y origin 
+wwo_type equ    $08   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wwo_spar equ    $09   byte   spare
+wwo_ink  equ    $0a   word   text ink colour
+wwo_csiz equ    $0c   word   text character size (two bytes)
+wwo_comb equ    $0a   long   pattern or blob to combine
+wwo_pobj equ    $0e   long   pointer to object
+wwo.elen equ    $12          information object list entry length
+*
+* Application sub-window definition
+*
+wwa_xsiz equ    $00   word   sub-window x size (width) in pixels
+wwa_ysiz equ    $02   word   sub-window y size (height) in pixels
+wwa_xorg equ    $04   word   sub-window x origin
+wwa_yorg equ    $06   word   sub-window y origin
+wwa_watt equ    $08          sub-window attributes
+wwa_pspr equ    $10   long   pointer to pointer sprite for this sub window
+wwa_draw equ    $14   long   pointer to application sub-window draw routine
+wwa_hit  equ    $18   long   pointer to application sub-window hit routine
+wwa_ctrl equ    $1c   long   pointer to sub-window control routine (or 0)
+wwa_nxsc equ    $20   word   maximum number of x control sections
+wwa_nysc equ    $22   word   maximum number of y control sections
+wwa_skey equ    $24   byte   application sub-window selection key
+wwa.blen equ    $28          application sub-window basic definition length
+*
+*   pannable and scrollable sub-windows only (wwa_nxsc or wwa_nysc <>0)
+*
+wwa_part equ    $28   long   pointer to the part window control block (or 0)
+wwa_insz equ    $2c   word   index hit size
+wwa_insp equ    $2e   word   index spacing left or above sub-window
+wwa_icur equ    $30   long   index current item attribute (border width, colour)
+wwa_iiat equ    $34          index item attribute record
+wwa_psac equ    $40   word   pan or scroll arrow colour
+wwa_psbc equ    $42   word   pan or scroll bar colour
+wwa_pssc equ    $44   word   pan or scroll bar section colour
+wwa.clen equ    $1e          application sub-window control definition length
+*
+*   menu sub-windows only
+*
+wwa_mstt equ    $64   long   pointer to the menu status block
+wwa_iatt equ    $68          item attributes
+wwa_ncol equ    $90   word   number of actual columns
+wwa_nrow equ    $92   word   number of actual rows
+wwa_xoff equ    $94   word   x offset of start of menu (section)
+wwa_yoff equ    $96   word   y offset of start of menu (section)
+wwa_xspc equ    $98   long   pointer to x (column) spacing list or -ve spacings
+wwa_yspc equ    $9c   long   pointer to y (row) spacing list or -ve spacings
+wwa_xind equ    $a0   long   pointer to x (column) index list
+wwa_yind equ    $a4   long   pointer to y (row) index list
+wwa_rowl equ    $a8   long   pointer to menu row list
+wwa.mlen equ    $48          length of menu working definition
+*
+*   menu object spacing list
+*
+wwm_size equ    $00   word   object hit size
+wwm_spce equ    $02   word   object spacing
+wwm.slen equ    $04          object spacing list element length
+*
+*   menu row list
+*
+wwm_rows equ    $00   long   pointer to object row list start
+wwm_rowe equ    $04   long   pointer to object row list end
+wwm.rlen equ    $08          menu row list element length
+*
+*   menu object / index list
+wwm_xjst equ    $00   byte   object x justification rule
+wwm_yjst equ    $01   byte   object y justification rule
+wwm_type equ    $02   byte   object type (0=text, 2=sprite, 4=blob, 6=pattern)
+wwm_skey equ    $03   byte   selection keystroke
+wwm_pobj equ    $04   long   pointer to object
+wwm_item equ    $08   word   item number (-ve for index)
+wwm_pact equ    $0a   long   pointer to action routine (zero for index)
+wwm.olen equ    $0e          menu object / index list entry length
+*
+* Definition fixup table keys
+*
+wwf.wdef equ    $00          fix working definition
+wwf.wstt equ    $02              status area
+wwf.loos equ    $04              loose object
+wwf.infw equ    $06              information window
+wwf.info equ    $08              information object
+wwf.appl equ    $0a              application sub-window list
+wwf.appw equ    $0c              application sub-window
+wwf.xctb equ    $0e              x control block
+wwf.yctb equ    $10              y control block
+wwf.mstt equ    $12              menu status block
+wwf.xspc equ    $14              x spacing list
+wwf.yspc equ    $16              y spacing list
+wwf.xind equ    $18              x index object
+wwf.yind equ    $1a              y index object
+wwf.rlst equ    $1c              row list
+wwf.mobj equ    $1e              menu object
+*
+wwf.addr equ    %10000000       address (long, overwrite)
+wwf.set  equ    %01000000       overwrite data
+wwf.add  equ    %00000000       add data
+wwf.byte equ    %00000000       byte data
+wwf.word equ    %00010000       word data
+wwf.long equ    %00100000       long data
+wwf..lng equ    5
+wwf.xlng equ    %00110000       extended data
+wwf..ext equ    4
+wwf.vabs equ    %00000000       data absolute (in table)
+wwf.vrel equ    %00000001       data relative
+wwf.vatb equ    %00000010       data in data area
+wwf.vitb equ    %00000011       data pointed to from data area
+wwf.vrtb equ    %00000100       data offset from pointer in data area
+        list

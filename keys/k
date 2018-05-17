@@ -1,0 +1,141 @@
+* Key / character definitions
+        nolist
+*
+* character types
+*
+k.curtyp equ    $fe             cursor
+k.nonpr  equ    $00             non-printable character
+k.dig09  equ    $02             digit
+k.lclet  equ    $04             lower-case letter
+k.uclet  equ    $06             upper-case letter
+k.other  equ    $08             other (printable)
+*
+* event key values
+*
+k.hit    equ    $01             single hit
+k.do     equ    $02             double hit (do)
+k.cancel equ    $03             cancel
+k.help   equ    $04             help
+k.move   equ    $05             window move
+k.size   equ    $06             window size
+k.sleep  equ    $07             sleep
+k.wake   equ    $08             ... and wake
+k.stuff  equ    $ff             stuff special sequence
+*
+* control characters
+*
+k.bspce  equ    $08
+k.tab    equ    $09
+k.enter  equ    $0a
+k.nl     equ    $0a
+k.lf     equ    $0a
+k.ff     equ    $0c
+k.cr     equ    $0d
+k.xon    equ    $11
+k.xoff   equ    $13
+k.esc    equ    $1b
+
+
+k.space  equ    $20
+k.dollar equ    $24
+k.percnt equ    $25
+k.apost  equ    $27
+
+k.zero   equ    $30
+
+k.undo   equ    $d3
+
+k.maxch  equ    $ffffffbf       highest printable character
+
+; cursor key definitions
+
+k.curs   equ    $ffffffc0       start of cursor keys
+k.curmk  equ    $ffffffe0       mask to detect cursor keys
+k.curtp  equ    $ffffffe7       mask to check type of cursor keys
+*
+k.alt1l  equ    $ffffffc0       lowest add 1 for alt
+k.alt1h  equ    $ffffffe7       highest add 1 fo alt
+k.alt    equ    $01             add to cursor key for alt
+k..alt   equ    0               bit set for alt
+k.ctrl   equ    $02             add to cursor key for ctrl
+k..ctrl  equ    1               bit set for ctrl
+k.shift  equ    $04             add for shift
+k..shift equ    2               bit set for shift
+k.left   equ    $ffffffc0
+k.alf    equ    $ffffffc1
+k.clf    equ    $ffffffc2
+k.aclf   equ    $ffffffc3
+k.slf    equ    $ffffffc4
+k.aslf   equ    $ffffffc5
+k.cslf   equ    $ffffffc6
+k.acslf  equ    $ffffffc7
+k.right  equ    $ffffffc8
+k.art    equ    $ffffffc9
+k.crt    equ    $ffffffca
+k.acrt   equ    $ffffffcb
+k.srt    equ    $ffffffcc
+k.asrt   equ    $ffffffcd
+k.csrt   equ    $ffffffce
+k.acsrt  equ    $ffffffcf
+k.up     equ    $ffffffd0
+k.aup    equ    $ffffffd1
+k.cup    equ    $ffffffd2
+k.acup   equ    $ffffffd3
+k.sup    equ    $ffffffd4
+k.asup   equ    $ffffffd5
+k.csup   equ    $ffffffd6
+k.acsup  equ    $ffffffd7
+k.down   equ    $ffffffd8
+k.adn    equ    $ffffffd9
+k.cdn    equ    $ffffffda
+k.acdn   equ    $ffffffdb
+k.sdn    equ    $ffffffdc
+k.asdn   equ    $ffffffdd
+k.csdn   equ    $ffffffde
+k.acsdn  equ    $ffffffdf
+k..rdn   equ    3               bit set for right and down
+
+k.odds   equ    $ffffffe0       above cursor keys
+k.caps   equ    $ffffffe0
+
+k.f1     equ    $ffffffe8
+k.cf1    equ    $ffffffe9
+k.sf1    equ    $ffffffea
+k.csf1   equ    $ffffffeb
+k.f2     equ    $ffffffec
+k.cf2    equ    $ffffffed
+k.sf2    equ    $ffffffee
+k.csf2   equ    $ffffffef
+k.f3     equ    $fffffff0
+k.cf3    equ    $fffffff1
+k.sf3    equ    $fffffff2
+k.csf3   equ    $fffffff3
+k.f4     equ    $fffffff4
+k.cf4    equ    $fffffff5
+k.sf4    equ    $fffffff6
+k.csf4   equ    $fffffff7
+k.f5     equ    $fffffff8
+k.cf5    equ    $fffffff9
+k.sf5    equ    $fffffffa
+k.csf5   equ    $fffffffb
+k.f6     equ    $ffffffea
+k.cf6    equ    $ffffffeb
+k.f7     equ    $ffffffee
+k.cf7    equ    $ffffffef
+k.f8     equ    $fffffff2
+k.cf8    equ    $fffffff3
+k.f9     equ    $fffffff6
+k.sf9    equ    $fffffff7
+k.f10    equ    $fffffffa
+k.sf10   equ    $fffffffb
+
+k.cmd    equ    k.f3
+k.freez  equ    k.cf5
+
+k.sspce  equ    $fffffffc
+k.stab   equ    $fffffffd
+k.senter equ    $fffffffe
+k.break  equ    $ffffffff
+
+k.lalt   equ    $ff             ; leading altkey character
+        list

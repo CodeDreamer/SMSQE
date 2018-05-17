@@ -1,0 +1,22 @@
+; keys for dynamic buffer sub-system
+        nolist
+buf_nxtb equ    $00   ; long     ptr to next buffer in this list (-ve for queue)
+buf_nxtl equ    $04   ; long     pointer to next list of buffers
+buf_ptrp equ    $08   ; long     pointer to pointer to buffer for next put
+buf_ptrg equ    $0c   ; long     pointer to pointer to buffer for next get
+buf_attr equ    $10   ; 4 bytes  attributes
+buf_eoff equ    $10   ;          msb is eof flag
+buf_endb equ    $14   ; long     pointer to end of this buffer
+buf_nxtp equ    $18   ; long     pointer to next put
+buf_nxtg equ    $1c   ; long     pointer to next get
+buf_strt equ    $20   ;          start of buffer
+buf.dyna equ    $220  ;          dynamic allocation to match slave block
+
+; IO pointer block
+
+bio_ibuf equ    $00   ; long     pointer to input buffer
+bio_obuf equ    $04   ; long     pointer to output operation
+bio_iopr equ    $08   ; long     pointer to input operation
+bio_oopr equ    $0c   ; long     pointer to output operation
+
+        list

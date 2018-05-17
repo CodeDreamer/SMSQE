@@ -1,0 +1,33 @@
+program dev8_smsq_gold_driver_most
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+section nul       ; NUL device
+
+input   dev8_smsq_gold_driver_most_rel
+library dev8_smsq_sbas_procs_machine_rel
+library dev8_smsq_gold_int_rel
+library dev8_smsq_gold_hdop_rel
+library dev8_smsq_gold_kbd_read_rel
+library dev8_smsq_smsq_lang_kbd_sett_rel
+library dev8_smsq_gold_par_lib
+library dev8_smsq_gold_ser_lib
+library dev8_dd_dev_lib
+library dev8_iod_nul_lib
+library dev8_iod_pipe_lib
+library dev8_iod_history_lib
+library dev8_iod_par_lib
+library dev8_iod_ser_lib
+library dev8_iod_iob_lib
+library dev8_smsq_ioq_lib
+library dev8_dd_rd_lib
+library dev8_util_thg_parm_rel
+library dev8_iod_iou_lib
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_reset_rel
+library dev8_smsq_smsq_end_rel

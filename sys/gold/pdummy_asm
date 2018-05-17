@@ -1,0 +1,7 @@
+
+	section end
+
+	xdef	gl_xdate
+gl_xdate  ; at $280a ref from date
+
+	end

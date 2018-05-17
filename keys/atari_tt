@@ -1,0 +1,63 @@
+; Keys for Atari TT (MFP2 + SCSI + DMA + display)
+        nolist
+
+ttd_res  equ    $ffff8262    ; tt resolution select
+ttd.sthi equ    $0200          ; ST high res mode
+
+scs..irq equ    7            ; SCSI DMA end of operation request (MFP2 port)
+scs_irq  equ    at_mfp2
+scs..ber equ    5            ; SCSI DMA bus error
+scs_ber  equ    at_mfp2
+
+tt_scsi  equ    $ffff8781
+scs_data equ    $00+tt_scsi  ; data bus
+scs_icmd equ    $02+tt_scsi  ; initator command register
+scs.nop  equ      %00000000
+scs.rena equ      %00000000  ; read enabled
+scs.wena equ      %00000001  ; write enabled
+scs.sel  equ      %00000101  ; select
+scs.rack equ      %00010000  ; read acknowledge
+scs.wack equ      %00010001  ; write acknowledge
+scs.rst  equ      %10000000  ; reset
+scs_mode equ    $04+tt_scsi  ; mode register
+scs.idle equ      %00000000  ; idle mode (no parity)
+;scs.cmod equ      %00100000  ; command mode (parity)
+;scs.dmod equ      %00100010  ; dma mode     (parity)
+scs.cmod equ      %00000000  ; command mode (no parity)
+scs.dmod equ      %00000010  ; dma mode     (no parity)
+scs_tcmd equ    $06+tt_scsi  ; target command
+scs.dout equ      %00000000  ; data out
+scs.din  equ      %00000001  ; data in
+scs.cmd  equ      %00000010  ; command
+scs.stt  equ      %00000011  ; status
+scs.msg  equ      %00000111  ; message
+scs_selc equ    $08+tt_scsi  ; select register (write)
+scs_bstt equ    $08+tt_scsi  ; bus status (read)
+scs..req equ      5          ; request
+scs.req  equ      %00100000  ; request
+scs..bsy equ      6          ; busy
+scs.bsy  equ      %01000000  ; busy
+scs_dmas equ    $0a+tt_scsi  ; start dma send (write)
+scs_stat equ    $0a+tt_scsi  ; process status (read)
+scs.phas equ      %00001000  ; phase match
+scs.sper equ      %00100000  ; scsi parity error
+scs_dmat equ    $0c+tt_scsi  ; start dma target receive (write)
+scs_ldat equ    $0c+tt_scsi  ; latched bus data (read)
+scs_dmai equ    $0e+tt_scsi  ; start dma initiator receive
+scs_rsti equ    $0e+tt_scsi  ; reset interrupts and parity flag
+
+tt_scsid equ    $ffff8700    ; scsi dma
+scd_addr equ    $01+tt_scsid ; address of DMA (4 alternate bytes)
+scd_cnt  equ    $09+tt_scsid ; dma count      (4 alternate bytes)
+scd_rstu equ    $10+tt_scsid ; upper word of rest
+scd_rstl equ    $12+tt_scsid ; lower word of rest
+scd_ctrl equ    $15+tt_scsid ; control register
+scd_stat equ    scd_ctrl     ; status register
+scd.read equ    %00000000    ; set read (before address)
+scd.writ equ    %00000001    ; set write (before address)
+scd..ena equ    1            ; enable dma
+scd.dmar equ    %00000010    ; enable dma read
+scd.dmaw equ    %00000011    ; enable dma write
+scd..ber equ    7            ; bus error on dma
+
+        list

@@ -1,0 +1,8 @@
+; General Utilities Hotkey List
+        nolist
+hkl_key  equ   $00
+hkl_type equ   $04
+hkl_name equ   $08
+hkl.elen equ   $50
+hkl.maxn equ   hkl.elen-hkl_name-2
+        list

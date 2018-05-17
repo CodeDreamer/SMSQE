@@ -1,0 +1,16 @@
+; Vector macro (relative word address without automatic XREF)
+        nolist
+
+vec     macro   name
+        dc.w    [name]-*
+        endm
+
+vecx    macro   name
+        xref    [name]
+        dc.w    [name]-*
+        endm
+
+novec   macro
+        dc.w    0
+        endm
+        list

@@ -1,0 +1,35 @@
+* Key definitions 
+        nolist
+*
+k.tab    equ    $09             tab key
+k.enter  equ    $0a             enter key
+k.esc    equ    $1b             escape key
+k.fchar  equ    $20             first printable character
+k.lchar  equ    $bf             last printable character
+k.left   equ    $c0             cursor left
+k.tolft  equ    $c1             cursor to left (start of line)
+k.dleft  equ    $c2             delete left
+k.dtolft equ    $c3             delete to left (start of line)
+k.wleft  equ    $c4             cursor one word left
+k.dwleft equ    $c6             delete word left
+k.right  equ    $c8             cursor right
+k.torgt  equ    $c9             cursor to right (end of line)
+k.dright equ    $ca             delete character right
+k.dtorgt equ    $cb             delete to right (end of line)
+k.wright equ    $cc             cursor one word right
+k.dwright equ   $ce             delete one word right
+k.up     equ    $d0             cursor up
+k.scrup  equ    $d1             scroll up
+k.pup    equ    $d4             page up
+k.down   equ    $d8             cursor down
+k.scrdn  equ    $d9             scroll down
+k.dline  equ    $da             delete line
+k.pdown  equ    $dc             page down
+k.help   equ    $e8             help (f1)
+k.cmd    equ    $f0             command (f3)
+k.mode   equ    $f6             change mode (shift f4 / f9)
+k.btab   equ    $fd             back tab
+k.stuff  equ    $fa             stuff (shift f5 / f10)
+k.digit  equ    $02             type is digit
+k.other  equ    $08             type is non digit non letter
+        list

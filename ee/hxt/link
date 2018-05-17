@@ -1,0 +1,12 @@
+program dev8_ee_hxt_#0
+input   dev8_ee_hxt_base_rel
+input   dev8_ee_hk_#0_rel
+library dev8_ee_hxt_lib
+library dev8_ee_hk_lib
+
+library dev8_util_thg_lib
+library dev8_util_cv_lib
+library dev8_util_gut_lib
+
+library dev8_lang_#0_lib
+library dev8_util_dummy_lib

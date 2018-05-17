@@ -1,0 +1,50 @@
+; QL Hardware Keys
+        nolist
+
+mc_stat  equ    $18063  byte
+mc..blnk equ      1
+mc..m8   equ      3
+mc..scrb equ      7
+
+pc_clock equ    $18000  long    clock
+pc_tctrl equ    $18002  byte    transmit control
+pc..sern equ      3               serial port number or 0=mdv, 1=net
+pc..serb equ      4               0=serial, 1=mdv or net
+pc..diro equ      7               direct output bit
+pc.bmask equ      %00000111       baud rate mask
+pc.motmd equ      %11100111       all except mode bits
+pc.mdvmd equ      %00010000       microdrive mode
+pc.netmd equ      %00011000       network mode
+pc_ipcwr equ    $18003  byte    IPC write
+pc.ipcwr equ      %00001100       IPC write bit
+pc..ipcw equ      1               ... 1
+pc.ipcrd equ      %00001110       IPC read bit
+pc_mctrl equ    $18020  byte    microdrive control
+pc..sel  equ      0               select bit
+pc..sclk equ      1               select clock bit
+pc..writ equ      2               write
+pc..eras equ      3               erase
+pc.read  equ      %0010           read mode
+pc.erase equ      %1010           erase mode
+pc.write equ      %1110           write mode
+pc_ipcrd equ    $18020  byte    IPC read
+pc..txfl equ      1               transmit buffer full
+pc..rxrd equ      2               read buffer ready
+pc..gap  equ      3               gap
+pc..dtr1 equ      4               DTR port 1
+pc..cts2 equ      5               CTS port 2
+pc..ipca equ      6               IPC acknowledge
+pc..ipcd equ      7               IPC data bit
+pc_intr  equ    $18021  byte    interrupt control / status
+pc.intrg equ      %00000001       gap interrupt
+pc.intri equ      %00000010       IPC interrupt
+pc.intrt equ      %00000100       transmit interrupt
+pc.intrf equ      %00001000       frame interrupt
+pc.intre equ      %00010000       external interrupt
+pc.maskg equ      %00100000       mask gap interrupt
+pc.maski equ      %01000000       mask IPC interrupt
+pc.maskt equ      %10000000       mask transmit interrupt
+pc_tdata equ    $18022  byte    transmit data
+pc_trak1 equ    $18022  byte    microdrive read track 1
+pc_trak2 equ    $18023  byte    microdrive read track 2
+        list

@@ -1,0 +1,65 @@
+; Arithmetic Interpreter Codes (Variable Type)
+        nolist
+ba.end   equ    $ff     ; end
+
+ba.nop   equ    $00     ; nop (to align)
+ba.fp    equ    $02     ; push fp
+ba.int   equ    $04     ; push int
+ba.str   equ    $06     ; push str
+
+ba.neg   equ    $14     ; negate TOS
+ba.ccat  equ    $16     ; concatenate NOS & TOS
+ba.cccat equ    $18     ; concatenate constant & TOS
+ba.ccatc equ    $1a     ; concatenate TOS & constant
+ba.instr equ    $1c     ; NOS instr TOS
+ba.cinst equ    $1e     ; constant instr TOS
+ba.instc equ    $1e     ; TOS instr constant
+ba.pwr   equ    $22     ; NOS to power TOS
+ba.pwrfp equ    $24     ; TOS to power FP const
+ba.pwrin equ    $26     ; TOS to power INT const
+ba.mul   equ    $28     ; multiply NOS by TOS
+ba.mulfp equ    $2a     ; multiply TOS by constant FP
+ba.mulin equ    $2c     ; multiply TOS by constant INT
+ba.mul2n equ    $2e     ; multiply TOS by 2n
+ba.div   equ    $2e     ; divide NOS by TOS
+ba.divfp equ    $32     ; divide TOS by constant FP
+ba.divin equ    $34     ; divide TOS by constant INT
+ba.div2n equ    $36     ; divide TOS by 2n
+ba.mod   equ    $38     ; NOS mod TOS
+ba.modc  equ    $3a     ; TOS mod const
+ba.div   equ    $3c     ; NOS div TOS
+ba.divc  equ    $3e     ; TOS div const
+ba.add   equ    $3e     ; add TOS to NOS
+ba.addfp equ    $42     ; add FP const to TOS
+ba.addin equ    $44     ; add INT const to TOS
+ba.add1  equ    $46     ; add 1 to TOS
+ba.sub   equ    $48     ; subtract TOS from NOS
+ba.subfp equ    $4a     ; subtract FP const from TOS
+ba.subin equ    $4c     ; subtract INT const from TOS
+ba.sub1  equ    $4e     ; subtract 1 from TOS
+ba.gt    equ    $4e     ; set true if NOS greater than TOS
+ba.gt0   equ    $52     ; set true if TOS greater than zero
+ba.ge    equ    $54     ; set true if NOS greater than or equal to TOS
+ba.ge0   equ    $56     ; set true if TOS greater than or equal to 0
+ba.equ   equ    $58     ; set true if NOS equal to TOS
+ba.equ0  equ    $5a     ; set true if TOS equal to zero
+ba.appeq equ    $5c     ; set true if NOS approximately equal to TOS
+ba.nequ  equ    $5e     ; set true if NOS not equal to TOS
+ba.nequ0 equ    $5e     ; set true if TOS not equal to zero
+ba.le    equ    $62     ; set true if NOS less than or equal to TOS
+ba.le0   equ    $64     ; set true if TOS less than or equal to 0
+ba.lt    equ    $66     ; set true if NOS less than TOS
+ba.lt0   equ    $68     ; set true if TOS less than zero
+ba.not   equ    $6a     ; not TOS
+ba.bnot  equ    $6c     ; bitwise not TOS
+ba.and   equ    $6e     ; NOS and TOS
+ba.band  equ    $6e     ; bitwise NOS and TOS
+ba.bandc equ    $72     ; bitwise TOS and constant
+ba.or    equ    $74     ; NOS or TOS
+ba.bor   equ    $76     ; bitwise NOS or TOS
+ba.borc  equ    $78     ; bitwise TOS or constant
+ba.xor   equ    $7a     ; NOS xor TOS
+ba.bxor  equ    $7c     ; bitwise NOS xor TOS
+ba.bxorc equ    $7e     ; bitwise TOS xor constant
+
+        list

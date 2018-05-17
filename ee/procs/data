@@ -1,0 +1,30 @@
+; Procedures Thing
+        nolist
+prc_addp equ    $20     ADD Procedure vector
+prc_remp equ    $26     REMove Procedure vector
+prc_find equ    $2c     FIND procedure
+prc_mkls equ    $32     MaKe LiSt of procedures
+prc_usep equ    $38     USE Procedure
+prc_vec5 equ    $3e
+prc_vec6 equ    $44
+prc_vec7 equ    $4a
+
+prc_thgl equ    $50     pointer to extension THinG name List
+prc_prcl equ    $54     pointer to PRoCedure List
+prc_thgi equ    $58     pointer to extension THinG name Index
+prc_prci equ    $5c     pointer to PRoCedure Index
+prc_end  equ    $60
+
+prc.mxtn equ    $20     max length of extension thing name
+prc.mxpn equ    $10     max length of procedure name
+
+prc_thnm equ    $00          ; string  thing name in thing list
+prc.thls equ    prc.mxtn+2   ;         thing list entry length
+
+prc_thpt equ    $00          ; long     thing name pointer
+prc_exid equ    $04          ; long     extension ID
+prc_prnm equ    $08          ; string   uppercased, space filled procedure name
+prc_prch equ    $0a          ; chars    ..........
+prc.prls equ    prc_prnm+prc.mxpn+2
+
+        list

@@ -1,0 +1,24 @@
+; Milan hardware keys
+        nolist
+
+mfp_vbas equ    $180  ; MFP vector base
+mi_mfp   equ    $ffffc100        ; multi function peripheral
+mfp.i    equ    4                ; long word addressing
+mfp.o    equ    3                ; in msbyte
+
+        include 'dev8_keys_mfp'
+
+mfp.vect equ      $68               ; vector group 6 ($180-$1bc), soft end
+
+mfp_cts  equ    mfp_port         ; CTS in
+mfp..cts equ      2              ; clear if clear to send
+
+mfp_csie equ    mfp_ienb         ; clear to send enable
+mfp_csis equ    mfp_isb          ; clear to send in service
+mfp_csim equ    mfp_mskb         ; clear to send mask
+mfp..csi equ      2              ; clear to send interrupt bit
+
+vio_stbe equ      $28  ; vectored interrupt from serial transmit buffer empty
+vio_srbf equ      $30  ; vectored interrupt from serial receive buffer full
+
+        list

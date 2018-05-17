@@ -1,0 +1,10 @@
+; PEROM definitions for Atari ST
+        nolist
+pe_rbase  equ   $fffa0000        ; ROM base
+pe_rtop   equ   $fffbfe00        ; ROM top
+
+pe_read   equ   $fffbfe01        ; address to test for normal
+pe_noread equ   $fffbfe03        ; address for rom disabled
+pe_shaddr equ   $fffbfe07        ; address to set high address
+pe_write  equ   $fffbfe0b        ; address to write
+        list

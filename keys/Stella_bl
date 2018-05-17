@@ -1,0 +1,38 @@
+; Stella System Keys - Boot Loader and File Flags
+        nolist
+
+; module header and host module trailer
+
+sbl_mbase   equ  $00  ; long    the module base (length of header)
+                        ;         0 for the host module
+sbl_mlength equ  $04  ; long    the module length (not including header)
+sbl_rlength equ  $08  ; long    the module after re-location
+                        ;         0 for the host module
+sbl_cksum   equ  $0C  ; long    the module checksum
+sbl_select  equ  $10  ; long    the position of the select code within header
+                        ;         or 0 if no select
+sbl_flength equ  $10  ; long    the position of the file length table within
+                        ;         the host module (or 0 if none)
+sbl_level   equ  $14  ; byte    the module level
+
+sbl_name    equ  $16  ; word    the rel pointer to the module name
+sbl.trlen   equ  $18
+
+; communications block
+
+sbl_family  equ  $00  ; long    machine family
+sbl_mtype   equ  $04  ; long    machine type
+sbl_ptype   equ  $04  ; byte    processor type
+sbl_lang    equ  $08  ; word    language identifier
+
+sbl_facility equ $0c  ; long    32 bit facility map
+
+sbl.noload    equ  $00  ;         do not load
+sbl.load      equ  $01  ;         load
+sbl..load     equ    0
+sbl.over      equ  $02  ;         load over previous
+sbl..over     equ    1
+sbl.complete  equ  $04  ;         load complete
+sbl..complete equ    2
+
+        list

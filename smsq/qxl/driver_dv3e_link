@@ -1,0 +1,46 @@
+program dev8_smsq_qxl_driver_dv3e
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+section init      ; initialisation
+
+section kbd       ; keyboard
+section iou       ; input / output utilities
+section rd        ; RAM driver
+section dv3
+section nd        ; network driver
+section par       ; parallel port driver
+section ser       ; serial port driver
+section pipe      ; PIPE device
+section nul       ; NUL device
+
+section thing     ; things
+section gen_util  ; general utilities
+section sa        ; string arithmetic
+section cv        ; conversions
+
+section procs     ; SuperBASIC procedure table
+section defs      ; SuperBASIC extension (TK2) message and key definitions
+section exten     ; SuperBASIC extensions
+section ed        ; SuperBASIC editor
+section utils     ; SuperBASIC extension utilities
+
+input   dev8_smsq_qxl_dv3e_rel
+
+library dev8_dv3_qxl_lib
+library dev8_dv3_qlf_lib
+library dev8_dv3_msd_lib
+library dev8_dv3_dv3_lib
+library dev8_dd_dev_lib
+library dev8_smsq_qxl_comm_messadd_rel
+library dev8_smsq_qxl_comm_blat_rel
+library dev8_iod_iou_lib
+library dev8_sbsext_ut_lib
+library dev8_util_thg_parm_rel
+library dev8_util_thg_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_end_rel

@@ -1,0 +1,283 @@
+; Directory Device Driver V3 macros
+        nolist
+        expand
+
+.byte   equ     1
+.word   equ     2
+.long   equ     4
+
+pad     macro   position,size
+        ifnum   [rptr] > [position] goto pad_fail
+        ifnum   [rptr] = [position] goto pad_end
+        dcb.b   [position]-[rptr],0
+        goto    pad_end
+
+pad_fail maclab
+        error   Macro out of order
+pad_end  maclab
+rptr    setnum  [position]+[size]
+        endm
+
+vec     macro   name
+        ifstr [.def([name])] = TRUE goto vec_def
+        xref    [name]
+vec_def maclab
+        dc.w    [name]-*
+        endm
+
+; Device Driver Linkage Block Definition Macros
+
+link_table macro dname, rev, ddlk.size, ddef.size
+
+        ifstr {[dname]} <> {} goto link_def
+dname   setstr  {   }
+link_def maclab
+[.lab]  dc.l    [ddlk.size]
+        dc.l    [ddef.size]
+        dc.l    '[dname]0'
+        dc.b    [rev]
+rptr    setnum  dlt_rev+1
+pr.c    setnum  0
+vi.c    setnum  0
+ac.c    setnum  0
+        endm
+
+buffered macro
+        pad     dlt_buff,.byte
+        dc.b    $ff              ; buffered driver
+        endm
+
+track   macro
+        pad     dlt_cylhds,.byte
+        dc.b    $ff              ; sector number is cylinder / head / side
+        endm
+
+sectl   macro
+        pad     dlt_sectl,.byte
+sectf   setnum  0
+sect.p  setnum  0
+
+sect_l  maclab
+sect.p  setnum  [sect.p]+1
+        ifnum   [sect.p] > [.nparms] goto sect_set
+sectf   setnum  [sectf]+[.parm([sect.p])]
+        goto    sect_l
+
+sect_set maclab
+        dc.b    [sectf]>>7       ; accumulated sector lengths
+        endm
+
+mtype   macro   type
+        pad     dlt_mtype,.byte
+        dc.b    [type]           ; medium type
+        endm
+
+msect   macro   max
+        pad     dlt_msect,.byte
+        ifstr {[max]} <> {} goto msect_def
+max     setstr  {255}
+msect_def maclab
+        dc.b    [max]            ; multiple sector support
+        endm
+
+density macro
+        pad     dlt_dens,.byte
+densf   setstr  {0}
+dens.p  setnum  0
+
+dens_l  maclab
+dens.p  setnum  [dens.p]+1
+        ifnum   [dens.p] > [.nparms] goto dens_set
+densf   setstr  [densf]+1<<[.parm([dens.p])]
+        goto    dens_l
+
+dens_set maclab
+        dc.b    [densf]            ; accumulated sector lengths
+        endm
+
+poll    macro   routine
+        pad     dlt_poll,.word
+        vec     [routine]          ; polling server rel address
+        endm
+
+scheduler macro   routine
+        pad     dlt_sched,.word
+        vec     [routine]          ; scheduler server rel address
+        endm
+
+; The Vector Table
+
+check   macro   routine
+        pad     dlt_check,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+direct  macro   routine
+        pad     dlt_direct,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+rsect   macro   routine
+        pad     dlt_rsect,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+wsect   macro   routine
+        pad     dlt_wsect,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+vsect   macro   routine
+        pad     dlt_vsect,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+slbfill macro   routine
+        pad     dlt_slbfill,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+slbupd  macro   routine
+        pad     dlt_slbupd,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+dflush  macro   routine
+        pad     dlt_dflush,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+fflush  macro   routine
+        pad     dlt_fflush,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+fslave  macro   routine
+        pad     dlt_fslave,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+mformat macro   routine
+        pad     dlt_mformat,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+status  macro   routine
+        pad     dlt_status,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+done    macro   routine
+        pad     dlt_done,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+zap     macro   routine
+        pad     dlt_zap,.word
+        vec     [routine]          ; vector routine rel address
+        endm
+
+thing   macro   name_ptr,routine
+        pad     dlt_thname,.word*2
+        vec     [name_ptr]         ; thing name
+        vec     [routine]          ; thing routine rel address
+        endm
+
+master  macro   dname
+        pad     dlt_mname,.long
+        dc.l    '[dname]0'        ; master device name
+        endm
+
+preset_b macro  offset
+        pad     dlt_preset,0
+
+pres.b  setnum  [.nparms]-1
+        ifnum   ([pres.b]>>1)<<1 = [pres.b] goto pres_set  ; even number of bytes
+pres.b  setnum  [.nparms]
+
+pres_set maclab
+        dc.w    [offset]
+        dc.w    [pres.b]
+
+presf   setnum  0
+pres.p  setnum  1
+
+pres_l  maclab
+pres.p  setnum  [pres.p]+1
+        ifnum   [pres.p] > [.nparms] goto pres_end
+        dc.b    [.parm([pres.p])]
+        goto    pres_l
+
+pres_end maclab
+        ifnum   [pres.b] < [.nparms] goto pres_exit
+        dc.b    0                               ; pad to even number
+pres_exit maclab
+        endm
+
+preset_w macro  offset
+        pad     dlt_preset,0
+
+        dc.w    [offset]
+        dc.w    ([.nparms]-1)<<1
+
+presf   setnum  0
+pres.p  setnum  1
+
+pres_l  maclab
+pres.p  setnum  [pres.p]+1
+        ifnum   [pres.p] > [.nparms] goto pres_end
+        dc.w    [.parm([pres.p])]
+        goto    pres_l
+
+pres_end maclab
+        endm
+
+preset_l macro  offset
+        pad     dlt_preset,0
+
+        dc.w    [offset]
+        dc.w    ([.nparms]-1)<<2
+
+presf   setnum  0
+pres.p  setnum  1
+
+pres_l  maclab
+pres.p  setnum  [pres.p]+1
+        ifnum   [pres.p] > [.nparms] goto pres_end
+        dc.l    [.parm([pres.p])]
+        goto    pres_l
+
+pres_end maclab
+        endm
+
+preset_v macro  offset,routine
+        pad     dlt_preset,0
+        dc.w    [offset],0
+        vec     [routine]
+        endm
+
+vint    macro  offset, reglist, server, vector
+        pad     dlt_vintab,0                 ; add end of preset table
+
+        dc.w    [offset]
+        dc.w    [reglist]
+        vec     [server]
+        dc.w    [vector]
+
+        endm
+
+; hardware access tables
+
+access  macro   routine
+        pad     dlt_acctab,0                 ; add end of preset and vector tab
+
+        vec     [routine]
+        endm
+
+
+link_end macro  buffer
+        pad     dlt_end,0
+        dc.w    [buffer] ; temporary
+        endm
+
+        list

@@ -1,0 +1,11 @@
+dev8_dd_qlnd_init_rel
+dev8_dd_qlnd_fopcls_rel
+dev8_dd_qlnd_fut_rel
+dev8_dd_qlnd_fio_rel
+dev8_dd_qlnd_nsv_rel
+dev8_dd_qlnd_netd_rel
+dev8_dd_qlnd_rept_rel
+dev8_dd_qlnd_bcast_rel
+dev8_dd_qlnd_phys_rel
+dev8_dd_qlnd_use_rel
+dev8_dd_qlnd_server_rel

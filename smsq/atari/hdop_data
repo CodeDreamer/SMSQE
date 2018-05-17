@@ -1,0 +1,36 @@
+* Atari HDOP interface definitions
+        nolist
+
+ho_atari equ    $00
+ho.atari equ      'ASTH'
+
+ho_bptim equ    $20     ; word  beep timer
+ho_bppit equ    $22     ; word  pitch
+ho_bphgh equ    $24     ; word  high pitch
+ho_bplow equ    $26     ; word  low pitch
+ho_bpstp equ    $28     ; word  step in pitch
+ho_bpint equ    $2a     ; word  interval between step changes
+ho_bpict equ    $2c     ; word  interval counter
+ho_bpwrp equ    $2e     ; word  wrap
+ho_bpwct equ    $30     ; word  wrap counter
+
+ho_work  equ    $32     ; working space
+ho_end   equ    $40
+
+ho.bpoff equ      $073                  ; beep 0
+ho.bpscl equ      $5f8-ho.bpoff         ; beep 128 - beep 0
+ho.bpssf equ      7                     ; /128
+
+ho.bpfa  equ      ho.bpscl/128*325*2  ; duration = (250 + a/(b+2*pitch)) * QL
+ho.bpfb  equ      ho.bpscl/128*5*2-ho.bpoff*2
+ho.bpfo  equ      125
+
+
+; Atari KBD interface definitions
+
+kb_atari equ      $00
+kb.atari equ      'ASTK'
+
+kb_krwem equ      $22   16 bytes    KEYROW emulation
+kb_joyst equ      $37   byte        state of joystick
+        list

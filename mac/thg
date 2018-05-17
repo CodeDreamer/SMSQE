@@ -1,0 +1,39 @@
+; Standard Thing Macros
+        nolist
+
+thg_extn macro id,next,defn,desc
+[.lab]  dc.l    thh.flag,tht.extn       ; extension thing
+        ifstr   {[next]} <> {} goto nextlink
+        dc.l    0
+        goto    id
+nextlink maclab
+        dc.l    [next]+thh_next-*
+id       maclab
+        dc.l    '[id]'
+        ifstr   {[defn]} <> {} goto setdefn
+        dc.l    0
+        goto    info
+setdefn  maclab
+        dc.l    [defn]+thh_pdef-*
+info     maclab
+        ifstr   {[desc]} <> {} goto setdesc
+        dc.l    0
+        goto    endt
+setdesc  maclab
+        dc.l    [desc]+thh_pdes-*
+endt     maclab
+        endm
+
+
+prc_stt macro  thing
+[.lab]  dc.l    [thing]-*
+        endm
+
+prc_def macro  id,proc
+        dc.l    '[id]'
+        dc.w   [.len(proc)],'[proc]'
+        endm
+
+prc_end macro
+        dc.l    0
+        endm

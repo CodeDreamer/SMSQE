@@ -1,0 +1,206 @@
+		Official SMSQ/E style guide
+		---------------------------
+		      Revision 1.0
+
+1.0  Purpose
+------------
+
+The purpose of this document is to keep a single coding style within the
+whole project. SMSQ/E has evolved over more than a decade with many
+people involved, therefore most but not all existing source files comply
+with the style described in this guide. New source files however have to
+comply. If changes in existing files are done that don't comply with the
+style described here it is your choice to either adapt to the style of
+the given file or make your changes in the style described in this
+guide.
+
+ 
+
+2    Generic requirements
+-------------------------
+
+2.0  Development system
+-----------------------
+
+The standard distribution is assembled using the QMAC, QLINK and QMAKE
+assembler tools. All submissions must be compatible with these tools,
+the only exception being hardware dependant code which may need other
+tools for certain purposes (e.g. 68020+ assembler commands).
+
+
+2.1  Assembler
+--------------
+
+All parts not specific to a certain hardware must be written in plain
+68000 language and must be compatible with the QMAC assembler syntax.
+
+
+2.2  Character set
+------------------
+
+The normal QDOS/SMSQ character set is to be used.
+
+
+2.3  TAB stops
+--------------
+
+TAB limits need to be set to 8 characters. You are encouraged to configure
+your editor to compress multiple spaces to TAB characters in order
+to keep files small.
+
+
+3    Assembler files
+--------------------
+
+3.1  Generic file structure
+---------------------------
+
+A source file starts with one or more header lines followed by a changes list,
+the "section" command, xdefs, xrefs, include files and finally the code itself.
+Example:
+
+; Routines to do something brilliant  V1.02  (C) 2002  Fred Flintstone
+;					     Barney Rumble
+
+; Addition information about the file (optional)
+
+; 2002-01-01  1.00	First release (FF)
+; 2002-06-20  1.01	Added br_evenbetter function (BR)
+; 2002-12-31  1.02	Fixed serious buffer overflow in sub-function
+;		br_doanything (FF)
+
+	section brilliant
+
+	xdef	br_super
+	xdef	br_evenbetter
+
+	xref	cv_ctype
+
+	include 'dev3_keys_sms_io'
+
+	[Code]
+
+	end
+
+The header line gives a short explanation of the purpose of the file, the
+current version number and the list of names of people that hold the copyright
+(additional names are added in an extra line).
+
+The changes list is something new and so far you won't encounter it in any
+original files of the distribution. Now that the code is available to more
+developers keeping a detailed track of the changes within a file becomes a
+must. When working on a file, always increase the version number and write down
+your changes in the list!
+
+The format of the list is
+; YYYY-MM-DD  v.vv	Description of change (full or abreviated name of author)
+
+The date is in ISO 8601 notation (big words for "year first, month next and
+day last).
+
+
+
+3.2  Headers
+------------
+
+A header within a source file always starts with the line
+;+++
+and ends with the line
+;---
+
+All routines available to external files should have a function header.
+Function headers contain a description of the function followed by a
+detailed in/out table as shown here:
+
+;+++
+; XYZ driver - read function (one line description, optional)
+;
+; This function does nothing really, it is just an example for a function
+; header (detailed discussion of function)
+;
+;	d0 cr	drive number / error status
+;	d1  r	byte read
+;	d2    s
+;	a3 c  p linkage block
+;	a5 c  u pointer to something
+;
+;	status return standard
+;---
+
+The register list is a sorted list of all registers affected (D0 first,
+A6 last). Following the register name is a standard field with several
+characters that define the function and behaviour of the register:
+	d0 xy z description
+
+x: " " or "c" = "call parameter"
+y: " " or "r" = "return parameter"
+z: " ", "p" = "preserved", "u" = "updated" or "s" = "smashed"
+
+So in the example header above d0 is a call parameter with the drive
+number and also a return parameter with the error status. D1 is a return
+parameter, too, whereas D2 is just smashed. a3 is a call parameter and
+is preserved. a5 is a call parameter that gets updated within the call.
+
+Registers not listed must be preserved if not stated otherwise.
+
+After the register field the status of the flags after the call is
+documented. This can be for example:
+- "status return standard"
+- "status return arbitrary"
+
+
+3.3  Cases
+----------
+
+Labels and the assembler mnemonics themselves are lower-case. Comments
+and headers are either lower or mixed case.
+
+
+3.4  Comments
+-------------
+
+Comments are started using the ";" operator and must be written in English.
+
+
+3.5  Labels
+-----------
+
+Labels are lower case, words are separated using the "_" character. Normally
+a label has its own line. The labels belonging to the body of a function
+usually start with a short hand for the function name, i.e.
+
+com_check -> comc_loop
+com_rxen	-> crxe_iact
+com_iserve-> comi_error
+...
+
+
+3.6 References to include and other files
+-----------------------------------------
+
+All new references to include and other files must be made to files
+located on device 'dev3_'. The source code now contains reference to files
+located on drive "win1_". To allow some sort of more drive independence, it
+will be attempted to migrate these references, over time, to dev3_.
+Use dev_use 3,xxxy_ to set the dev device to whatever you want. Obviously, for
+the time being, this will be win1_, since all of the code still refers to this.
+
+
+
+4.0  Final words
+----------------
+
+This documents was drafted by Marcel Kilgus. You can send comments
+and suggestions to styleguide@mail.kilgus.net.
+
+Well, that's it already. In this text I tried to cover Tony Tebby's general
+programming style as acurately as possible (though it might not be complete
+yet). I personally have adopted his style for all my 68k related work.
+Nevertheless this text can only act as a guideline. In some special cases it
+might make more sense to write things differently.
+
+In that case, it might be a good idea to consult with the registrar, who
+will attempt to find a solution that all authors can live with.
+
+
+So long, have fun with the sources.

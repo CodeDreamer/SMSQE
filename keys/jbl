@@ -1,0 +1,14 @@
+* Keys for General Utilities JoB List
+        nolist
+
+jbl_id   equ    $00     ; long  job ID
+jbl_ownr equ    $04     ; long  owner
+jbl_base equ    $08     ; long  base address
+jbl_prch equ    $0c     ; long  primary channel ID
+jbl_levl equ    $10     ; word  job level (0=independent, otherwise >1)
+jbl_susp equ    $12     ; word  word set if suspended
+jbl_prty equ    $14     ; word  priority
+jbl_name equ    $16     ; string  complete job name
+jbl.elen equ    $60
+jbl.maxn equ    jbl.elen-jbl_name-2
+        list

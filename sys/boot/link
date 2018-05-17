@@ -1,0 +1,6 @@
+program dev8_sys_boot_#2
+input   dev8_sys_boot_#2_rel
+library dev8_sys_boot_lib
+library dev8_sys_cmp_lib
+library dev8_util_gut_lib
+library dev8_sys_boot_end_all_rel

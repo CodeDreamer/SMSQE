@@ -1,0 +1,153 @@
+* memory allocations for QLT
+        nolist
+*
+qlt_basr equ    $00000000 BASe of usable Ram
+qlt_sysb equ    $00028000 SYStem variables Base
+qlt_sstk equ    $0002a000 Supervisor STacK (initial pointer)
+*
+qlt_sdsp equ    $00020000 Startup DiSPlay address
+qlt.sdmd equ    $00       Startup Display MoDe
+*
+qlt.jobt equ    $200      JOB Table size, 128 jobs max
+qlt.chnt equ    $800      CHaNnel Table size, 512 channels max
+*
+qlt_topr equ    $00e00000 TOP of usable Ram
+*
+qlt_rmp0 equ    $ffe00000 ROMPER 0 address
+qlt_vmao equ    $00030000 VMA Offset
+qlt.rmsz equ    $00040000 ROMPER SiZe
+qlt.rmmx equ    7         ROMPER MaX number
+*
+qlt_disp equ    qlt_rmp0+qlt_vmao  DISplay ROMPER address
+dsp_reg  equ    $00       register (lsb)  control reg (msb)
+dsp_dat  equ    $02       data     (lsb)  control reg (msb) 
+dsp.addh equ    $c        address high byte register
+dsp.addl equ    $d        address low byte register
+dsp.adds equ    3         shift real address to suit controller
+dsp.ctrs equ    9         shift real address for ctrl register (MSbyte of word)
+*
+qlt_srom equ    $fffc0000 System ROM
+*
+qlt_obp  equ    $fffe0000 On Board Peripherals
+qlt.obsz equ    $00004000 On Board peripheral SiZe
+qlt.obmx equ    8         On Board peripheral MaX number
+*
+* Two Dual universal asynchronous Receiver Transmitters
+*
+qlt_drt0 equ    qlt_obp+qlt.obsz*0
+qlt_drt1 equ    qlt_obp+qlt.obsz*1
+*
+drt_mra  equ    $0000     Mode Register A
+drt_sra  equ    $0002     Status Register A
+drt_csra equ    $0002     Clock Select Register A
+drt_cra  equ    $0004     Command Register A
+drt_rhra equ    $0006     RX Holding Register A
+drt_thra equ    $0006     TX Holding Register A
+drt_ipcr equ    $0008     Input Port Change Register
+drt_acr  equ    $0008     Auxiliary Control Register
+drt_isr  equ    $000a     Interrupt Status Register
+drt_imr  equ    $000a     Interrupt Mask Register
+drt_ctu  equ    $000c     Counter/Timer Upper
+drt_ctur equ    $000c     Counter/Timer Upper Register 
+drt_ctl  equ    $000e     Counter/Timer Lower 
+drt_ctlr equ    $000e     Counter/Timer Lower Register
+drt_mrb  equ    $0010     Mode Register B
+drt_srb  equ    $0012     Status Register B
+drt_csrb equ    $0012     Clock Select Register B
+drt_crb  equ    $0014     Command Register B
+drt_rhrb equ    $0016     RX Holding Register B
+drt_thrb equ    $0016     TX Holding Register B
+drt_ivr  equ    $0018     Interrupt Vector Register
+drt_ip   equ    $001a     Input Port
+drt_opcr equ    $001a     Output Port Configuration Register
+drt_sttc equ    $001c     STarT Counter
+drt_sopb equ    $001c     Set Output Port Bits
+drt_stpc equ    $001e     SToP Counter
+drt_ropb equ    $001e     Reset Output Port Bits
+*
+drt..rxr equ    0         receive ready
+drt..ffl equ    1         fifo full
+drt..txr equ    2         transmit ready
+drt..txe equ    3         transmit buffer empty
+*
+drt0.iop equ    %01000000 initial value of drt0 op reg (initn bit set) 
+*
+* SCSI adaptor
+*
+qlt_scsi equ    qlt_obp+qlt.obsz*2
+*
+* One WD1772 Floppy Disc Controller
+*
+qlt_fdc  equ    qlt_obp+qlt.obsz*3
+fdc_cmdr equ    $0000      control register (write only)
+fdc_stat equ    $0000      status register (read only)
+fdc_trak equ    $0020      track reg
+fdc_sect equ    $0040      sector register
+fdc_data equ    $0060      data register
+*
+* One 6522 Versatile Interface Adapter (sic): on PIA address+A12
+*
+qlt_via  equ    qlt_obp+qlt.obsz*4+$1001
+via_iorb equ    $0000     I/O Register B
+via_iora equ    $0100     I/O Register A
+via_ddrb equ    $0200     Data Direction Register B
+via_ddra equ    $0300     Data Direction Register A
+via_t1cl equ    $0400     Timer 0 Counter Low byte
+via_t1ch equ    $0500     Timer 1 Counter High byte
+via_t1ll equ    $0600     Timer 1 Latch Low byte
+via_t1lh equ    $0700     Timer 1 Latch High byte
+via_t2cl equ    $0800     Timer 2 Counter Low byte
+via_t2ch equ    $0900     Timer 2 Counter High byte
+via_sr   equ    $0a00     Shift Register
+via_acr  equ    $0b00     Auxiliary Control Register
+via_pcr  equ    $0c00     Peripheral Control Register
+via_ifr  equ    $0d00     Interrupt Flag Register
+via_ier  equ    $0e00     Interrupt Enable Register
+via_ioan equ    $0f00     I/O register A - No handshake
+*
+via.nsr  equ    %11100011+$ffffff00 acr and for No Shift Register
+via.sout equ    %00011000           acr or for Serial Out
+via.sin  equ    %00001000           acr or for Serial In
+via..sou equ    4                   acr bit set for Serial Out
+*
+* One 6821 Peripheral Interface Adaptor: PIA address+A13
+*
+qlt_pia  equ    qlt_obp+qlt.obsz*4+$2001
+pia_pra  equ    $0000     peripheral register A
+pia_ddra equ    $0000     data direction register A
+pia_cra  equ    $0100     control register A
+pia_prb  equ    $0200     peripheral register B
+pia_ddrb equ    $0200     data direction register B
+pia_crb  equ    $0300     control register B
+*
+* initialisation constants
+*
+ini_scra equ    $00008000       initial SCReen address
+ini.scrs equ    $00008000       initial SCReen Size
+ini.dmod equ    $00             initial Display MODe
+ini_rbas equ    $00010000       Reserved area BASe
+ini_rtop equ    $00018000       Reserved area TOP
+*
+ini_tslc equ    $00001000       Test SLIce size
+ini_mseg equ    $00080000       Memory SEGment size
+ini.nslc equ    $80             Number of SLiCes / segment (ini_mseg/ini_tslc)
+*
+ini_sslc equ    $00000100       Screen test SLIce (ini_tslc*ini.scrn/ini_mseg)
+ini_sinc equ    $00000100       Screen test INCrement (ini.scrn/ini_sslc*2)
+*
+ini_pbas equ    $fffc5800       Pattern BASe
+ini_ptop equ    $fffc6a04       Pattern TOP
+*
+ini_titl equ    $0000e0c0       position of TITLe
+ini.trow equ    6               number of Title ROWs
+ini.trep equ    3               number of Title row REPeats
+ini_tinc equ    $00000100-$40   Title INCrement between screen rows
+*
+ini.t0   equ    %00000000000000000000000000000000
+ini.t1   equ    %00000111100100000000000000000000
+ini.t2   equ    %00000100001110000000000000000000
+ini.t3   equ    %00000111010101010111110000000000
+ini.t4   equ    %00000101010101010101010000000000
+ini.t5   equ    %00000101111111111101111000000000
+ini.t6   equ    %00000000000000000000000000000000
+ini.t7   equ    %00000000000000000000000000000000

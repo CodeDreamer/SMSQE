@@ -1,0 +1,7 @@
+program dev8_smsq_atari_kbd_lang
+
+section header
+
+input   dev8_smsq_atari_kbd_lang_rel
+library dev8_smsq_atari_kbd_lib
+library dev8_smsq_smsq_end_rel

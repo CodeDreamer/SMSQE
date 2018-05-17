@@ -1,0 +1,18 @@
+*       Assert the equality of any number of parameters
+        nolist
+assert  macro
+        noexpand
+parmn   setnum  2
+assloop maclab
+        ifnum   [parmn] > [.nparms] goto assexit
+        ifnum   [.parm([parmn])] ~= [.parm([parmn]-1)] goto asserr
+parmn   setnum  [parmn]+1
+        goto    assloop
+*
+asserr  maclab
+        error   [.parm([parmn])] failed ASSERT
+assexit maclab
+        endm
+*
+        list
+

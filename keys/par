@@ -1,0 +1,90 @@
+; data definitions for PAR device and SER by implication
+        nolist
+
+; par definition block
+
+prd_parl equ    $00     ; true PAR at base
+
+prd_veco equ    $38     ; vectored interrupt linkage (output)
+prd_vech equ    $44     ; vectored interrupt linkage (handshake)
+prd_veci equ    $50     ; vectored interrupt linkage (input)
+prd_room equ    $5c     ; long    spare room in input queue
+prd.room equ      $20
+prd_puls equ    $5c     ; word    PAR pulse width (subq / bgt cycles)
+prd_wait equ    $5e     ; word    PAR wait for ready
+prd_ilen equ    $60     ; long    input buffer length
+prd.ilen equ      $80
+prd_olen equ    $64     ; long    output buffer length (zero dynamic buffer)
+prd_ibuf equ    $68     ; long    pointer to input buffer
+prd_obuf equ    $6c     ; long    pointer to output buffer
+prd_iopr equ    $70     ; long    pointer to input operation
+prd_oopr equ    $74     ; long    pointer to output operation
+prd_iact equ    $78     ; byte    set if input server active
+; prd_oact equ    $79     ; byte    set if output server active
+prd_prt  equ    $7a     ; word    offset to PRT name (if this driver)
+prd_sere equ    $7c     ; byte    set if SER enabled for this driver
+prd_pare equ    $7d     ; byte    set if PAR enabled for this driver
+prd_serx equ    $7e     ; byte    set to port number if this SER exists
+prd.serx equ      +1
+prd_parx equ    $7e     ; byte    set to -port number if this PAR exists
+prd.parx equ      -1
+prd_prtp equ    $7e     ; byte    prt port number (-n=parn, n=sern)
+prd_hand equ    $7f     ; byte    handshake control -ve hardware +ve XON/XOFF
+prd_xonf equ    $80     ; byte    xon/xoff character to be sent
+prd_xoff equ    $81     ; byte    xoff in force
+prd_cdef equ    $82     ; word    ticks of CD inactive before EOF
+prd_cdct equ    $84     ; word    count of CD inactive
+prd_hwb  equ    $86     ; word    base address of hardware (SER)
+prd_hwt  equ    $88     ; byte    hardware type -1=SCC, 0=MFP, 2=MFP2
+prd_timo equ    $89     ; byte    port switch timeout (QL SER)
+prd_txbd equ    $8a     ; byte    transmit baud (QL SER)
+prd_rxbd equ    $8b     ; byte    receive baud (QL SER, not used)
+prd_stxp equ    $8c     ; word    serial xmit pause
+
+prd_port equ    $8f     ; byte    nr ports (port 1 only, if 1 port nr ignored)
+
+ser_inc  equ    $a0
+prd_ser1 equ    $a0     ;         start of SER1 linkage (definition as PAR)
+prd_ser2 equ    $140    ;         start of SER2 linkage
+prd_ser3 equ    $1e0    ;         start of SER3 linkage
+prd_ser4 equ    $280    ;         start of SER4 linkage
+
+prd_prtd equ    $320    ; string  PRT device name
+prt.prtd equ      14    ;         ... quite long really
+
+prd_prtc equ    $330    ;         prd_prt for prt device (6 bytes)
+prd_prtl equ    prd_prtc-prd_prt ; base of PRT linkage (rather dummy)
+
+prd_thgh equ    $340    ;         thing linkage header
+prd_thgl equ    $350    ;         thing linkage
+
+prd_end  equ    $390
+
+
+; par/ser channel block
+
+prc_parm equ    $18     ; word   start of parameter block
+prc_num  equ    $18     ; word   port number
+prc_prty equ    $1a     ; word   parity 0 none, 2 odd, 4 even, 6 mark, 8 space
+prc_xlat equ    $1c     ; word   translate output, bit 0 set for translate
+prc_lfcr equ    $1e     ; word   2 <LF> to <CR>, 4 <LF> to <CR><LF> translation
+prc_fz   equ    $20     ; word   eof flag (0 no eof, 1 <FF>, 2 CRTL Z)
+
+prc_ibuf equ    $28     ; long   pointer to input buffer (SER/SRX only)
+prc_obuf equ    $2c     ; long   pointer to output buffer (not SRX)
+prc_iopr equ    $30     ; long   pointer to input operation
+prc_oopr equ    $34     ; long   pointer to output operation
+
+prc_link equ    $3c     ; long   pointer to SER linkage
+prc_end  equ    $40
+
+
+; par/ser input (output) buffer attributes
+
+prb_fz   equ    $10     ; byte   eof flag (0 no eof, 1 <FF>, 2 CTRL Z)
+prb_prty equ    $11     ; byte   parity code (0,2,4,6,8 as above)
+prb_lfcr equ    $12     ; word
+prb_lf   equ    $12     ; byte   <LF> with appropriate parity (if conversion)
+prb_cr   equ    $13     ; byte   <CR> with appropriate parity (if conversion)
+
+        list

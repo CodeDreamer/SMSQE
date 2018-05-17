@@ -1,0 +1,195 @@
+; Interpreter Keys
+        nolist
+
+init_itoken macro
+tokn    setnum  $0c   ; lowest token !
+        endm
+
+itoken  macro
+tokn    setnum  [tokn]+2
+[.lab]  equ     [tokn]
+        endm
+
+op.addr equ  -2      ; token followed by address (initially line,statement)
+
+        init_itoken
+
+bo.mistake itoken    ; !!!!!
+
+bo.stop    itoken    ; end of program
+
+bo.break   itoken    ; check break (proc / fn entry)
+
+bo.pushs   itoken    ; push values
+bo.pushf   itoken
+bo.pushi   itoken
+bo.pushl   itoken
+bo.pushv   itoken
+bo.pushu   itoken
+bo.pusha   itoken
+bop.arrs   equ       10  ; array statistics
+
+bo.pushcf  itoken    ; function call
+bo.pushsf  itoken
+bo.pushsfc itoken
+bo.pushcfa itoken    ; function call push array element
+bo.pushsfa itoken
+bo.pushsfac itoken
+bo.inline  itoken    ; inline function reference
+
+bo.const   itoken    ; push constant
+bo.confp   itoken
+bo.conin   itoken
+bo.conli   itoken
+
+bo.neg     itoken    ; arithmetic operations
+bo.bnot    itoken
+bo.not     itoken
+bo.index   itoken
+bo.indvt   itoken
+bo.indtv   itoken
+bo.indvtv  itoken
+bo.add     itoken
+bo.sub     itoken
+bo.mul     itoken
+bo.divf    itoken
+bo.power   itoken
+bo.divi    itoken
+bo.mod     itoken
+bo.concat  itoken
+bo.instr   itoken
+bo.band    itoken
+bo.bor     itoken
+bo.bxor    itoken
+bo.and     itoken
+bo.or      itoken
+bo.xor     itoken
+bo.cpaeq   itoken
+bo.cpeq    itoken
+bo.cpne    itoken
+bo.cpgt    itoken
+bo.cpge    itoken
+bo.cple    itoken
+bo.cplt    itoken
+
+bo.asgs    itoken             ; assignments
+bo.asgf    itoken
+bo.asgi    itoken
+bo.asgl    itoken
+bo.asgv    itoken
+bo.asgu    itoken
+bo.asgel   itoken
+
+bo.cpcall  itoken           ; procedure, function or array setup
+bo.spcall  itoken
+bo.spcallc itoken
+bo.pcall   itoken
+bo.cfnref  itoken
+bo.sfnref  itoken
+bo.sfnrefc itoken
+bo.cfnaref itoken
+bo.sfnaref itoken
+bo.sfnarefc itoken
+
+bo.stpar   itoken            ; parameters
+bo.fppar   itoken
+bo.inpar   itoken
+bo.nmpar   itoken
+bo.nfpar   itoken
+bo.arpar   itoken
+bo.cfpar   itoken
+bo.sfpar   itoken
+bo.sfparc  itoken
+bo.cfapar  itoken
+bo.sfapar  itoken
+bo.sfaparc itoken
+bo.nlpar   itoken
+bo.expar   itoken
+
+bo.stpin   itoken            ; parameters or indices
+bo.fppin   itoken
+bo.inpin   itoken
+bo.nmpin   itoken
+bo.nfpin   itoken
+bo.arpin   itoken
+bo.cfpin   itoken
+bo.sfpin   itoken
+bo.sfpinc  itoken
+bo.cfapin  itoken
+bo.sfapin  itoken
+bo.sfapinc itoken
+bo.nlpin   itoken
+bo.expin   itoken
+
+bo.docpr   itoken            ; routine calls
+bo.dospr   itoken
+bo.dosprc  itoken
+bo.dopr    itoken
+bo.dim     itoken
+
+bo.formp   itoken            ; formal parameter and locals
+bo.locvar  itoken
+bo.diml    itoken
+
+bo.return  itoken
+bo.retexp  itoken
+
+bo.skip6   itoken            ; odd skips jumps etc
+bo.rts     itoken
+bo.rts2    itoken
+bo.rts4    itoken
+bo.scrub8  itoken
+bo.gorel   itoken
+bo.ambs    itoken
+
+bo.goadd   itoken            ; gotos
+bo.ogoadd  itoken
+bo.goline  itoken
+bo.ogoline itoken
+bo.golinec itoken
+bo.ogolinec itoken
+bo.gsadd   itoken
+bo.ogsadd  itoken
+bo.gsline  itoken
+bo.ogsline itoken
+bo.gslinec itoken
+bo.ogslinec itoken
+
+bo.goz     itoken            ; IFs
+bo.gonz    itoken
+
+bo.selfp   itoken            ; SELect
+bo.selint  itoken
+bo.selend  itoken
+bo.on      itoken
+bo.onxpr   itoken
+bo.ofpr    itoken
+bo.ointr   itoken
+
+bo.forst   itoken            ; LOOPs
+bo.forfp   itoken
+bo.forint  itoken
+bo.rep     itoken
+bo.fstv    itoken
+bo.fstr    itoken
+bo.ffpv    itoken
+bo.ffpr    itoken
+bo.fintv   itoken
+bo.fintr   itoken
+bo.fciv    itoken
+bo.fcir    itoken
+bo.fend    itoken
+bo.endf    itoken
+bo.endr    itoken
+bo.next    itoken
+bo.exit    itoken
+
+bo.restore itoken           ; data
+bo.readf   itoken
+bo.read    itoken
+bo.readd   itoken
+
+bo.wherr   itoken
+bo.endwh   itoken
+bo.nowherr itoken
+        list

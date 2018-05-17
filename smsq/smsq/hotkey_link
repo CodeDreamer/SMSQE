@@ -1,0 +1,11 @@
+program dev8_smsq_smsq_hotkey
+input   dev8_smsq_smsq_hotkey_base_rel
+library dev8_ee_hk_lib
+library dev8_ee_hot_lib
+
+library dev8_util_thg_lib
+library dev8_util_cv_lib
+library dev8_util_gut_lib
+library dev8_sbsext_ut_lib
+
+library dev8_smsq_smsq_end_rel

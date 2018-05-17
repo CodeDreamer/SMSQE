@@ -1,0 +1,32 @@
+* SYS.ERR                           error keys
+        nolist
+*
+ERR.NC    EQU    -1                 operation not complete
+ERR.NJ    EQU    -2                 not a valid Job
+ERR.OM    EQU    -3                 out of memory
+ERR.OR    EQU    -4                 out of range
+ERR.BO    EQU    -5                 buffer overflow
+ERR.NO    EQU    -6                 channel not open
+ERR.NF    EQU    -7                 file or device not found
+ERR.EX    EQU    -8                 file already exists
+ERR.IU    EQU    -9                 file or device in use
+ERR.EF    EQU    -10                end of file
+ERR.DF    EQU    -11                drive full
+ERR.BN    EQU    -12                bad device name
+ERR.TE    EQU    -13                transmission error
+ERR.FF    EQU    -14                format failed
+ERR.BP    EQU    -15                bad parameter
+ERR.FE    EQU    -16                file error
+ERR.XP    EQU    -17                error in expression
+ERR.OV    EQU    -18                arithmetic overflow
+ERR.NI    EQU    -19                not implemented (yet)
+ERR.RO    EQU    -20                read only
+ERR.BL    EQU    -21                bad line (syntax error in BASIC)
+ERR.AT    EQU    -22
+ERR.SC    EQU    -23
+ERR.BT    EQU    -24            boot message
+ERR.CP    EQU    -25            copyright message
+ERR.WH    EQU    -26
+ERR.PF    EQU    -27
+*
+        list

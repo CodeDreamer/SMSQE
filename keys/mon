@@ -1,0 +1,27 @@
+; memory monitor data definitions
+        nolist
+
+; memory table
+
+mm_mbase equ    $0000   ; long   memory base
+mm_mtop  equ    $0004
+mm_totfr equ    $0008   ; long   total free space
+mm_chpfr equ    $000c   ; long   largest common heap free space
+mm_tpafr equ    $0010   ; long   largest tpa free space
+mm_chpen equ    $0014   ; long   total common heap entries
+mm_tpaen equ    $0018   ; long   total tpa entries
+
+mm_table equ    $0020   ;        memory usage table
+mmt_use  equ      $00   ; word   usage
+mmt.free equ      $0000 ;        free space
+mmt.sys  equ      $0002 ;        system
+mmt.chp  equ      $0004 ;        common heap
+mmt.mprg equ      $0006 ;        movable program
+mmt.tprg equ      $0008 ;        transient program
+mmt.resp equ      $000a ;        resident procedure
+mmt_own  equ      $02   ; word   owner job number
+mmt_len  equ      $04   ; long   length of memory allocation
+mmt.len  equ      $08   ;        length of entry
+mmt.shft equ      3     ;        shift number of entries to length of entry
+                        ;           or entry number to entry position
+        list

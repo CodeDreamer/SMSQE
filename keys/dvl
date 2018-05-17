@@ -1,0 +1,7 @@
+; Keys for General Utilities DeVice List
+        nolist
+
+dvl_name equ    $00
+dvl.mxnm equ      $6
+dvl.elen equ      $8
+        list

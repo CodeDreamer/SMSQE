@@ -1,0 +1,86 @@
+; IO device driver keys
+        nolist
+
+; device driver linkage block
+
+iod.sqhd equ        $10          ; length of SMSQ header
+iod_sqfb equ     -$08   ; long    SMSQ IO facility bits
+iod..ssr equ        0             bit set for serial
+iod..swi equ        1             bit set for window operations
+iod..sfi equ        2             bit set for filing system ops
+iod..sdl equ        8             bit set for delete
+iod..ssb equ       16             bit set for slave block
+iod..scn equ       18             bit set for channel name
+iod..sfm equ       19             bit set for format
+iod..sdd equ       20             bit set for directory device
+
+iod_sqio equ     -$04   ; long    SMSQ IO compatible flag
+iod.sqio equ      'SQIO'
+iod_xilk equ    $0000   ; long    external interrupt linkage
+iod_xiad equ    $0004   ; long    external interrupt service routine address
+iod_pllk equ    $0008   ; long    polling interrupt linkage
+iod_plad equ    $000c   ; long    polling interrupt service routine address
+iod_shlk equ    $0010   ; long    scheduler loop linkage
+iod_shad equ    $0014   ; long    scheduler loop service routine address
+iod_iolk equ    $0018   ; long    io driver linkage
+iod_ioad equ    $001c   ; long    input / output routine address
+iod_open equ    $0020   ; long    open routine address
+iod_clos equ    $0024   ; long    close routine address
+iod_iend equ    $0028   ;         end of minimum device driver linkage
+iod_fslv equ    $0028   ; long    forced slaving address
+iod_spr1 equ    $002c
+iod_cnam equ    $0030   ; long    set channel name
+iod_frmt equ    $0034   ; long    format routine address
+iod_plen equ    $0038   ; long    Physical definition block LENgth
+iod_dnus equ    $003c   ; string  Drive Name (current USage)
+iod_dnam equ    $0042   ; string  Drive NAMe
+
+; standard directory driver entry points (JMP   xxx.l)
+
+iod_chek equ    $0050          ;  check all slave blocks read
+iod_flsh equ    $0056          ;  flush all buffers
+iod_occi equ    $005c          ;  occupancy info (old style)
+iod_load equ    $0062          ;  load
+iod_save equ    $0068          ;  save
+iod_trnc equ    $006e          ;  truncate
+iod_lcbf equ    $0074          ;  locate buffer
+iod_albf equ    $007a          ;  locate / allocate buffer
+iod_upbf equ    $0080          ;  mark buffer updated
+iod_alfs equ    $0086          ;  allocate first sector
+iod_ckop equ    $008c          ;  check medium for open operation
+iod_fdrv equ    $0092          ;  format drive
+iod_rsec equ    $0098          ;  read sector
+iod_wsec equ    $009e          ;  write sector
+iod_jend equ    $00a4          ;  end of jump table
+
+; physical definition block (directory devices only)
+
+iod_drlk equ    $0010   ; long    pointer to DRiver LinKage (points to iod_iolk)
+iod_dnum equ    $0014   ; byte    Drive NUMber
+iod_drid equ    $0015   ; byte    DRive ID
+iod_mnam equ    $0016   ; chars   Medium NAMe (up to 10 chars + 2 rnd long)
+iod_nrfl equ    $0022   ; byte    NumbeR of FiLes open on this medium
+iod_ftyp equ    $0023   ; byte    Format TYPe
+iod.ql5a equ      0                            ;  0=QL5A
+iod.qlwa equ      1                            ;  1=QLWA
+iod.qlrd equ      2                            ;  2=QL ROM disk
+iod.drct equ     -1                            ;  -ve direct
+iod_rdln equ    $0024   ; long    Root Directory LeNgth
+iod_rdid equ    $0028   ; word    Root Directory file ID
+iod.rdid equ      1                            ; implicit value for QL5A disks
+iod_allc equ    $002a   ; word    ALLoCation size (bytes)
+iod_totl equ    $002c   ; long    TOTaL allocation units
+iod_free equ    $0030   ; long    FREE allocation units
+iod_hdrl equ    $0034   ; long    inbuilt file HeaDeR Length
+iod_rdfs equ    $0038   ; long    Root Directory First Slave block
+iod_drst equ    $003c   ; byte    DRive STatus  0 unused, -ve OK
+iodd.mod equ      1       ; medium modified (format or direct sector)
+                          ; other +ve  drive specific (error) flags
+iod_wprt equ    $003d   ; byte    set if Write PRoTected
+iod_sctl equ    $003e   ; word    SeCTor Length (for direct sector access)
+iod_map  equ    $0040   ; long    pointer to map
+iod_remv equ    $0044   ; long    pointer to def block / map remove code.
+iod_xsbs equ    $0048   ; word    eXtra Slave Blocks required for each sector
+
+iod.plen equ      $50        ; length of standard part of physical definition
+        list

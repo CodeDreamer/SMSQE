@@ -1,0 +1,11 @@
+program dev8_dv3_test
+input dev8_dv3_test_rel
+input dev8_dv3_dv3_lib
+input dev8_dv3_afd_lib
+input dev8_dv3_acsi_lib
+input dev8_dv3_qlf_lib
+input dev8_dv3_msd_lib
+library dev8_dd_adma_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_lang_#0_lib

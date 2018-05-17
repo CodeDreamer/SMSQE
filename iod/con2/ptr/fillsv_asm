@@ -1,0 +1,70 @@
+; Fill save area		    v2.00   1999 Tony Tebby
+;
+;	Fill the save area with the image (a1) or the colour in the linkage
+;	the lines in the image must be rounded up to the nearest long word
+;
+;	D2	image type 0 = native, -1 = none
+;	A0	^ cdb			preserved
+;	A1	^ image
+;	A3	^ dddb			preserved
+;
+	section driver
+;
+	include 'dev8_keys_con'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_chn'
+;
+	xdef	pt_fillsv
+
+	xref	pt_mblock
+	xref	cn_fblock
+
+	xref.s	pt.spxlw
+	xref.s	pt.rpxlw
+	xref.l	pt.samsk
+;
+pt_fillsv
+ptf.reg reg	d1-d7/a1-a5
+stk_d2	equ	$04
+	movem.l ptf.reg,-(sp)
+
+	move.l	sd_wsave(a0),d0 	; get save area
+	beq.s	ptf_ok			; none, give up
+
+	move.w	pt_bgstp(a3),d6
+	move.l	pt_bgclm(a3),d7
+
+	move.l	d0,a5			; destination
+
+	move.l	sd_xhits(a0),d1 	; size
+
+	moveq	#pt.rpxlw,d3		;
+	add.w	sd_xhits(a0),d3 	; save area size, rounded up
+	move.w	#pt.spxlw,d0		; to number of bytes
+	lsr.l	d0,d3			; to nearest long word
+	lsl.w	#2,d3			; source increment
+	move.l	d3,a2
+	lea	4(a2),a3		; destination increment
+
+	moveq	#0,d2			; source origin
+	move.l	#pt.samsk,d3
+	and.l	sd_xhito(a0),d3 	; x-origin is offset this much in save
+
+	tst.l	stk_d2(sp)		; image?
+	bne.s	ptf_block
+	move.l	a1,a4			; source address
+
+	jsr	pt_mblock		; move an area
+	bra.s	ptf_ok
+
+ptf_block
+	move.l	a3,a2			; different regs
+	move.l	a5,a1
+	jsr	cn_fblock
+
+ptf_ok
+	movem.l (sp)+,ptf.reg
+	moveq	#0,d0
+	rts
+;
+	end

@@ -1,0 +1,15 @@
+* Common heap header
+        nolist
+*
+chp_len  equ    $0000   long    LENgth of space in common heap, including header
+chp_drlk equ    $0004   long    pointer to DRiver LinKage (allocated space)
+chp_nxfr equ    $0004   long    rel pointer (-4) to NeXt FRee space (free_space)
+chp_ownr equ    $0008   long    OWNer job id (-1 if not owned)
+chp_flag equ    $000c   long    address of FLAG byte, set when space released
+chp_end  equ    $0010
+chp.len  equ    $0010
+*
+chp.free equ    -1              FREE space owner
+*
+chp_orel equ    $000c   long    Offset of pointer to RELease code from chp_drlk
+        list

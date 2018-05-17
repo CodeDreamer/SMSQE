@@ -1,0 +1,98 @@
+; data definitions for SER, PAR and PRT devices
+        nolist
+
+; definition block
+
+spd_mcdep  equ  $28     ; long   machine dependent vecter / common hw area
+
+; these are set in PAR / SER defs so that you can always find your way home
+
+spd_ppar   equ  $38     ; long    pointer to first par linkage
+spd_pser   equ  $3c     ; long    pointer to first ser linkage
+spd_pprt   equ  $40     ; long    pointer to prt definition
+spd_pthg   equ  $44     ; long    pointer to thing
+
+; these are only set in the first definition of the block
+
+spd_npar   equ  $48     ; word    number of par ports
+spd_nser   equ  $4a     ; word    number of ser ports
+spd_parp   equ  $4c     ; byte    set if PAR enabled for PAR (PAR_USE PAR)
+spd_serp   equ  $4d     ; byte    set if SER enabled for PAR (PAR_USE SER)
+spd_pars   equ  $4e     ; byte    set if PAR enabled for SER (SER_USE PAR)
+spd_sers   equ  $4f     ; byte    set if SER enabled for SER (SER_USE SER)
+
+; these are defined for each definition individually
+
+spd_hbase  equ  $50     ; long    base address of hardware
+spd_port   equ  $54     ; word    set to port number if this SER/PAR exists
+spd_hwto   equ  $56     ; word    offset in hardware table
+spd_open   equ  $58     ; long    pointer to open (receive enable) routine
+spd_close  equ  $5c     ; long    pointer to close (receive disable) routine
+spd_int    equ  $60     ; long    pointer to interrupt service routine table
+spd_baud   equ  $64     ; long    pointer to baud routine
+spd_mouse  equ  $68     l long    pointer to mouse routine
+spd_room   equ  $6c     ; long    spare room in input queue
+spd.room   equ    $20
+spd_ilen   equ  $70     ; long    input buffer length
+spd.ilen   equ    $80
+spd_olen   equ  $74     ; long    output buffer length (zero dynamic buffer)
+spd_ibuf   equ  $78     ; long    pointer to input buffer
+spd_obuf   equ  $7c     ; long    pointer to output buffer
+spd_iopr   equ  $80     ; long    pointer to input operation
+spd_oopr   equ  $84     ; long    pointer to output operation
+spd_iact   equ  $88     ; byte    set if input server active
+spd_oact   equ  $89     ; byte    set if output server active
+spd_minbf  equ  $8a     ; word    minimum input buffer length
+spd_pdir   equ  $8c     ; byte    bit map of allowed parities / directions
+spd_hand   equ  $8d     ; byte    handshake control -ve hardware +ve XON/XOFF
+spd_xonf   equ  $8e     ; byte    xon/xoff character to be sent
+spd_xoff   equ  $8f     ; byte    xoff in force
+spd_cdef   equ  $90     ; word    ticks of CD inactive before EOF
+spd_cdct   equ  $92     ; word    count of CD inactive
+spd_cdchk  equ  $94     ; long    routine to check CD
+spd_puls   equ  $98     ; word    PAR pulse width (subq / bgt cycles)
+spd_wait   equ  $9a     ; word    PAR wait for ready
+spd_timo   equ  $9c     ; byte    port switch timeout (QL SER)
+spd_txbd   equ  $9d     ; byte    transmit baud (QL SER)
+spd_stxp   equ  $9e     ; word    serial xmit pause (QL SER)
+spd.len      equ  $a0
+
+spd_pname  equ  $00     ; string  PRT device name
+spd.pname    equ  10    ;         ... quite long really
+spd_prtd   equ  $0c     ; long    pointer to definition for prt device
+spdp.len     equ  $10
+
+spth_head  equ  $00     ;         thing linkage header
+spth_link  equ  $10     ;         thing linkage
+spth_spd   equ  $50     ;         pointer to definition block
+spdt.len     equ  $60
+
+
+; ser/par/prt channel block
+
+spc_parm   equ  $18     ; word   start of parameter block
+spc_num    equ  $18     ; word   port number
+spc_dir    equ  $1a     ; word   par port direction, 2 output, 6 master, 8 slave
+spc_prty   equ  $1a     ; word   parity 0 none, 2 odd, 4 even, 6 mark, 8 space
+spc_xlat   equ  $1c     ; word   translate output, bit 0 set for translate
+spc_lfcr   equ  $1e     ; word   2 <LF> to <CR>, 4 <LF> to <CR><LF> translation
+spc_fz     equ  $20     ; word   eof flag (0 no eof, 1 <FF>, 2 CRTL Z)
+
+spc_ibuf   equ  $28     ; long   pointer to input buffer (SER/SRX only)
+spc_obuf   equ  $2c     ; long   pointer to output buffer (not SRX)
+spc_iopr   equ  $30     ; long   pointer to input operation
+spc_oopr   equ  $34     ; long   pointer to output operation
+
+spc_link   equ  $3c     ; long   pointer to linkage for this device number
+spc_end    equ  $40
+
+
+; ser/par/prt input (output) buffer attributes
+
+spb_fz     equ  $10     ; byte   eof flag (0 no eof, 1 <FF>, 2 CTRL Z)
+spb_prty   equ  $11     ; byte   parity code (0,2,4,6,8 as above)
+spb_lfcr   equ  $12     ; word
+spb_lf     equ  $12     ; byte   <LF> with appropriate parity (if conversion)
+spb_cr     equ  $13     ; byte   <CR> with appropriate parity (if conversion)
+
+        list

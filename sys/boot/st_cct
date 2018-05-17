@@ -1,0 +1,8 @@
+dev8_sys_boot_st_perom_prog_rel
+dev8_sys_boot_st_perom_util_rel
+dev8_sys_boot_st_bsect_rel
+dev8_sys_boot_st_slct_rel
+dev8_sys_boot_st_seek_rel
+dev8_sys_boot_st_rsec_rel
+dev8_sys_boot_st_cmd_rel
+dev8_sys_boot_st_bsend_rel

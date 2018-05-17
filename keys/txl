@@ -1,0 +1,9 @@
+; Keys for General Utilities Thing Extension List
+        nolist
+
+txl_thgl equ    $00     ; long  thing linkage (zero)
+txl_base equ    $04     ; long  thing extension base
+txl_name equ    $08     ; string name (6 char string)
+txl_exid equ    $0c     ; long  extension ID
+txl.elen equ    $10
+        list

@@ -1,0 +1,46 @@
+; data definitions for HISTORY device
+        nolist
+
+; linkage block definitions
+
+hil_list equ    $40             ; long  pointer to linked list of named histories
+hil_defl equ    $44             ; long  default history length
+hil.defl equ      1024
+hil_end  equ    $50
+
+; channel definitions
+
+hic_buff equ    $18             ; long  pointer to buffer
+hic_bufl equ    $1c             ; long  buffer length
+hic.bufl equ      $40             ; enough for dir header
+hic_msln equ    $20             ; word  current length of message in buffer
+hic_stat equ    $22             ; word  status word
+hic.idle equ      0               ; nothing special
+hic.wtnl equ      -1              ; waiting for newline
+hic.wtfm equ      +1              ; waiting for fetch multiple
+hic_msnv equ    $24             ; byte  set if message number valid
+
+hic_msnr equ    $28             ; long  message fetch number (0 for most recent)
+hic_msrf equ    $2c             ; long  message reference number
+hic_mspt equ    $30             ; long  message pointer
+hic_hist equ    $34             ; long  pointer to history
+hic_nrhs equ    $38             ; long  number of histories in directory
+hic_pths equ    $3c             ; long  pointer to history table (dir)
+hic_hstb equ    $40             ; longs history table (dir)
+hic.len  equ    $40
+
+; history definitions
+
+hid_link equ    $00              ; long  link list pointer
+hid_name equ    $04              ; name of history (0 if private)
+hid.name equ      $1e
+hid_type equ    $24              ; byte  history type
+hid_msnr equ    $28              ; long  the most recent message number
+hid_nuse equ    $2c              ; number of users (word)
+
+hid_hptr equ    $34              ; pointer to history
+hid_htop equ    $38              ; top of history
+              ; $3c              ; sentinal
+hid_hbuf equ    $3e              ; the history itself (followed by sentinal 0)
+hid.spre equ      2
+        list

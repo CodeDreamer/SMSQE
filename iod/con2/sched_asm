@@ -1,0 +1,29 @@
+; CON scheduler
+;
+	section con
+;
+	include 'dev8_keys_con'
+	include 'dev8_keys_sys'
+;
+	xdef	cn_sched
+;
+	xref	pt_sched
+	xref	cn_curtg
+;
+cn_sched
+	move.l	sys_ckyq(a6),d0 	 ; keyboard queue
+	beq.s	csh_exit		 ; ... no
+	move.l	d0,a0
+	move.b	sd_curf-sd_keyq(a0),d0	 ; cursor status
+	beq.s	csh_exit		 ; ... none
+	sub.w	d3,sys_cfst(a6) 	 ; count down
+	bgt.s	csh_exit		 ; not ready yet
+	move.w	#12,sys_cfst(a6)
+
+	sub.w	#sd_keyq,a0		 ; base of channel block
+	jsr	cn_curtg
+	neg.b	sd_curf(a0)		 ; change state
+
+csh_exit
+	jmp	pt_sched
+	end

@@ -1,0 +1,25 @@
+* 68000 exception vectors
+        nolist
+*
+ev_rset  equ    $0000
+ev_buse  equ    $0008
+ev_adde  equ    $000c
+ev_illi  equ    $0010
+ev_zero  equ    $0014
+ev_chk   equ    $0018
+ev_trpv  equ    $001c
+ev_priv  equ    $0020
+ev_trce  equ    $0024
+*
+ev_int1  equ    $0064
+ev_int2  equ    $0068
+ev_int3  equ    $006c
+ev_int4  equ    $0070
+ev_int5  equ    $0074
+ev_int6  equ    $0078
+ev_int7  equ    $007c
+ev_trp0  equ    $0080
+ev_trp3  equ    $008c
+ev_trp5  equ    $0094
+ev_top   equ    $0400
+        list

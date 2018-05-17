@@ -1,0 +1,33 @@
+; Floppy QL5A format
+        nolist
+q5a_id   equ    $00     ; format ID
+q5a.id   equ    'QL5A'
+q5ax.id  equ    'QL5B'  ; as QL5A but no phlg
+q5a_mnam equ    $04     ; 10 char medium name
+q5a_rand equ    $0e     ; word  random number
+q5a_mupd equ    $10     ; long  count of updates
+q5a_free equ    $14     ; word  free sectors
+q5a_good equ    $16     ; word  good sectors
+q5a_totl equ    $18     ; word  total sectors
+q5a_strk equ    $1a     ; word  sectors per track
+q5a_scyl equ    $1c     ; word  sectors per cylinders
+q5a_trak equ    $1e     ; word  number of tracks (cylinders)
+q5a_allc equ    $20     ; word  sectors per group
+q5a_eodr equ    $22     ; long  current end of directory (block/byte format)
+q5a_soff equ    $26     ; word  sector offset
+q5a_lgph equ    $28     ; word  logical to physical sector translate
+q5a_phlg equ    $3a     ; word  physical to logical sector translate (standard)
+q5a_spr0 equ    $4c     ; 20 bytes $FF
+q5a_gmap equ    $60     ; 3 byte entry map in form (FILE ID - 1) / Group Number
+q5a_mtop equ    $600
+
+; standard number of entries in map = 1440/3 = 480
+;                       size of map = 480*3+96 = 1536
+
+; high density number of entries in map = 2880/6 = 480
+;                           size of map >= 480*3+96 = 1536
+
+; ext density number of entries in map = 1600 = 1600
+;                           size of map >= 1600*3+96 = 6144
+
+        list

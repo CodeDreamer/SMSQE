@@ -1,0 +1,7 @@
+; keys for PC FDC (765 / 8473) compatible controllers
+        nolist
+
+MIO_s   equ     0                ; dummy shift for addresses
+        include 'dev8_keys_multiIO'
+
+        list

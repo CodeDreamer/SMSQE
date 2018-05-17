@@ -1,0 +1,34 @@
+; Cursor key control	        1988	Tony Tebby    QJUMP
+
+	section proc
+
+	xdef	ckeyon 
+	xdef	ckeyoff
+
+	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_con'
+
+
+null	dc.b	$00
+setff	dc.b	$ff
+;+++
+; This routine sets the cursor key control flag to on.
+;---
+ckeyon
+	lea	null,a1 		 ; set to zero
+	bra.s	ck_do
+;+++
+; This routine sets the cursor key control flag to off.
+;---
+ckeyoff
+	lea	setff,a1		 ; set to set
+
+ck_do
+	moveq	#iop.slnk,d0		 ; set linkage block
+	move.w	#pt_ckey,d1
+	moveq	#1,d2
+	moveq	#-1,d3
+	sub.l	a0,a0
+	trap	#do.io
+	rts
+	end

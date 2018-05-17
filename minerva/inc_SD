@@ -1,0 +1,111 @@
+* window data block definition
+ nolist
+
+sd_xmin  equ $18 W   window left pixel, exclusive of border
+sd_ymin  equ $1A W   ditto top pixel
+sd_xsize equ $1C W   window width, exclusive of border
+sd_ysize equ $1E W   ditto height
+sd_borwd equ $20 W   border height, border width is double this
+
+sd_xpos  equ $22 W   cursor position relative to left pixel above
+sd_ypos  equ $24 W   ditto top pixel
+sd_xinc  equ $26 W   cursor pixel width
+sd_yinc  equ $28 W   cursor pixel height
+
+* Note: the X values above should be even when in mode 8.
+
+sd_font  equ $2A L*2 font addresses, primary first. default char in secondary
+
+sd_scrb  equ $32 L   base address of screen
+
+sd_pmask equ $36 L   paper colour mask
+sd_smask equ $3A L   strip colour mask
+sd_imask equ $3E L   ink colour mask
+
+sd_cattr equ $42 B   character attributes (see below for bits)
+
+sd_curf  equ $43 B   cursor flag (0 suppressed, >0 visible, <0 invisible)
+sd_pcolr equ $44 B   paper colour byte
+sd_scolr equ $45 B   strip colour byte
+sd_icolr equ $46 B   ink colour byte
+sd_bcolr equ $47 B   border colour byte
+
+sd_nlsta equ $48 B   new line status (0 none, >0 implicit, <0 explicit)
+
+sd_fmod  equ $49 B   fill mode (0 off, 1 on)
+sd_yorg  equ $4A F   graphics window origin (added to Y coords)
+sd_xorg  equ $50 F   ditto for X
+sd_scal  equ $56 F   graphics scale factor (range from bottom row to top row)
+sd_fbuf  equ $5C L   pointer to ALCHP'ed fill buffer, 0 if none
+sd_fuse  equ $60 L   pointer to user defined fill vectors, not used
+
+sd_linel equ $64 W   line length in bytes
+
+sd_flags equ $66 B   cleared by 1st time entry to driver (EDLIN needs this)
+
+*spare   equ $67 B
+sd_end   equ $68
+
+* character attribute flag bits for SD_CATTR
+
+sd..ulin equ 0 underline (row 9, or the lowest row, is all ink)
+sd..flsh equ 1 flash (ignored in mode 4)
+sd..trns equ 2 transparent background (only character area is touched)
+sd..xor  equ 3 XOR characters/graphics (character/pixel colour XOR'ed in)
+sd..dbht equ 4 double height (chars spread in Y)
+sd..exwd equ 5 extended width (8 bits used from character font entries)
+sd..dbwd equ 6 double width (chars spread in X, mode 8 always sets this)
+sd..gchr equ 7 graphics positioned characters (offscreen ignored until NL)
+
+* screen entry parameter definition
+
+sd.extop equ $09 external operation (A2)
+sd.pxenq equ $0A pixel based size / position enquiry
+sd.chenq equ $0B character based size / position enquiry
+sd.bordr equ $0C define window border
+sd.wdef  equ $0D define window
+sd.cure  equ $0E enable cursor
+sd.curs  equ $0F suppress cursor
+sd.pos   equ $10 absolute position
+sd.tab   equ $11 tab (horizontal position)
+sd.nl    equ $12 newline
+sd.pcol  equ $13 previous column
+sd.ncol  equ $14 next column
+sd.prow  equ $15 previous row
+sd.nrow  equ $16 next row
+sd.pixp  equ $17 set pixel position
+sd.scrol equ $18 scroll whole window
+sd.scrtp equ $19 scroll top of window
+sd.scrbt equ $1A scroll bottom of window
+sd.pan   equ $1B pan window
+* ?      equ $1C
+* ?      equ $1D
+sd.panln equ $1E pan cursor line
+sd.panrt equ $1F pan RHS of cursor line
+sd.clear equ $20 clear whole window
+sd.clrtp equ $21 clear top of window
+sd.clrbt equ $22 clear bottom of window
+sd.clrln equ $23 clear cursor line
+sd.clrrt equ $24 clear to right of cursor
+sd.fount equ $25 set fount addresses
+sd.recol equ $26 recolour a window
+sd.setpa equ $27 set paper colour
+sd.setst equ $28 set strip colour
+sd.setin equ $29 set ink colour
+sd.setfl equ $2A set flash on/off
+sd.setul equ $2B set underline on/off
+sd.setmd equ $2C set write mode
+sd.setsz equ $2D set character size
+sd.fill  equ $2E fill block
+sd.donl  equ $2F do pending newline
+sd.point equ $30 set point in window
+sd.line  equ $31 draw line
+sd.arc   equ $32 draw arc
+sd.elips equ $33 draw ellipse
+sd.scale equ $34 set graphics scale
+sd.flood equ $35 set fill mode/vectors
+sd.gcur  equ $36 set text cursor using graphics coords
+
+* $6C..$74 $76..$77 $7A..$7F (at least) are used by the pointer interface
+
+ list

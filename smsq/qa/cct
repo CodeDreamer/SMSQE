@@ -1,0 +1,17 @@
+dev8_smsq_qa_op_rel
+dev8_smsq_qa_rel_rel
+dev8_smsq_qa_powfp_rel
+dev8_smsq_qa_exp_rel
+dev8_smsq_qa_log_rel
+dev8_smsq_qa_asincos_rel
+dev8_smsq_qa_sincos_rel
+dev8_smsq_qa_range_rel
+dev8_smsq_qa_poly_rel
+dev8_smsq_qa_power_rel
+dev8_smsq_qa_muldiv_rel
+dev8_smsq_qa_addsub_rel
+dev8_smsq_qa_sqrt_rel
+dev8_smsq_qa_neg_rel
+dev8_smsq_qa_float_rel
+dev8_smsq_qa_int_rel
+dev8_smsq_qa_push_rel

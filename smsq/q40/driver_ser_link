@@ -1,0 +1,47 @@
+program dev8_smsq_q40_driver_ser
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+
+section nul       ; NUL device
+
+section init      ; initialisation
+section kbd       ; keyboard
+section iou       ; input / output utilities
+section rd        ; RAM driver
+section par       ; parallel port driver
+section ser       ; serial port driver
+section pipe      ; PIPE device
+
+input   dev8_smsq_q40_driver_ser_rel
+library dev8_smsq_q40_int2_rel
+library dev8_smsq_kbd_inithwt_rel
+library dev8_smsq_kbd_initi_rel
+library dev8_smsq_kbd_poll_rel
+library dev8_smsq_kbd_ibm_tables_rel
+library dev8_smsq_q40_kbd_int_rel
+library dev8_smsq_kbd_ibm_at102cvt_rel
+library dev8_smsq_smsq_lang_kbd_sett_rel
+library dev8_iod_con2_ptr_button3_rel
+library dev8_dd_dev_lib
+library dev8_smsq_q40_spp_init_rel
+library dev8_smsq_spp_lib
+library dev8_smsq_q40_ssss_rel
+library dev8_iod_nul_lib
+library dev8_iod_pipe_lib
+library dev8_iod_history_lib
+library dev8_iod_iob_lib
+library dev8_dd_rd_fm_lib
+library dev8_util_thg_parm_rel
+library dev8_iod_iou_lib
+library dev8_smsq_hwt_lib
+library dev8_smsq_ioq_lib
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_reset_rel
+library dev8_smsq_smsq_version_rel
+
+library dev8_smsq_smsq_end_rel

@@ -1,0 +1,144 @@
+; 680x0 Control Register Macros
+        nolist
+crg.sfc  equ    $000    ; source function code
+crg.dfc  equ    $001    ; destination function code
+crg.cacr equ    $002    ; cache control register
+crg.tc   equ    $003    ; translation control
+crg.itt0 equ    $004    ; instruction transparent translation 0
+crg.iac0 equ    $004    ; instruction access control 0
+crg.itt1 equ    $005    ; instruction transparent translation 1
+crg.iac1 equ    $005    ; instruction access control 1
+crg.dtt0 equ    $006    ; data transparent translation 0
+crg.dac0 equ    $006    ; data access control 0
+crg.dtt1 equ    $007    ; data transparent translation 1
+crg.dac1 equ    $007    ; data access control 1
+crg.usp  equ    $800    ; user stack pointer
+crg.vbr  equ    $801    ; vector base register
+crg.caar equ    $802    ; cache address register
+crg.msp  equ    $803    ; master stack pointer
+crg.isp  equ    $804    ; interrupt stack pointer
+crg.mmus equ    $805    ; mmu status
+crg.urp  equ    $806    ; user root pointer
+crg.srp  equ    $807    ; supervisor root pointer
+crg.pcr  equ    $808    ; processor configuration register
+
+
+; cpusha pushes and invalidates both caches
+
+cpusha   macro
+        dc.w    $f4f8
+        endm
+
+; cpushd pushes and invalidates data cache
+
+cpushd   macro
+        dc.w    $f478
+        endm
+
+; cinva invalidates both caches
+
+cinva   macro
+        dc.w    $f4d8
+        endm
+
+; cinvi invalidates instruction cache
+
+cinvi   macro
+        dc.w    $f498
+        endm
+
+; cena40 enables both 68040 caches using d0 or a specified data register
+
+cena40  macro   dn
+        scacr   #$80008000,{[dn]}
+        endm
+
+; ciena40 enables 68040 instruction cache using d0 or a specified data register
+
+ciena40  macro   dn
+        scacr   #$00008000,{[dn]}
+        endm
+
+; cdena40 enables 68040 data cache using d0 or a specified data register
+
+cdena40  macro   dn
+        scacr   #$80000000,{[dn]}
+        endm
+
+; cdisa disables both 68040 caches using d0 or a specified data register
+
+cdisa40 macro   dn
+        scacr   #0,{[dn]}
+        endm
+
+; scacr, dacr0/1 iacr0/1 dtt0/1 itt0/1 set a value in the appropriate control
+; register using d0 or a specified data register. The value may be immediate or
+; a memory reference
+;
+;       dacr1   #$807fe040,d3   set top memory as non-cachable serial using d3
+
+scacr   macro   value, dn
+        screg   cacr, [value], {[dn]}
+        endm
+
+iacr0   macro   value, dn
+        screg   iac0, [value], {[dn]}
+        endm
+
+iacr1   macro   value, dn
+        screg   iac1, [value], {[dn]}
+        endm
+
+dacr0   macro   value, dn
+        screg   dac0, [value], {[dn]}
+        endm
+
+dacr1   macro   value, dn
+        screg   dac1, [value], {[dn]}
+        endm
+
+itt0    macro   value, dn
+        screg   itt0, [value], {[dn]}
+        endm
+
+itt1    macro   value, dn
+        screg   itt1, [value], {[dn]}
+        endm
+
+dtt0    macro   value, dn
+        screg   dtt0, [value], {[dn]}
+        endm
+
+dtt1    macro   value, dn
+        screg   dtt1, [value], {[dn]}
+        endm
+
+; get control register into dn
+
+gcreg   macro   creg, dn
+        ifstr   {[dn]} <> {} goto getreg
+dn      setstr  {d0}
+getreg  maclab
+        dc.l    $4e7a[.right(dn,1)]000+crg.[creg]
+        endm
+
+; put dn into control register
+
+pcreg   macro   creg, dn
+        ifstr   {[dn]} <> {} goto putreg
+dn      setstr  {d0}
+putreg  maclab
+        dc.l    $4e7b[.right(dn,1)]000+crg.[creg]
+        endm
+
+; set control register
+
+screg   macro   creg, value, dn
+        ifstr   {[dn]} <> {} goto setreg
+dn      setstr  {d0}
+setreg  maclab
+        move.l  [value],[dn]
+        dc.l    $4e7b[.right(dn,1)]000+crg.[creg]
+        endm
+
+        list

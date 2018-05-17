@@ -1,0 +1,9 @@
+; Keys for General Utilities CHannel List
+        nolist
+
+chl_chid equ    $00
+chl_jbid equ    $04
+chl_name equ    $08
+chl.name equ      $36
+chl.elen equ      $40
+        list

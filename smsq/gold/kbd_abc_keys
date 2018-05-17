@@ -1,0 +1,11 @@
+; Keys for ABC keyboard interface
+        nolist
+kb.ff    equ      $BFBE             keyboard flip-flop
+kb.data  equ      $BFBD             keyboard 8 bit data
+kb.clstr equ      $BFBB             keyboard clear strobe
+kb.strob equ      $BFB7             keyboard strobe
+kb..st   equ      5                 strobe bit               
+
+kb.abc   equ      $100              ABC keyboard ID in 4 byte machine ID
+
+        list

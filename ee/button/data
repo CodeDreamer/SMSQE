@@ -1,0 +1,37 @@
+; definitions for hotkey button
+        nolist
+
+; Button Thing
+
+btt_flag equ    $40     ; thing flag
+btt_type equ    $44     ; type=0
+
+btt_xorg equ    $50     ; word  button frame X origin
+btt_yorg equ    $52     ;                    Y origin
+btt_xsiz equ    $54     ;                    X size
+btt.minx equ      $18     ; minimum button width
+btt_ysiz equ    $56     ;                    Y size
+btt.miny equ      $10     ; minimum button height
+btt_ncol equ    $58     ; word  maximum number of columns
+btt_nrow equ    $5a     ;                         rows
+btt_rinc equ    $5c     ; word  row increment
+btt_rows equ    $5e     ; byte  set if organised as rows
+btt_fram equ    $60     ;       start of frame
+
+; for each row/column in frame
+
+btt_rpos equ    $00     ; word  row/column position
+btt_nitm equ    $02     ; word  number of items in row/column
+btt_list equ    $04     ;       start of item list
+
+; for each item in row/colunm
+
+btt_ipos equ    $00     ; word  item position
+btt_size equ    $02     ; word  size of item (height/width, 0 for free)
+
+; usage block
+
+btt_wind equ    $18     ; button window definition
+btt_uend equ    $20
+
+        list

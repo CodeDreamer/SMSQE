@@ -1,0 +1,8 @@
+program dev8_smsq_sbas_lang
+
+section header
+section base
+section language
+
+input   dev8_smsq_sbas_lang_rel
+library dev8_smsq_smsq_end_rel

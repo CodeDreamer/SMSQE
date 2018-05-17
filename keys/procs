@@ -1,0 +1,11 @@
+; Procedures Thing
+        nolist
+prc_addp equ    $20     ADD Procedure vector
+prc_remp equ    $26     REMove Procedure vector
+prc_find equ    $2c     FIND procedure
+prc_mkls equ    $32     MaKe LiSt of procedures
+prc_usep equ    $38     USE Procedure
+prc_vec5 equ    $3e
+prc_vec6 equ    $44
+prc_vec7 equ    $4a
+        list

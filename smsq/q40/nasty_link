@@ -1,0 +1,12 @@
+program dev8_smsq_q40_nasty
+
+input   dev8_smsq_q40_nasty_rel
+library dev8_smsq_q40_rtc_rel
+library dev8_smsq_q40_hdop_init_rel
+library dev8_smsq_q40_hdop_sms_rel
+library dev8_smsq_q40_hdop_beep_rel
+library dev8_smsq_q40_hdop_poll_rel
+library dev8_smsq_kbd_keyrow_rel
+library dev8_util_cv_lib
+library dev8_smsq_smsq_version_rel
+library dev8_smsq_smsq_end_rel

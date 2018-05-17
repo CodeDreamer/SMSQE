@@ -1,0 +1,77 @@
+; DOS disk format
+        nolist
+
+; root sector
+
+dos_jmp  equ    $0000   ; 3 bytes       jump to boot code (i80x86)
+dos.jmp  equ      $eb
+dos_name equ    $0003   ; 8 characters
+
+dos_bra  equ    $0000   ; word          branch to boot code (MC680x0)
+dos.tbra  equ     $60     ;             TOS branch
+dos_fill equ    $0002   ; 6 bytes
+dos_sern equ    $0008   ; 3 bytes       serial number
+
+dos_sctl equ    $000b   ; xword         sector length
+dos_clst equ    $000d   ; byte          sectors per cluster
+dos_ress equ    $000e   ; xword         number of reserved sectors
+dos_fats equ    $0010   ; byte          number of FATs
+dos_dire equ    $0011   ; xword         number of (root) directory entries
+dos_sect equ    $0013   ; xword         number of sectors
+dos_mdid equ    $0015   ; byte          medium ID
+dos.mdh8 equ      $f0     ;               DS HD, DS ED 80 track
+dos.msd8 equ      $f8     ;               single sided double density 80 track
+dos.mwin equ      $f8     ;                  ... or hard disk
+dos.mdd8 equ      $f9     ;               DS DD 80 track
+dos.mss4 equ      $fc     ;               SS DD 40 track
+dos.mdd4 equ      $fd     ;               DS DD 40 track
+dos_sfat equ    $0016   ; xword         sectors per FAT
+dos_strk equ    $0018   ; xword         sectors per track
+dos_head equ    $001a   ; xword         number of heads
+dos_hids equ    $001c   ; xword         number of hidden sectors
+
+dos_atcs equ    $01fe   ; word          Atari checksum
+dos.atcs equ    $1234
+
+; DOS FAT
+
+dos.fato equ      $2        ;             offset of first data cluster in fat
+dos.fil3 equ      $ffffff00 ;             fill odd bit at start of 12 bit FAT
+dos.fil4 equ      $ffffffff ;             fill odd bit at start of 16 bit FAT
+                            ; the first byte should be the media byte
+                            ; the first byte is $f7 for ST.
+dos.free equ      $0000     ; free cluster
+dos.eof3 equ      $0ff8     ; (or greater) end of file 12 bit FAT
+dos.eof4 equ      $fff8     ; (or greater) end of file 16 bit FAT
+dos.eff3 equ      $0fff     ; my end of file 12 bit FAT
+dos.eff4 equ      $ffff     ; my end of file 16 bit FAT
+
+; DOS DIRECTORY
+
+dos_fnam equ    $0000   ; 8 bytes       filename
+dos.unus equ      $00   ;                 unused
+dos.e5   equ      $05   ;                 really $e5!!
+dos.dir  equ      $2e   ;                 directory identifier
+dos.dele equ      $e5   ;                 deleted file
+dos_extn equ    $0008   ; 3 bytes       extension
+dos_attr equ    $000b   ; byte          attributes
+dos.ro   equ      $01   ;               read only
+dos..ro  equ        0
+dos.hidf equ      $02   ;               hidden file
+dos..hid equ        1
+dos.sysf equ      $04   ;               system file
+dos..sys equ        2
+dos.vol  equ      $08   ;               volume label
+dos..vol equ        3
+dos.subd equ      $10   ;               subdirectory
+dos..sub equ        4
+dos.updt equ      $20   ;               file is updated
+dos..upd equ        5
+dos_updt equ    $0016   ; xword         update time hhhhhmmmmmmsssss
+dos_updd equ    $0018   ; xword         update date yyyyyyymmmmddddd
+dos_clus equ    $001a   ; xword         first cluster of file
+dos_flen equ    $001c   ; xlong
+dos.drel equ      $20                   ; length of directory entry
+dos.dres equ        5                   ; directory entry shift
+dos.drss equ      9-dos.dres            ; director entry to sector shift
+        list

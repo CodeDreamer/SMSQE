@@ -1,0 +1,8 @@
+program dev8_sys_boot_st_host
+input   dev8_sys_boot_st_host_rel
+library dev8_sys_boot_lib
+library dev8_sys_boot_st_lib
+library dev8_util_gut_lib
+library dev8_sys_boot_st_init_hw_rel
+library dev8_sys_boot_st_init_ram_rel
+library dev8_sys_boot_end_all_rel
