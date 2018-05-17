@@ -1,6 +1,44 @@
 
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
+-----------------------------------------------------------------------------
+3.06
+
+    USE SPRITE AS CURSOR (wl)
+	iod_con2_curspr_asm		1.00	new -  the on/off routines
+	iod_con2_curfl_asm		2.01	calls upon cn_spcur
+	iod_con2_curqy_asm		2.01	is compatbile with new cursor toggle
+	iod_con2_input_asm		2.02	compatible with new cursor toggle
+	iod_con2_io_asm 		1.01	same
+	iod_con2_sched_asm		1.01	cursor status is toggled before calling cn_curtg
+	iod_con2_ptr_init_asm		2.03	Call sprite cursor job table initialisation
+	iod_con2_ptr_vec_asm		1.02	pt_cursp vector added
+	iod_con2_ptr_csvec_asm		1.00	new - per job vector
+	iod_con2_ptr_open_asm		1.01	adds sd.spcur bytes to keyboard queue, as screen save area
+	iod_con2_version_asm		----	new con driver version number
+	sbsext_ext_curspr_asm		1.00	new - sbasic keywords
+	smsq_sbas_procs_tk2procs_asm	2.05	added keyword defs for these
+	smsq_smsq_config_keys		----	sms_curd added
+	smsq_xxx_hwinit_asm		----	new config property
+	keys_con			xxxx	modified to suit RECOMPILE EVERYTHING!
+	sbsext_ext_cct			.	modified to include new keywords
+	sbsext_ext_file_asm		1.01	xdef'd file_in & file_load subroutines
+	iod_con2_q4016_cct		.
+	iod_con2_q40ql_cct		.
+	iod_con2_atmono_cct		.
+	iod_con2_atql_cct		.
+	iod_con2_goldql_cct		.
+	iod_con2_qxlql_cct		.
+	iod_con2_qxl16_cct		.	all modified to suit
+
+    MISC
+	smsq_sbas_procs_job_asm 	2.01	quit takes optional long parameter (pjw)
+	iod_con2_ptr_fsprd_asm		1.01	returns sp_error sprite if no fitting sprite can be found (wl)
+	iod_con2_ptr_sysspr_asm 	1.01	xdef'd sp_error for this
+
+    BUGFIXES
+	dv3_q40_fd_init_asm		3.01	Q40 floppy density is preset to 2 (wl)
+	smsq_gold_init_roms_asm 	1.00	attempt to get miracle hard disk working again (TT)
 ------------------------------------------------------------------------------
 3.05
     BUGFIXES
@@ -10,10 +48,13 @@ Version   changed			of file   changes made
 	iod_con2_16_rpixl_asm		0.01	cosmetic change set the "end" right after the first rts (wl)
 	smsq_spp_open_asm		2.11	clear count of CD inactive (mk)
 
+------------------------------------------------------------------------------
 3.04
     BUGFIXES
 	ee_wman_move_asm		1.16	fixed pointer save on new move operation (wl)
 
+
+------------------------------------------------------------------------------
 3.03
 
     BUGFIXES

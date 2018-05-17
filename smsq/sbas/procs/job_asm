@@ -1,4 +1,5 @@
 ; SBAS_PROCS_JOB - SBASIC Job Procedures  V2.00    1994  Tony Tebby
+; 2004-04-02	2.01	quit takes optional long parameter (pjw)
 
 	section exten
 
@@ -9,6 +10,7 @@
 	xref	gu_mexec
 	xref	ut_gxnm1
 	xref	ut_gtint
+	xref	ut_gxli1
 
 	include 'dev8_keys_sbasic'
 	include 'dev8_keys_qdos_sms'
@@ -58,12 +60,27 @@ sbs_ipar
 	moveq	#err.ipar,d0
 	bra.s	sbs_exit
 
+;+++
+; Terminate Sbasic program with a(n error) code (pjw 2oo4)
+;
+*	QUIT [code]
+;
+; where code is any long integer (optional)
+;---
+
 quit
-	moveq	#0,d0
-	move.l	d0,d3
+	moveq	#0,d3			; assume no return code
+	cmpa.l	a3,a5			; parameters?
+	bls.s	quit_now		;  none => ok
+	bsr	ut_gxli1		; get one long integer
+	bne.s	quit_rts		;  oops! notify this job of parameter error
+	move.l	0(a6,a1.l),d3		; d3 = return code
+
+quit_now
 	moveq	#-1,d1
 	moveq	#sms.frjb,d0
 	trap	#do.sms2
+quit_rts
 	rts
 
 job_name

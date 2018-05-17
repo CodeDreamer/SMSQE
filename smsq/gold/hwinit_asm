@@ -67,6 +67,7 @@ glc_clock dc.b	0
 glcxxxx   dc.b	0,0
 qcf_mlan  dc.w	44
 qcf_kstuf dc.b	250			; 1c
+qcf_curs  dc.b	0
 glc.conf  equ	*-glc_cx
 
 	mkcfhead {SMSQ},{smsq_vers}
@@ -95,6 +96,11 @@ glc.conf  equ	*-glc_cx
 							    
 	mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
        {Stuffer buffer key for edit line calls},0,$ff
+
+	mkcfitem 'OSPc',code,'C',qcf_curs,,,\
+       {Use sprite for cursor?} \
+	0,N,{No},1,Y,{Yes}
+
 				
 	mkcfend
 
@@ -155,11 +161,11 @@ hwinit_base
 	bra.s	hwinit
 	dc.w	0
 
-hwinit_hreset	       ; special hard reset entry
+hwinit_hreset				; special hard reset entry
 	move.w	#$2700,sr
 	movem.l 0,a0/a1
 	move.l	a0,a7
-	jmp	(a1)   ; hard reset = standard rom reset
+	jmp	(a1)			; hard reset = standard rom reset
 
 hwinit
 	move.l	sms.machine,d6		 ; assumed machine type

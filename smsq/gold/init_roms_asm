@@ -1,5 +1,5 @@
 ; GOLD init Plug In ROMs
-
+; 2004-04-23	1.00	attempt to get miracle hard disk working again (TT)
 	section init
 
 	include 'dev8_keys_qdos_sms'
@@ -27,6 +27,8 @@ smsq_name
 
 	section base
 roms_base
+	movem.l 0,a0/d1/d3		 ; possible fix for miracle hard disk
+
 	lea	con0_name,a0		 ; open this
 	moveq	#0,d1
 	moveq	#0,d3

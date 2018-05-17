@@ -1,5 +1,7 @@
 * Open routine for pointer routines    1991  Tony Tebby
 *
+* 2004-03-19	1.01	reseves sd.spcur more bytes (screen save area) for cdb (wl)
+*
 	section driver
 *
 	xdef	pt_open
@@ -31,6 +33,10 @@
 	include 'dev8_keys_qu'
 	include 'dev8_keys_err'
 	include 'dev8_keys_chp' 	***** should be replaced by kbd defn
+	include 'dev8_smsq_smsq_base_keys'
+	include 'dev8_smsq_smsq_config_keys'
+	include 'dev8_keys_sysspr'
+
 
 opreg	reg	d1-d7/a1-a5
 opfr	equ	$0c
@@ -102,24 +108,57 @@ pto_setu
 *
 alcreg	reg	d3/a1-a2
 	movem.l alcreg,-(sp)
-	move.l	#sd.extnl+sd_keyq+4,d1	; allocate enough space
+	move.l	#sd.extnl+sd_keyq+sd.spcur,d1  ; allocate enough space
 	add.l	d7,d1
 	move.w	mem.achp,a2
 	jsr	(a2)			; allocate heap
 	movem.l (sp)+,alcreg
 	tst.l	d0
 	bne.l	pto_exfr		; ...oops
-
 	add.w	#sd.extnl,a0
 
 	tst.l	d7			; any queue?
-	beq.s	pto_ssiz		; ... no
+	beq.s	pto_sspr		; ... no
 	lea	sd_keyq(a0),a2		; set it
+	clr.l	d1
 	move.w	opkey(a7),d1		; length
 	move.w	ioq.setq,a4
 	jsr	(a4)			; set it up
 
 	move.l	pt_dumq1(a3),qu_nextq(a2) ; dummy queue 1
+*
+* set cursor sprite
+*
+
+pto_sspr				; check for sprite cursor now
+	move.l	pt_cjob(a3),d0		; pointer to job table
+	beq.s	pto_ssiz		; there is none???
+	move.l	stk_d1(sp),d1		; job ID
+	move.l	a2,-(a7)
+	move.l	d0,a2
+	move.l	d1,d0
+	swap	d0
+	lsl.w	#2,d1
+	cmp.w	(a2,d1.w),d0		; is this entry for my job?
+	beq.s	pto_mjob		;  ...yes
+	swap	d0			;  ... no, tag in upper word
+	clr.w	d0
+	move.b	sms.conf+sms_curd,d0	; use sprite cursor or not
+	move.l	d0,(a2,d1.w)		; set tag + flag now
+pto_mjob
+	tst.w	2(a2,d1.w)		; my entry in the table
+	beq.s	pto_nspr		; do not use sprite cursor
+
+	lea	sd_keyq(a0),a2		; point to keyqueue
+	move.l	qu_endq(a2),d0		; pointer to end of queue
+	beq.s	no_con			; none, may be scr channel
+	addq.l	#1,d0			; jump over possible rubbish...
+	bclr	#0,d0			; and make even
+	move.l	d0,a2			; this is pointer sprite for channel
+no_con
+	move.l	#sp.cursor,sd.croff(a2) ; preset normal pointer sprite
+pto_nspr
+	move.l	(sp)+,a2
 
 pto_ssiz
 	movem.l (a7),d1/d2		; get size

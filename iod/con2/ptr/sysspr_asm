@@ -1,11 +1,16 @@
 ; System sprites code				V1.00	1991 Tony Tebby
 ;							 2003 Marcel Kilgus
 ;							 2003 W. Lenerz
+;
+; 2004-04-02	1.01	xdef'd sp_error (wl)
+
+
 	section driver
 
 	xdef	pt_ssref
 	xdef	pt_isspr
 	xdef	pt_sspr
+	xdef	sp_error
 
 	xref	gu_achpp
 
@@ -171,7 +176,7 @@ sspr_nbr
 	move.l	-2(a2),d1		; max space | current highest nbr
 	bra.s	sspr_ok
 
-; Sprite that is showed in case of an error
+; Sprite that is shown in case of an error
 sp_error
 	dc.w	$0100,$0000	     ;form, time/adaption
 	dc.w	$0009,$0008	     ;x size, y size

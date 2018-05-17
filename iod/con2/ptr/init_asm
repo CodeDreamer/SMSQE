@@ -2,11 +2,13 @@
 *
 * 2003-03-01  2.01  Added call to system sprite initialisation (MK)
 * 2003-03-04  2.02  Initialises pixel aspect ratio (MK)
+* 2004-03-29  2.03  Call sprite cursor job table initialisation (wl)
 
 	xdef	pt_init
 *
 	xref	pt_installv
 	xref	pt_isspr
+	xref	curs_init
 *
 	xref	cn_dfnt1
 	xref	cn_dfnt2
@@ -115,6 +117,8 @@ pti_alloc
 	move.l	a4,(a2) 		; and link to dummy 1
 
 	jsr	pt_isspr		; set up system sprite table
+
+	jsr	curs_init		; init sprite cursor job table
 
 	move.l	#$80156B9,pt_asprt(a3); 2/( (4/3) * (575/512) * (51.2/51.95) )
 	clr.w	pt_asprt+4(a3)

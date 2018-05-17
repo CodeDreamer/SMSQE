@@ -1,5 +1,6 @@
-; Console input 	V2.00	 1994	Tony Tebby
-; 2003-09-28		 2.01	bugfix for cursor move if one-line wdw (wl)
+; Console input        V2.00	 1994	Tony Tebby
+; 2003-09-28		2.01	bugfix for cursor move if one-line wdw (wl)
+; 3004-03-27		2.02	compatible with new cursor toggle (wl)
 	section con
 
 	xdef	cn_test 	; test input
@@ -121,6 +122,7 @@ cne_remc
 	tst.b	d7			; is cursor visible?
 	ble.s	cne_rts1		; ... no
 	clr.b	d7			; not now
+	move.b	#-1,sd_curf(a0) 	; show it
 	jmp	cn_curtg(pc)
 
 ; find the buffer length for one line

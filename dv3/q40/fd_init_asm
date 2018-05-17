@@ -1,5 +1,5 @@
 ; DV3 Q40 Floppy Disk Initialisation  V3.00    1992  Tony Tebby
-
+; 2004-03-20		3.01	density is preset to 2 (wl)
 	section dv3
 
 	xdef	fd_init
@@ -85,7 +85,7 @@ fd_table
 
 
 	assert		fdl_maxd,fdl_offd-1,fdl_maxt-2,fdl_defd-4
-	preset_b	fdl_maxd, 2, 0, 0, fdl.maxt, $ff, 0
+	preset_b	fdl_maxd, 2, 0, 0, fdl.maxt, 2, 0
 
 	preset_b	fdl_step,3,3,3,3
 	preset_b	fdl_sltab,$f0,$f1,$f2,$f3

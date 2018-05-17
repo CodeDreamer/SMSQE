@@ -54,12 +54,16 @@ qxl_lang dc.w	44	     ; $0c		6
 qxl_btp  dc.b	0,0				8
 qxl_size dc.b	0  ; 640x480 ; $10		a
 qxl_colr dc.b	0  ; 0 = QL, 2 = 8 bit, 3 = 16 bit
-	 dc.w	0,0,0	     ; $12		c-10
-	 dc.w	0,0	     ; $18		12
-	 dc.b	0	     ; $1c		16
+	 dc.w	0,0,0	     ;		     c-10
+	 dc.w	0,0	     ;		     12
+	 dc.b	0	     ;		     16
 qxl_clck dc.b	0
-	 dc.w	0	     ; $1e		18
-qcf_mlan dc.w	44
+	 dc.w	0	     ;		     18
+qcf_mlan dc.w	44	     ;		     1a
+
+qcf_kstuf	dc.b	250	 ; 1c
+qcf_curs	dc.b	1	 ; 1d
+
 	 dc.w	0
 
 	xref.l	smsq_vers
@@ -89,6 +93,13 @@ qcf_mlan dc.w	44
 
 	mkcfitem 'OSPC',byte,'C',qxl_clck,,,\
        {Processor clock speed (or 0 for auto detect)},0,$7f
+
+	mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
+       {Stuffer buffer key for edit line calls},0,$ff
+
+	mkcfitem 'OSPC',code,'C',qcf_curs,,,\
+       {Use sprite for cursor?} \
+	0,N,{No},1,Y,{Yes}
 
 	mkcfend
 

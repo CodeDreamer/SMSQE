@@ -1,6 +1,7 @@
 ; Find fitting sprite definition	       V1.00   1999 Tony Tebby
 ; High colour version					2003 Marcel Kilgus
 ;
+; 2004-04-02	1.01	returns sp_error sprite if no fitting sprite can be found (wl)
 	section driver
 
 	include 'dev8_keys_con'
@@ -13,6 +14,7 @@
 	xref	pt_ssref
 	xref.l	pt.sppref
 	xref	pt_sppref
+	xref	sp_error
 
 ;+++
 ; pv_fspr vector call
@@ -32,11 +34,12 @@ pt_fspr
 ;+++
 ; Find fitting sprite/blob/pattern definition in linked list
 ;
-;	d0  r	error code
 ;	d3  r	index in pt_sppref
 ;	d7 c  p -ve: object is pointer (possibly dynamic)
 ;	a1 cr	pointer to 1st definition / pointer to fitting definition
 ;	a3 c  p pointer to pointer linkage
+; this routine always succeeds - if no correct sprite can be found, the
+; sp_error sprite is returned
 ;---
 
 pt_fsprd
@@ -83,14 +86,13 @@ ptf_cfound
 	bra.s	ptf_srstrt
 
 ptf_default
-	move.w	#sp.arrow,a1
-	jsr	pt_ssref		 ; handle system sprite references
+	lea	sp_error,a1		 ; oops, error, return error sprite
 	bra.s	ptf_srstrt
 
 ptf_exit
 	move.l	d2,a1
 	movem.l (sp)+,reglist
-	moveq	#0,d0
+	moveq	#0,d0			 ; routine always succeeds
 	rts
 
 	end

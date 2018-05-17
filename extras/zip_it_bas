@@ -3,70 +3,71 @@
 120 DEFine PROCedure p
 130 LOCal zip$
 140   d
-200    do_zip " -r9  ram3_smsqe.zip dd_* dv3_* ee_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt licence_doc licence_txt"
-240 END DEFine p
+150    do_zip " -r9  ram3_smsqe.zip dd_* dv3_* ee_* extras_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt licence_doc licence_txt"
+160 END DEFine p
+170 :
+180 DEFine PROCedure sa
+190   SAVE_O dev8_extras_zip_it_bas
+200 END DEFine sa
+210 :
+220 DEFine PROCedure d
+230   DELETE ram3_smsqe.zip
+240 END DEFine d
 250 :
-260 DEFine PROCedure sa
-270   SAVE_O dev8_extras_zip_it_bas
-280 END DEFine sa
-290 :
-300 DEFine PROCedure d
-310   DELETE win4_smsqe.zip
-320 END DEFine d
-330 :
-340 DEFine PROCedure s
-350   DEST_USE dev1_
-360   DATA_USE dev1_basic_
-370   PROG_USE dev1_progs_
-380 END DEFine s
-390 :
-400 DEFine PROCedure t
-410 LOCal nbr%,lp%,source$,dest$,zip$,f$
-420   f$ ='ram3_SMSQE.ZIP'
-430   CLS
-440   zip$ =' -j9 '&f$&' '
-450   RESTORE 600
-460   READ nbr%
-470   FOR lp% =1 TO nbr%
-480     READ source$,dest$
-490     PRINT "copying "& source$
-500     COPY_O source$,dest$
-510     zip$=zip$&dest$ & ' '
-520   END FOR lp%
-530   DELETE f$
-540   do_zip
-570   RESTORE  600
-580   READ nbr%
-590   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE dest$
-600   DATA 8
-610   DATA "dev8_smsq_atari_SMSQ.PRG", "ram3_atari_SMSQ.PRG"
-620   DATA "dev8_smsq_gold_gold",      "ram3_GoldCard_bin"
-630   DATA "dev8_smsq_q40_rom",        "ram3_Q40_rom"
-640   DATA "dev8_smsq_qxl_smsqe.exe",  "ram3_qxl_smsqe.exe"
-650   DATA "qdv1_smsqe300_doc",        "ram3_smsqe300_doc"
-660   DATA "dev8_new_display_txt",     "ram3_display_txt"
-670   DATA "dev8_new_set_palettes_bas","ram3_set_palettes_bas"
-680   DATA "dev8_new_FEX_txt",         "ram3_FEX_txt"
-690 END DEFine t
-700 :
-710 DEFine PROCedure z
-720   LOCal lp%,zip$
-730   RESTORE 890
-740   zip$=' -j9 '&'ram1_m.zip '
-750   REPeat lp%
-760     READ a$
-770     IF a$="":EXIT lp%
-780     zip$=zip$&a$&" "
-790   END REPeat lp%
-800   do_zip zip$
-810 END DEFine z
-820 :
-830 DEFine PROCedure do_zip (zip$)
-840   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-850   EW dev1_progs_zip;zip$
-860   s
-870 END DEFine do_zip
-880 :
-890 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-900 DATA "dev8_iod_con2_ptr_wremv_asm"
-910 DATA ""
+260 DEFine PROCedure s
+270   DEST_USE dev1_
+280   DATA_USE dev1_basic_
+290   PROG_USE dev1_progs_
+300 END DEFine s
+310 :
+320 DEFine PROCedure t
+330 LOCal nbr%,lp%,source$,dest$,zip$,f$
+340   f$ ='ram3_SMSQE.ZIP'
+350   CLS
+360   zip$ =' -j9 '&f$&' '
+370   RESTORE 500
+380   READ nbr%
+390   FOR lp% =1 TO nbr%
+400     READ source$,dest$
+410     PRINT "copying "& source$
+420     COPY_O source$,dest$
+430     zip$=zip$&dest$ & ' '
+440   END FOR lp%
+450   DELETE f$
+460   do_zip zip$
+470   RESTORE  500
+480   READ nbr%
+490   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE dest$
+500   DATA 9
+510   DATA "dev8_smsq_atari_SMSQ.PRG", "ram3_atari_SMSQ.PRG"
+520   DATA "dev8_smsq_gold_gold",      "ram3_GoldCard_bin"
+530   DATA "dev8_smsq_q40_rom",        "ram3_Q40_rom"
+540   DATA "dev8_smsq_qxl_smsqe.exe",  "ram3_qxl_smsqe.exe"
+550   DATA "qdv1_smsqe300_doc",        "ram3_smsqe300_doc"
+560   DATA "dev8_whats_new_txt",       "ram3_whats_new_txt"
+570   DATA "dev8_changes_txt",         "ram3_changes_txt"
+580   DATA "dev8_readme_txt",          "ram3_readme_txt"
+590   DATA "dev8_extras_new_cursor_txt","ram3_new_cursor_txt"
+600 END DEFine t
+610 :
+620 DEFine PROCedure z
+630   LOCal lp%,zip$
+640   RESTORE 800
+650   zip$=' -j9 '&'ram1_m.zip '
+660   REPeat lp%
+670     READ a$
+680     IF a$="":EXIT lp%
+690     zip$=zip$&a$&" "
+700   END REPeat lp%
+710   do_zip zip$
+720 END DEFine z
+730 :
+740 DEFine PROCedure do_zip (zip$)
+750   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+760   EW dev1_progs_zip;zip$
+770   s
+780 END DEFine do_zip
+790 :
+800 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+810 DATA "dev8_iod_con2_ptr_wremv_asm"
+820 DATA ""

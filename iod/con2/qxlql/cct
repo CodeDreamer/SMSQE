@@ -35,6 +35,7 @@ dev8_iod_con2_donwl_rel
 dev8_iod_con2_chken_rel
 dev8_iod_con2_dfnt1_rel
 dev8_iod_con2_dfnt2_rel
+dev8_iod_con2_curspr_rel
 
 dev8_iod_con2_gw_gcur_rel
 dev8_iod_con2_gw_flood_rel
@@ -75,6 +76,7 @@ dev8_iod_con2_ptr_tstov_rel
 dev8_iod_con2_ptr_wsave_rel
 dev8_iod_con2_ptr_sadd_rel
 dev8_iod_con2_ptr_sysspr_rel
+dev8_iod_con2_ptr_csvec_rel
 
 dev8_iod_con2_ql_smulc_rel
 dev8_iod_con2_ql_mblock_rel

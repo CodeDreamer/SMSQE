@@ -64,7 +64,7 @@ qcf_ismode	dc.b	 1	 ;
 qcf_fill	ds.b	 14	 ; 0c ... 19
 qcf_mlan	dc.w	 44	 ; 1a
 qcf_kstuf	dc.b	250	 ; 1c
-
+qcf_curs	dc.b	1	 ; 1d
 
 	xref.l	smsq_vers
 	mkcfhead {SMSQ},{smsq_vers}
@@ -83,8 +83,12 @@ qcf_kstuf	dc.b	250	 ; 1c
 	mkcfitem 'OSPK',word,'L',qcf_mlan,,,\
        {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
-       mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
+	mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
        {Stuffer buffer key for edit line calls},0,$ff
+
+	mkcfitem 'OSPC',code,'C',qcf_curs,,,\
+       {Use sprite for cursor?} \
+	0,N,{No},1,Y,{Yes}
 
 	mkcfend
 	ds.w	0

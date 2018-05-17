@@ -20,6 +20,28 @@ This here file only contains a short description of the new features.
 
 What is new in versions :
 
+
+======
+ 3.06
+======
+The "Quit" keyword takes an optional parameter (long int) that is passed to
+the calling job. For example, you could have two basic programs,
+the first calling the second with
+   return_code=FEW(your_second_program)
+
+The Q40 flp density is preset to High (1.44 MB disks). This is a workaround
+for a bug that stops flp format working if the drive was never accessed before
+and no flp density was set explicitly. If you want to format other density
+disks you must set the density to D or E.
+
+Sprites (of 6x10 size) may be used as cursor. See the documentation in
+dev8_extras_new_cursor_txt
+
+Attempt to have Gold Card Miracle hard disks working again
+
+
+
+
 =============
  3.04 & 3.05
 =============

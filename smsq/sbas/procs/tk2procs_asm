@@ -2,6 +2,7 @@
 ;
 ; 2002-11-10	2.03	Added functions FET, FEX, FEW	(pjw)
 ; 2003-02-11	2.04	Added function EXF (wl)
+; 2004-04-02	2.05	Added keywords CURSPRON,CURSPROFF,CURSPRLOAD,SYSSPRLOAD (wl)
 
 	section procs
 
@@ -98,6 +99,11 @@ sb_tk2procs
 ;	 proc_def POINT_PATCH	  ; MG point patch
 ;	 proc_def FSERVE	  ; file server
 ;	 proc_def NFS_USE
+	proc_def CURSPRON
+	proc_def CURSPROFF
+	proc_def CURSPRLOAD
+	proc_def SYSSPRLOAD
+
 	proc_def EXTRAS  ; odds
 ;	 proc_def TK2_EXT
 	proc_end

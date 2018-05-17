@@ -635,14 +635,20 @@
 ;	Left & right shift keys are handled separately (MK)
 ;	Mode screen aspect ratio is variable (MK)
 ;
-; 3.04	fixed pointer save on new move operation (wl)
+; 3.04	Fixed pointer save on new move operation (wl)
 ;
-; 3.05	corrected QL mode 8  sprite cache handling (JG)
-;	rptr distinguishes better between loose items & appsub menu items
-;	spp open clears CD ijactive count (MK)
-;	better 3d border handling (MK)
+; 3.05	Corrected QL mode 8  sprite cache handling (JG)
+;	Rptr distinguishes better between loose items & appsub menu items
+;	Spp open clears CD inactive count (MK)
+;	Better 3d border handling (MK)
+;
+; 3.06	The "Quit" keyword takes an optional parameter (long int) that is...
+;	...passed to the calling job (eg return_code=FEW(your_program)) (pjw)
+;	Q40 flp density is preset to High (1.44 MB disks). If you want to...
+;	...format other density disks, set the density to D or E. (wl)
+;	Sprites (of 6x10 size) may be used as cursor (wl)
 
-smsq_vers equ	 '3.05'
+smsq_vers equ	 '3.06'
 
 
 

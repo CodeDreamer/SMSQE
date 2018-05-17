@@ -43,8 +43,10 @@
 ; V2.15 dangling cursor on edln flin corrected
 ;
 ; V2.16 major structural revision for extended colours
+;
+; V2.17 sprites can be used as cursor
 
-con_vers equ	'2.16'
+con_vers equ	'2.17'
 
 con_wmess
 	dc.b	'Console  V'

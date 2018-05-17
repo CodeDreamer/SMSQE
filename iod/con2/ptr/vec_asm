@@ -1,5 +1,6 @@
 ; CON driver vectored routines table  V1.00		2003  Marcel Kilgus
 ; 2003-05-13	v. 1.01 	added pt_size	(wl)
+; 2004-04-01	v. 1.02 	added pt_cursp	(wl)
 	section driver
 
 	xdef	pv_table
@@ -10,6 +11,7 @@
 	xref	pt_mblock
 	xref.s	pt.spxlw
 	xref.s	pt.rpxlw
+	xref	pt_cursp
 
 	include 'dev8_keys_con'
 
@@ -23,7 +25,9 @@ pv_table
 	nop
 	jmp	pt_size 		; $12
 	nop
-	jmp	pt_mblock
+	jmp	pt_mblock		; $16
+	nop
+	jmp	pt_cursp		; $1a
 	nop
 ;+++
 ;  PV_PINF	 $00

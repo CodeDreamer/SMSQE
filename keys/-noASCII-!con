@@ -192,7 +192,8 @@ pt_cdtab equ	$141   ; 5*byte modes for each resolution
 pt_sstb  equ	$146   ; long  pointer to system sprite table
 pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
 pt_vecs  equ	$150   ; long  pointer to block with vectored routines
-pt_end	 equ	$154   ; length of pointer linkage block
+pt_cjob  equ	$154   ; long pointer to cursor sprite job table
+pt_end	 equ	$158   ; length of pointer linkage block
 
 *
 * Pointer interface vectors
@@ -202,6 +203,8 @@ pv_fspr  equ	$06    ; find fitting sprite definition
 pv_sspr  equ	$0c    ; set system sprite/get system sprite address
 pv_size  equ	$12    ; get pixel rounding sizes
 pv_mblk  equ	$18    ; move blocks
+pv_cursp equ	$1e    ; set/unset sprite cursor
+
 *
 * Channel definition block
 *
@@ -224,22 +227,22 @@ sd_wssiz equ	$08  long   size of window save area
 sd_wwdef equ	$0c  long   pointer to window working definition
 *
 sd_wlstt equ	$10  byte   window lock status
-sd.wlock equ	-1	    locked
-sd.wunlk equ	0	    unlocked
-sd.wnolk equ	1	    no lock
-sd.slock equ	$ffffff80   set lock
-sd.sunlk equ	$ffffff81   set unlock
-sd_prwin equ	$11  byte   bit 7 set if primary window
-sd..prwn equ	7
-sd_behav equ	$11  byte   bit 0 set if well behaved
-sd..well equ	0
-sd..frez equ	1	    freeze on locking (well behaved primary only!!)
-sd..botm equ	2	    bottom (unpickable) window
-sd.wbsec equ	$01	    well behaved secondary
-sd.wbprm equ	$81	    well behaved primary
-sd.bbsec equ	$00	    badly behaved secondary
-sd.bbprm equ	$80	    badly behaved primary
-sd.wpapr equ	$87	    wallpaper
+sd.wlock equ	 -1	     locked
+sd.wunlk equ	 0	     unlocked
+sd.wnolk equ	 1	     no lock
+sd.slock equ	 $ffffff80   set lock
+sd.sunlk equ	 $ffffff81   set unlock
+sd_prwin equ	 $11  byte   bit 7 set if primary window
+sd..prwn equ	 7
+sd_behav equ	 $11  byte   bit 0 set if well behaved
+sd..well equ	 0
+sd..frez equ	 1	     freeze on locking (well behaved primary only!!)
+sd..botm equ	 2	     bottom (unpickable) window
+sd.wbsec equ	 $01	     well behaved secondary
+sd.wbprm equ	 $81	     well behaved primary
+sd.bbsec equ	 $00	     badly behaved secondary
+sd.bbprm equ	 $80	     badly behaved primary
+sd.wpapr equ	 $87	     wallpaper
 sd_wmode equ	$12  byte   window's own display mode
 sd_mysav equ	$13  byte   true if my save area
 sd_wmove equ	$14  byte   window move/query ($80 query, $81 move, $81 resize)
@@ -258,8 +261,8 @@ sd_yinc  equ	$28  word   cursor pixel height
 sd_font  equ	$2a  2*long font addresses, primary first. default char in secondary
 sd_scrb  equ	$32  long   base address of screen
 sd_pmask equ	$36  long   paper colour mask
-sd_smask equ	$3a  long   strip colour mas
-sd_imask equ	$3e  long   ink colour mas
+sd_smask equ	$3a  long   strip colour mask
+sd_imask equ	$3e  long   ink colour mask
 sd_cattr equ	$42  byte   character attributes
 sd..ul	 equ	  0	underline (row 9, or the lowest row, is all ink)
 sd..flsh equ	  1	flash (ignored in mode 4)
@@ -282,11 +285,15 @@ sd_xorg  equ	$50  float  ditto for X
 sd_scal  equ	$56  float  graphics scale factor (range from bottom row to top row)
 sd_fbuf  equ	$5c  long   pointer to ALCHP'ed fill buffer, 0 if none
 sd_linel equ	$64  word   line length in bytes
-sd_sflag equ	$66  byte   size flag, set by defbd, csize if wind to small
+sd_sflag equ	$66  byte   size flag, set by defbd, csize if wind too small
 sd.sfout equ	  1	    or lsb set if graphic cursor is outside window
 sd_end	 equ	$68 $$$$$ but not always!
 sd_keyq  equ	$68
-sd.stdln equ	  $130 ... standard length including queue
+*sd.stdln equ	   $130 ...  standard length including queue
+sd.stdln equ	  $1b0 ... standard length including queue + curspr save area
+sd.croff equ	  8	    offset to cursor sprite from nominal end of queue
+sd.spcur equ	  6*10*2+sd.croff+4	sprite cursor save area (10 rows a 6 pixels) + offset to cursor sprite + space for sprite pointer
+sd.sarwi equ	  6*2	    sprite cursor save area row increment
 *
 sd.dq1l  equ	12
 sd.dq2	 equ	sd_keyq+8	(beware ... used in qtyp)

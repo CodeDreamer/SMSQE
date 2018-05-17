@@ -1,5 +1,5 @@
 * LOAD and SAVE file ops  V0.0	  1985   Tony Tebby   QJUMP
-*
+* 2004-04-02  1.01    some subroutines xdef'd
 	section exten
 *
 *	LRESPR filename 	load into resident procedure area or heap
@@ -21,6 +21,8 @@
 	xdef	sexec_o
 *
 	xdef	ext_lfile
+	xdef	file_in
+	xdef	file_load
 *
 	xref	call_code
 

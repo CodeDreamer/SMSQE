@@ -1,4 +1,5 @@
 ;	Console I/O Entry	  1998 Tony Tebby
+; 2004-03-27		1.01	compatible with new cursor toggle
 ;
 ;	Entry point for all Bit Image I/O calls: translates the
 ;	supplied parameters to those used by the medium level routines
@@ -47,13 +48,16 @@ cn_io
 
 	tst.b	sys_dfrz(a6)		; display frozen?
 	bne.s	cni_nc			; .... yyyyyyes
+	move.b	sd_curf(a0),-(a7)	; keep old status
 	tst.b	sd_curf(a0)		; cursor visible?
-	ble.s	cni_dfio
-	jsr	cn_curtg(pc)		; toggle cursor
+	ble.s	cni_dfio		; ... no, ok
+	move.b	#-1,sd_curf(a0)
+	jsr	cn_curtg(pc)		; toggle cursor - make invisible
 cni_dfio
 	bsr.s	cn_doio 		; do the I/O
-	tst.b	sd_curf(a0)		; need to be visible?
-	ble.s	cni_rtd0
+	move.b	(a7)+,sd_curf(a0)	; old cursor status
+	tst.b	sd_curf(a0)		; needs to be visible?
+	ble.s	cni_rtd0		; nope, just return, then
 
 ;
 ; The next bit if code is intended to reproduce a bug in the QL console driver
@@ -63,8 +67,9 @@ cni_dfio
 	btst	#0,sd_nlsta(a0) 	; pending newline required?
 	beq.s	cni_crest		; ... no
 	jsr	cn_donl 		; ... yes, do it
+;	 move.b  #1,sd_curf(a0) 	 ; show cursor needs to be visible
 cni_crest
-	jmp	cn_curtg		; ... yes, flip it back
+	jmp	cn_curtg		; yes, flip it back
 cni_rtd0
 	tst.l	d0
 	rts

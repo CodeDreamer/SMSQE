@@ -21,3 +21,4 @@ sms_clock  equ	$17	   ; byte	clock speed (QXL)
 sms_128k   equ	$18	   ; byte	set if reset for small memory
 sms_dlan   equ	$1a	   ; word	default messages language
 sms_kstuf  equ	$1c	   ; byte	key used to stuff into buffer in cn_edlin
+sms_curd   equ	$1d	   ; byte	use sprite as cursor?

@@ -1,4 +1,5 @@
-;	Cursor position enquiry 	V2.00   1992 Tony Tebby
+;	Cursor position enquiry V2.00   1992 Tony Tebby
+; 2004-03-27	2.01	ensure compatibility with cn_curspr (wl)
 ;
 ;	Returns the size of the active area, and the cursor position in that
 ;	area, in pixel or character co-ordinates: character co-ordinates
@@ -33,13 +34,15 @@ cn_chrqy
 	lea	cnq_chr,a2
 cnq_do
 	tst.b	sd_curf(a0)		; cursor visible?
-	ble.s	cnq_nl
+	ble.s	cnq_nl			;   ... no
+	st	sd_curf(a0)		; set to invisible
 	jsr	cn_curtg		; remove cursor
+	sf	sd_curf(a0)		; show that is ** should ** be visible
 cnq_nl
 	jsr	cn_dopnl		; ... new line
 	jsr	(a2)			; do operation
 	tst.b	sd_curf(a0)		; cursor should be visible?
-	bgt.l	cn_curtg		; cursor back
+	bgt.l	cn_curtg		;  ... yes, get cursor back
 	rts
 
 cnq_chr

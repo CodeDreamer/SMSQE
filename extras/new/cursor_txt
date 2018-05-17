@@ -1,0 +1,127 @@
+From version 3.06 onwards, SMSQ/E allows you yo use a sprite for a cursor.
+The sprite to be used as a cursor:
+
+	- MUST be of size 6x10 (WxH), else it will not be used.
+	- MUST be the one set at position 36 in the system sprites
+	- MUST be showable in the current screen resolution
+
+If any of the above conditions is not met, then the normal cursor is shown.
+
+How to load a cursor sprite
+---------------------------
+You may load a cursor sprite with the CURSPRLOAD command:
+
+CURSPRLOAD filename.
+
+This loads filename and uses it as a cursor sprite.
+Please make sure that this file only contains the sprite data for a valid
+cursor sprite. The command does NOT check this. If this command seems to fail,
+i.e. the cursor sprite doesn't change to what you want it to be, the data
+contained in this file is perhaps not a valid cursor sprite for the current
+screen resolution.
+
+		
+
+How to use a sprite as cursor.
+--------------------------------
+On a system-wide basis:
+
+  Configure your system. As of version 3.06 of SMSQ/E, a new configration item
+  lets you configure whether you want to use sprites as cursor or not.
+
+On a per job basis
+
+  Independently of your system-wide cofiguration, you may switch the use of a
+  sprite to be used for the cursor on a per job basis.
+
+  * From SBASIC
+
+    Use the keywords CURSPRON and CURSPROFF:
+    CURSPRON job_name or job_number,job_tag
+    Example: Let us suppose you have Xchaneg running on your machine.
+    Typing 'jobs' will tell you more about this job, something like this:
+
+    Job Tag   Owner  Priority  Job-Name
+	 (...)
+     9	 8	0    8	  Xchange V3.90J
+
+    You can now switch using the sprite cursor on/off by:
+    CURSPRON "Xchange V3.90J"
+    or
+    CURSOROFF 9,8
+
+
+  * From machine code
+    There is a new CON vector, pv_cursp, that sets the per job cursor
+    as follows:
+
+
+;+++
+;  PV_CURSP				$1E
+;
+;  Call parameters			Return parameters
+;  D0					D0   error
+;  D1	jobID				D1   smashed
+;  D2	status wished (0|1)		D2   preserved
+;  D3					D3   preserved
+;
+;  A0					A0   preserved
+;  A1					A1   preserved
+;  A2					A2   preserved
+;  A3	pointer to CON linkage block	A3   preserved
+;---
+; errors
+;	IJOB	wrong job ID
+;	NIMP	something went horribly wrong : no job table!
+;+++
+
+    The status in D2 is 0 if normal cursor, 1 if sprite cursor wished
+
+    You can use this vector as follows, assuming A0 points to the system
+    variables. (Include the files dev8_keys_sys and dev8_keys_con in your
+    code for this to work):
+
+	move.l	sys_clnk(a0),a1 	; point to dddb
+	move.l	pt_vecs(a1),a1		; point to vectors
+	moveq	#-1,d1			; set cursor for myself
+	moveq	#0,d2			; use old cursor
+	jsr	pt_cursp(a1)		; do it now
+	(....)
+
+
+
+
+
+Finally, yhere is a new keyword to set any sprite as a system sprite
+
+SYSSPRLOAD system_sprite_number,file_name$
+
+load the file and sets it as the system sprite with the given number.
+
+Please make sure that this file only contains the sprite data for a valid
+sprite. The command does NOT check this. If this command seems to fail,
+i.e. the corresponding system sprite doesn't change to what you want it to be,
+the data contained in this file is perhaps not a valid sprite for the current
+screen resolution.
+
+
+--------------------------------------------------------------------
+
+There is also a command to load any file as any system sprite:
+
+SYSSPRLOAD system_sprite_number,file_name$
+
+load the given file and sets it as the system sprite with the given number.
+
+Please make sure that this file only contains the sprite data for a valid
+sprite. The command does NOT check this. If this command seems to fail,
+i.e. the corresponding system sprite doesn't change to what you want it to be,
+the data contained in this file is perhaps not a valid sprite for the current
+screen resolution.
+      
+	      
+
+Have fun.
+QL forever!
+
+W. Lenerz

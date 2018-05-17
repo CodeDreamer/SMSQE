@@ -37,7 +37,6 @@ start
 
 	moveq	#iop.pinf,d0		info
 	trap	#3
-	trap	#14
 	tst.l	d0
 	bne.s	wm_nptr
 	lea	met_pver,a1		error message

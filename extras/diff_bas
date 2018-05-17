@@ -3,7 +3,8 @@
 120 :
 130 DEFine PROCedure p
 140   read_data_to_exclude
-150   do_diffs 'win7_','dev8_'
+145   REMark old device first, device with new, changed files second
+150   do_diffs 'dev6_','dev8_'
 160 REMark  zip_it "dev8_"
 170 END DEFine p
 180 :
@@ -68,8 +69,10 @@
 770     len_new=FLEN(#tc%)                  : REMark length of new file
 780     CLOSE#tc%
 790     IF date_old<date_new
-800       PRINT#o%,a$;"  ==>   File was updated ",len_new
-810       NEXT lp%
+795       IF date_old+3600<>date_new
+800         PRINT#o%,a$;"  ==>   File was updated ",len_new
+810         NEXT lp%
+815       END IF
 820     END IF
 830     IF date_old>date_new
 840       PRINT#e%,a$,"  ==>   File was DOWNdated !!! !!! !! ",len_new: REMark WHAT???
@@ -107,10 +110,11 @@
 1160       IF ddown%:extract_deletes old_dev$,new_dev$,a$(1 TO t%-1),ddown%,d%
 1170       NEXT lp%
 1180     END IF
-1190     IF is_excluded% (a$):NEXT lp%   : REMark don't treat all files
+1190     IF is_excluded% (a$):NEXT lp%       : REMark don't treat all files
 1200     tc%=FOP_IN(new_dev$&a$)             : REMark try to open new file
 1210     IF tc%<0
 1220       PRINT#d%,a$;"  ==>  was deleted in new version" : REMark
+1225 PRINT#d%,new_dev$&a$
 1230     ELSE
 1240       CLOSE#tc%
 1250     END IF
@@ -144,7 +148,7 @@
 1530 REMark returns 1 if file is to be excluded, 0 if not
 1540 REMark needs asearch from outptr_bin, used the global var exclusion$
 1550 LOCal extn$,tc%
-1560   IF ASEARCH(exclusions$,a$,0,0) > 0:RETurn 1
+1560   IF asearch(exclusions$,a$,0,0) > 0:RETurn 1
 1570   tc%=LEN(a$): IF tc%<5:RETurn 0
 1580   extn$= a$(tc%-3 TO)
 1590   IF extn$=="_rel":RETurn 1    : REMark don't treat rel files!
