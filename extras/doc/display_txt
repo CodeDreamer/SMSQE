@@ -1,4 +1,4 @@
-Preliminary documentation to most of the enhancements to SMSQ/E v3.00 and 3.01,
+Preliminary documentation to most of the enhancements to SMSQ/E v3.00 and following,
 mostly directed at programmers. "Preliminary" means that here is at least
 some text to see what's new and how to use it. This documentation certainly
 needs to be enhanced and improved. "Preliminary" does not mean that facts
@@ -137,6 +137,174 @@ The sprite table has the following format:
        0       nbr of sprites currently in table
        2+      long word absolute pointers (i.e real addresses of sprites)
 			 ========
+
+
+|  Vector $12				pv_size 			      |
+|									      |
+|  Get shift sizes							      |
+|									      |
+|  Call parameters			Return parameters		      |
+|  D0					D0   pt.spxlw | pt.rpxlw	      |
+|  D1					D1   preserved			      |
+|  D2					D2   preserved			      |
+|  D3					D3   preserved			      |
+|									      |
+|  A0					A0   preserved			      |
+|  A1					A1   preserved			      |
+|  A2					A2   preserved			      |
+|  A3	pointer to CON linkage block	A3   preserved			      |
+|									      |
+|  D0 returns : 							      |
+|	pt.spxlw : shift pixels to long word				      |
+|	pt.rpxlw : round up pixels to long word 			      |
+|									      |
+|  Error returns:							      |
+|	None, this vector always succeeds.				      |
+|	The value in D0 is not an error return				      | 						|
+
+
+
+
+
+|  Vector $18			       pv_mblk				      |
+|									      |
+|  Moves a block of screen memory about 				      |
+|									      |
+|									      |
+|  Call parameters			Return parameters		      |
+|  D0					D0   smashed (undefined)	      |
+|  D1  size of section to move		D1   smashed			      |
+|  D2  old origin in source area	D2   smashed			      |
+|  D3  new origin in destination area	D3   smashed			      |
+|  D4					D4   smashed			      |
+|  D5					D5   smashed			      |
+|									      |
+|  A2  row increment of source area	A2   smashed			      |
+|  A3  row increment of dest. area	A3   smashed			      |
+|  A4  base address of source area	A4   smashed			      |
+|  A5  base address of destination area A5   smashed			      |
+| All other registers are preserved					      |
+|									      |
+|									      |
+|  Error returns:							      |
+|	None, this vector always succeeds.				      |
+|	The value in D0 is not an error return				      | 						|
+
+This moves a block of screen memory about, from source to destination.
+The x|y size of the block, in pixels, is contained in D1 on entry.
+
+Note : do not (mis)use this vector to move general memory about. The size of
+the memory actually moved depends on the screen driver that is being used.
+Thus, if you move a block of 10x20 pixels (x|y size), in modes 16 and 31,
+then 200 bytes will be moved (1 pixel = 1 byte). In modes 32 and 33, 400 bytes
+will be moved (1 pixel = 2 bytes) and in the Ql modes, less bytes will be moved.
+
+
+
+
+|  Vector $1E				pv_cursp
+|									      |
+|  Sets the per job cursor						      |
+|									      |
+|  Call parameters			Return parameters		      |
+|  D0					D0   error			      |
+|  D1	jobID				D1   smashed			      |
+|  D2	status wished (0|1)		D2   preserved			      |
+|  D3					D3   preserved			      |
+|									      |
+|  A0					A0   preserved			      |
+|  A1					A1   preserved			      |
+|  A2					A2   preserved			      |
+|  A3	pointer to CON linkage block	A3   preserved			      |
+|									      |
+| Error returns:							      |
+|	IJOB	wrong job ID						      |
+|	NIMP	something went horribly wrong : no job table!		      |
+|									      |
+									      |
+Please see the cursor_txt file for further explanations on this vector.       |
+
+
+
+
+|  Vector $24				pv_bgctl			      |
+|									      |
+|  Gets/sets the background I/O status					      |
+|									      |
+|  Call parameters			Return parameters		      |
+|  D0					D0   standard error code	      |
+|  D1	-1 read, 0 disable, 1 enable	D1   0 disabled, >0 enabled	      |
+|  D2	0				D2   preserved			      |
+|  D3					D3   preserved			      |
+|									      |
+|  A0					A0   preserved			      |
+|  A1					A1   preserved			      |
+|  A2					A2   preserved			      |
+|  A3	pointer to CON linkage block	A3   preserved			      |
+|									      |
+| Error returns:							      |
+|	IPAR	D2 is not 0						      |
+|	NIMP	OS is not background I/O compatible			      |
+|									      |
+
+This sets or gets the background I/O status. If D1 is negative on entry, the
+current background I/O status is returned, else the current background I/O
+status is set according to the value of D1 (any value other than 0 enables
+background I/O).
+
+
+
+
+
+|  Vector $2A							pv_cmbblk     |
+|									      |
+|  Combines two blocks of (screen) memory with alpha blending and puts the    |
+|  result into the destination block					      |
+|									      |
+|									      |
+|  Call parameters			Return parameters		      |
+|  D0					D0   smashed (undefined)	      |
+|  D1  size of block to combine 	D1   smashed			      |
+|  D2  origin in source area 1		D2   smashed			      |
+|  D3  new origin in destination area	D3   smashed			      |
+|  D4  origin in source area 2		D4   smashed			      |
+|  D5					D5   smashed			      |
+|  D6  alpha value			D6   preserved			      |
+|  D7  row increment of source area 2	D7   smashed			      |
+|									      |
+|  A1  base address of source area 2	A1   smashed			      |
+|  A2  row increment of source area 1	A2   smashed			      |
+|  A3  row increment of dest. area	A3   smashed			      |
+|  A4  base address of source area 1	A4   smashed			      |
+|  A5  base address of destination area A5   smashed			      |
+| All other registers are preserved					      |
+|									      |
+|									      |
+|  Error returns:							      |
+|	None, this vector always succeeds.				      |
+|	The value in D0 is not an error return				      | 						|
+
+
+This will combine the pixels of two blocks of screen memory with an alpha blending
+operation and put the resulting block into the destination.
+The x|y size of the block, in pixels, is contained in D1 on entry.
+D6 contains the alpha value, from 1 (nearly transparent) to 255 (totally opaque),
+in the LSB.
+
+NOTE 1 : This vector is only implemented for screen modes where alpha blending
+actually makes sense, i.e. modes 16, 32 and 33. In other screen modes, such
+as the QL screen modes, or atari mono modes, this vector is redirected to
+vector pv_mblk.
+
+NOTE 2 : Do not (mis)use this vector to combine general memory. The size of
+the memory actually combined depends on the screen driver that is being used.
+Thus, if you combine a block of 10x20 pixels (x|y size), in mode 16,
+then 200 bytes will be combined (1 pixel = 1 byte). But in modes 32 and 33,
+200 words (400 bytes) will be combined (1 pixel = 2 bytes).
+
+
+
+
 
 
 -------------------------------------------------------------------------------
@@ -857,14 +1025,20 @@ Set the job palette to the palette given in pal_pointer. Of course, the
 palette must have the format of a standard system palette.
 
 
+
+
 VII - New Move modes
+=-=-=-=-=-=-=-=-=-=-
 
 
 As of version 3.01 of SMSQ/E, new ways of moving a window about the screen
 have been added.
 
+a - The move modes
+------------------
 
-There are now three ways for a window be moved:
+
+There are now four ways for a window be moved:
 
 
 0 - the old way: the pointer changes to the "move window" sprite which is
@@ -879,12 +1053,31 @@ Please note that you cannot use this move mode with anything but the mouse - the
 keyboard (cursor keys) will not work.
 
 
-3 - "Full window". This is the same as 1 above, but instead of an outline, the
+2 - "Full window". This is the same as 1 above, but instead of an outline, the
 entire window is moved. For Q40/Q60 users, switching onthe Cache is advisable...
 
 Please note that you cannot use this move mode with anything but the mouse - the
 keyboard (cursor keys) will not work.
 
+  
+3 - "Full window with tranparency" (implemented in SMSQ/E v. 3.16). This is the
+same as 2 above, but the window to be moved is made "transparent" : one can
+"see through" it.  This is done via "alpha blending". Alpha blending requires
+A LOT of computing power. So, even if your machine can theoretically handle this
+type of move, in practice it might not be feasible.
+For Q40/Q60 users, switching on the Cache is advisable...
+
+This type of move is only implemented for display modes where alpha blending
+actually makes sense, i.e. modes 16, 32 and 33. In other display modes, such
+as the QL screen modes, or Atari mono modes, this will be redirected to move
+mode 2.
+
+Please note that you cannot use this move mode with anything but the mouse - the
+keyboard (cursor keys) will not work.
+
+  
+b - Configuring/setting the move mode
+-------------------------------------
 
 The move modes are configured on a system-wide basis - you cannot have one
 job moving in mode 0 and the other in mode 1.
@@ -898,10 +1091,45 @@ The move mode can be changed in two ways:
 
 2 - Use the new WM_MOVEMODE keyword
 
-This takes one parameter, an integer from 0 to 2:
+This takes one parameter, an integer from 0 to 3:
 
 WM_MOVEMODE 0 : the old way
 
 WM_MOVEMODE 1 : the "outline" move
 
 WM_MOVEMODE 2 : the "full window" move
+
+WM_MOVEMODE 3 : the "full window with transparency" move
+
+
+c - Configuring/setting the degree of transparency : WM_MOVEALPHA
+------------------------------------------------------------------
+You can set how transparent the window is supposed to be when being moved,
+from nearly totally transparent to totally opaque. This is done by setting
+the "alpha value", from 1 (nearly transparent) to 255 (totally opaque).
+
+The alpha value is configured on a system-wide basis - you cannot have one
+job moving with an alpha value of 100 and the other with 200.
+
+Thus, all jobs are affected by this, even those written a long time
+ago (unless, such as Qlib, the job doesn't use the WMAN move routine).
+
+The alpha value can be changed in two ways:
+
+1 - Configure SMSQ/E  (WMAN) to a value of your liking.
+
+2 - Use the new WM_MOVEALPHA keyword
+			   
+WM_MOVEALPHA : this new keyword defines the amount of transparency the window
+should have when moved about, from 1 (nearly transparent) to 255 (totally
+opaque).
+
+Please note that
+1) no check is made on the value passed to this keyword, but only the lower
+byte is used.
+2) a value of 255 is actually equivalent to move mode 2.
+3) a value of 0 is allowed but, since this would make the window to be moved
+totally transparent when it is moved (i.e. you would only ever see the
+background) this is considered to be an error and a value of 255 will be used!
+4) alpha blending requires a lot of computing power - it may be too slow
+on your machine.

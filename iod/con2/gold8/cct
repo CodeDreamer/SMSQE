@@ -84,6 +84,7 @@ dev8_iod_con2_8_mblock_rel
 dev8_iod_con2_8_block_rel
 dev8_iod_con2_aur8_colrm_rel
 dev8_iod_con2_aur8_palette_rel
+dev8_iod_con2_aur8_cmbblk_rel
 dev8_iod_con2_8_smulc_rel
 dev8_iod_con2_8_recol_rel
 dev8_iod_con2_8_rpixl_rel

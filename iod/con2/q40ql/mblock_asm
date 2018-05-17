@@ -1,6 +1,7 @@
 ; Move area (generalised PAN/SCROLL)  V2.01    Tony Tebby
 ;						Jonathan Oakley
 ;	 2.01	 FD	 REMOVED REFERENCES TO MOVEP for Q60/Q40
+;	 2.02	added pt_cmbblk (wl)
 
 	section con
 ;
@@ -9,6 +10,7 @@
 ;
 	xdef	cn_mblock
 	xdef	pt_mblock
+	xdef	pt_cmbblk
 ;
 ;	d1 c	size of section to move
 ;	d2 c	old origin in source area
@@ -21,6 +23,7 @@
 ;
 pt_mblock
 cn_mblock
+pt_cmbblk
 	move.w	a2,d0		calculate source address
 	mulu	d2,d0		row address
 	add.l	d0,a4

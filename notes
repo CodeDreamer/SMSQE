@@ -1,0 +1,33 @@
+	
+	
+	iod_con2_ptr_vec_asm : Zeiger auf den neuen Vector
+	keys_con    mit dem Key f‡r den neuen con driver vector pv_cmbbk
+	keys_wman_data	  : und die keys (Vorsicht, diese Datei hiess mal
+	   "ee_wman_data", glaube aber dasss sie besser im "keys"
+	   Verzeichniss aufgehoben ist).
+
+
+	ee_wman_move_asm    ruft den neuen Vector auf , wenn movemode = 3 ist.
+
+	Die Dateien mit dem neuen Code selber :
+
+	iod_con2_qxl16_cmbblk_asm	f‡r QPC & QXL
+	iod_con2_q4016_cmbblk_asm	fur Q40
+	iod_con2_aur8_cmbblk_asm	f‡r Aurora (und gold card)
+	und die dazugeh„rigen cct Dateien
+
+
+	iod_con2_atmono_mblock_asm , iod_con2_q40ql_mblock_asm	 und
+	iod_con2_ql_mblock_asm	  : im QLmodus macht Alphablending nicht viel
+	  Sinn, deshalb gibt es den neuen Vector gar nicht, es wird einfach der
+	  f‡r pt_mblock genommen. Das gilt auch f‡r den Atari mono modus.
+							
+
+	ee_wman_procs_procs_asm
+	ee_wman_procs_base_asm	   mit dem neuen Keyword "WM_MOVEALPHA"
+	   Parameter ein int (0...255)
+
+       iod_con2_aur8_sprite_drop_asm  xdef die aur2rgb_tab Tabelle
+
+	ee_wman_data_asm  : neues Config item : Alpha-wert
+	

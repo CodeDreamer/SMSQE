@@ -3,15 +3,17 @@
 ; this uses the gu_achp and gu_rchp calls, include them;
 ; this only works when using a mouse!!!
 ; copyright (c) w. lenerz 1991 - 2003 and many routines adapted from TT!
-; 2003-05-27		v. 1.12        - totally revamped version
-; 2003-05-28		v. 1.13 	prov version for QPC + better ptr handling (mk)
-; 2003-06-03		v. 1.14 	common version for all machines
-;					added check for QPC + reset ptr pos
-;					moving secondary wdws ok
-; 2003-06-18		v. 1.15 	added mode 4 kludge
-; 2003-10-29		v. 1.16 	pointer sprite is saved
-; 2005-01-21		v. 1.17 	outline move: spurious outline :fixed (wl)
-; 2012-04-21		v. 1.18 	check for smsqmulator made when testing for ptr move (wl)
+; 2003-05-27	v. 1.12        - totally revamped version
+; 2003-05-28	v. 1.13 	prov version for QPC + better ptr handling (mk)
+; 2003-06-03	v. 1.14 	common version for all machines
+;				added check for QPC + reset ptr pos
+;				moving secondary wdws ok
+; 2003-06-18	v. 1.15 	added mode 4 kludge
+; 2003-10-29	v. 1.16 	pointer sprite is saved
+; 2005-01-21	v. 1.17 	outline move: spurious outline :fixed (wl)
+; 2012-04-21	v. 1.18 	check for smsqmulator made when testing for ptr move (wl)
+; 2013-04-28	v. 1.19 	added wdw move with alpha blending (wl)
+;
 ;---------------------------------------------------------------------------
 	section wman
 
@@ -75,10 +77,13 @@ bord	equ	winofs+4		; x,y border size in pixels
 winoutl equ	bord+4			; window outline size
 bytel	equ	winoutl+4		; screen byte width (long)
 butn	equ	bytel+4 		; button pressed (byte)
-mtyp	equ	butn+1			; type of move
-spxlw	equ	mtyp+1
+mtyp	equ	butn+1			; type of move (byte)
+alphav	equ	mtyp+1			; alpha value (byte)
+spare	equ	alphav+1		; spare to make even
+spxlw	equ	spare+1
 rpxlw	equ	spxlw+2 		; constants for pixel calculations
-my_space equ	rpxlw+2 		; some slack space
+sarea	equ	rpxlw+2 		; save area
+my_space equ	sarea+4 		; some slack space
 tot_mem equ	my_space+16		; (8 bytes needed)
 
 ; "some" regs to save
@@ -118,6 +123,7 @@ changewin
 	move.l	a0,a6			; keep pointer (ok for superbasic)
 	move.l	sys_clnk(a0),a0
 	move.l	pt_wdata(a0),a0 	; pointer to my wman config data
+	move.b	wd_alpha(a0),d6 	; alpha value
 	move.b	wd_movemd(a0),d7	; type of move wished
 	beq.s	errexit 		; old  move : sprite only - leave
 ; first some basic checks on the channel ID
@@ -143,6 +149,7 @@ changewin
 	move.l	sys_clnk(a6),a3 	; driver linkage
 	move.w	pt_bytel(a3),bytel+2(a5); keep screen increment
 	move.b	d7,mtyp(a5)		; keep type of move
+	move.b	d6,alphav(a5)		; keep alpha blending value
 	move.l	ww_psprt(a4),psp(a5)	; save pointer sprite
 	move.b	pt_bpoll(a3),butn(a5)	; mouse button used to action this item
 * !!
@@ -222,8 +229,7 @@ no_qpc
 	add.l	(a1),d7 		; coords of end of wdw
 	sub.l	winoutl(a5),d7		; max possible x,y coords of wdw outline!
 	move.l	limits+4(a5),d6 	; d6 = min x,y positions box can take
-			
-; here we must move the entire window
+
 ; interlude:
 ; now find out whether we have enough memory left to save the entire screen
 ; once (which will happen later)
@@ -260,6 +266,9 @@ no_qpc
 	moveq	#0,d1
 	moveq	#iop.wsav,d0		; save entire wdw into internal save area
 	trap	#3			; - leave this, it isn't always done by itself!
+	move.l	chblk(a5),a1
+	move.l	sd_wsave(a1),sarea(a5)	; pointer to save area
+
 	move.b	mtyp(a5),d0		; type of move
 	subq.b	#1,d0			; move "outline"?
 	beq	wc_mvoutl		; ...yes ->
@@ -269,7 +278,9 @@ no_qpc
 	addi.l	#xyposadd,d1		; round up
 	andi.l	#xyposmask,d1		;
 	move.l	d1,winorg(a5)		; store current pointer position
-	bsr	tot_rest		; show wdw content again at this position
+	subq.b	#1,d0
+	move.b	d0,mtyp(a5)		; this is now 0  if move, 1 if alpha move
+	bsr	tot_which		; show wdw content again at this position
 
 ; main program loop
 ploop1
@@ -321,7 +332,7 @@ horiz	lea	my_space(a5),a1 	;
 	swap	d4			; d4.w = x coord
 	move.w	winorg(a5),d1		; new x coord
 	sub.w	d4,d1			; any horizontal move?
-	beq   tot_rest		      ; ... none, restore wdw & return
+	beq.s	tot_which		; ... none, restore wdw & return
 	blt.s	mleft			; ... yes, wdw moved left ->...
 ; window moved to the right
 	move.w	xysz+2(a5),2(a1)	; y size of block to restore
@@ -344,7 +355,7 @@ horiz2
 	sub.l	d0,d1
 	add.l	spec4(a5),d1		; possible mode 4 kludge
 	bsr.s	pt_prest		; restore part of background
-	bra.s	tot_rest		; and restore entire wdw to new position
+	bra.s	tot_which		 ; and restore entire wdw to new position
 					; (and return from there)
 
 *------------------
@@ -409,6 +420,11 @@ ptr_ok	movem.l (sp)+,rstregs
 ;	A5	my memory space 		base of screen
 ;
 
+tot_which				; do we do a normal or an alpha move?
+	tst.b	mtyp(a5)
+	beq.s	tot_rest
+	bra.s	tot_alpha
+		
 tot_save				; save entire wdw into save area
 	movem.l rstregs,-(sp)		; keep regs
 	bsr.s	cprm
@@ -416,12 +432,32 @@ tot_save				; save entire wdw into save area
 	exg	a2,a3
 	exg	d2,d3
 	bra.s	cpy_jmp
-
+		      
 ; same as above, but restore entire wdw from save area to screen
 tot_rest
 	movem.l rstregs,-(sp)		; keep regs
 	bsr.s	cprm
 	bra.s	cpy_jmp
+; same as above, but alpha in the entire wdw from backgtound save area to screen
+tot_alpha
+	movem.l rstregs,-(sp)		; keep regs
+	move.l	sarea(a5),a1		; point to save area for background (source2)
+	clr.l	d6
+	move.b	alphav(a5),d6
+	bsr.s	cprm			; (destroys a5)
+	tst.b	d6			; would wdw be totally transparent?
+	beq.s	cpy_jmp 		; yes, this doesn't make sense, use totally opaque instead
+	cmp.b	#255,d6
+	beq.s	cpy_jmp 		; use faster routine if totally opaque
+	move.l	a3,d7			; destination (screen) row increment
+	addq.l	#4,d7			; source2 row inc  = dest inc + 4
+	move.l	d3,d4			; origin of source 2 is same as in destination
+	move.l	sys_clnk(a6),a0
+	move.l	pt_vecs(a0),a0
+	jsr	pv_cmbbk(a0)		; combine window save area & backgound save area
+	movem.l (sp)+,rstregs
+	rts
+	    
 ; calculate parameters (adapted from TT's code!)
 cprm	move.l	xysz(a5),d1		; set size
 	clr.l	d2			; origin in save area always top left
@@ -432,7 +468,7 @@ cprm	move.l	xysz(a5),d1		; set size
 	move.l	mptr(a5),a4		; source base address
 	move.l	sd_scrb(a0),a5		; screen base
 	rts
-
+      
 ; calculate the amount of memory needed for a save area of a given size
 ;	d0 cr	x,y size of area / space needed in bytes
 ;	d1   s

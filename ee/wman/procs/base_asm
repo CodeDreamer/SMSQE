@@ -1,6 +1,7 @@
-; WMAN colours basic procedures base  V1.01	       2002 Marcel Kilgus
+; WMAN colours basic procedures base  V1.02	       2002 Marcel Kilgus
 ;
 ; 2002-05-27  1.01  Added WM_MOVEMODE (WL)
+; 2013-04-28  1.02  Added WM_MOVEALPHA (wl)
 
 	section wm_ext
 
@@ -25,6 +26,7 @@ wm_procs
 	proc_def WM_BLOCK
 	proc_def WM_BORDER
 	proc_def WM_MOVEMODE
+	proc_def WM_MOVEALPHA
 	proc_def SP_RESET
 	proc_def SP_GET
 	proc_def SP_SET

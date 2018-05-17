@@ -38,10 +38,10 @@ jva.trp5	equ	$4b05		; trap 5 do misc things
 jva.trp6	equ	$4b06
 jt5.mode	equ	  1		;   switch display mode
 jt5.rset	equ	  2		;   reset
-jt5.slep	equ	  3		;   sleep a bit (NRIY)
+jt5.slep	equ	  3		;   sleep a bit
 jt5.driv	equ	  4		;   set dir/file for a device
-jt5.fill	equ	  5		;   (only in 16 bit colour mode) fill a block with colour
-jt5.move	equ	  6		;   (only in 16 bit colour mode) move a block
+jt5.fill	equ	  5		;   (only in modes 16 & 32) fill a block with colour
+jt5.move	equ	  6		;   (only in modes 16 & 32) move a block
 jt5.use 	equ	  7		;   set USE name for device
 jt5.sssi	equ	  8		;   initialise ssss
 jt5.sssk	equ	  9		;   ssss kill sound
@@ -55,7 +55,7 @@ jt5.xc2s	equ	  16		;   transfer from clipboard to scrap
 jt5.xs2cp	equ	  17		;   transfer from scrap to clopboard
 jt5.time	equ	  18		;   get time from java
 jt5.mbar	equ	  19		;   make menu bar visible
-
+jt5.comb	equ	  20		;   alpha combine 2 blocks
 
 
 ; smsqmultor config info flag

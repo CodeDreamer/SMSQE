@@ -169,7 +169,7 @@ uneven4 move.b	(a2)+,(a0)+
 	move.b	(a2)+,(a0)+
 	move.b	(a2)+,(a0)+
 	dbf	d0,uneven4		; A2 MAY POINT OT ODD ADDRESS!
-	bra.s	prle2_start
+	bra.s	prle4_start
 prle4_ucloop
 	move.l	(a2)+,(a0)+		; just copy uncompressed data
 	dbf	d0,prle4_ucloop
@@ -198,5 +198,4 @@ prle4_start
 	tst.l	d1
 	bhi.s	prle4_loop
 	rts
-
 	end

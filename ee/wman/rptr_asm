@@ -34,6 +34,8 @@
 * read pointer
 *
 *	d0  r	error return
+*	d2 c  p events on which to return (only for rd_ptrt, events in LSByte)
+*	d3 c  p timeout (in LSW, for rd_ptrt)
 *	d4   sp event number
 *	d5   sp next return condition
 *	a0  r	channel ID of window

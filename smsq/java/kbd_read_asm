@@ -1,14 +1,15 @@
 ; Java Emul Read keyboard (during polling interrupt)
 ; this "reads" the keyboard coming from the emulator & puts the keystrokes
 ; into the keyboard queue
-
+; 1.01 special long word input when mouse moved
+; 1.00 initial version
 
 	section kbd
 
 	xdef	kbd_read
 	xdef	kbd_vers
 
-kbd_vers equ	'1.00'
+kbd_vers equ	'1.01'
 
 
 	xref	ioq_tstg
@@ -30,6 +31,15 @@ kbd_vers equ	'1.00'
 ;+++
 ; QL keyboard routine (called from poll)
 ;---
+
+; wheel on mouse moved - generate 3 keystrokes
+wheel
+	jsr	ioq_pbyt		 ; put byte in kbd queue
+	jsr	ioq_pbyt		 ; put byte in kbd queue
+	jsr	ioq_pbyt		 ; put byte in kbd queue
+	and.l	#$ff,d1 		 ;
+	move.w	d1,sys_lchr(a6) 	 ; save last character
+	bra.s	hok_rts
 kbd_read
 
 
@@ -53,6 +63,10 @@ hok_rts
 
 
 hok_chkc
+	cmp.l	#$d1d1d1,d1
+	beq.s	wheel
+	cmp.l	#$d9d9d9,d1
+	beq.s	wheel
 	tst.l	d1			 ; break?
 	bmi.s	hok_break		 ; ... yes
 
@@ -112,7 +126,7 @@ hok_ckq
 
 hok_setq
 	move.l	a2,sys_ckyq(a6) 	 ; reset keyboard queue
-	bra.s	hok_rts
+	bra	hok_rts
 
 ; screen freeze
 

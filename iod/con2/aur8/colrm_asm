@@ -1,5 +1,7 @@
-;	Set colour masks / palettes Aurora version V1.00   1998  Tony Tebby
+;	Set colour masks / palettes Aurora version V1.01   1998  Tony Tebby
 ;							    2002  Marcel Kilgus
+;
+; 2013-05-16  1.01  Fixed striped colours in COLOUR_NATIVE mode
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -264,9 +266,12 @@ cn_nat_bccolr
 
 ; native main colour
 cn_nat_mcolr
-	move.w	d3,d7			 ; main and contrast
-	swap	d7			 ;
-	move.w	d3,d7			 ; doubled
+	move.b	d3,d7			 ; main
+	lsl.w	#8,d7
+	move.b	d3,d7			 ; contrast is same
+	move.w	d7,d0
+	swap	d7
+	move.w	d0,d7			 ; doubled
 	moveq	#0,d0
 	rts
 
@@ -274,7 +279,7 @@ cn_nat_mcolr
 cn_nat_ccolr
 	move.b	d3,d7			 ; set contrast colour
 	swap	d7
-	move.b	d3,d7
+	move.b	d3,d7			 ; doubled
 cnc_ok
 	moveq	#0,d0
 	rts

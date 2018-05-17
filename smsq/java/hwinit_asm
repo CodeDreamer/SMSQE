@@ -72,7 +72,7 @@ hwinit_name
 	dc.l	jva_cfgf4
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
-	dc.l	'315a'
+	dc.l	'315e'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0
@@ -134,7 +134,7 @@ jav_wbmloop
 	blt.s	jav_wbmloop
 	rts
 
-; this is called form soft & hard reset.
+; this is called from soft & hard reset.
 ; hard reset : d7 = 0
 ; soft reset: d7<>0
 hwinit_base				; this is called from soft & hard reset

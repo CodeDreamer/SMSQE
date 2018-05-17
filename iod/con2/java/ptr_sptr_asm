@@ -1,4 +1,5 @@
 * Set pointer position	 V1.01	  1986   Tony Tebby	QJUMP
+* v. 1.02 2013 Apr 13  provide for call back into java (wl)
 *
 	section driver
 *
@@ -49,7 +50,7 @@ ptsp_hit
 	add.l	sd_xhito(a0),d1 	set position
 ptsp_do
 ; moving te pointer about with the robot class takes alot of tim
-	dc.w	jva.trp6		; the next 3 instructions re handled in java directly
+	dc.w	jva.trp6		; the next instructions re handled in java directly
 ;	 move.l  pt_ssize(a3),d0
 ;	 cmp.w	 d0,d1			 y out of range?
 ;	 bhs.s	 pt_or			 ... yes

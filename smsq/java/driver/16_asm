@@ -1,4 +1,7 @@
 ; Base area SMSQ Java Drivers / 16 bit display
+; all the (screen) modules are called in turn. If the screen code
+; for one corresponds to the one set up in the config block,
+; that one will be chosen. Screen codes are ptd.16 etc
 
 	section header
 
@@ -29,25 +32,10 @@ smsq_name
 	xref	pt_setup
 
 java_con
-	move.b	sms.conf+sms_issize,d1	 ; config screen size
-	moveq	#ptd.16,d2		 ; 16 bit colour depth
-	moveq	#ptm.pc16,d3		 ; i6 bit VESA (PC) driver
-	move.b	sms.conf+sms_ismode,d4	 ; config screen colour depth
-
-;	 move.l  d2,d4
-
-	jmp	pt_setup
-
-qcn_ok
-	moveq	#0,d0
-	rts
-
-
-
-
-
-
-
-
+	move.b	sms.conf+sms_issize,d1	; configured screen size
+	moveq	#ptd.16,d2		; I can hendle 16 bit colour depth
+	moveq	#ptm.pc16,d3		; i6 bit VESA (PC) driver
+	move.b	sms.conf+sms_ismode,d4	; configured screen colour depth
+	jmp	pt_setup		; if d2=d4, this is the screen that will be chosen
 
 	end

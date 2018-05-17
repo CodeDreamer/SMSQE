@@ -2,6 +2,27 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
+3.16
+    BUGFIXES
+	iod_con2_aur8_colrm_asm 	1.01	Fixed striped colours in COLOUR_NATIVE mode (MK)
+
+    WINDOW MOVE WITH TRANSPARENCY
+	iod_con2_ptr_vec_asm		1.04	added pt_cmmblk (wl)
+	keys_con				amended to suit (wl)
+	keys_wman_data				amended to suit (wl)
+	iod_con2_qxl16_cmbblk_asm	1.01	implement combine block vector (wl)
+	iod_con2_q4016_cmbblk_asm	1.01	implement combine block vector (wl)
+	iod_con2_aur8_cmbblk_asm	1.01	implement combine block vector (wl)
+	iod_con2_atmono_mblock_asm	2.02	added label pt_cmbblk (wl)
+	iod_con2_q40ql_mblock_asm	2.02	added label pt_cmbblk (wl)
+	iod_con2_ql_mblock_asm		2.02	added label pt_cmbblk (wl)
+	iod_con2_aur8_sprite_drop_asm	1.12	xdef'd the aur2rgb_tab table (wl)
+	ee_wman_move_asm		1.19	added wdw move with alpha blending (wl)
+	ee_wman_data_asm		1.02	added config item for alpha blending when moving
+	ee_wman_procs_procs_asm 	1.03	added WM_MOVEALPHA (wl)
+	ee_wman_procs_base_asm		1.02	added WM_MOVEALPHA (wl)
+
+-----------------------------------------------------------------------------
 
 3.15
     BUGFIXES

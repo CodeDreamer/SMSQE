@@ -13,7 +13,7 @@ You may load a cursor sprite with the CURSPRLOAD command:
 
 CURSPRLOAD filename.
 
-This loads filename and uses it as a cursor sprite.
+This loads "filename" and uses it as a cursor sprite.
 Please make sure that this file only contains the sprite data for a valid
 cursor sprite. The command does NOT check this. If this command seems to fail,
 i.e. the cursor sprite doesn't change to what you want it to be, the data
@@ -38,7 +38,7 @@ On a per job basis
 
     Use the keywords CURSPRON and CURSPROFF:
     CURSPRON job_name or job_number,job_tag
-    Example: Let us suppose you have Xchaneg running on your machine.
+    Example: Let us suppose you have Xchange running on your machine.
     Typing 'jobs' will tell you more about this job, something like this:
 
     Job Tag   Owner  Priority  Job-Name
@@ -78,7 +78,7 @@ On a per job basis
     The status in D2 is 0 if normal cursor, 1 if sprite cursor wished
 
     You can use this vector as follows, assuming A0 points to the system
-    variables. (Include the files dev8_keys_sys and dev8_keys_con in your
+    variables (include the files dev8_keys_sys and dev8_keys_con in your
     code for this to work):
 
 	move.l	sys_clnk(a0),a1 	; point to dddb

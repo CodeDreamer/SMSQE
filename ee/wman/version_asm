@@ -155,8 +155,10 @@
 ;	V2.05	       New vector wm_cpspr to copy a sprite definition (MK)
 ;		       Fixed error return of wm.jbpal (MK)
 ;		       Double 3d border type fixed (MK)
+;
+;	V2.06	       New window move with transparency (wl)
 
-wm_vers equ	'2.05'
+wm_vers equ	'2.06'
 wm.pver equ	'2.02'
 
 	end

@@ -729,8 +729,10 @@
 ;	Fixed "for i=0 to a(0,0)" loop bug  (MK).
 ;	Fixed uq_ssq in serio (GG).
 ;	Correctly handle sprites with 0 mask pointer for qxl,java (MK,wl).
+;
+; 3.16	COLOUR_NATIVE for aurora modes fixed (MK).
+;	Window move with transparency implemented (for display modes 16, 32 and 33) (wl).
 
-
-smsq_vers equ	 '3.15'
+smsq_vers equ	 '3.16'
 
 	end

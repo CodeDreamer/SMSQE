@@ -3,6 +3,7 @@
 ;
 ; 2003-02-11  1.10  Added alpha blending code (MK)
 ; 2005-03-27  1.11  Extension for empty (solid) mask (MK)
+; 2013-04-28  1.12  xdef'd the aur2rgb_tab table (wl)
 ;
 ;	d0   s
 ;	d1   s
@@ -25,6 +26,8 @@
 	xdef	sp_dropi
 
 	xref	rgb2aur_tab
+
+	xdef	aur2rgb_tab
 ;
 sp_drop
 	move.l	a5,a4		; set pointer to sprite pattern

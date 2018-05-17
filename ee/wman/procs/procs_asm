@@ -1,8 +1,9 @@
-; WMAN colours basic procedures  V1.02		       2002  Marcel Kilgus
+; WMAN colours basic procedures  V1.03		       2002  Marcel Kilgus
 ;
 ; 2003-05-27  1.01  Changed routines to always use sys_clnk to get WMAN vec (MK)
 ;		    Added WM_MOVEMODE (WL/MK)
 ; 2003-09-05  1.02  Fixed WM_BLOCK (GG/MK)
+; 2013-04-28  1.03  Added WM_MOVEALPHA (wl)
 
 	section wm_ext
 
@@ -12,6 +13,7 @@
 	xdef	wm_block
 	xdef	wm_border
 	xdef	wm_movemode
+	xdef	wm_movealpha
 	xdef	sp_reset
 	xdef	sp_set
 	xdef	sp_get
@@ -29,7 +31,7 @@
 	xref	ut_gtnm1
 	xref	ut_fjob
 
-	include 'dev8_ee_wman_data'
+	include 'dev8_keys_wman_data'
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_qdos_io'
 	include 'dev8_keys_con'
@@ -127,7 +129,7 @@ wm_border
 	rts
 
 ;+++
-; WM_MOVEMODE move_type% (0..2)
+; WM_MOVEMODE move_type% (0..3)
 ;---
 wm_movemode
 	bsr	wm_getwdata
@@ -135,12 +137,24 @@ wm_movemode
 	bne.s	wm_rts
 	move.w	(a6,a1.l),d0
 	blt.s	wm_ipar 		; and it must be between 0...
-	cmp.w	#2,d0			; ... and 2
+	cmp.w	#3,d0			; ... and 2
 	bgt.s	wm_ipar
 	move.b	d0,wd_movemd(a2)
 	clr.l	d0
 	rts
 
+;+++
+; WM_MOVEALPHA move_alpha% (0..255)
+;---
+wm_movealpha
+	bsr	wm_getwdata
+	jsr	ut_gtin1		; get one int
+	bne.s	alp_rts
+	move.w	(a6,a1.l),d0
+	move.b	d0,wd_alpha(a2)
+	clr.l	d0
+alp_rts rts
+		
 ;+++
 ; SP_RESET (no)
 ;---
