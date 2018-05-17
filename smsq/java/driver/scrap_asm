@@ -1,6 +1,6 @@
 *************************************************************************
 *
-*	Copyoing to/from the Scrap to/from the clipboard
+*	Copying to/from the Scrap to/from the clipboard
 *
 *	making menu bar visible again
 *
@@ -29,7 +29,7 @@ scrap_init lea	   procs,a1
 	move.w	$110,a2
 	jmp	(a2)
 
-procs	dc.w	2
+procs	dc.w	3
 	dc.w	jvasget-*
 	dc.b	7,'JVASGET'
 	dc.w	jvasput-*

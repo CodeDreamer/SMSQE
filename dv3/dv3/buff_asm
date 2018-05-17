@@ -1,4 +1,6 @@
-; DV3 IO buffering   V3.00     1989 / 1993 Tony Tebby
+; DV3 IO buffering   V3.01     1989 / 1993 Tony Tebby
+;
+; 2014-03-19  3.01  Added read-only check in dv3_sbyt (MK)
 
 	section dv3
 
@@ -436,6 +438,7 @@ dbsm_rtok
 ;	status return standard
 ;---
 dv3_sbyt
+	jsr	dv3_ckro		 ; check read only
 	move.l	d3c_fpos(a0),d4 	 ; file position
 	jsr	dv3_albf		 ; locate / allocate buffer
 	bne.s	dbsb_rts		 ; ... oops

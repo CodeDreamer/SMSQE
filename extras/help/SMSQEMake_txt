@@ -1,10 +1,10 @@
 *****************
-*               *
-*   SMSQEMake   *
-*               *
+*		*
+*   SMSQEMake	*
+*		*
 *****************
 
-A program to facilitate compilation & linking of the SMSQ/E sources. 
+A program to facilitate compilation & linking of the SMSQ/E sources.
 
 
 I - Requirements
@@ -27,7 +27,7 @@ also  some other requirements if  you want to recompile  it (see at the
 end of this document).
 
 SMSQEMake  does presume that  the sources are  on one drive  and in the
-usual directories. The drive must  be  called  "dev8_"  :  all  of  the
+usual directories. The drive must  be  called  "dev8_"	:  all	of  the
 sources presume that they are on a drive called dev8_
 
 
@@ -41,10 +41,9 @@ won't  need this  reminder here,  and you  can skip  right to  the next
 section (II - Purpose of this software, below).
 
 
-You will need a "dev"  device,  an  assembler,  a  linker,  the  "make"
-program, plus a concatenator. The last three are supplied together with
-the sources,  the DEV device can be found  in SMSQ/E, but you will have
-to supply your own Assembler. 
+You will need a "dev"  device,	an  assembler,	a  linker,  the  "make"
+program,  plus a concatenator. These are all supplied together with the
+sources, the DEV device can be found in SMSQ/E itself.
 
 
 A - The DEV device
@@ -52,7 +51,7 @@ A - The DEV device
 The  source files are set up in such a way that they expect to be found
 on a device called "DEV8_".
 
-Dev is the  usual SMSQ/E  "dev" device  which can  refer to  any actual
+Dev is the  usual SMSQ/E  "dev" device	which can  refer to  any actual
 physical device, and  you should  use DEV_USE  8, xxx  to set  this up.
 Thus, if the source files are or, say , win6, use:
 
@@ -62,20 +61,18 @@ DEV_USE 8, win6_.
 B - The assembler
 
 You  will also need an assembler to compile the individual source files
-into what  are know as  "_rel" files, i.e.  relocatable compiled files,
+into what  are know as	"_rel" files, i.e.  relocatable compiled files,
 which are later bound together by a linker.
 
 For  the time being, the assembler must  be the QMAC Assembler. This is
-available from Jochen Merz, or from Quanta.
-
-It should be version 1.00 or higher (1.06 or higher with QMAKE).
+available in the dev8_extras_exe_ directory.
 
 
 C - The linker, cctf and make programs and how to use them.
 
 
-On the  source device,  in the  "exe" subdirectpry,  you will  find the
-Linker, Cctf and Make programs.
+On the	source device,	in the	"exe" subdirectpry,  you will  find the
+Linker, cctf and Make programs.
 
 It  is recommended, but not strictly  necessary, to load the assembler,
 the linker and the make programs as resident programs via hotkeys, such
@@ -88,20 +85,18 @@ ert hot_remv('z')
 ert hot_res ('z',<device>_QMAC)
 
 You don't HAVE  to do  this, but  the Make  program always  attempts to
-execute  the Assembler and Linker from  an executable thing rather than
+execute  the Assembler and Linker from	an executable thing rather than
 an executable file first.
 
-
-If you  don't do that,  you must make  sure that these  programs can be
+If you	don't do that,  you must make  sure that these  programs can be
 found in the  "prog_use" path. If  they acannot be  found as executable
 things,  nor in the  prog_use path, the  make program won't  be able to
 find them and will crash.
 
 The cctf program should lie in the normal prog_use path.
 
-
-Here  is a short descrpition of what  each of thes eprograms does, even
-though  it is not necessary  to know this to  use SMSQEMake, which will
+Here  is a short description of what  each of these programs does, even
+though	it is not necessary  to know this to  use SMSQEMake, which will
 drive the programs normally.
 
 
@@ -112,7 +107,7 @@ This software takes  a simple  linker command  file (_link)  and checks
 which files have to be re-assembled, it then assembles them, and causes
 the linker to be executed.
 
-The presumes that  your computer keeps  a correct time  and date, since
+The presumes that  your computer keeps	a correct time	and date, since
 the files' timestamps are  used by  the make  program to  check whether
 they need to be re-compiled or not.
 
@@ -120,9 +115,8 @@ The  Make program also presumes that you  have a program called QMAC to
 compile  all files that need to be compiled, a piece of software called
 Linker to link them and a program called cctf to concatenate libraries.
 
-
 The  make is a compiled Sbasic program. The source of that can be found
-in the  "exe" directory  under the  "source" directory  - you  can thus
+in  the "exe" directory under the "source" sub-directory - you can thus
 change it to  your heart's content.  It also  needs  a special toolkit,
 which is called OUTPTR_BIN  and can  also be  found under  the "source"
 subdirectory.
@@ -139,11 +133,11 @@ be loaded as mentioned above.
 
 The purpose of the cctf program  is  to  concatenate  _rel  files  into
 libraries. It  should simply be put into  your normal prog_use path. If
-you want to use it by hand, use it as follows: 
+you want to use it by hand, use it as follows:
 
 EX <device>_cctf,cct$,lib$
 
-cct$ is a  file only containing only  the names of the  rel files to be
+cct$ is a  file only containing only  the names of the	rel files to be
 concatenated.
 
 lib$ is the name of the resulting library file that will be created.
@@ -152,7 +146,7 @@ lib$ is the name of the resulting library file that will be created.
 4 - cct
 
 There is also a small cct program which you will need for the QXL. This
-can be  found in the exe directory and  should be put into your program
+can be	found in the exe directory and	should be put into your program
 path.
 
 
@@ -181,16 +175,17 @@ the program certain command line parameters.
 
 A - The title bar.
 
-In  the upper titlebar, you  can see the usual  ESC, move, change size,
-sleep items. You can also see the OK and All items, which are explained
-below. In the  title bar is also  a drive item where  you can chose the
-drive on which the  link  files  can  be  found.  In  this  version  of
-SMSQEMake, all link files must be on the same drive.
+In  the upper titlebar, you  can see the usual	ESC, move, change size,
+sleep items.  You can also  see the Make,  OK and All  items, which are
+explained below.  In the title bar  is also a drive  item where you can
+chose the  drive on which the link files  can be found. In this version
+of SMSQEMake, all link files must be on the same drive. MOST IF NOT ALL
+OF THEM PRESUME THAT THE FILES TO BE ASSEMLED RESIDE ON DEV8_.
 
 
 B - The target row
 
-Under the  title bar, there is  a row with many  buttons. Most of these
+Under the  title bar, there is	a row with many  buttons. Most of these
 select the "targets" for which you want to (re)compile the sources. The
 names of the targets should be self-explanatory...
 
@@ -215,13 +210,13 @@ When you hit/do the "OK" item, all selected link files will be treated,
 so that all new files in it will be compiled.
 
 
-F - The "Make" button
+F - The "Make" item
 
-There is  also a "Make" button. If you  select that, then, if there was
-no error during compilation of the source file(s) for a certain target,
-the resulting  target file will actually be  built. You can also simply
-rebuild a target by selecting the target and deselecting all link files
-for it, if the MAKE button is selected.
+There is  also a  "Make" item.	If you	select that  before compilation
+starts, then, if  there was no	error during compilation  of the source
+file(s)  for a certain target, the  resulting target file will actually
+be  built. You can also simply rebuild a target by selecting the target
+and deselecting all link files for it, if the MAKE button is selected.
 
 
 The targets made will be called as follows, <dev> being the device with
@@ -251,13 +246,14 @@ For SMSQmulator:
 For Aurora:
 <dev> smsq_aurora_SMSQE
 
+
 For ptr_gen (includeds wman):
 <dev> ee_ptr_gen
-<dev> ee_wman_wman
+<dev> ee_wman_wman
+
 
 G - Future Command line parameters
-
-In future  versions it MAY be possible  to pass command line parameters
+In future  versions it MAY be possible	to pass command line parameters
 to the program, as follows:
  "-o" means : autostart on
  "-g" means : set generic item to selected
@@ -276,11 +272,11 @@ I - A proposed way of working.
 
 I propose you use this program as follows:
 
-Select your target(s).  Select  the  link  file(s)  to  be  recompiled,
+Select your target(s).	Select	the  link  file(s)  to	be  recompiled,
 possibly with the All item.
 
 
-Set the "Make" item so that  a  final  version  will  be  built.  Start
+Set the "Make" item so that  a	final  version	will  be  built.  Start
 everything with "OK".
 
 
@@ -317,7 +313,7 @@ This document  MUST accompany all versions of  this program even if you
 made changes yourself.
 
 
-If you  breach the above provisions, and/or  if you make changes and/or
+If you	breach the above provisions, and/or  if you make changes and/or
 give it to others without due credit to me - may you rot in hell.
 
 

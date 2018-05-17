@@ -739,10 +739,10 @@
 ;
 ; 3.19	Integrated QPC specific code (MK).
 ;	Fixed pending new-line bug in csize for appsub windows (MK).
+;
+; 3.20	Added read-only check in dv3_sbyt (MK).
+;
 
-
-smsq_vers equ	 '3.19'
+smsq_vers equ	 '3.20'
 
 	end
-
-

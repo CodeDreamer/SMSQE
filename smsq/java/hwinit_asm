@@ -72,7 +72,8 @@ hwinit_name
 	dc.l	jva_cfgf4
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
-	dc.l	'3a17'
+	dc.l	'3.20'
+	dc.w	'00'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0

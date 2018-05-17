@@ -43,6 +43,7 @@ smsq_name
 	xref	hdop_keyr
 	xref	scrap_init
 	xref	snd_init
+	xref	tmr_init
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sys'
@@ -82,7 +83,7 @@ start
 	jsr	ssss_init
 	jsr	scrap_init
 	jsr	snd_init
-
+	jsr	tmr_init
 
 sys_init
 

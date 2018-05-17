@@ -23,6 +23,14 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 =====
+3.20
+=====
+
+Bugfix : check for read only if single byte send to dv3 channel.
+SMSQmulator specifc : timer added.
+
+
+=====
 3.19
 =====
 

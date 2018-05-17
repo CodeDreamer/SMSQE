@@ -1,0 +1,61 @@
+*************************************************************************
+*
+*	Setting/getting a timer
+*
+*	JTMRSET sets (starts the timer)
+*
+*	a=JTMRGET() gets elapsed milliseconds since timer was started
+*
+*	v. 1.00  copyright W. Lenerz 2014
+*
+************************************************************************
+
+
+	section timer
+
+	include dev8_keys_java
+
+	xdef	tmr_init
+	xref	ut_rtfd1
+
+
+tmr_init
+	lea	procs,a1
+	move.w	$110,a2
+	jmp	(a2)
+
+procs	dc.w	1
+	dc.w	tmrset-*
+	dc.b	7,'JTMRSET'
+	dc.w	0,1
+	dc.w	tmrget-*
+	dc.b	7,'JTMRGETT'
+	dc.l	0
+
+tmrset	moveq	#jt5.sttmr,d0
+	dc.w	jva.trp5
+	rts
+
+tmrget	moveq	#jt5.gttmr,d0
+	dc.w	jva.trp5
+	jmp	ut_rtfd1
+
+
+	end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

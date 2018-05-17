@@ -3,6 +3,12 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
 -----------------------------------------------------------------------------
+3.20
+    BUGFIX
+	dv3_dv3_buff_asm		3.01	Added read-only check in dv3_sbyt (MK)
+
+
+-----------------------------------------------------------------------------
 3.19
     QPC SPECIFIC SOURCES INTEGRATED
 	dv3_qpc 			.	added

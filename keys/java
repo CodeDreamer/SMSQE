@@ -62,7 +62,8 @@ jt5.mwrt	equ	  23		;   write mem device back
 jt5.osnd	equ	  24		;   open channel to SOUND device
 jt5.csnd	equ	  25		;   close channel to sound device
 jt5.asnd	equ	  26		;   add bytes to sound device
-
+jt5.sttmr	equ	  27		;   set (start) timer
+jt5.gttmr	equ	  28		;   get current timer value
 
 jva.trp6	equ	$4b06
 
