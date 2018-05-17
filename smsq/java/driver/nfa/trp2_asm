@@ -1,7 +1,7 @@
-; Trap2 routines for qxl/sfa/nfa drivers.
+; Trap2 routines for qxl/sfa/nfa drivers	 v. 0.01 (C) W Lenerz 2012.
+
 ; They just call the JVM.
-; v. 0.01 10.07.2012 close file deveases nbr of open files, deletes chan defn blk
-; v. 0.00 (C) W Lenerz 2012.
+; v. 0.01 10.07.2012 close file decreases nbr of open files, deletes chan defn blk
 
 
 	section nfa
@@ -71,18 +71,4 @@ nfa_dlt moveq	#4,d0			; delete file
 	tst.l	d0
 	rts
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	 end
+	end

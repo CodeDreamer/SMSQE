@@ -54,3 +54,4 @@ sms.t1tab  equ	$800			    ; table of long word trap 1 vectors
 sms.nextm  equ	sms.base-4		    ; pointer to header of next extension
 
 sms.qrom   equ	$c000			    ; QL ROM base
+         list

@@ -18,15 +18,29 @@ of new features are kept in that "extras_new" directory.
 This here file only contains a short description of the new features.
 
 
-
 What is new in versions :
+
+
+=====
+3.24
+=====
+
+Bugfixes: CKEYON/CKEYOFF
+When jobs are created, the size of the job, and the data space, are made even.
+
+Support fot the  Recent thing. Please read the documentaton in extras_doc_.
+By default, the recent thing is switched OFF. To switch it ON, you must
+configure the SMSQ/E file for your system.
+!!
+SMSQ/E uses a new system variable sys_rthg, a byte at $017D.
+!!
 
 
 =====
 3.23
 =====
 
-Bugfixes : DMEDIUM_TYPE, ...DENSITY, ... FORMATüwork OK with -bnrs, ...NAME$ returns correct name.
+Bugfixes : DMEDIUM_TYPE, ...DENSITY, ...FORMAT work OK with nbrs, ...NAME$ returns correct name.
 SMSQmulator keyrow bugfix.
 
 

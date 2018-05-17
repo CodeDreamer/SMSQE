@@ -1,9 +1,13 @@
-; Java Mouse Routines this is called from the polling interrupt
+; SMSQmulator Mouse Routine  V1.00 (c) W. Lenerz 2012
+
+
+; this is called from the polling interrupt
 ; mouse button 1 (left) = 1
 ; mouse button 2 (right) = 2
 ; both	left & right = 3
 ; middle button = 4
-	section mouose
+
+	section mouse
 
 	xdef	mse_poll
 
@@ -71,4 +75,5 @@ mse_done
 
 cntr	movem.l (a7)+,smsh.reg
 	jmp	pt_button3
+
 	end

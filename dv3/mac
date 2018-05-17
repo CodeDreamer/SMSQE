@@ -1,6 +1,5 @@
 ; Directory Device Driver V3 macros
         nolist
-        expand
 
 .byte   equ     1
 .word   equ     2

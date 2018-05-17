@@ -37,3 +37,4 @@ prc_def macro  id,proc
 prc_end macro
         dc.l    0
         endm
+        list

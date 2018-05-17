@@ -1,4 +1,4 @@
-; Java "Hardware" Operations @ w. Leerz 2012-2014
+; SMSQmulator "Hardware" Operations @ w. Lenerz 2012-2014
 ;
 ; 1.01 2014 May 07 keyboard linkage is linked in
 	section sms
@@ -92,27 +92,5 @@ hdop_poll
 	jsr	mse_poll
 kbd_poll
 	jmp	kbd_read		; on interrupt read kbd
-
-	end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	end

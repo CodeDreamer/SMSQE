@@ -1,16 +1,6 @@
-; *****************************************************************
-; SMSQ MEM Driver initialisation for SMSQmulator (c) W.Lenerz 2014
-; This handles linking in the driver into the OS.
+; SMSQmulator MEM Driver initialisation  V1.00 (c) W.Lenerz 2014
 ;
-; copyright (C) w. Lenerz 2012	published under the SMSQE licence
-; v. 1.00 device is called WIN
-; v. 0.01 functional
-; v. 0.00 stub
-
-; based on:
-; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
-; ******************************************************************
-
+; based on smsq_java_driver_win_init_asm
 
 	section nfa
 
@@ -179,4 +169,5 @@ proctab
 	proc_stt
 	proc_def MEM_USE$ , mem_useq
 	proc_end
+
 	end

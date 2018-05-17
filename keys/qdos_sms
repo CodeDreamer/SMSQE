@@ -1,103 +1,103 @@
-* QDOS Emulation  SMS2  trap #1  keys
-        nolist
+* QDOS Emulation  SMS2	trap #1  keys
+	nolist
 *
-do.sms2  equ    1               SMS2 trap entry
-do.smsq  equ    1               SMSQ trap entry!!
-sms.myjb equ    -1              SMS key for MY JoB
-sms.mxjn equ    $30             recommended job name allowance in job header
+do.sms2  equ	1		SMS2 trap entry
+do.smsq  equ	1		SMSQ trap entry!!
+sms.myjb equ	-1		SMS key for MY JoB
+sms.mxjn equ	$30		recommended job name allowance in job header
 *
-sms.info equ    $00             get INFOrmation on SMS
+sms.info equ	$00		get INFOrmation on SMS
 *
 * TPA control
 *
-sms.crjb equ    $01             CReate JoB
-sms.injb equ    $02             get INformation on JoB
-sms.cbas equ    $03             set current SBASIC job
-sms.rmjb equ    $04             ReMove JoB
-sms.frjb equ    $05             Forced Remove JoB
+sms.crjb equ	$01		CReate JoB
+sms.injb equ	$02		get INformation on JoB
+sms.cbas equ	$03		set current SBASIC job
+sms.rmjb equ	$04		ReMove JoB
+sms.frjb equ	$05		Forced Remove JoB
 *
-sms.frtp equ    $06             find largest FRee space in TPa
+sms.frtp equ	$06		find largest FRee space in TPa
 *
-sms.exv  equ    $07             set EXception Vector
+sms.exv  equ	$07		set EXception Vector
 *
 * Scheduler control
 *
-sms.ssjb equ    $08             SuSpend a JoB
-sms.usjb equ    $09             UnSuspend a JoB
-sms.acjb equ    $0a             ACtivate a JoB
-sms.spjb equ    $0b             Set Priority of JoB
+sms.ssjb equ	$08		SuSpend a JoB
+sms.usjb equ	$09		UnSuspend a JoB
+sms.acjb equ	$0a		ACtivate a JoB
+sms.spjb equ	$0b		Set Priority of JoB
 *
 * Heap management utility
 *
-sms.alhp equ    $0c             ALlocate in HeaP
-sms.rehp equ    $0d             RElease to HeaP
+sms.alhp equ	$0c		ALlocate in HeaP
+sms.rehp equ	$0d		RElease to HeaP
 *
 * Resident procedure area
 *
-sms.arpa equ    $0e             Allocate in Resident Procedure Area
+sms.arpa equ	$0e		Allocate in Resident Procedure Area
 *
 * Display mode control
 *
-sms.dmod equ    $10             set the Display MODe
+sms.dmod equ	$10		set the Display MODe
 *
 * Hardware access - MC dependent
 *
-sms.hdop equ    $11             do a Hardware Dependent OPeration
-sms.comm equ    $12             set COMMuncation baud rate etc.
+sms.hdop equ	$11		do a Hardware Dependent OPeration
+sms.comm equ	$12		set COMMuncation baud rate etc.
 *
 * Real time clock control
 *
-sms.rrtc equ    $13             Read Real Time Clock
-sms.srtc equ    $14             Set Real Time Clock
-sms.artc equ    $15             Adjust Real Time Clock
+sms.rrtc equ	$13		Read Real Time Clock
+sms.srtc equ	$14		Set Real Time Clock
+sms.artc equ	$15		Adjust Real Time Clock
 *
 * Moveable program area
 * 
-sms.ampa equ    $16             Allocate space in Moveable Program Area
-sms.rmpa equ    $17             Release space to Moveable Program Area
+sms.ampa equ	$16		Allocate space in Moveable Program Area
+sms.rmpa equ	$17		Release space to Moveable Program Area
 *
 * Common heap control
 *
-sms.achp equ    $18             Allocate space in Common HeaP
-sms.rchp equ    $19             Release space in Common HeaP
+sms.achp equ	$18		Allocate space in Common HeaP
+sms.rchp equ	$19		Release space in Common HeaP
 *
 * Extensions
 *
-sms.lexi equ    $1a             Link in EXternal Interrupt action
-sms.rexi equ    $1b             Remove EXternal Interrupt action
-sms.lpol equ    $1c             Link in POLled action
-sms.rpol equ    $1d             Remove POLled action
-sms.lshd equ    $1e             Link in ScHeDuler action
-sms.rshd equ    $1f             Remove ScHeDuler action
-sms.liod equ    $20             Link in IO Device driver
-sms.riod equ    $21             Remove IO Device driver
-sms.lfsd equ    $22             Link in Filing System Device driver
-sms.rfsd equ    $23             Remove Filing System Device driver
+sms.lexi equ	$1a		Link in EXternal Interrupt action
+sms.rexi equ	$1b		Remove EXternal Interrupt action
+sms.lpol equ	$1c		Link in POLled action
+sms.rpol equ	$1d		Remove POLled action
+sms.lshd equ	$1e		Link in ScHeDuler action
+sms.rshd equ	$1f		Remove ScHeDuler action
+sms.liod equ	$20		Link in IO Device driver
+sms.riod equ	$21		Remove IO Device driver
+sms.lfsd equ	$22		Link in Filing System Device driver
+sms.rfsd equ	$23		Remove Filing System Device driver
 
-sms.trns equ    $24             Set translate (QDOS Compatible)
-sms.xtop equ    $25             eXTernal OPeration
+sms.trns equ	$24		Set translate (QDOS Compatible)
+sms.xtop equ	$25		eXTernal OPeration
 
-sms.lthg equ    $26             Link in THinG
-sms.rthg equ    $27             Remove THinG
-sms.uthg equ    $28             Use THinG
-sms.fthg equ    $29             Free THinG
-sms.zthg equ    $2a             Zap THinG
-sms.nthg equ    $2b             Next THinG
-sms.nthu equ    $2c             Next Thing User
+sms.lthg equ	$26		Link in THinG
+sms.rthg equ	$27		Remove THinG
+sms.uthg equ	$28		Use THinG
+sms.fthg equ	$29		Free THinG
+sms.zthg equ	$2a		Zap THinG
+sms.nthg equ	$2b		Next THinG
+sms.nthu equ	$2c		Next Thing User
 
-sms.iopr equ    $2e             IO PRiority
-sms.cach equ    $2f             CACHe handling
+sms.iopr equ	$2e		IO PRiority
+sms.cach equ	$2f		CACHe handling
 
-sms.lldm equ    $30             Link in Language Dependent Module(s)
-sms.lenq equ    $31             Language ENQuiry
-sms.lset equ    $32             Language SET
-sms.pset equ    $33             Printer translate SET
-sms.mptr equ    $34             find a Message PoinTeR
-sms.fprm equ    $35             Find PReferred Module
+sms.lldm equ	$30		Link in Language Dependent Module(s)
+sms.lenq equ	$31		Language ENQuiry
+sms.lset equ	$32		Language SET
+sms.pset equ	$33		Printer translate SET
+sms.mptr equ	$34		find a Message PoinTeR
+sms.fprm equ	$35		Find PReferred Module
 
-sms.schp equ    $38             Shrink alloaction in common heap
+sms.schp equ	$38		Shrink alloaction in common heap
 
-sms.sevt equ    $3a             Send event to job
-sms.wevt equ    $3b             Wait for event
+sms.sevt equ	$3a		Send event to job
+sms.wevt equ	$3b		Wait for event
 
-        list
+	list

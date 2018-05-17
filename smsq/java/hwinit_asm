@@ -1,4 +1,10 @@
-; SMSQ Java "Hardware" Initialisation V3
+; SMSQmulator "Hardware" Initialisation V2.01  (c) W. Lenerz
+
+; based on T. Tebby's code
+;
+* 2003-09-27		v.2.00 (?)	added OSPS config item (wl)
+* 2015 May 24		  2.01		added config item for ieee floats  (wl)
+
 
 ; Called with a7 a valid, safe stack
 ;	      d4 the host (QDOS) version number
@@ -14,9 +20,6 @@
 ;			    zero in d6
 ;			    top of RAM in d7
 ;
-* 2003-09-27		v.2.00 (?)	added OSPS config item (wl)
-* 2015 May 24		  2.01		added config item for ieee floats  (wl)
-
 ; at the end of this routine, we must have :
 ;			    pointer to config info in a2
 ;			    pointer to smsq write base routine in a3
@@ -28,9 +31,6 @@
 ;			    if d7 HI RAM, d5 is top of base RAM, otherwise 0
 ;			    if d7 HI RAM, d6 is base of HI RAM, otherwise 0
 ;			    top of RAM in d7
-
-
-
 
 
 	section hwinit
@@ -73,8 +73,8 @@ hwinit_name
 	dc.l	jva_cfgf4
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
-	dc.l	'3.22'
-	dc.l	'0000'
+	dc.l	'3.24'
+	dc.l	'0002'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0
@@ -82,7 +82,7 @@ glcxser2 dc.b	0
 glcxbflp dc.b	0
 glcxbwin dc.b	1
 glc_lang dc.w	44
-glcxbtarg dc.b	0
+glcxbtarg dc.b	1
 glcxbpart dc.b	0
 glc_scr  dc.b	0
 glc_mode dc.b	ptd.16

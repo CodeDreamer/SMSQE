@@ -1,4 +1,6 @@
-*****************************************************
+; SOUNDFILE keyword	   V.1.03 (c) W. Lenerz 2004
+
+****************************************************
 * SOUNDFILE "file_name_ub"
 *
 * play the sampled file via the ssss

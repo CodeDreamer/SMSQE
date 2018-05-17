@@ -1,14 +1,14 @@
-;-----------------------------------------------
-; Check job ID for Home Thing
-; copyright (c) W. Lenerz 2005
+; Check job ID for Home Thing	 V1.00 (c) W. Lenerz 2005
 
 ; 2005-11-02	1.00	initial version
-;
+
 ; This routine will be different for QDOS & SMSQE
 ; SMSQE doesn't need supervisor mode, but QDOS does, since this changes reg A6
 ; at least temporarily
-;
-;--------------------------------
+
+
+
+
 	section home
 
 	xdef	checkid

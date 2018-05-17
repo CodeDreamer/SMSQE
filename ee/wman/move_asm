@@ -1,3 +1,5 @@
+; New move routines V1.21 (c) 1991-2013  T. Tebby, M. Kilgus, W. Lenerz
+
 ;---------------------------------------------------------------------------
 ; replacement window move routine, moves wdw or outline about the screen
 ; this uses the gu_achp and gu_rchp calls, include them;

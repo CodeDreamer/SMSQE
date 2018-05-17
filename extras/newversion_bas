@@ -29,7 +29,7 @@
 380 IF a$=CHR$(27):STOP
 390 :
 400 windrive$="win4_"       : REMark windrive where files will be copied to
-410 htmldrive$="nfa2_"       : REMark drive where html & zipped files will be copied to
+410 htmldrive$="nfa2_"      : REMark drive where html & zipped files will be copied to
 420 p
 430 :
 440 DEFine PROCedure sa

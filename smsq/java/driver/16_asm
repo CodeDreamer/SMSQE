@@ -1,4 +1,6 @@
-; Base area SMSQ Java Drivers / 16 bit display
+; Base area SMSQmulator Drivers / 16 bit display v1.00 (c) W. Lenerz 2012
+
+
 ; all the (screen) modules are called in turn. If the screen code
 ; for one corresponds to the one set up in the config block,
 ; that one will be chosen. Screen codes are ptd.16 etc

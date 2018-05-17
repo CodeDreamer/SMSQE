@@ -1,4 +1,5 @@
 ; keys for Nasta's external graphics card (Aurora)
+        nolist
 ;
 vram_base	equ	$4c0000 	; aurora and LCD card vram base
 vram_size	equ	$3c000		; aurora ram size
@@ -41,3 +42,4 @@ aum.hw	  equ	5
 aum.base  equ	8
 aum.llen  equ	12
 aum.size  equ	14
+        list

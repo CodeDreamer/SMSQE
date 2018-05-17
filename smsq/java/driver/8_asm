@@ -1,4 +1,7 @@
-; base area SMSQ GOLD Drivers / QL display
+; base area SMSQmulator / 8bit (Aurora) display  V1.00 (c) W. Lenerz 2013
+
+
+; based on : base area SMSQ Drivers / QL display
 
 	section header
 
@@ -34,19 +37,5 @@ gl_con
 	moveq	#ptm.aur8,d3		 ; aurora 8 bit driver
 	move.b	sms.conf+sms_ismode,d4	 ; mode ql or 8 bit
 	jmp	pt_setup
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	end

@@ -1,0 +1,19 @@
+This little program just shows lists of files maintained by the recent
+thing.
+
+At the onset, it shows the general list. The "Jobs" item show the names
+of all jobs for which the Recent thing currently has a list. Clicking
+on a job then shows the files for that job.
+
+The "Info" item displays info on the list held for the current job (or on the
+general list).
+
+Clicking on any of the files will put its name in the stuffer buffer.
+
+The source code for the program is provided.
+
+If you want to recompile it yourself, you will need the Qptr extensions, as well
+as the outptr_bin and blinker_bin extensions, both of which are in the zip file.
+There is one big "bas" file, or, if you use the Basic Linker, the individual _bas
+files. You will then also need the library files I usually use, they can be
+found at www.wlenerz.com/QLStuff   (basic_lib.zip).

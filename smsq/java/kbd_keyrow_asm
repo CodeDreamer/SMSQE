@@ -1,7 +1,10 @@
-
-; Java keyrow emulation.
-; SMSQ KEYROW emulation    1988  Tony Tebby
+; SMSQmulator keyrow emulation	V1.01  (c) W. Lenerz 2012-2015
+						 
 ; 1.01 calling with d1>7 no longer calls keyrow 0
+
+; based on
+; SMSQ KEYROW emulation    1988  Tony Tebby
+
 	section kbd
 
 	xdef	kbd_keyrow

@@ -1,4 +1,6 @@
-; base area SMSQ JAVA Drivers
+; Base area SMSQmulator Drivers  V.1.03 (c) W. Lenerz 2012-2015
+
+
 ; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
 ; v. 1.02 2015 May 24  possibly use ieee routines
 ; v. 1.03 2015 Jul 29  integrated the rtc routines
@@ -18,7 +20,7 @@ header_base
 	dc.w	smsq_name-*
 
 smsq_name
-	dc.w	24,'SMSQ JAVA Drivers & RTC '
+	dc.w	18,'SMSQ JAVA Drivers '
 	dc.w	$200a
 
 
@@ -247,8 +249,5 @@ sms_artc
 	move.l	sms.rte,-(sp)
 	moveq	#0,d0
 	rts
-
-
-
 
 	end

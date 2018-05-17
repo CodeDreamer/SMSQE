@@ -57,7 +57,4 @@ Q40r_dow    equ $10             ; day of week (bcd)
 Q40r_day    equ $14             ; day of month (bcd)
 Q40r_month  equ $18             ; month (bcd)
 Q40r_year   equ $1c             ; year (bcd)
-
-
-
          list

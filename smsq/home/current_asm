@@ -1,13 +1,12 @@
-;---------------------------------------------------------------------
-;
-; Current dir handling for the HOME thing
-;
+; Current dir handling for the HOME thing  (c) W. Lenerz + Marcel Kilgus 2005
+
+
+
 ; 2005-10-23  1.00  initial release version
 ; 2005-11-02  1.01  uses checkid
 ; 2005-12-04  1.02  check that directory is actually valid and resolve DEV refs
 ; 2006-03-31  1.03  correct length set if simple device name (wl)
 ;
-; copyright (c) W. Lenerz + Marcel Kilgus 2005
 ;
 ;---------------------------------------------------------------------
 ;

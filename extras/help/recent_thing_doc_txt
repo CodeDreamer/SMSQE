@@ -1,0 +1,1229 @@
+The Recent thing
+
+  I -	What is it
+ II -	Some implementation notes
+III -	The thing interface in Assembler
+ IV -	The extensions in assembler
+  V -	Sbasic keywords
+ VI -	Configuration
+VII -	Performance penalty
+
+
+
+I What it is
+=============
+
+The Recent thing maintains lists with the names of recently opened files so that
+you can find out what program recently opened files, and so that application
+programs may propose a list of the files the user rcently opened :
+
+	- there is one general list, which contains the name of files recently
+	  opened, irrespective of the job which opened them;
+	- then there is a list for each job that opened one or several files,
+	  and which only contains the files opened by this job.
+
+The Recent thing is an "extension thing" in the ususal SMSQ/E meaning.
+
+!!!!!
+It is switched OFF by default, you must configure your version of SMSQ/e before
+you can use it.
+!!!!!
+
+
+If you want to get right at it :
+--------------------------------
+
+If you want to get right at just using the recent thing, configure a copy of
+your SMSQ/E file (see VI - Configuration below) and reboot with that copy of
+SMSQ/E. You will see that you have a new thing, the recent thing. You can use
+the compiled Basic program called dev8_extras_exe_show_recents to have a look
+at recently opened files. A help file (dev8_extras_help_show_recents_txt) for
+this bcompiled basic program exists.
+    
+
+For more information
+---------------------
+
+Just read on:
+Various ways are provided to obtain the list(s) from the thing. There is an
+assembler interface to the thing and the extensions, and various SBasic keywords
+that map onto the extensions. Both are explained below.
+
+You might need some extensions if you want to recompile the basic program, they
+should normally be found at www.wlenerz.com/qlstuff.
+
+
+
+II - Some implementation notes
+==============================
+
+The Recent thing is called directly from the system's open file trap, without
+any user intervention. Whenever a file is opened, its name is added to the
+general list and to the job's list, and then becomes the first element of these
+lists.
+
+There is no provision to delete files from the lists. However, since every list
+only has a finite size, when it is full and a new file is added to it, this
+will push the most ancient file off the list and the newest on it. There is also
+the possibility to remove an entire list for a job.
+
+The system's open file call tries to filter out calls to open a directory,
+so that a directory open call does not cause the name of the directory to be
+added to the list. The same is true for the SAVE file.
+		    
+You can configure the size of the lists (i.e. how many files it should contain).
+
+
+The lists
+---------
+
+Each list is implemented as a lifo buffer : the last (most recently) opened
+file will be the first in the list. There is one exception to this rule:
+The thing makes sure that a file only exists once in a list. So it checks the
+general list and the job's list and, if it detects that a file is already in
+a list, it will not be put in again, NOR WILL IT MOVE TO THE FIRST POSITION.
+
+There is one general list and as many job lists as there are jobs that opened
+files, or even more than that if lists were LOADed.
+
+The general list is immediately adjacent to the thing itself. Its size is of
+rcnt_end + xx * rc_entryl bytes (see dev8_keys_recent_thing) where xx is the
+number of files configured by the user. The general list always exists.
+
+Job lists are in heaps, i.e. memory allocated on the common heap, one per job
+that opens a file. The memory is allocated for job 0 and doesn't go away when
+the job is removed.  Heap size is rcnt_hdr + xx * rc_entryl bytes (see
+dev8_keys_recent_thing). Again, xx is the number of files as configured by the
+user.
+
+
+JobIDs
+------
+
+The primary way of identifying which list goes with which program is, of course,
+the jobID. Each list contains the ID of the job that opened it, and when the
+same job tries to open a new file, its name is added to the list on the job with
+the same job ID.  However, as a general rule, when trying to work with the
+Recent thing and it requires a job ID, it is better to pass it a job name:
+
+
+Removed jobs and inexistent job IDs
+Over the course of a session, a user will typically launch several programs which
+will open a variety of files. Many of these programs will really be transient,
+and will be removed from the system when they are done (e.g. a quick file search
+with FiFi). (Note jobs started from hotkeys are also created and removed, just
+as if they were loaded from disk). So what happens with the list of files when
+a program is removed?
+
+The list stays in the system.
+
+This is a deliberate design decision, for several reasons. First it is to speed
+up the system - constantly removing and adding new lists (which are allocated
+on the common heap) would just slow the system down (see performance penalty,
+below). Second, I want the information to be saved when the Recent thing lists
+are saved to disk, to be re-loaded in a later session. Third, and most impor-
+tantly, a mechanism is provided for jobs with the same name but different jobIDs
+to use only one list.
+
+As an example, think of assembling all of the SMSQ/E sources. During such a run,
+the assembler gets called hundreds of times (once for each file to assemble) :
+this means that the assembler program is executed (and then removed after
+assembling one file) hundreds of time. Each time it is executed, it gets a new
+JobID. So when it tries to open its first file, it won't find any list for
+itself since it has an all new JobID. If that happens, the Recent thing tries
+to find a list for a job with the same name as the job calling it - if it finds
+such a list, it changes the jobID to the one calling it and adds the file to
+that list. (As an aside : the search for a list with the same name is made
+with a hash of the name)
+
+Note, this scheme only works with jobs that keep the same name. QD, for example,
+changes its name when you load a file, and Xchange also changes its name some-
+times. In that case, if the job must be found via a hash, it will not be
+possible to find the previous list.
+
+The same problem also arises when LOADing the lists at boot time (or whenever).
+The lists are stored with the job IDs as they were when the list was saved.
+
+So in a nutshell, when trying to use the Recent thing, it is better to pass it
+a job name rather that a job ID. The mechanism to do that is explained below,
+at "***** JobIDs and Name pointer" for the INFO extension.
+
+It is important to understand that, if two jobs have the same name, they will
+be using the same list (e.g. several instances of Sbasic, unless you changed
+their name).
+
+
+Buffers
+-------
+
+Whenever a buffer is required, this means an area of memory starting at an even
+address. The thing does not check that the address is even, if it isn't, mayhem
+may ensue.
+
+
+  
+III - The thing interface in Assembler
+======================================
+
+The Recent thing is built as an extension thing.  As usual, the name
+of the extension should be contained in D2 when trying to USE the thing.
+When calling the extension, A1 points to the parameter block/list/stack.
+Parameters are passed as is, without interspersing them with thp.xxx parameter
+qualifiers. If a call requires a parameter, that parameter is always compulsory.
+Job IDs may always be passed as -1 to denote the calling job. However, see the
+***** JobIDs and Name pointer note under the "INFO" extension.
+
+
+Example for using GFFJ extension of the thing
+
+; A0	s
+; A1 c	s	points to a suitable buffer to hold the filename
+; a2-a4 s
+
+; D0  r 	error
+; D1 c	s	the job ID (may be -1)
+; d2-d4 s
+; D5 c	s	the size of the buffer
+;
+
+got_id	move.l	d1,d4			; keep jobID
+	move.l	a1,a4			; and buffer pointer
+	sub.l	a5,a5			; no name pointer *******
+	move.l	#'GFFJ',d2		; extension to use
+	lea	rcnt_name,a0		; point to name of thing
+	moveq	#-1,d3			; wait forever
+	moveq	#-1,d1			; I will use the thing
+	moveq	#sms.uthg,d0		; use thing
+	jsr	gu_thjmp		; on return A2= ptr thg header, a1 to thg
+	tst.l	d0			; ok?
+	bne.s	gt_exit 		; no!
+	move.l	a1,a0			; pointer to thing
+	sub.l	#14,sp			; get some space for parameters
+	move.l	sp,a1			; and point to it
+	move.w	d5,(a1) 		; buffer size
+	movem.l d4/a4/a5,2(a1)		; insert buffer, jobID, name ptr
+gt_cont jsr	thh_code(a0)		; call extn thing
+	add.l	#14,sp			; reset stack
+	move.l	d0,d5			; remember error
+	lea	rcnt_name,a0		; free thing
+	moveq	#sms.fthg,d0
+	moveq	#-1,d1
+	jsr	gu_thjmp
+	move.l	d5,d0			; restore error
+gt_exit rts
+
+rcnt_name
+	dc.w	6,'Recent'
+
+
+******* please see the explanation of the name pointer below
+
+
+
+IV - The extensions
+===================
+
+	
+ INFO  an extension to get some information on a list.
+ JOBS  an extension to get some info on the jobs the thing holds lists for.
+ ADDF  an extension to add a file to the list. Should not be used.
+ GFFA  an extension to get the first (=most recent) file name in the general
+	    list.
+ GFFJ  an extension to get the first (=most recent) file name in the list for
+	    a certain job.
+ GALL  an extensionto get all filenames from the general list.
+ GALJ  an extension to get all filenames from the list for a certain job.
+ GARR  an extension to get all filenames from the general list into an array.
+ GARJ  an extension to get all filenames from the list for a certain job into
+	    an array.
+ SAVE  an extension to save the lists to a preconfigured file.
+ LOAD  an extension to load the lists from a preconfigured file.
+ REMV  an extension to remove a list from the thing.
+ SYNC  an extension to synchronise job IDs with those in the lists.
+
+							
+
+Here is the description of each extension:
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; INFO extension : Get INFO on list : parameter : job ID, name pointer
+; ====
+;	If the job ID is 0, this gets info on the general list, else
+;	info on the list for the job in question
+;		  l
+;	If the job ID doesn't refer to a valid job (jobid = -2) then the
+;	optional name is used to make a hash and look for the list of the job
+;	with that name hash.
+;
+;	d1  r	maximum nbr of files per list
+;	d2  r	2 words: High word max str length (NOT incl. length word) |
+;		Low word nbr of strings
+;		if no file is yet contained in the list, d2 will be 0 (this
+;		should normally not happen)
+;	d3	pointer to heap space IF one was looking for a job list, not the
+;		general list
+;	a1 c  p parameter stack pointer
+;	a2 c  r thing linkage block  /	needed buffer size (long). The size is
+;		the size necessary to store all strings + length words +
+;		possible evening out of the individual string lengths.
+;
+;	error returns :
+;	D0 = 0 - OK
+;	   = err.ijob there is no list for this job
+;
+;++++
+;
+; parameter list:
+; job ID	(LW) use -2 if you want to check with the name
+; name pointer	(LW) pointer to job name or 0 if none
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+This gets some information about the list of files maintained by the thing.
+If the job ID is 0, this will be the general files list, if not, it will be
+the list for that job. For jobID of -1 and -2, see below ****.
+
+On return, A2 contains the buffer size for a "GALL" or a "GAFJ" extension call.
+The size is the size necessary to store all strings + a length word for each
+string + a possible byte necessary to even out each individual string length.
+
+The high word of D2 contains the length of the longest filename currently being
+stored by the Recent list. This length may vary, though, if a new file with a
+longer name is later opened. It will never exceed 41 characters, though (but
+you should think of the necesary length word). The number of files in the list,
+returned in the low word of D2, may also vary, if a new file is later opened.
+However, it will never exceed the maximum number of files as configured.
+D1 contains, on return, a word with the maximum number of files in any list. All
+lists have the same capacity. It is configured by the user.
+
+
+***** JobIDs and Name pointer
+
+With the exception of the ADDF extension, all of the extensions that use jobIDs
+as parameter use the following scheme
+1 - if the jobID is a "genuine" job ID, that ID is used to try to identify the
+    list for that job. A "genuine" jobID is a job ID for a job that actually
+    exists currently in the system. If no list can be found for this job, the
+    thing tries to find the name for this job and get the list with that name.
+    As usual, -1 is a genuine jobID and denotes the current job.
+2 - if the jobID is passed as -2, then the next long word on the parameter
+    stack is expected to be a long pointer to the name of the job. This allows
+    you to search for lists for jobs that are no longer executing (and for
+    which, thus, no genuine jobID exists any more). If there is no name, set
+    a long word 0.
+
+
+For the ADDF extension, a genuine job ID is always necessary (-1 is accepted).
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; JOBS extension : get a list of all JOBS for which this thing holds a list
+; ====						 length of buffer, buffer.
+;
+;	d0  r	special return
+;	a1 c s	parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns in D0
+;	-> +ve number (or 0) : number of job names
+;	-> err.bufl if the buffer was too short. In this case as much as
+;		    possible is filled in
+;
+;	The buffer is filled in as follows: jobID, job name (standard string,
+;	evened out). The list is termineted with a long word of -1.
+;	If the string length is 0, then the job has no name.
+;	!!!!! The length of the buffer is passed as a long word !!!!!
+;+++
+;
+; parameter list:
+;
+; length of buffer  (LW) (!)
+; pointer to buffer (LW)
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This gets a listing of all jobs for which the thing holds lists of files.
+For each job, the listing in the buffer holds the job ID in a long word followed
+by a standard string with the job name (which my be 0 if the job has no name).
+The list is terminated by a long word of -1. If the buffer is too small to hold
+all job names, the buffer will be filled in as much as possible, and the error
+err.bufl will be returned.
+
+There is no guarantee that any of the jobIDs returned are still valid : if the
+job with that ID has been removed, the jobID will no longer be valid.
+
+The return in D0 is special : unless it is a negative error code, it holds the
+number of jobs in the buffer.
+
+
+
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; ADDF extension : add a file : parameters : job id, ptr to string
+; ====		   the job ID may be passed as -1
+;
+;	d0  r	0 or error
+;	d2   s	scratch
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;++++
+;
+; parameter list:
+; job_id	(LW)
+; ptr to string (LW)
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This adds a file to the lists. Normally, a program should not call this, the
+adding of files is handled by the system whenever a file is opened.
+
+!!!! Use this extension at your own risk !!!!
+
+The jobID must be a genuine ID of a job actually executing.
+
+NOTE : this extension goes into supervisor mode to avoid the list being
+modified by several jobs at once.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GFFA extension : Get First File for Any job: buffer length, buffer
+; ====
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns
+;	0 if OK
+;	err.bffl if the buffer for the return string is too small - in this...
+;	... case nothing is copied to the buffer.
+;
+;	if no file is found for this, the string length returned is 0
+;
+;+++
+;
+; parameter list:
+;
+; (Signed!) word with max length of buffer
+; ptr to buffer (LW)
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Gets the first (i.e. most recently opened) file from the general list. If the
+buffer is too small to contain the filename, nothing will be copied to the
+buffer. Filenames will never exceed 41 bytes (+2 bytes for the length word).
+	      
+
+		      
+		   
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GFFJ extension : Get First file For Job: buffer length, ptr to buffer,
+; ====						job id, name pointer
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	If the job ID doesn't refer to a valid job (jobid = -2) then the
+;	optional name is used to make a hash and look for the job with that
+;	name.
+;
+;	this returns
+;	0 if OK
+;	err.bffl if the buffer for the return string is too small - in this...
+;	... case nothing is copied to the buffer.
+;
+;	if no file is found for this, the string length returned is 0
+;+++
+;
+; parameter list:
+;
+; (signed!) word with max length of buffer
+; ptr to buffer (LW)
+; job_id	(LW) should be -2 if a name is supplied
+; name pointer	(LW) pointer to job name if jobID = -2, or 0
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Gets the first (i.e. most recently opened) file for the job passed as parameter.
+If the buffer is too small to contain the filename, nothing will be copied
+to the buffer. Filenames will never exceed 41 bytes (+ 2 bytes for the length
+word, which the buffer should provide for).
+
+See above, " ***** JobIDs and Name pointer " for passing the jobID and the name
+pointer.
+
+If the list is empty, this will be a null length string. Normally, contrary to
+the general list which might conceivably be empty, a list for a job should
+NEVER be empty, since it only exists for any job if this job opened a file.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GALL extension : Get ALL files: fill in a buffer with all files from general
+; ====				    list : length of buffer, ptr to buffer.
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns
+;	0 if OK
+;	err.bufl if buffer was too short, in this case as much as is possible...
+;	...is filled in
+;
+;+++
+;
+; parameter list:
+;
+; length of buffer  (LW) (!)
+; pointer to buffer (LW)
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		
+Note, the buffer length is passed as a long word. As explained, buffer must
+start at even an address.
+This gets all filenames from the general list into a buffer. The filenames will
+be copied one after the other, the name of the most recently opened file being
+the first one to be copied. If the filenames don't all fit, as many as possible
+will be copied, and error err.buflis returned. Filenames are typical SMSQ/E
+strings, with a length word in front and evened out to start at an even address.
+
+
+
+   
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GALJ extension : Get ALl files for Job: fill in buffer with all files for job:
+; ====			     length of buffer, buffer, jobID, name pointer
+;
+;	If the job ID doesn't refer to a valid job (jobid = -2) then the
+;	optional name is used to make a hash and look for the job with that
+;	name.
+;
+;	Attention, the length of the buffer is a long word
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns
+;	0 if OK
+;	err.bufl if buffer was too short, in this case as much as is possible...
+;	...is filled in
+;	err.ijob  no list could be found for a job with that ID
+;
+;+++
+;
+; parameter list:
+; length of buffer	(LW) (!)
+; pointer to buffer	(LW)
+; job_id		(LW) should be -2 if a name is supplied
+; name pointer		(LW) pointer to job name if jobID = -2, or 0
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Note, the buffer length is passed as a long word. As explained, buffer must
+start at even an address.
+This gets all filenames from the list for a job into a buffer. The filenames
+will be copied one after the other, the name of the most recently opened file
+being the first one to be copied. If the filenames don't all fit, as many as
+possible will be copied, and error err.bufl is returned. Filenames are typical
+SMSQ/E strings, with a length word in front and evened out to start at an even
+address. The list is ended with a 0 length word.
+
+
+      
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GARR extension : Get ALL files into an ARRay: fill in array w ith all filenames.
+; ====		 parameters : pointer, nbr of elmts, length of elemt in array
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns :
+;	0 if OK. If the nbr of elements in the array is smaller than the nbr
+;		of elements in the thing, then only the first elements in
+;		in the list are copied, to fill up the array. This DOES NOT
+;		GIVE RISE TO AN ERROR!
+;	err.ipar if the array had a null dimension or if the length of the elements
+;		in the array is smaller than the max length of a string in the
+;		list. NOTE: the max length of the strings in the list may vary
+;		if a files with a longer name is added, or if the longest file
+;		falls out of the list.
+;
+;+++
+;
+; parameter list:
+;
+; pointer to  array, NOT relative to A6 		(LW)
+; number of elements in array				(WORD)
+; length of elements in array, INCLUDING length word	(WORD)
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is similar to the GALL call, in that all, or as many as possible, filenames
+will be copied. Here however, they will be evenly spaced. If the filenames don't
+all fit, as many as possible will be copied, and no error is returned. Filenames
+are typical SMSQ/E strings, with a length word in front and evened out to start
+at an even address.
+The array is just a buffer into which the filenames will be evenly spaced. It
+can thus be viewed as a two-dimensional string array.
+If there is still some space left between one filename and the next, the
+remainder will be filled with 0.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; GARJ extension : Get all files into an ARray for a Job: fill in array with
+; ====		 all files.
+;	 params : array, nbr of elmts, length of elemt in array, jobID, name ptr
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p thing linkage block
+;
+;	this returns :
+;	0 if OK. If the nbr of elements in the array is smaller than the nbr
+;		of elements in the thing, then only the first elements in
+;		in the list are copied, to fill up the array. This DOES NOT
+;		GIVE RISE TO AN ERROR!
+;	err.ipar if the array had a null dimension or if the length of the elements
+;		in the array is smaller than the max length of a string in the
+;		list. NOTE: the max length of the strings in the list may vary
+;		if a files with longer names are added, or if the longest file
+;		falls out of the list.
+;	err.ijob if no list is kept for the job passed as parameter
+;
+;   NOTE don't forget that SMSQ/E standard strungs have a 2 byte length word in
+;	front, the length of the element must take that into account (i.e add
+;	a 2 to the length of the array).
+;+++
+;
+; parameter list:
+;
+; pointer to array, NOT relative to A6			(LW)
+; number of elements in array				(WORD)
+; length of elements in array, INCLUDING length word	(WORD)
+; job ID  should be -2 if a name is supplied		(LW)
+; name pointer pointer to job name if jobID = -2, or 0	(LW)					     (LW)
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is similar to the GALJ call, in that all, or as many as possible, filenames
+will be copied. Here however, they will be evenly spaced. If the filenames don't
+all fit, as many as possible will be copied, and no error is returned. Filenames
+are typical SMSQ/E strings, with a length word in front and evened out to start
+at an even address.
+The array is just a buffer into which the filenames will be evenly spaced.  It
+can thus be viewed as a two-dimensional string array.
+If there is still some space left between one filename and the next, the
+remainder will be filled with 0.
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; SAVE extension : SAVE lists to configured file  : no parameters
+; ====
+;	a2 c  p thing linkage block
+;
+;	this returns
+;	0 if OK
+;	any error from file operations
+;	err.fdnf if no file is configured
+;
+;	if there is nothing to save, no error is returned
+;+++
+;
+; parameter list:
+; none
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This saves the lists for all jobs currently held in the thing, into the file
+configured by the user. The file is overwritten. You can't specify another file.
+The general list is NOT saved. The name of the SAVE file is NOT added to any
+list of files, not even the general one, when SAVEing or LOADing.
+
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; LOAD extension : LOAD lists ftom configured file  : no parameters
+; ====
+;	a2 c  p thing linkage block
+;
+;	this returns
+;	0 if OK
+;	any error from file operations
+;	any error from memory allocation/deallocation
+;	err.inam if the file was not a valid recent thing save file
+;
+;+++
+;
+; parameter list:
+; none
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This loads the lists as saved by the SAVE extension. All lists existing in the
+thing, except for the general list, will be removed prior to loading. The file
+from which the lists are loaded is as configured by the user, you can't specify
+another file.
+
+Thus, if you LOAD the lists as the very first thing in your boot file, they will
+also fill up with the files opened up during your normal boot.
+
+If you LOAD the lists at the end of your boot file, they will replace all lists
+generated up to that time (except for the general list).
+			    
+When SAVEing or LOADing, the name of the SAVE file is NOT added to any list of
+files, not even the general one.
+
+It is possible to save the lists, re-configure SMSQ/E to use lists with a
+different size, and load the saved lists after a reboot with the newly
+configured SMSQ/E. In that case,
+ - if the new list size is smaller than the saved size, only some files will be
+   copied to the new lists. THERE IS NO GUARANTEE THAT THESE will include the
+   newest files opened.
+ - if the list size is larger than the saved size, all filenames will be copied.
+
+In the latter case, and also when the sizes stay the same between saving and
+loading, the order of the filenames will be preserved.
+
+It is recommended to use the SYNC extension after loading the lists (see below).
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; REMV extension : REMoVe a list for a job  : jobID, ptr to name
+;
+;	If the job ID doesn't refer to a valid job (jobid = -2) then the
+;	optional name is used to make a hash and look for the list of the job
+;	with that name hash.
+;
+;	a1 c  p parameter stack pointer
+;	a2 c  p pointer to thing
+;
+;	error returns :
+;	D0 = 0 - OK
+;	   = err.ijob there is no list for this job
+;	   any error from sms.rchp
+;
+;++++
+;
+; parameter list:
+; job ID	(LW) use -2 if you want to check with the name
+; name pointer	(LW) pointer to job name or 0 if none
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This removes the list for the job passed as parameter.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; SYNC extension : tries to give current job IDs to jobs in heap
+; ====
+;	a2 c  p thing linkage block
+;
+;	return : OK unless error in job information trap
+;
+;+++
+;
+; parameter list:
+; none
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+As explained above, the job IDs stored in the Recent things may not correspond
+to the job IDs of the jobs currently executing, for example after loading the
+lists. The SYNC runs through the list of all iobs currently executing in the
+system and, if a list exists for a job with that name, it sets the job ID of
+that list to that name.
+
+
+
+
+
+
+
+
+V - Sbasic keywords
+===================
+
+The following keywords allow use of the thing from SBasic:
+
+ RCNT_INFO  a function to get some information on a list.
+ RCNT_JOBS  a function to get some info on the jobs the thing holds lists for.
+ RCNT_ADDF  a keyword to add a file to the list. Should not be used.
+ RCNT_GFFA$ a function to get the first (=most recent) file name in the general
+	    list.
+ RCNT_GFFJ$ a function to get the first (=most recent) file name in the list for
+	    a certain job.
+ RCNT_GALL  a function to get all filenames from the general list.
+ RCNT_GALJ  a function to get all filenames from the list for a certain job.
+ RCNT_GARR  a keyword to get all filenames from the general list into an array.
+ RCNT_GARJ  a keyword to get all filenames from the list for a certain job into
+	    an array.
+ 
+ RCNT_SAVE  a keyword to save the lists to a preconfigured file
+ RCNT_LOAD  a keyword to load the lists from a preconfigured file
+ RCNT_REMV  a keyword to remove a list from the thing.
+ RCNT_SYNC  a keyword to synchronize job IDs with those in the lists.
+ RCNT_HASH$ a function to get a hash from a string.
+
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+; length = RCNT_INFO ([job_id,]str_nbr%,str_len%,max_nbr%)
+;
+;	get info on a list of files
+;
+;   where:
+;	length = space needed for getting all strings, including length word
+;	job_id = optional id of job the info is about
+;	    EITHER as a long int where
+;		0  means get the general list,
+;		-1 means get the list for myself (= default if omitted)
+;	    OR as a string with the name of the job
+;	str_len% = RETURN parameter, max length of string
+;	str_nbr% = RETURN parameter, number of strings currently held
+;	max_nbr% = RETURN parameter, max number of strings in lists
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This gets some information about the lists of files maintained by the thing,
+either the general list (job_id) = 0 or the list for a certain job.
+The job ID may be passed as a long word, or, preferrably, as a string with the
+entire name of the job. 		     ===========
+
+On return the function returns the size for using the "RCNT_GALL" or "RCNT_GALJ"
+keywords. The size is the size necessary to store all strings + a length word
+for each string + a possible byte necessary to even out each individual string
+length.
+
+The other three parameters are filled in on return of the function:
+The str_len% parameter contains the length of the longest filename currently
+being stored by the Recent list for this job, on in the general list. This
+length may vary, though, if a new file with a longer name is later opened. It
+will never exceed 41 characters, though.
+
+The number of files in the list, returned in the str_nbr% parameter, may also
+vary, if a new file is later opened.
+
+Finally, the max_nbr% is the maximum number of files a list may hold (as
+configured by the user).
+			  
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; result% = RCNT_JOBS (length,buffer)
+;
+;  Get a list of all jobs into a buffer:
+;  format in buffer : jobID,string
+;  strings (length word + chars) always at an even address
+;
+;	length = length of buffer, in bytes
+;	buffer = space for the list, preferrably a space allocated with ALCHP
+;
+;	result% = 0 or +ive:  number of jobs in the list
+;		  else negative error code (e.g. "buffer full" if the buffer was
+;		  too small)
+;	       if there is an error, as much as possible is filled in the buffer
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This gets a listing of all jobs for which the thing holds lists of files.
+For each job, the listing in the buffer holds the job ID in a long word followed
+by a standard string with the job name (which my be 0 if the job has no name).
+The list is terminated by a long word of -1. If the buffer is too small to hold
+all job names, the buffer will be filled in as much as possible, and the error
+err.bufl will be returned.
+
+There is no guarantee that any of the jobIDs returned are still valid : if the
+job with that ID has been removed, the jobID will no longer be valid.
+
+The return in value  holds the number of jobs in the buffer, unless it is a
+negative error code.
+
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_ADDF [job_ID,] filename$
+;   adds a file name to the list
+;	filename is the name of the file to add
+;	job_id is the optional jobID of the job supposed to have opened the file
+;	(defaults to -1, i.e. myself)
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This adds a file to the list.
+
+USE OF THIS KEYORD IS STRONGLY DISCOURAGED. Normally, a program should not call
+this, the adding of file is handled by the system whenever a file is opened.
+
+The JobID MUST be passed as a long word.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; file$ = RCNT_GFFA$ ()
+;
+;	gets the first (=most recent) file name in the list.
+;	If the list is empty, this will be a null length string.
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   
+Returns the name of the first (i.e. most recently opened) file from the general
+list. If the list is empty, this will be a null length string.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; file$ = RCNT_GFFJ$ (job_ID)
+;
+; gets the first (=most recent) file for the given job
+; if none found, this is an empty string.
+;
+;	job_id is optional, if not given, search for current job
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Gets the name of the first (i.e. most recently opened) file for the job passed
+as parameter. If the parameter is omitted, it will default to -1, i.e. the
+current job.
+
+If the list is empty, this will be a null length string. Normally, contrary to
+the general list which might conceivably be empty, a list for a job should
+NEVER be empty, since it only exists for any job if this job opened a file.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; result% = RCNT_GALL (length,buffer)
+;
+;  Get ALL file names from the general list into a buffer.  The file name
+;	will be typical SMSQ strings (length word + chars) always at an even
+;	address
+;
+;	length = length of buffer  - this should be at least as much as
+;		 returned by the RCNT_INFO keyword
+;	buffer = space for list
+;
+;	result% = 0 or +ive: number of files got if all went ok
+;		else negative error code :
+;		    err.bffl - buffer too small
+;		    err.ipar - wrong number of parameters
+;		    err.ijob - wrong job ID
+;		    any error from the thing use routine
+;	if the error is err.bffl, as much as possible is filled in the buffer
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					 
+This gets all filenames of the general list into a buffer. The filenames will
+be copied one after the other, the name of the most recently opened file being
+the first one to be copied. If the filenames don't all fit, as many as possible
+will be copied and the error "buffer full" is returned. Filenames are typical
+SMSQ/E strings, with a length word in front and evened out to start at an even
+address.
+
+This might be used as follows:
+
+	str_len%=0
+	str_nbr%=0
+	str_max%=0
+	blength=RCNT_INFO(,0,str_nbr%,str_len%,str_max%): rem get info on size
+	buffer=ALCHP(blength)				: rem get buffer
+	result%=RCNT_GALL (blength,buffer)
+
+Perhaps a better way to get the filenames for the basic programmer is the
+RCNT_GARR function.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; result% = RCNT_GALJ ({jobID,} length, buffer)
+;
+;    Get ALL file names for a job into a buffer.  The file names will be typical
+;    SMSQ strings (length word + chars) always at an even address
+;
+;	length = length of buffer  - this should be at least as much as
+;		 returned by the RCNT_INFO keyword for this jobs
+;	buffer = space for list
+;	job_id = (optional) id of job:
+;	    EITHER as a long int where
+;		-1 means get the list for myself (=default)
+;	    OR as a string with the name of the job
+;
+;	result% = 0 or +ive: number of files got if all went ok
+;		else negative error code :
+;		    err.bffl - buffer too small
+;		    err.ipar - wrong number of parameters
+;		    err.ijob - wrong job ID
+;		    any error from the thing use routine
+;	if the error is err.bffl, as much as possible is filled in the buffer
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					 
+This gets all filenames of the list for a job into a buffer. The filenames will
+be copied one after the other, the name of the most recently opened file being
+the first one to be copied. If the filenames don't all fit, as many as possible
+will be copied and the error "buffer full" is returned. Filenames are typical
+SMSQ/E strings, with a length word in front and evened out to start at an even
+address.
+
+This might be used as follows:
+
+    str_len%=0
+    str_nbr%=0
+    str_max%=0
+    blength=RCNT_INFO("Prowess",str_nbr%,str_len%,str_max%): rem get info on size
+    buffer=ALCHP(blength)			    : rem get buffer
+    result%=RCNT_GALL (blength,buffer)		    : rem data info buffer
+
+
+
+			
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_GARR array$
+;
+;	Get all filenames from the general list into an ARRay
+;
+;	array$=a 2 dimensional string array.
+;
+;	ATTENTION: the array will be filled in starting at element 0.
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is similar to the GALL call, in that all, or as many as possible, filenames
+will be copied. Here however, they will be copied into what must be a two-
+dimensional string array (i.e. DIM a$(xx,yy). If the filenames don't all fit,
+as many as possible will be copied, and no error is returned.
+An error bad parameter will however be returned if :
+ - the array isn't a two-dimensional string array
+ - the second dimension of the array is too small for the longest element in the
+   list. Note that filenames will not be longer than 41 characters, so a
+   DIM a$(x,41) will guarantee that that error won't happen.
+
+The first array element to be filled in will be element 0.
+
+This might be used as follows:
+
+    str_len%=0
+    str_nbr%=0
+    blength=RCNT_INFO(0,str_nbr%,str_len%,str_max%) : rem get info on size
+    dim files$(str_nbr%,str_len%)	 : rem or better dim files$(str_nbr%,41)
+    RCNT_GARR files$
+					     
+
+
+			
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_GARJ array$
+;
+;	Get all filenames for a job into an ARRay
+;
+;	array$=a 2 dimensional string array.
+;
+;	ATTENTION: the array will be filled in starting at element 0.
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is similar to the GALJ call, in that all, or as many as possible, filenames
+will be copied. Here however, they will be copied into what must be a two-
+dimensional string array (i.e. DIM a$(xx,yy). If the filenames don't all fit,
+as many as possible will be copied, and no error is returned.
+An error bad parameter will however be returned if :
+ - the array isn't a two-dimensional string array
+ - the second dimension of the array is too small for the longest element in the
+   list. Note that filenames will not be longer than 41 characters, so a
+   DIM a$(x,41) will guarantee that that error won't happen.
+
+The first array element to be filled in will be element 0.
+
+This might be used as follows:
+
+    str_len%=0
+    str_nbr%=0
+    blength=RCNT_INFO("Prowess",str_nbr%,str_len%,str_max%) : rem get info on size
+    dim files$(str_nbr%,str_len%)	 : rem or better dim files$(str_nbr%,41)
+    RCNT_GARJ files$
+					     
+
+
+			
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; hash$=RCNT_HASH$(string$)
+;
+;	Returns the hash from the string
+;
+;	a normal string
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This returns the hash, as used by the Recent thing for job names, from the
+string passed as parameter. The hash algorythm used is a very simple one, the
+consideration was speed over anything else. So this hash is certainly very
+easy to break and propably not very collision proof....
+
+That said, running it over an entire qxl.win file with about 10.000 files did
+not give any collision for any of the filenames.
+
+
+		  
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_SAVE
+;
+;	SAVE lists to configured file  : no parameters
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This saves the lists for all jobs currently held in the thing, into the file
+configured by the user. The file is overwritten. You can't specify another file.
+The general list is NOT saved. The name of the SAVE file is NOT added to any
+list of files, not even the general one, when SAVEing or LOADing.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_LOAD
+;
+;	LOAD lists from configured file  : no parameters
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This loads the lists as saved by the RCNT_SAVE extension. All lists existing in
+the thing, except for the general list, will be removed prior to loading. The file
+from which the lists are loaded is as configured by the user, you can't specify
+another file.
+
+Thus, if you LOAD the lists as the very first thing in your boot file, they will
+also fill up with the files opened up during your normal boot.
+
+If you LOAD the lists at the end of your boot file, they will replace all lists
+generated up to that time (except for the general list).
+
+
+When SAVEing or LOADing, the name of the SAVE file is NOT added to any list of
+files, not even the general one.
+
+It is possible to save the lists, re-configure SMSQ/E to use lists with a
+different size, and load the lists after a reboot with the newly configured
+SMSQ/E. In that case,
+ - if the new list size is smaller than the saved size, only some files will be
+   copied to the new list. THERE IS NO GUARANTEE THAT THESE will include the
+   newest files opened.
+ - if the list size is larger than the saved size, all filenames will be copied.
+
+
+In the latter case, and also when the sizes stay the same between saving and
+loading, the order of the filenames will be preserved.
+
+
+	
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_ReMV [jobid]
+;
+;	REMoVe a list for a job
+;
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This removes the list for the job passed as parameter. If no such job exists,
+it returns an error.
+
+
+
+
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;
+; RCNT_SYNC
+;
+;	Tries to give current job IDs to jobs in heap
+;
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+As explained above, the job IDs stored in the Recent things may not correspond
+tp the job IDs of the jobs currently executing, for example after loading the
+lists. The SYNC runs through the list of all iobs currently executing in the
+system and, if a list exists for a job with that name, it sets the job ID of
+that list to that name.
+
+
+
+
+
+VI - Configuration
+====================
+
+Using the usual standard config program, you can configure :
+
+  - whether SMSQ/E should use the recent thing at all. If not, neither the
+    thing nor the SBasic extensions for it will be initialised/useable.
+  - the size of the lists (i.e. how many files they should contain). The maximum
+    allowed size is 255. The minimum allowed size is 1. The longer the list, the
+    higher the performance penalty (see below). All lists have the same size.
+    The default list size is 20.
+  - the name of the SAVE file if you want to be able to save/load the lists
+    between sessions.
+
+
+
+
+VII - Performance penalty
+==========================
+
+There is, of course, a performance penalty involved when opening files, since
+the Recent thing must be used and the lists searched through, but the time
+necessary to check and add the file to the list is small.
+As an indication, compiling all of SMSQ/E, under SMSQmulator, in a version of
+SMSQ/E 3.23 without the Recent thing takes about 118 secs. The same with the
+recent thing takes about 133 seconds. This is with a list size of 250 files.
+Under Qpc, these were 59 s with 3.23 and 64 s with a version with the Recent
+thing.
+
+
+Have fun
+
+W. Lenerz

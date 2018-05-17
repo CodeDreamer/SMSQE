@@ -85,3 +85,4 @@ kba.sys   equ	    $14 	    system request
 kba.undo  equ	    $16 	    undo (and soft reset)
 kba.break equ	    $18 	    pause / break action (and soft reset)
 kba.tab   equ	    $1a 	    tab (and hard reset)
+         list

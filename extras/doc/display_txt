@@ -555,7 +555,7 @@ System sprite:
 	case, i.e. a system sprite reference is only 2 bytes long.
 
 QL colour sprite:
-If this is a traditional Ql colour sprite, thenthe colour mode byte has one
+If this is a traditional Ql colour sprite, then the colour mode byte has one
 of the following values (as before)
 
 	0	mode 4
@@ -904,7 +904,7 @@ sp.appiselfg	$021e	 Application window item selected foreground
 sp.appiunabg	$021f	 Application window item unavailable background
 sp.appiunafg	$0220	 Application window item unavailable foreground
 sp.scrbar	$0221	 Pan/scroll bar
-sp.scrbarsec	$0222	 Pan/scroll bar section
+sp.scrbarsec	$0222	 Pan/scroll bar section (the section not coverd by the bar)
 sp.scrbararr	$0223	 Pan/scroll bar arrow
 sp.buthigh	$0224	 Button highlight
 sp.butbd	$0225	 Button border
@@ -1142,7 +1142,7 @@ VIII - Csizes for text objects in menu application sub-windows
 
 Application subwindow text objects may now have character sizes other than 0,0.
 Of course, this only applies to programs specially written to take
-advantage of these xiszes.
+advantage of these csizes.
 
 The values for the csizes are stored in the working definition at previously
 unused locations ($26 and $27).

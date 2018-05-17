@@ -45,7 +45,7 @@ dm_byte
 	add.l	d5,a4
 	move.b	(a6,a4.l),d1		  set
 	ext.w	d1			  ***** 1.00
-	ext.l	d1			  make sure neg value returns as neg
+	ext.l	d1			  *** make sure neg value returns as neg
 	bra.s	dm_retd1
 
 dmedium_rdonly
@@ -95,7 +95,7 @@ dmedium_drive$
 	beq.s	dm_rtnam		  ... none
 	addq.b	#1,(a6,a4.l)		  add drive name
 	moveq	#'0',d1
-	add.b	ioi_dnum-ioi_dnam-1(a6,a4.l),d1
+	add.b	ioi_dnum-ioi_dnam-1(a4),d1
 	lea	(a4,d0.w),a3
 	move.b	d1,1(a6,a3.l)		  set number
 dm_rtnam

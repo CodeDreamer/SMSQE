@@ -1,13 +1,10 @@
-*****************************************************
-* KILLSOUND
-*
-* kills QSSS sound & a job called "SOUNDFILE JOB"
-*
-* copyright (c) w. lenerz 2004 - see the licence in the documentation
-*
-* v. 1.01	2004 Nov 27 18:28:34
-*
-*****************************************************
+; KILLSOUND kills QSSS sound & a job named "SOUNDFILE JOB" V1.01 (c) W. Lenerz 2004
+
+; copyright (c) - see the licence in the documentation
+
+; v. 1.01	2004 Nov 27 18:28:34
+
+
 	section sound
 
 	xdef	killsound
@@ -68,7 +65,5 @@ killsnd move.l	exv_i4,a3		; point to Interrupt level 4
 sf_nosss
 	moveq	#err.nimp,d0
 	rts
-
-
 
 	end

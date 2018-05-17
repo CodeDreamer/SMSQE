@@ -1,3 +1,6 @@
+;        Hardware keys for Atari
+         nolist
+
 at_scc   equ    $ffff8c81        ; serial communications controller
 scc_ctra equ    at_scc+$00       ; control register channel a
                                  ; first access selects register, 2nd is data
@@ -132,3 +135,5 @@ vio_scate equ   $20              ; SCC channel A transmit buffer empty
 vio_scaxs equ   $28              ; SCC channel A external status
 vio_scarc equ   $30              ; SCC channel A receive condition
 vio_scasc equ   $38              ; SCC channel A special condition
+
+          list

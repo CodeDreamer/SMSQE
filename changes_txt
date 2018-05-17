@@ -2,7 +2,101 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
+-----------------------------------------------------------------------------
 
+3.24
+
+    RECENT THING
+	smsq_ioa_opfl_asm		2.02	calls the recent thing on channel open
+	keys_sys			.	new system variable sys_rthg
+	smsq_recent_addheap_asm 	1.00
+	smsq_recent_basic_asm		1.00
+	smsq_recent_config_asm		1.00
+	smsq_recent_hash_asm		1.00
+	smsq_recent_init_asm		1.00
+	smsq_recent_jobs_asm		1.00
+	smsq_recent_procs_asm		1.00
+	smsq_recent_sync_asm		1.00
+	smsq_recent_things_asm		1.00
+	smsq_recent_version_asm 	1.00	all new additions (wl)
+
+    BUGFIXES
+	iod_con2_ptr_ckey_asm		1.01	get chan ID from job (default to 0) don't presume main sbasic channel 0 (wl)
+	smsq_sms_crjb_asm		2.01	size & data space are made even
+
+    SMSQMULATOR
+	smsq_java_timer_asm		1.01	include JVA_SCRUPDT & JVA_MBAR_STATUS
+	iod_con2_java8_mblock_asm	1.01	1.01 just calls java trap
+	iod_con2_java16_mblock_asm	1.01	1.01 just calls java trap
+	iod_con2_javaql_cct		.	no longer use special scheduler
+	iod_con2_java8_cct		.	... calls that suspend the prog
+	iod_con2_java16_cct		.	... at every cursor toggle
+	iod_con2_java8_sprite_save_asm	.	do not move.l into odd address
+	iod_con2_java8_sprite_drop_asm	.	do not move.l into odd address
+	
+    COSMETIC CHANGES FOR PJW's SMSQEWEB
+	keys_atari_scc			.	keys - make sure list & nolist directives are in the right place (pjw)
+	keys_aurora			.
+	keys_cmp			.
+	keys_colour			.
+	keys_err			.
+	keys_err4			.
+	keys_hwt			.
+	keys_ini			.
+	keys_java			.
+	keys_mfp			.
+	keys_milan			.
+	keys_mse			.
+	keys_multiIO			.
+	keys_q40			.
+	keys_qlt			.
+	keys_socket			.
+	keys_syspal			.
+	keys_sysspr			.
+	keys_tos_gemdos 		.
+	keys_tos_sys			.
+	keys_tos_xbios			.
+	keys_wman			.
+	smsq_kbd_keys			.
+	smsq_qpc_procs_scrap_keys	.
+	smsq_smsq_base_keys		.
+	smsq_smsq_config_keys		.
+
+	mac_assert			.	macro files:  also remove expands (pjw)
+	mac_qdos			.
+	mac_text			.
+	mac_thg 			.
+	mac_xref			.
+	dv3_mac 			.
+
+	smsq_home_basic_asm		.      home thing correctly set title...
+	smsq_home_current_asm		.      ... before '--------------' (wl)
+	smsq_home_default_asm		.
+	smsq_home_fndjob_asm		.
+	smsq_home_init_asm		.
+	smsq_home_jobid_asm		.
+	smsq_home_linkl_asm		.
+	smsq_home_mem2_asm		.
+	smsq_home_procs_asm		.
+	smsq_home_things_asm		.
+	smsq_home_version_asm		.
+
+	smsq_java_xxxxxx		.	all head comments brought into shape (wl)
+
+	uti_EXFILTER_list		.	file removed
+	qmon				.	directory removed
+
+	smsq_q40_preloader_link 	.	remove excess line feeds (pjw)
+	smsq_q40_cache_link		.	  "      "	"     "
+
+	ee_wman_move_asm		.	all : adjust head comment (pjw)
+	sys_gold_pdummy_asm		.
+	sys_gold_privv_asm		.
+	uti_chkext_asm			.
+	uti_doioafer_asm		.
+	uti_doiofer_asm 		.
+	uti_minifont_asm		.
+	uti_mkl2st_asm			.
 ----------------------------------------------------------------------------
 
 3.23
@@ -406,7 +500,7 @@ Version   changed			of file   changes made
 
 	smsq_ioa_ffsd_asm		2.02	check that drive number <=8 for directory device drivers (one could use "ram9_"!!!)
 	smsq_q40_hwinit_asm		2.01	caches are off by default, else
-					. .	 code doesn't work in ROM
+					.	code doesn't work in ROM
 
 	. . the Qx0 cachemode control module is now actually linked into the code...
 	smsq_q40_cachemode_init_asm	1.01	preconfigure to serialized
@@ -573,8 +667,8 @@ Version   changed			of file   changes made
     BUGFIXES
 	smsq_mem_rchp_asm		2.01	Doesn't break free space list if block was already free (MK)
 ----------------------------------------------------------------------------
-3.01
 
+3.01
 
     BUGFIXES (MK)
 	ee_hk_xfil_asm			2.01	added hk_xfilid
@@ -888,6 +982,7 @@ Version   changed			of file   changes made
 
 
 ----------------------------------------------------------------------
+
 2.99	  none - as delivered by TT
 
 
@@ -904,4 +999,16 @@ MS = Mark Swift
 TG = Thierry Godefroy
 TT = Tony Tebby
 PW = Per Witte
+
+
+
+
+
+
+
+
+
+
+
+
 WL = Wolfgang Lenerz

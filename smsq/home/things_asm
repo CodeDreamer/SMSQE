@@ -1,13 +1,10 @@
-;---------------------------------------------------------------------
-; HOME thing   Copyright (c) W. Lenerz, 2005
-;
+; HOME thing extensions  V1.02 (c) W. Lenerz, 2005
+
 ; This is the actual extension thing
-;
+
 ; 2005-10-23	1.00	initial release version
 ; 2005-11-01	1.01	initialisation routine split off, OVER extn added
 ; 2005-11-11	1.02	returns buffer size in d2 if err.orng
-;
-;---------------------------------------------------------------------
 
 
 	section exten

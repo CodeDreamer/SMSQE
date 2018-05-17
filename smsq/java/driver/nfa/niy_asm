@@ -1,7 +1,5 @@
-;*****************************
-; routines that aren't (yet) implemented for the N/SFA drivers
-; copyright (x) W. Lenerz 2012
-;*****************************
+; Routines not (yet) implemented for N/SFA drivers  V1.00 (c) W. Lenerz 2012
+
 
 	section nfa
 

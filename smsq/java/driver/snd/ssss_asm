@@ -1,3 +1,6 @@
+; SMSQmulator Sampled Sound System
+
+; based on
 ; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
 
 	section sound
@@ -175,4 +178,5 @@ sss_close
 	dc.w	jva.trp5
 	move.l	(a7)+,d0
 	rts
+
 	end

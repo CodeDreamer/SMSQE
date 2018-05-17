@@ -1,4 +1,5 @@
 * Create a job in TPA	V2.00	 1986	Tony Tebby  QJUMP
+* 2.01 make sure size & data space are even numbers (wl)
 *
 	section sms
 *
@@ -49,11 +50,15 @@ scj_stab
 *
 scj_exer
 	moveq	#-1,d1			 ; set non job
-	bra.s	scj_exit		 ; and exit
+	bra	scj_exit		 ; and exit
 *
 scj_atpa
 	moveq	#jcb_end,d1		 ; set total memory required, header
+	addq.l	#1,d2
+	bclr	#0,d2
 	add.l	d2,d1			 ; + program
+	addq.l	#1,d3
+	bclr	#0,d3
 	add.l	d3,d1			 ; + data
 	bsr.l	mem_atpa		 ; allocate
 	bne.s	scj_exer		 ; ... oops

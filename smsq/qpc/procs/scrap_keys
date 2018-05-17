@@ -1,3 +1,5 @@
+; Scrap keys
+        nolist
 qss_thg equ     $00     ; long  Address of info thing
 qss_osm equ     $04     ; word  Old scrap modify counter
 qss_ocm equ     $06     ; word  Old clipboard modify counter
@@ -20,3 +22,4 @@ qss_pfl equ     $40+$0c ; byte  Add string flag
 qss_puc equ     $40+$10 ; long  User supplied code
 
 qss_len equ     $60     ;       Buffer length
+        list

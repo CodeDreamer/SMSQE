@@ -1,5 +1,5 @@
-; *****************************************************************
-; SMSQ WIN Driver initialisation for SMSQmulator (c) W.Lenerz 2012-2013
+; SMSQmulator WIN Driver initialisation  V1.00 (c) W.Lenerz 2012-2013
+
 ; This handles linking in the driver into the OS.
 ;
 ; copyright (C) w. Lenerz 2012	published under the SMSQE licence
@@ -9,7 +9,6 @@
 
 ; based on:
 ; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
-; ******************************************************************
 
 
 	section nfa

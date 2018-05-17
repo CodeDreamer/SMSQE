@@ -1,6 +1,8 @@
-; Java SMS HDOPs    1988  Tony Tebby	QJUMP
-; adapted for java w. lenerz 2012
-; v. 0.01 bbep implemented
+; SMSQmulator HDOPs   V1.00  (c)  w. lenerz 2012
+
+; based on HDOPs  1988  Tony Tebby   QJUMP
+
+; v. 1.00 bbep implemented
 ; v. 0.00
 
 	section kbd
@@ -16,7 +18,6 @@
 
 ; this is the code called from trap #1 sms.hdop
 
-
 sms_hdop
 	move.l	sms.rte,-(sp)		 ; return to RTE
 	move.l	a3,-(sp)		 ; this is popped up in the return routine
@@ -24,9 +25,9 @@ sms_hdop
 	cmp.b	#9,d0			 ; is it kbd read?
 	beq.l	hdop_keyr		 ; ... yes
 	cmp.b	#$a,d0			 ; is it beep?
-	beq.s	hdop_beep		 ; ... yes , not implemented
+	beq.s	hdop_beep		 ; ... yes
 	cmp.b	#$b,d0			 ; beep off?
-	beq.s	hdop_bpof		 ; ... yes , not implemented
+	beq.s	hdop_bpof		 ; ... yes
 	move.l	(a7)+,a3
 	moveq	#0,d1			 ; no return
 	moveq	#err.ipar,d0		 ; ... because it's none of these

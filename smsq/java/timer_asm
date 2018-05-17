@@ -1,11 +1,15 @@
+; SMSQmulator timer operations	V1.01  (c) W. Lenerz 2014
+
+
 *************************************************************************
 *
-*	Setting/getting a timer
+*	Setting/getting a timer with a millisecond precision.
 *
 *	JTMRSET sets (starts the timer)
 *
 *	a=JTMRGET() gets elapsed milliseconds since timer was started
 *
+*	v. 1.01  include JVA_SCRUPDT and JVA_MBAR_STATUS
 *	v. 1.00  copyright W. Lenerz 2014
 *
 ************************************************************************
@@ -14,33 +18,56 @@
 	section timer
 
 	include dev8_keys_java
+	include dev8_mac_proc2
 
 	xdef	tmr_init
 	xref	ut_rtfd1
-
 
 tmr_init
 	lea	procs,a1
 	move.w	$110,a2
 	jmp	(a2)
 
-procs	dc.w	1
-	dc.w	tmrset-*
-	dc.b	7,'JTMRSET'
-	dc.w	0,1
-	dc.w	tmrget-*
-	dc.b	7,'JTMRGETT'
-	dc.l	0
+procs
+	proc_stt
+	proc_def JTMRSET
+	proc_def JVA_SCRUPDT , scrupdt
+	proc_def JVA_EXIT
+	proc_end
+	proc_stt
+	proc_def JTMRGET
+	proc_def JVA_MBAR_STATUS , barget
+	proc_end
 
-tmrset	moveq	#jt5.sttmr,d0
-	dc.w	jva.trp5
-	rts
+; reset the timer to 0
+jtmrset moveq	#jt5.sttmr,d0
+dotp5	dc.w	jva.trp5
+out	rts
 
-tmrget	moveq	#jt5.gttmr,d0
+; get current value of timer into D1 and return it as QL float
+jtmrget moveq	#jt5.gttmr,d0
 	dc.w	jva.trp5
 	jmp	ut_rtfd1
 
+; set the screen update rate
+scrupdt move.w	$112,a2
+	jsr	(a2)
+	tst.l	d0
+	bne.s	out
+	addq.l	#2,a1
+	move.l	a1,$58(a6)
+	moveq	#jt5.scrup,d0
+	bra.s	dotp5
 
+; get the status of the menu bar
+barget	moveq	#jt5.jbget,d0
+	dc.w	jva.trp5
+	jmp	ut_rtfd1
+
+; quit the emulation
+jva_exit
+	moveq	#jt5.exit,d0
+	dc.w	jva.trp5
 	end
 
 

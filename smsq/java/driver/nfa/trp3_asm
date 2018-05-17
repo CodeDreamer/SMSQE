@@ -1,8 +1,6 @@
-; Trap3 routines for sfa/qxl/nfa drivers.
-; They just call the JVM.
-; v. 0.00
-; (C) W Lenerz 2012.
+; Trap3 routines for sfa/qxl/nfa drivers	v. 0.00 (C) W Lenerz 2012
 
+; They just call the JVM.
 
 	section nfa
 

@@ -1,3 +1,5 @@
+; Make a list out of a string array
+
         section utility
 
         xdef    ut_mkl2st

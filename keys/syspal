@@ -1,7 +1,7 @@
+;       System palette entries
         nolist
 ;
-;       System palette entries
-;
+
 sp.winbd        equ     $0200   ; Window border
 sp.winbg        equ     $0201   ; Window background
 sp.winfg        equ     $0202   ; Window foreground

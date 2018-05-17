@@ -1,14 +1,11 @@
-; *****************************************************************
-; SMSQ SFA Driver initialisation (c) W.Lenerz 2012
+; SMSQmulator SFA Driver initialisation    V1.00    (c) W.Lenerz 2012
+
 ; This handles linking in the driver into the OS.
 ;
 ; copyright (C) w. Lenerz 2012	published under the SMSQE licence
 ;
-; v0.00 stub
-
 ; based on:
 ; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
-; ******************************************************************
 
 
 	section nfa
@@ -181,4 +178,5 @@ proctab
 	proc_stt
 	proc_def SFA_USE$ , sfa_useq
 	proc_end
+
 	end

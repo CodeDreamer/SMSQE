@@ -1,7 +1,5 @@
-;------------------------------------------------
-;
-; Default list handling for the home thing  copyright (c) Marcel Kilgus,  W. Lenerz
-;
+; Default list handling for the home thing  (c) Marcel Kilgus,	W. Lenerz
+
 ; 2005-10-23  1.00  initial version
 ; 2005-11-14  1.01  fixed return of fndjbname if there's no defaults list (mk)
 ; 2005-11-20  1.02  fndjbname keeps D1 (wl)

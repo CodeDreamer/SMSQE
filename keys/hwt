@@ -1,31 +1,31 @@
 ; Hardware Table Definition SMSQ
-        nolist
+	nolist
 
-hwt_top   equ   $00              ; long  current top of table
-hwt_ptr   equ   $04              ; long  pointer above top entry
-hwt_table equ   $10              ; the table itself
-hwt.table equ   $10                ; 10 bytes per entry
-hwt_link  equ     $00              ; long  pointer to hardware linkage
-hwt_serve equ     $04              ; long  pointer to server
+hwt_top   equ	$00		 ; long  current top of table
+hwt_ptr   equ	$04		 ; long  pointer above top entry
+hwt_table equ	$10		 ; the table itself
+hwt.table equ	$10		   ; 10 bytes per entry
+hwt_link  equ	  $00		   ; long  pointer to hardware linkage
+hwt_serve equ	  $04		   ; long  pointer to server
 
-hwt_intl  equ     $0c              ; byte  hardware interrupt level
-hwt_prio  equ     $0d              ; byte  priority within interrupt level
-hwt_type  equ     $0e              ; byte  type of hardware
-hwt.spec  equ       $ff              ; special rather than generic
-hwt.kbd   equ       $01              ; generic keyboard
-hwt.mse   equ       $02              ; generic mouse
-hwt.par   equ       $03              ; generic parallel port
-hwt.ser   equ       $04              ; generic serial purt
-hwt.wav   equ       $05              ; generic wave synth
-hwt.logn  equ     $0f              ; byte  logical port number
+hwt_intl  equ	  $0c		   ; byte  hardware interrupt level
+hwt_prio  equ	  $0d		   ; byte  priority within interrupt level
+hwt_type  equ	  $0e		   ; byte  type of hardware
+hwt.spec  equ	    $ff 	     ; special rather than generic
+hwt.kbd   equ	    $01 	     ; generic keyboard
+hwt.mse   equ	    $02 	     ; generic mouse
+hwt.par   equ	    $03 	     ; generic parallel port
+hwt.ser   equ	    $04 	     ; generic serial purt
+hwt.wav   equ	    $05 	     ; generic wave synth
+hwt.logn  equ	  $0f		   ; byte  logical port number
 
-hwti.flag equ     'HWTI'           l hardware table based interrupt flag
+hwti.flag equ	  'HWTI'	   l hardware table based interrupt flag
 
-drd_check  equ  $00              ; vector  routine to check if hardware present
-drd_vector equ  $02              ; vector  table of vectors to set
-drd_preset equ  $04              ; vector  table of preset values
-drd_init   equ  $06              ; vector  initialisation routine
-drd_iserve equ  $08              ; vector  interrupt server table
+drd_check  equ	$00		 ; vector  routine to check if hardware present
+drd_vector equ	$02		 ; vector  table of vectors to set
+drd_preset equ	$04		 ; vector  table of preset values
+drd_init   equ	$06		 ; vector  initialisation routine
+drd_iserve equ	$08		 ; vector  interrupt server table
 
 ; The check routine is called with the port number in d0.
 ; If d0 is 0 on entry it should return the highest port number in d0
@@ -44,11 +44,11 @@ drd_iserve equ  $08              ; vector  interrupt server table
 
 ; The interrupt server table has 6 byte entries.
 
-isv_server equ  $00     ; vector  interupt server
-isv_intl   equ  $02     ; byte  interrupt level
-isv_prio   equ  $03     ; byte  priority within the level
-isv_type   equ  $04     ; byte  type of hardware
-isv_spare  equ  $05     ; byte  spare
+isv_server equ	$00	; vector  interupt server
+isv_intl   equ	$02	; byte	interrupt level
+isv_prio   equ	$03	; byte	priority within the level
+isv_type   equ	$04	; byte	type of hardware
+isv_spare  equ	$05	; byte	spare
 
 ; The priority is normally the log of inverse of the max delay.
 ; 0 represents 1 second, 10 represents 1 ms, 20 represents 1 us,
@@ -71,29 +71,31 @@ isv_spare  equ  $05     ; byte  spare
 
 ; The servers are not called using the stack, but each server calls the next
 ; using the interupt service list.
-;       move.l  (a5)+,a4                 ; next server
-;       move.l  (a5)+,a3                 ; next linkage
-;       jmp     (a4)                     ; jump to it
+;	move.l	(a5)+,a4		 ; next server
+;	move.l	(a5)+,a3		 ; next linkage
+;	jmp	(a4)			 ; jump to it
 
 ; The general server starts with a system dependent preamble that is copied
 ; into the interrupt list. The list follows the preamble directly. For 32 bit
 ; bus processors, the preamble should be padded out to a long word.
-;       movem.l isv.regs,-(sp)           ; save the interrupt server registers
-;       lea     table(pc),a5
-;       st      d6                       ; reset flag
-;       move.l  (a5)+,a4                 ; first server
-;       move.l  (a5)+,a3                 ; first linkage
-;       jmp     (a4)                     ; jump to it
+;	movem.l isv.regs,-(sp)		 ; save the interrupt server registers
+;	lea	table(pc),a5
+;	st	d6			 ; reset flag
+;	move.l	(a5)+,a4		 ; first server
+;	move.l	(a5)+,a3		 ; first linkage
+;	jmp	(a4)			 ; jump to it
 ; table
 
 ; The last entry in the list is not an interrupt server, but the postable which
 ; will be called with the pointer to the first item in the table in a3.
 ; Typically, the postamble code will 'test and set' d6 and either return from
 ; interrupts or go back to the start of the loop.
-;       tst.b   d6                       ; simple test
-;       bne.s   rte                      ; nothing more
-;       move.l  a3,a5                    ; start of list
-;       st      d6                       ; reset flag
-;       move.l  (a5)+,a4                 ; first server
-;       move.l  (a5)+,a3                 ; first linkage
-;       jmp     (a4)                     ; jump to it
+;	tst.b	d6			 ; simple test
+;	bne.s	rte			 ; nothing more
+;	move.l	a3,a5			 ; start of list
+;	st	d6			 ; reset flag
+;	move.l	(a5)+,a4		 ; first server
+;	move.l	(a5)+,a3		 ; first linkage
+;	jmp	(a4)			 ; jump to it
+
+	list

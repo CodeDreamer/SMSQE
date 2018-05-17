@@ -18,7 +18,7 @@ dev8_iod_con2_java_xmode_rel
 
 dev8_iod_con2_io_rel
 dev8_iod_con2_iotab_rel
-dev8_smsq_java_con2_sched_rel
+dev8_iod_con2_sched_rel
 dev8_iod_con2_input_rel
 dev8_iod_con2_curqy_rel
 dev8_iod_con2_defbd_rel

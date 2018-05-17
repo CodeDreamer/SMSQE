@@ -18,7 +18,7 @@ dev8_iod_con2_java_xmode_rel
 
 dev8_iod_con2_io_rel
 dev8_iod_con2_iotab_rel
-dev8_smsq_java_con2_sched_rel
+dev8_iod_con2_sched_rel
 dev8_iod_con2_input_rel
 dev8_iod_con2_curqy_rel
 dev8_iod_con2_defbd_rel
@@ -98,10 +98,10 @@ dev8_iod_con2_java16_rle_rel
 dev8_iod_con2_aur8_palsprite_rel
 dev8_iod_con2_aur8_sppref_rel
 dev8_iod_con2_8_blob_drop_rel
-dev8_iod_con2_aur8_sprite_drop_rel
+dev8_iod_con2_java8_sprite_drop_rel
 dev8_iod_con2_8_sprite_move_rel
 dev8_iod_con2_8_sprite_ptr_rel
-dev8_iod_con2_8_sprite_save_rel
+dev8_iod_con2_java8_sprite_save_rel
 dev8_iod_con2_ptr_zero_rel
 
 dev8_smsq_java_kbd_keyrow_rel

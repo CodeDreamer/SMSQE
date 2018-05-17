@@ -1,6 +1,7 @@
-**********************************************************************
-;
-; soundfile2 & 3
+; Soundfile jobs (2 & 3)	v. 1.00 (c) w. lenerz 2004
+
+
+********************************************************************
 ; set up independant job to play the soundfile
 ; soundfile2 - that job belongs to caller
 ; soundfile3 - totally independent job

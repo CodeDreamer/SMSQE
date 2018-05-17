@@ -193,6 +193,7 @@ sys_ldmlst equ	$0168	long	language dependent module list
 sys_lang equ	$016c	word	current language
 
 sys_vers equ	$0170	long	version
+sys_rthg equ	$017d	byte	use recent thing (<>0 if yes)?
 sys_xdly equ	$017e	byte	suspend delay after executing another job (3.13)
 sys_ouch equ	$017f	byte	ouch flag (currently used to activate SGC debug)
 sys_top  equ	$0180		TOP of system vars - bottom of Supervisor Stack

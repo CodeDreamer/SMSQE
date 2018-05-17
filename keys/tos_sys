@@ -1,5 +1,5 @@
+; System Variables
    nolist
-;	 System Variables
 
 memvalid   equ	    $420  l if this equals mem.val then memtop is valid
 mem.val    equ $752019f3    magic longword for memtop

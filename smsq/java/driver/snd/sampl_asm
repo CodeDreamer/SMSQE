@@ -1,4 +1,7 @@
-;*****************************************************
+; SOUNDSAMPLE keyword  v. 1.00	 (c) W. Lenerz 2004 - 2012
+
+
+;*********************************************************
 ;*
 ;* c = SOUNDSAMPLE
 ;* get a soundsample, if 0 - nothing there
@@ -12,7 +15,7 @@
 ;*  This will NOT be the case for Q40/Q60, but there is no legal way to
 ;*  get at the outqueue that I know of.
 ;*
-*****************************************************
+;*********************************************************
 
 	section msound
 

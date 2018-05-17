@@ -1,13 +1,9 @@
-;---------------------------------------------------------------------
-; HOME thing : link a new entry into my linked list
-;
+; Link new entry into HOME thing linked list (c) Marcel Kilgus, W. Lenerz 2005
+
 ; 2005-10-23  1.00  initial release version
 ; 2005-11-16  1.01  list ops now atomic (possible concurrent acccess) (MK)
 ;		    fixed bug in unlink routine (MK)
-;
-; copyright (c) W. Lenerz 2005
-;
-;---------------------------------------------------------------------
+
 
 	section util
 

@@ -1,14 +1,10 @@
-************************************************************
-*
-* SETRATE10 or SETRATE20
-*
-* set the sound resolutions - but only for Qx0, ignore on all other machines
-*
-*
-* copyright (c) W. Lenerz  - see the licence in the documentation
-*
-* v. 1.00	2004 Nov 11 08:35:37
-****************************************************************
+; SETRATE10/ SETRATE20 keywords   v.1.00  (c) 2004   W. Lenerz
+
+
+; set the sound resolutions - but only for Qx0, ignore on all other machines
+; copyright (c) W. Lenerz  - see the licence in the documentation
+; v. 1.00	2004 Nov 11 08:35:37
+
 
 	section sound
 

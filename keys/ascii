@@ -1,4 +1,4 @@
-	; ASCII keys
+; ASCII keys
 	nolist
 asc.nul equ	0	Null
 asc.soh equ	1	Start of Header

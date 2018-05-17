@@ -1,10 +1,6 @@
-*********************************************
-*
-* The SOUND device driver open,close and io/routines.
-* v. 1.00   2014 Jan 16
-* copyright (c) W.Lenerz 2014
-*
-**********************************************
+; SOUND device driver open,close and io/routines  v. 1.00 (c) W.Lenerz 2014
+
+; v. 1.00   2014 Jan 16
 
 
 	section sound

@@ -1,4 +1,5 @@
 ; Multi IO chip keys (included in hardware specific definitions)
+        nolist
 
 como_rxdr  equ  $00<<MIO_s      ; receiver data register
 como_txdr  equ  $00<<MIO_s      ; transmitter data register
@@ -266,3 +267,4 @@ rtc.regc   equ  $0c             ; register c
 rtc.vrt    equ  $0d             ; valid real time register
 rtc..vrt   equ   7                ; valid real time bit
 rtc.cmos   equ  $0e             ; 50 bytes (or more) of CMOS ram
+        list

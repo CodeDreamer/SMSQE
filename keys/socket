@@ -1,3 +1,6 @@
+; Socket keys
+        nolist
+
 AF_INET         equ     2       ; IP family
 INADDR_ANY      equ     0       ; any address
 
@@ -60,3 +63,5 @@ IP.IOCTL            equ $79
 IP.GETDOMAIN        equ $7a
 IP.H.STRERROR       equ $7b
 IP.ERRNO            equ $7c
+
+        list

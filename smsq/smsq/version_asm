@@ -752,8 +752,15 @@
 ;	SMSQmulator removed debug code during initialisation (wl).
 ;
 ; 3.23	DMEDIUM_DENSITY returns -1 if ramdisk, ...NAME$ returns correct name (wl).
-;	SMSQmulator keyrow >8 doesn't read keyrow 0
+;	SMSQmulator keyrow >8 doesn't read keyrow 0 (wl).
+;
+; 3.24	CKEYON/OFF no longer block jobs other than job 0 (wl).
+;	When jobs are created, the size of the job, and the data space, are made even (wl).
+;	Recent thing implemented (wl).
+;	JVA_SCRUPDT & JVA_MBAR_STATUS for SMSQmulator (wl).
+;	cosmetic changes for smsqeweb (pjw)
 
-smsq_vers equ	 '3.23'
+smsq_vers equ	 '3.24'
+
 
 	end

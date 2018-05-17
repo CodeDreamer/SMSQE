@@ -1,15 +1,14 @@
-;---------------------------------------------------------------------
-; HOME thing  mem allocation/deallocation
-;
+; HOME thing  mem allocation/deallocation  V1.02 (c) W. Lenerz, M. Kilgus 2005
+
 ; This is the code that does the actual mem allocation for a job.
 ; It reserves enough mem & then copies the file & dirnames into it
-;
+
 ; 2005-10-23  1.00  initial release version
 ; 2005-11-09  1.01  error returned if empty filename passed
 ; 2006-01-17  1.02  now inherits current directory of calling job (mk)
-; copyright (c) W. Lenerz + Marcel Kilgus 2005
-;
-;----------------------------------------------------------------------
+
+
+
 	section util
 
 	include dev8_keys_chn

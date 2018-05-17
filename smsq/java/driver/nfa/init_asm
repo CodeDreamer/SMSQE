@@ -1,5 +1,6 @@
-; *****************************************************************
 ; SMSQ NFA Driver initialisation (c) W.Lenerz 2012
+
+
 ; This handles linking in the driver into the OS.
 ;
 ; copyright (C) w. Lenerz 2012	published under the SMSQE licence

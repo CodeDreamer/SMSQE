@@ -1,13 +1,9 @@
-;---------------------------------------------------------------------
-;
-; SBasic support routines for Home Thing
-; copyright (c) M. Kilgus 2005
+; SBasic support routines for Home Thing    (c) M. Kilgus 2005
 ;
 ;		0.00	prerelease (wl)
 ; 2005-11-09	0.01	rewritten to make job-ID optional (MK)
 ;			added HOME_VER$
-;
-;---------------------------------------------------------------------
+
 
 	section exten
 

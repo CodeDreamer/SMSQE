@@ -1,9 +1,10 @@
-; NFA/SFA USE use name query   v. 2.03	     (c) w. lenerz
+; NFA/SFA USE use name query   v. 2.03	     (c) W. Lenerz 2012
+
 ; based on
 ; RAM Disk USE use name   V2.01     1989  Tony Tebby  QJUMP
 
-; v. 0.02 put A1 in ari stack pointer after java call , remove use for flp drive
-; v. 0.01 when xxx_USE device is called, pass this on to Java
+; v. 2.03 put A1 in ari stack pointer after java call , remove use for flp drive
+; v. 2.02 when xxx_USE device is called, pass this on to Java
 
 	section exten
 

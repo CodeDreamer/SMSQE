@@ -1,13 +1,7 @@
-;---------------------------------------------------------------------
-;
-; find a job in my linked list for HOME thing
-;
+; Find a job in my linked list for HOME thing  (c) 2005 W. Lenerz, Marcel Kilgus
+
 ; 2005-10-23  0.00  initial release version (wl)
 ; 2005-11-16  0.01  list operations now atomic (possible concurrent access) (mk)
-;
-; copyright (c) 2005 W. Lenerz, Marcel Kilgus
-;
-;---------------------------------------------------------------------
 
 	section util
 

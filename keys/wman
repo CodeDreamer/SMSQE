@@ -1,6 +1,6 @@
-	  nolist
-;
 ;	  Window manager vectors
+	  nolist
+
 ;
 wm_vers   equ	    $00
 wm.setup  equ	    $04

@@ -298,20 +298,26 @@ H - Command line parameters
 
 It is possible to pass command	line  parameters  to  the  program,  as
 follows:
-"-as" means : autostart ON: the program will start compilation immediately
+"-as" means : autostart ON: the program will start compilation
+immediately
 "-q0" means : quit after compilation if 0 errors.
-"-qa" means : quit always after compilation even if there were errors.
-"-sa" means : set (select) all targets
+"-qa" means : quit always after compilation even if there were
+errors.
+"-sa" means : set (select) all files of selected targets
+"-de" means delete all compiled (REL) and target files first
 "-mk" means : make targets (see "make item" above)
 "-de" means : delete compiled files first (see "DEL" item above)
+"-fa" means force assembly
 "-tg" means : set the Generic target
-"-ta" means : set aTari target
+"-ti" means : set atarI target
 "-to" means : set goLdcard target
 "-tq" means : set Qx0 target
 "-tx" means : set qXl target
 "-tj" means : set Java target (SMSQmulator)
 "-tc" means : set qpC target
 "-tu" means : set aUrora target
+"-tr" means : set ptRgen (and wamn) target
+"-ta" means : set ALL targets
 "-tr" means : set ptRgen (and wamn) target
 
 

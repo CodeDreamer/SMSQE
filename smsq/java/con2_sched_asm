@@ -1,7 +1,8 @@
-; CON scheduler
+; CON scheduler for SMSQmulator
+
 ; 2004-03-18	1.01	cursor status is toggled before calling cn_curtg (wl)
 ; 2012-xx-xx	1.01	suspend java job when cursor toggle
-;
+; 2016		no longer used in SMSQmulator 2.17
 	section con
 ;
 	include 'dev8_keys_con'
@@ -23,7 +24,7 @@ cn_sched
 	bgt.s	csh_exit		; not ready yet
 	move.w	#12,sys_cfst(a6)
 
-	moveq	#3,d0
+	moveq	#jt5.slep,d0
 	dc.w	jva.trp5		; call java possibly suspend job
 	sub.w	#sd_keyq,a0		; base of channel block
 	neg.b	sd_curf(a0)		; change state	- this is wished state

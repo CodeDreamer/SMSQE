@@ -1,4 +1,7 @@
-; Java Emul Read keyboard (during polling interrupt)
+; SMSQmulator Read keyboard / mouse  V 1.01 (c) W. Lenerz 2012
+
+; read by SMSQE during polling interrupt.
+
 ; this "reads" the keyboard coming from the emulator & puts the keystrokes
 ; into the keyboard queue
 ; 1.01 special long word input when mouse moved

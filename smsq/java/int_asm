@@ -1,4 +1,4 @@
-; Java Interrupt server
+; SMSQmulator Interrupt server	V1.00  (c) W. Lenerz 2012
 
 	section qd
 
@@ -11,7 +11,7 @@
 	include 'dev8_smsq_smsq_base_keys'
 
 ;+++
-; Java Interrupt Server   - there is only one interrupt FTTB - 50 Hz frame
+; SMSQmulator Interrupt Server	 - there is only one interrupt FTTB - 50 Hz frame
 ;---
 qd_int2
 

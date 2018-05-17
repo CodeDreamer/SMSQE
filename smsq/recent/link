@@ -1,0 +1,19 @@
+program dev8_smsq_recent_recent
+
+input dev8_smsq_recent_init_rel
+input dev8_smsq_recent_things_rel
+input dev8_smsq_recent_sync_rel
+input dev8_smsq_recent_hash_rel
+input dev8_smsq_recent_jobs_rel
+input dev8_smsq_recent_addheap_rel
+input dev8_smsq_recent_version_rel
+input dev8_smsq_recent_procs_rel
+input dev8_smsq_recent_basic_rel
+input dev8_smsq_recent_config_rel
+
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_sms_lib
+library dev8_smsq_smsq_end_rel

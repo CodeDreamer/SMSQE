@@ -1,4 +1,4 @@
-(document last amended for version 3.20)
+(document last amended for version 3.24)
 
 Please look  to the file "whats_new_txt"  to see what's new  in this version of
 SMSQ/E!
@@ -17,7 +17,7 @@ You can compile the sources either the "easy way" or the "hard way".
 
 The  easy way is to  use the program called  "extras_exe_SMSQEMake". There is a
 help text for this in the "extras_help" directory. It exists either as a simple
-text file (SMSQEMake_doc) or as a Quill Doc file (SMSQEMake_doc). This explains
+text file (SMSQEMake_txt) or as a Quill Doc file (SMSQEMake_doc). This explains
 how to compile the sources.
 
 

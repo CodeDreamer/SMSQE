@@ -1,11 +1,5 @@
-************************************************************
-* the basic name defintions for soundfile et al
-*
-* v. 1.00
-*
-* copyright (c) W. Lenerz  - see the licence in the documentation
-*
-****************************************************************
+; the basic name defintions for soundfile et al  v. 1.00 (c) 2012 W. Lenerz
+
 
 	section sound
 

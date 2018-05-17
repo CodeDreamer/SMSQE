@@ -1,42 +1,44 @@
 * Initialisation constants for SMS2
-        nolist
+	nolist
 
-ini_sysb equ    $00028000 SYStem variables Base
-ini_sstk equ    $0002a000 Supervisor STacK (initial pointer)
+ini_sysb equ	$00028000 SYStem variables Base
+ini_sstk equ	$0002a000 Supervisor STacK (initial pointer)
 
-ini.jobt equ    $200      JOB Table size, 128 jobs max
-ini.chnt equ    $800      CHaNnel Table size, 512 channels max
-ini.defs equ    $200      DEFaults area size
-ini.def1 equ    $40       room for one default
+ini.jobt equ	$200	  JOB Table size, 128 jobs max
+ini.chnt equ	$800	  CHaNnel Table size, 512 channels max
+ini.defs equ	$200	  DEFaults area size
+ini.def1 equ	$40	  room for one default
 
 ; initialisation constants
 
-ini_scrb equ    $00020000       initial SCReen Base address
-ini.scrs equ    $00008000       initial SCReen Size
-ini.dmod equ    $00             initial Display MODe
-ini_rbas equ    $00000000       Reserved area BASe
-ini_rtop equ    $00020000       Reserved area TOP
+ini_scrb equ	$00020000	initial SCReen Base address
+ini.scrs equ	$00008000	initial SCReen Size
+ini.dmod equ	$00		initial Display MODe
+ini_rbas equ	$00000000	Reserved area BASe
+ini_rtop equ	$00020000	Reserved area TOP
 
-ini_tslc equ    $00001000       Test SLIce size
-ini_mseg equ    $00080000       Memory SEGment size
-ini.nslc equ    $80             Number of SLiCes / segment (ini_mseg/ini_tslc)
+ini_tslc equ	$00001000	Test SLIce size
+ini_mseg equ	$00080000	Memory SEGment size
+ini.nslc equ	$80		Number of SLiCes / segment (ini_mseg/ini_tslc)
 
-ini_sslc equ    $00000100       Screen test SLIce (ini_tslc*ini.scrn/ini_mseg)
-ini_sinc equ    $00000100       Screen test INCrement (ini.scrn/ini_sslc*2)
+ini_sslc equ	$00000100	Screen test SLIce (ini_tslc*ini.scrn/ini_mseg)
+ini_sinc equ	$00000100	Screen test INCrement (ini.scrn/ini_sslc*2)
 
-ini_pbas equ    $fffc5800       Pattern BASe
-ini_ptop equ    $fffc6a04       Pattern TOP
+ini_pbas equ	$fffc5800	Pattern BASe
+ini_ptop equ	$fffc6a04	Pattern TOP
 
-ini_titl equ    $0000e0c0       position of TITLe
-ini.trow equ    6               number of Title ROWs
-ini.trep equ    3               number of Title row REPeats
-ini_tinc equ    $00000100-$40   Title INCrement between screen rows
+ini_titl equ	$0000e0c0	position of TITLe
+ini.trow equ	6		number of Title ROWs
+ini.trep equ	3		number of Title row REPeats
+ini_tinc equ	$00000100-$40	Title INCrement between screen rows
 
-ini.t0   equ    %00111100100000001001111000111100
-ini.t1   equ    %01000010110000011010000101000010
-ini.t2   equ    %01000000101000101010000000000010
-ini.t3   equ    %00110000100101001001100000000100
-ini.t4   equ    %00001100100010001000011000001000
-ini.t5   equ    %00000010100000001000000100010000
-ini.t6   equ    %01000010100000001010000100100000
-ini.t7   equ    %00111100100000001001111001111110
+ini.t0	 equ	%00111100100000001001111000111100
+ini.t1	 equ	%01000010110000011010000101000010
+ini.t2	 equ	%01000000101000101010000000000010
+ini.t3	 equ	%00110000100101001001100000000100
+ini.t4	 equ	%00001100100010001000011000001000
+ini.t5	 equ	%00000010100000001000000100010000
+ini.t6	 equ	%01000010100000001010000100100000
+ini.t7	 equ	%00111100100000001001111001111110
+
+	     list

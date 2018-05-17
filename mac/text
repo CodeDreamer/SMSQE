@@ -40,7 +40,6 @@ met.[label] equ  [.len(text)]*3
 
 mkxustr macro    label,selkey,text
         mkxstr   {[label]},{[selkey]},{[text]}
-        expand
         xdef     meu.[label]
 meu1    setstr   {[.ucase(.right(.left(selkey,2),1))]}
 meu2    setstr   {[.ucase(text)]}

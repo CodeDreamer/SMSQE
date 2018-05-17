@@ -1,9 +1,9 @@
-          nolist
+*         Standard colour palette for Menus
 
           include 'dev8_keys_syspal'
 
-*
-*         Standard colour palette for Menus
+          nolist
+
 *
 *         Main window colours
 *

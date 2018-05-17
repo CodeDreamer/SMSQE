@@ -1,7 +1,6 @@
 *       Assert the equality of any number of parameters
         nolist
 assert  macro
-        noexpand
 parmn   setnum  2
 assloop maclab
         ifnum   [parmn] > [.nparms] goto assexit

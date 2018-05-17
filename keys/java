@@ -1,4 +1,5 @@
 ; keys for java emulator
+	nolist
 
 jva.ssp 	equ	$400		; space for ssp, taken from ramtop, ramtop will be decreases by this
 
@@ -65,6 +66,9 @@ jt5.csnd	equ	  25		;   close channel to sound device
 jt5.asnd	equ	  26		;   add bytes to sound device
 jt5.sttmr	equ	  27		;   set (start) timer
 jt5.gttmr	equ	  28		;   get current timer value
+jt5.scrup	equ	  29		;   get screen update
+jt5.jbget	equ	  30		;   get menubar status (1=visible,0=not)
+jt5.exit	equ	  31		;   leave the emulation
 
 jva.trp6	equ	$a006
 jva.trp7	equ	$a007
@@ -87,6 +91,7 @@ jt9.cnm 	equ	  5		; IP channel name
 
 jva.trpA	equ	$a00a
 
+jva.test	equ	$a100		; test instruction
 
 ; smsqmulator config info flag
 
@@ -94,3 +99,5 @@ jva_cfgf1	equ    '<<SM'
 jva_cfgf2	equ    'SQMU'
 jva_cfgf3	equ    'LATO'
 jva_cfgf4	equ    'RX>>'
+
+	list

@@ -1,6 +1,11 @@
-; Initialise SMSQ  V2.02     1994  Tony Tebby
+; Initialise SMSQ  for SMSQmulator V2.04 (c) W. Leerz 2012-2015
+
 ; 2003-01-22	2.03	use sms_dlan to copy default language (wl)
 ; 2015 Jul 27	2.04	removed debug code (blats etc)
+
+; based on
+; Initialise SMSQ  V2.02     1994  Tony Tebby
+
 	section base
 
 	xdef	smsq_base

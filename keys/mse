@@ -1,47 +1,22 @@
 ; Mouse driver linkage block
-        nolist
+	nolist
 
-mse_id     equ  $00     ; long  mouse ID
-mse.id     equ    'MAUS'
+mse_id	   equ	$00	; long	mouse ID
+mse.id	   equ	  'MAUS'
 
 ; the following section is variable
 
-mse_packp  equ  $20     ; word  running pointer to packet (rel base of packet)
-mse_pack   equ  $22     ; 6 bytes backet
-mse.pack   equ    6
-mse.pbas   equ    3     ; length of basic packet
-mse_b3     equ  mse_pack+3 ; the middle button goes here
-mse.mid    equ    $20      ; middle button down
-mse_button equ  $28     ; button currently down
+mse_packp  equ	$20	; word	running pointer to packet (rel base of packet)
+mse_pack   equ	$22	; 6 bytes backet
+mse.pack   equ	  6
+mse.pbas   equ	  3	; length of basic packet
+mse_b3	   equ	mse_pack+3 ; the middle button goes here
+mse.mid    equ	  $20	   ; middle button down
+mse_button equ	$28	; button currently down
 
-mse_buff   equ  $2C     ; long  pointer to buffer
-mse.buff   equ    $200  ;     4 seconds worth
-mse_slnk   equ  $30     ; serial port linkage
-mse.len    equ  $40
+mse_buff   equ	$2C	; long	pointer to buffer
+mse.buff   equ	  $200	;     4 seconds worth
+mse_slnk   equ	$30	; serial port linkage
+mse.len    equ	$40
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        list
+	list

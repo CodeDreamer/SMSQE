@@ -1,13 +1,9 @@
-;---------------------------------------------------------------------
-; The Sbasic keywords data structure to be linked in
-; copyright (c) 2005 Marcel Kilgus, W. Lenerz
-;
+; The Sbasic names for HOME thing  V 0.01 (c) 2005 Marcel Kilgus, W. Lenerz
+
 ;		0.00	prerelease (wl)
 ; 2005-11-06	0.01	added home_vers$ (mk)
-;
-;
-;
-;---------------------------------------------------------------------
+
+
 
 	section basic
 

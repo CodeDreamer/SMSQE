@@ -1,4 +1,6 @@
-; NFA/SFA USE use name	  v. 2.03	(c) w. lenerz
+; NFA/SFA USE use name	  v. 2.03	(c) L. Lenerz  2012
+
+
 ; based on
 ; RAM Disk USE use name   V2.01     1989  Tony Tebby  QJUMP
 ; v 0.01 when xxx_USE device is called, pass this on to Java
@@ -62,4 +64,5 @@ set_nam subq.l	#8,a5
 	dc.w	jva.trp5		; get data to java
 	tst.l	d0
 set_out rts
+
 	end

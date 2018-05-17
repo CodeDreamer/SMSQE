@@ -24,6 +24,7 @@ wm_procs
 	proc_def WM_INK
 	proc_def WM_STRIP
 	proc_def WM_BLOCK
+	proc_def WM_ABLOCK
 	proc_def WM_BORDER
 	proc_def WM_MOVEMODE
 	proc_def WM_MOVEALPHA

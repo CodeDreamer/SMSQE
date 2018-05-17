@@ -1,6 +1,6 @@
+; Create a standard QDOS job header.
          nolist
 
-; Create a standard QDOS job header.
 ; If start is omitted, the execution begins with the following statement.
 ; If namespace is given, additional null bytes are created to fill in later
 ; the real job name.
@@ -33,7 +33,6 @@ jobend  maclab
 
 ; Create a standard QDOS string
 qstrg   macro   strg
-        noexpand
 [.lab]  dc.w    [.len(strg)],'[strg]'
         ds.w    0
         endm

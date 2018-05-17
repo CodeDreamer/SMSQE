@@ -1,5 +1,7 @@
-* the memd_write keyword for the MEM device
-* MEMD_WRITE driveNumber - writes that drive back to the disk, if possible
+; MEMD_WRITE keyword for the MEM device   V1.00 (c) 2014 W. Lenerz
+
+
+; MEMD_WRITE driveNumber - writes that drive back to the disk, if possible
 
 	section nfa
 

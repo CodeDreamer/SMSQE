@@ -1,4 +1,4 @@
-
+; Check extension utility
 	section utility
 
 	xdef	fu_chkext

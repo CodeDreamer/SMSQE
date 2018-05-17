@@ -8,6 +8,8 @@ mfp.o    equ    3                ; in msbyte
 
         include 'dev8_keys_mfp'
 
+        nolist
+
 mfp.vect equ      $68               ; vector group 6 ($180-$1bc), soft end
 
 mfp_cts  equ    mfp_port         ; CTS in
