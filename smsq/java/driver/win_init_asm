@@ -39,14 +39,13 @@ maxchars  equ	96
 
 	mkcfhead  {WIN Drives},'1_00'
 
-
 noyes	mkcfitem 'JVW0',code,'D',disable,,,\
        {Disable WIN drives?} \
 	0,N,{No},1,Y,{Yes}
 
 
-	mkcfitem 'JVW1',string,'1',w1name,,,\
-	{Name for WIN Drive 1?},$0000
+	mkcfitem 'JVW1',string,1,w1name,,,\
+	{Name for WIN Drive 1?},0
 			    
 	mkcfitem 'JVW2',string,'2',w2name,,,\
 	{Name for WIN Drive 2?},$0000
@@ -69,7 +68,6 @@ noyes	mkcfitem 'JVW0',code,'D',disable,,,\
 	mkcfitem 'JVW8',string,'8',w8name,,,\
 	{Name for WIN Drive 8?},$0000
 
-
 	mkcfend
 
 
@@ -81,7 +79,8 @@ noyes	mkcfitem 'JVW0',code,'D',disable,,,\
 
 disable dc.b	0
 			
-w1name	dc.w	maxchars
+w1name	dc.w	maxchars,2
+	dc.b	'%p'
 	ds.b	maxchars+4
 
 w2name	dc.w	maxchars

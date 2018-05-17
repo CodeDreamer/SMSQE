@@ -3,6 +3,20 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
 -----------------------------------------------------------------------------
+3.19
+    QPC SPECIFIC SOURCES INTEGRATED
+	dv3_qpc 			.	added
+	iod_con2_qpc			.	added
+	smsq_qpc			.	added
+	smsq_smsq_qpc_link		.	added
+	smsq_smsq_base_qpc_asm		.	added
+	smsq_smsq_config_keys		.	added
+	keys_socket			.	added
+	qmon_qpc_smsq			.	added
+
+    BUGFIX
+	ee_wman_swdef_asm		1.04	Fixed pending new-line bug in wm_csize (MK)
+-----------------------------------------------------------------------------
 
 3.18
     CSIZES IN APPLICATION SUBWINDOWS

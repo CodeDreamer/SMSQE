@@ -19,6 +19,7 @@ sms_xres   equ	$c	   ; word	initial x resolution
 sms_yres   equ	$e	   ; word	initial y resolution
 sms_acsir  equ	$16	   ; byte	ACSI auto detect removable (Atari)
 sms_nqimi  equ	$16	   ; byte	ignore qimi (Gold card)
+sms_winkbd equ	$16	   ; byte	use windows keyboard tables (QPC)
 sms_clock  equ	$17	   ; byte	clock speed (QXL)
 sms_128k   equ	$18	   ; byte	set if reset for small memory
 sms_dlan   equ	$1a	   ; word	default messages language

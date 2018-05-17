@@ -1,0 +1,62 @@
+AF_INET         equ     2       ; IP family
+INADDR_ANY      equ     0       ; any address
+
+; sockaddr_in
+sin_family      equ     $00     ; word  family (should be AF_INET)
+sin_port        equ     $02     ; word  port
+sin_addr        equ     $04     ; long  IP address
+sin_zero        equ     $08     ; 8 bytes spare
+sin.size        equ     $10
+
+IP.LISTEN           equ $50
+IP.SEND             equ $51
+IP.SENDTO           equ $52
+IP.RECV             equ $53
+IP.RECVFM           equ $54
+IP.GETOPT           equ $55
+IP.SETOPT           equ $56
+IP.SHUTDWN          equ $57
+IP.BIND             equ $58
+IP.CONNECT          equ $59
+IP.FCNTL            equ $5a
+
+IP.GETHOSTNAME      equ $5b
+IP.GETSOCKNAME      equ $5c
+IP.GETPEERNAME      equ $5d
+
+IP.GETHOSTBYNAME    equ $5e
+IP.GETHOSTBYADDR    equ $5f
+IP.SETHOSTENT       equ $60
+IP.ENDHOSTENT       equ $61
+IP.H.ERRNO          equ $62
+
+IP.GETSERVENT       equ $63
+IP.GETSERVBYNAME    equ $64
+IP.GETSERVBYPORT    equ $65
+IP.SETSERVENT       equ $66
+IP.ENDSERVENT       equ $67
+
+IP.GETNETENT        equ $68
+IP.GETNETBYNAME     equ $69
+IP.GETNETBYADDR     equ $6a
+IP.SETNETENT        equ $6b
+IP.ENDNETENT        equ $6c
+
+IP.GETPROTOENT      equ $6d
+IP.GETPROTOBYNAME   equ $6e
+IP.GETPROTOBYNUMBER equ $6f
+IP.SETPROTOENT      equ $70
+IP.ENDPROTOENT      equ $71
+
+IP.INET.ATON        equ $72
+IP.INET.ADDR        equ $73
+IP.INET.NETWORK     equ $74
+IP.INET.NTOA        equ $75
+IP.INET.MAKEADDR    equ $76
+IP.INET.LNAOF       equ $77
+IP.INET.NETOF       equ $78
+
+IP.IOCTL            equ $79
+IP.GETDOMAIN        equ $7a
+IP.H.STRERROR       equ $7b
+IP.ERRNO            equ $7c

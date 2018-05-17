@@ -1,7 +1,8 @@
-* Set sub-window definition  V1.02     1986  Tony Tebby   QJUMP
+* Set sub-window definition  V1.04     1986  Tony Tebby   QJUMP
 *
 * 2002-13-11  1.02  Adapted for high colour use (MK)
 * 2013-12-21  1.03  sw_swdfn sets character csizes according to working defn (wl)
+* 2014-02-03  1.04  Fixed pending new-line bug in wm_csize (MK)
 *
 	section wman
 *
@@ -56,6 +57,13 @@ wsw_exit
 * reset csize to 0,0 for wdw
 wm_csize
 	movem.l reglist,-(sp)
+
+* iow.ssiz will execute a pending new line, make sure none is pending
+	moveq	#iow.spix,d0
+	moveq	#0,d1
+	moveq	#0,d2
+	moveq	#-1,d3
+	trap	#3
 	bra.s	set_csz
 		  
 *
@@ -95,7 +103,6 @@ wm_swdfn
 	moveq	#iow.ssiz,d0		set size
 	moveq	#0,d1
 	moveq	#0,d2
-	trap	#14
 	move.b	wwa_xcsz(a3),d1 	set x csize
 	move.b	wwa_ycsz(a3),d2 	set y csize
 	trap	#3
@@ -105,9 +112,5 @@ wsw_ext2
 	movem.l (sp)+,reglist		restore registers
 	rts
 	
-
-
-
-
 
 	end

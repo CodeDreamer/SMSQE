@@ -1,0 +1,688 @@
+; DOS IO routines     V1.00     2000	Marcel Kilgus
+
+	section dos
+
+	xdef	dos_io
+
+	xref	iou_achb
+	xref	iou_rchb
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_chn'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_hdr'
+	include 'dev8_smsq_qpc_dos_data'
+	include 'dev8_smsq_qpc_keys'
+
+dos_io
+	cmpi.b	#$40,d0
+	bcs	dos_bio
+	cmpi.b	#$4f,d0
+	bhi.s	dos_ipar
+	add.w	d0,d0
+	move.w	atable-$80(pc,d0.w),d0
+	jmp	atable(pc,d0.w)
+
+atable	dc.w	dos_chek-atable
+	dc.w	dos_flsh-atable
+	dc.w	dos_posa-atable
+	dc.w	dos_posr-atable
+	dc.w	dos_ipar-atable
+	dc.w	dos_minf-atable
+	dc.w	dos_shdr-atable
+	dc.w	dos_rhdr-atable
+	dc.w	dos_load-atable
+	dc.w	dos_save-atable
+	dc.w	dos_rnam-atable
+	dc.w	dos_trnc-atable
+	dc.w	dos_date-atable
+	dc.w	dos_mkdr-atable
+	dc.w	dos_vers-atable
+	dc.w	dos_xinf-atable
+
+dos_ipar
+	moveq	#err.ipar,d0
+	rts
+
+;+++
+; Check and flush
+;---
+dos_chek
+dos_flsh
+	moveq	#0,d0
+	rts
+
+;+++
+; Alter file position
+;---
+dos_posa
+	moveq	#0,d0
+	bra.s	dos_pos
+dos_posr
+	moveq	#0,d0
+	move.l	chn_fpos(a0),d2
+dos_convert
+	subi.l	#hdr.len,d2	; minus header
+	add.l	d2,d1		; plus relative position
+	bvs.s	dos_eof
+dos_pos
+	move.l	d1,d2		; position
+	bmi.s	dos_start
+	addi.l	#hdr.len,d2	; plus header
+	bvs.s	dos_eof
+	cmp.l	chn_feof(a0),d2 ; File EOF
+	ble.s	dos_setpos
+dos_eof
+	moveq	#0,d1		; Later used as rel pos
+	move.l	chn_feof(a0),d2 ; Take end of file
+	moveq	#err.eof,d0
+	bra.s	dos_convert
+dos_start
+	moveq	#hdr.len,d2	; Internal file position
+	moveq	#0,d1		; "Official" file position
+dos_setpos
+	move.l	d2,chn_fpos(a0)
+	tst.l	d0
+	rts
+
+;+++
+; Media information
+;---
+dos_minf
+	movem.l d2-d3,-(a7)
+
+; old - derive device name from drive number = DOSx_
+;	 move.l  d0,(a1)+
+;	 move.l  #'_   ',(a1)+
+;	 move.w  #'  ',(a1)+
+
+	move.l	#'    ',d1	; first fill it up with spaces
+	move.l	d1,(a1)
+	move.l	d1,4(a1)
+	move.w	d1,8(a1)
+	moveq	#10,d1		; maximum length
+	bsr	dos_getdevicename
+	adda.w	d0,a1
+
+	move.b	iod_dnum(a4),d1
+	dc.w	qpc.dfree+1
+	lsr.l	#8,d3
+	lsr.l	#1,d3
+	cmp.l	#$ffff,d1
+	bgt.s	dos_minf1x
+	mulu	d3,d1
+	cmp.l	#$ffff,d1
+	ble.s	dos_minf1
+dos_minf1x
+	moveq	#-1,d1
+dos_minf1
+	swap	d1
+	cmp.l	#$ffff,d2
+	ble.s	dos_minf2x
+	mulu	d3,d2
+	cmp.l	#$ffff,d2
+	ble.s	dos_minf2
+dos_minf2x
+	moveq	#-1,d2
+dos_minf2
+	move.w	d2,d1
+	movem.l (a7)+,d2-d3
+	moveq	#0,d0
+	rts
+
+;+++
+; Save header
+;---
+dos_shdr
+	move.b	hdr_accs(a1),d0 ; attributes to set
+	lea	chn_name(a0),a2 ; file name
+	move.w	chn_drnr(a0),d2 ; drive number
+	dc.w	qpc.sfatr+2	; set file attributes
+	bmi.s	dos_rts
+
+	moveq	#14,d1
+	add.l	d1,a1
+	moveq	#0,d0
+dos_rts
+	rts
+
+;+++
+; Read header
+;---
+dos_rhdr
+	cmp.w	#hdr.len,d2
+	bhs.s	dos_rhdr_all
+
+	move.l	a1,-(a7)
+	lea	dos_header(pc),a1 ; working space
+	bsr.s	dos_rhdr_all
+	move.l	(a7)+,a1
+	lea	dos_header(pc),a2
+	move.l	d2,-(a7)
+	bra.s	dos_rlend
+
+dos_rloop
+	move.b	(a2)+,(a1)+
+dos_rlend
+	dbra	d2,dos_rloop
+	move.l	(a7)+,d2
+	move.w	d2,d1
+	moveq	#0,d0
+	rts
+
+dos_rhdr_all
+	move.l	d2,-(a7)
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.dsize+2
+;	 add.l	 #hdr.len,d2
+	move.l	d2,(a1)+	; file size
+
+	lea	chn_name(a0),a2 ; file name
+	move.w	chn_drnr(a0),d2 ; drive number
+	dc.w	qpc.dfatr+2	; get file attributes
+	move.b	d0,(a1)+	; access keys
+
+	moveq	#0,d0
+	cmp.b	#4,chn_accs(a0)
+	bne.s	dos_rhdr_dir
+	moveq	#-1,d0
+dos_rhdr_dir
+	move.b	d0,(a1)+	; file type
+	clr.l	(a1)+		; file dependant information
+	clr.l	(a1)+		; ...
+
+	move.l	a1,-(a7)
+	lea	chn_name(a0),a2
+	move.w	(a2)+,d2
+	move.w	d2,(a1)+
+	bra.s	dos_ralend
+dos_raloop
+	move.b	(a2)+,(a1)+
+dos_ralend
+	dbra	d2,dos_raloop
+	move.l	(a7)+,a1
+
+	lea	hdr.nmln+2(a1),a1
+	dc.w	qpc.ddate+1
+	move.l	d1,(a1)+	; file date
+	clr.w	(a1)+		; file version
+	clr.w	(a1)+		; reserved
+	move.l	d1,(a1)+	; backup date
+	move.l	(a7)+,d2
+	move.w	d2,d1
+	moveq	#0,d0
+	rts
+
+dos_header
+	ds.b	hdr.len 	; dirty
+
+;+++
+; Load file
+;---
+dos_load
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	move.l	d2,d0
+	dc.w	qpc.dread+1
+	bmi.s	dos_lend
+	add.l	d0,chn_fpos(a0)
+	add.l	d0,a1
+	moveq	#0,d0
+dos_lend
+	rts
+
+;+++
+; Save file
+;---
+dos_save
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	move.l	d2,d0
+	dc.w	qpc.dwrte+1
+	bmi.s	dos_send
+	add.l	d0,chn_fpos(a0)
+	add.l	d0,a1
+	dc.w	qpc.dsize
+	add.l	#hdr.len,d0
+	move.l	d0,chn_feof(a0)
+	moveq	#0,d0
+dos_send
+	rts
+
+;+++
+; Rename file
+;---
+dos_rnam
+;	 move.l  chn_hand(a0),d1
+;	 dc.w	 qpc.dclse	 ; close old file
+
+;	 move.w  chn_drnr(a0),d2 ; drive number
+;	 lea	 chn_name(a0),a2
+;	 dc.w	 qpc.drnam	 ; rename file
+;	 bmi.s	 dos_rnend
+
+;	 lea	 chn_name(a0),a1
+;	 dc.w	 qpc.dodir+1	 ; now open file again
+;	 move.l  d1,chn_hand(a0)
+dos_rnend
+;	 tst.l	 d0
+	moveq	#err.rdo,d0
+	rts
+
+;+++
+; Truncate file
+;---
+dos_trnc
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	dc.w	qpc.dtrnc	; truncate file
+	move.l	chn_fpos(a0),chn_feof(a0)
+	tst.l	d0
+	rts
+
+;+++
+; Make directory
+;---
+dos_mkdr
+	movem.l d1-d2/a1,-(a7)
+	cmp.b	#4,chn_accs(a0)
+	beq.s	dos_ichn
+
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.dsize+2
+	tst.l	d2
+	bne.s	dos_ichn
+
+	dc.w	qpc.dclse	; close opened file
+	move.w	chn_drnr(a0),d2 ; drive number
+	lea	chn_name(a0),a1
+	dc.w	qpc.ddele+1	; delete this file
+
+	dc.w	qpc.dmdir+1	; create directory
+	bne.s	dos_mdexit
+
+	lea	chn_name(a0),a1
+	dc.w	qpc.dodir+1	; now open it as a directory
+	bne.s	dos_mdexit
+	move.l	d1,chn_hand(a0)
+
+	move.l	#hdr.len,chn_fpos(a0)
+	move.l	#hdr.len,chn_feof(a0)
+	move.l	#4,chn_accs(a0)
+	moveq	#0,d0
+dos_mdexit
+	movem.l (a7)+,d1-d2/a1
+	rts
+
+dos_ichn
+	movem.l (a7)+,d1-d2/a1
+	moveq	#err.ichn,d0
+	rts
+
+;+++
+; Read date
+;---
+dos_date
+	move.l	d2,-(a7)
+	cmp.b	#2,d2		; backup date not supported
+	beq.s	dos_dateok
+
+	tst.l	d1
+	beq.s	dos_setcurdate	; set date to current date
+	cmp.l	#-1,d1
+	bne.s	dos_setdate	; set date to specified value
+
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.ddate+2
+	move.l	d2,(a1)+	; file date
+dos_dateok
+	move.l	(a7)+,d2
+	moveq	#0,d0
+	rts
+
+;+++
+; Set date
+;---
+dos_setcurdate
+	move.l	qpc_rtc,d1	; current date/time
+dos_setdate
+	move.l	d1,d2
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.sdate+2	; set date
+	move.l	d2,d1		; return date set
+	move.l	(a7)+,d2
+	tst.l	d0
+	rts
+
+;+++
+; Set or read file version
+;---
+dos_vers
+	moveq	#0,d0
+	rts
+
+;+++
+; Extended information
+;---
+dos_xinf
+	movem.l d1-d3/a1/a4,-(a7)
+	moveq	#0,d2
+	move.b	chn_drid(a0),d2
+	lsl.w	#2,d2
+	lea	sys_fsdd(a6),a4
+	move.l	(a4,d2.w),a4
+
+; old routine - just set DOSx_ as the name
+;	 move.w  #5,(a1)+		 ; ioi_name
+;	 move.l  #'DOS0',d0
+;	 add.b	 iod_dnum(a4),d0
+;	 move.l  d0,(a1)+
+;	 move.b  #'_',(a1)+
+;	 clr.b	 (a1)+
+;	 clr.w	 (a1)+
+;	 clr.l	 (a1)+
+;	 clr.l	 (a1)+
+;	 clr.l	 (a1)+
+
+	moveq	#20,d1
+	addq.w	#2,a1			; ioi_name
+	bsr	dos_getdevicename
+	move.w	d0,-2(a1)
+	add.w	#$14,a1
+
+	move.w	#3,(a1)+		; ioi_dnam
+	move.l	#'DOS'<<8,(a1)+
+	move.b	iod_dnum(a4),d1
+	move.b	d1,(a1)+		; ioi_dnum
+	clr.b	(a1)+			; ioi_rdon
+
+	dc.w	qpc.dfree+1
+	move.w	d3,(a1)+		; ioi_allc
+	move.l	d2,(a1)+		; ioi_totl
+	move.l	d1,(a1)+		; ioi_free
+
+	move.w	#$40,(a1)+		; ioi_hdrl
+	move.b	#2,(a1)+		; ioi_ftyp
+	clr.b	(a1)+			; ioi_styp
+	clr.b	(a1)+			; ioi_dens
+	move.b	#2,(a1)+		; ioi_mtyp
+	clr.b	(a1)+			; ioi_remv
+	moveq	#-1,d1
+	move.l	d1,(a1)+
+	move.l	d1,(a1)+
+	move.l	d1,(a1)+
+	move.w	d1,(a1)+
+	move.b	d1,(a1)+
+	movem.l (a7)+,d1-d3/a1/a4
+	moveq	#0,d0
+	rts
+
+;+++
+; Byte I/O
+;---
+dos_bio
+	cmpi.b	#7,d0
+	bhi	dos_ipar
+	add.w	d0,d0
+	move.w	btable(pc,d0.w),d0
+	jmp	btable(pc,d0.w)
+
+btable	dc.w	dos_test-btable
+	dc.w	dos_fbyt-btable
+	dc.w	dos_flin-btable
+	dc.w	dos_fmul-btable
+	dc.w	dos_nc-btable
+	dc.w	dos_sbyt-btable
+	dc.w	dos_nc-btable
+	dc.w	dos_smul-btable
+dos_nc
+	moveq	#err.nc,d0
+	rts
+
+;+++
+; Test I/O
+;---
+dos_test
+	move.l	chn_hand(a0),d1 ; DOS handle
+	dc.w	qpc.dsize	; Get file size in D0
+	addi.l	#hdr.len,d0
+	cmp.l	chn_fpos(a0),d0
+	bls.s	dos_testeof	; At end of file
+	moveq	#0,d0
+	rts
+dos_testeof
+	moveq	#err.eof,d0
+	rts
+
+;+++
+; Fetch byte
+;---
+dos_fbyt
+	move.l	d1,-(a7)
+	move.l	chn_hand(a0),d1 ; DOS handle
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	lea	chn_buff(a0),a1 ; Some memory space
+	moveq	#1,d0
+	dc.w	qpc.dread+1
+	bmi.s	dfb_exit
+	bcs.s	dfb_feof
+	add.l	d0,chn_fpos(a0)
+	moveq	#0,d0
+dfb_exit
+	move.l	(a7)+,d1
+	move.b	(a1),d1
+	tst.l	d0
+	rts
+
+dfb_feof
+	move.l	(a7)+,d1
+	moveq	#err.eof,d0
+	rts
+
+;+++
+; Fetch line
+;---
+dos_flin
+	movem.l d3-d4/a2,-(a7)
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	moveq	#0,d0		; Bytes remaining in internal buffer
+	moveq	#0,d3		; Bytes read
+
+dfl_loop
+	cmp.w	d2,d3
+	beq.s	dfl_bffl
+
+	tst.l	d0
+	bne.s	dfl_getfrombuffer
+
+	lea	chn_buff(a0),a2 ; Some memory space
+	moveq	#chn.buff,d0	; Buffer length
+	dc.w	qpc.dread+2
+	bmi.s	dfl_exit
+	tst.l	d0
+	beq.s	dfl_eof
+
+dfl_getfrombuffer
+	subq.l	#1,d0
+	addq.l	#1,d3		; One byte more "read"
+	move.b	(a2)+,d4	; Next byte
+
+	move.b	d4,(a1)+
+	cmp.b	#$a,d4
+	bne.s	dfl_loop
+dfl_ok
+	moveq	#0,d0
+dfl_exit
+	add.l	d3,chn_fpos(a0)
+	move.w	d3,d1
+	movem.l (a7)+,d3-d4/a2
+	tst.l	d0
+	rts
+
+dfl_bffl
+	moveq	#err.bffl,d0
+	bra.s	dfl_exit
+dfl_eof
+	moveq	#err.eof,d0
+	bra.s	dfl_exit
+
+;+++
+; Fetch multiple bytes
+;---
+dos_fmul
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	moveq	#0,d0
+	move.w	d2,d0
+	dc.w	qpc.dread+1
+	bmi.s	dos_fend
+	bcs.s	dos_feof
+	add.l	d0,chn_fpos(a0)
+	move.w	d0,d1
+	add.w	d0,a1
+	moveq	#0,d0
+dos_fend
+	rts
+dos_feof
+	add.l	d0,chn_fpos(a0)
+	move.w	d0,d1
+	add.w	d0,a1
+	moveq	#err.eof,d0
+	rts
+
+;+++
+; Save byte
+;---
+dos_sbyt
+	lea	chn_buff(a0),a1 ; Some memory space
+	move.b	d1,(a1) 	; Insert byte
+	move.l	chn_hand(a0),d1 ; DOS handle
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	moveq	#1,d0		; Ony byte
+	dc.w	qpc.dwrte+1	; Write it
+	bmi.s	dsb_exit
+	add.l	d0,chn_fpos(a0)
+	dc.w	qpc.dsize
+	add.l	#hdr.len,d0
+	move.l	d0,chn_feof(a0)
+	moveq	#0,d0
+dsb_exit
+	rts
+
+;+++
+; Save multiple bytes
+;---
+dos_smul
+	move.l	chn_hand(a0),d1
+	move.l	chn_fpos(a0),d0
+	subi.l	#hdr.len,d0
+	dc.w	qpc.dmove
+	moveq	#0,d0
+	move.w	d2,d0
+	dc.w	qpc.dwrte+1
+	bmi.s	dos_smend
+	add.l	d0,chn_fpos(a0)
+	add.w	d0,a1
+	move.l	d0,-(a7)
+	dc.w	qpc.dsize
+	add.l	#hdr.len,d0
+	move.l	d0,chn_feof(a0)
+	move.l	(a7)+,d1
+	andi.l	#$ffff,d1
+	moveq	#0,d0
+dos_smend
+	rts
+
+;+++
+; Derive drive name from device setting
+;
+; d0	 r	size of string
+; d1	c  p	size of buffer
+; a0	c  p	ptr to channel definition block
+; a1	c  p	address of buffer
+; a6	c  p	ptr to system variables
+;---
+dgdn.reg reg	d1-d2/a1/a3-a6
+dos_getdevicename
+	movem.l dgdn.reg,-(sp)
+
+	move.l	#$80,d0 	; size of buffer
+	suba.l	d0,a7		; reserve some space
+	move.l	a7,a4
+	move.l	d1,-(sp)
+
+	moveq	#0,d1
+	moveq	#0,d2
+	move.b	chn_drid(a0),d2
+	lsl.w	#2,d2
+	lea	sys_fsdd(a6),a3
+	move.l	(a3,d2.w),a3
+	move.b	iod_dnum(a3),d1 ; drive number
+
+	clr.w	(a4)
+	dc.w	qpc.gdbse+4	; get device setting
+	move.w	(a4)+,d0	; size of string
+	move.l	(sp)+,d1
+	move.l	a4,a5
+	cmp.w	#3,d0		; 3 is a special case ("c:\")
+	bls.s	dm_copy
+
+	add.w	d0,a5
+dm_endslash
+	suba.w	#1,a5
+	cmp.b	#'\',(a5)
+	bne.s	dm_stringend
+	cmpa.l	a4,a5
+	bne.s	dm_endslash
+dm_stringend
+	addq.w	#1,a5		; now one char past end of string
+	move.l	a5,a6
+	bra.s	dm_lookstartslash
+
+dm_startslashloop
+	subq.w	#1,a5
+	cmp.b	#'\',(a5)
+	beq.s	dm_startslash
+dm_lookstartslash
+	cmpa.l	a4,a5
+	bne.s	dm_startslashloop
+	subq.w	#1,a5
+dm_startslash
+	addq.w	#1,a5		; start of string for us
+	move.l	a6,d0
+	sub.l	a5,d0		; size of string
+	move.l	a5,a4
+dm_copy
+	tst.w	d0
+	beq.s	dm_end		; empty (should not be possible, but well...)
+	cmp.w	d1,d0
+	bgt.s	dm_startcopy
+	move.w	d0,d1		; string is smaller, only use d0 bytes
+dm_startcopy
+	move.w	d1,d0		; make a copy for caller
+dm_loop
+	move.b	(a4)+,(a1)+
+	subq.w	#1,d1
+	bne.s	dm_loop
+dm_end
+	adda.w	#$80,a7 	; restore stack
+	movem.l (sp)+,dgdn.reg
+	rts
+
+	end

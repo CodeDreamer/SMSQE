@@ -1,0 +1,65 @@
+; Close DOS	    V1.00     1997   Marcel Kilgus
+
+	section dos
+
+	xdef	dos_close
+
+	xref	iou_achb
+	xref	iou_rchb
+	xref	ioa_cknm
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_chn'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_qlv'
+	include 'dev8_smsq_qpc_dos_data'
+	include 'dev8_smsq_qpc_keys'
+
+dos_close
+	move.l	a0,-(sp)		; save pointer to strings
+	  bra.s   dos_realclose
+	lea	sys_fsch(a6),a1 	; scan linked list of fsd channels
+*
+dos_checkloop
+	move.l	(a1),d0 		; any more?
+	beq.s	dos_realclose		; ... no
+	cmp.l	(sp),d0
+	beq.s	dos_checkloop		; ... it's us
+	move.l	d0,a1
+	cmp.l	#chn_nchk,chn_nchk-chn_link(a1) ; no checking?
+	beq.s	dos_checkloop		; ... no
+
+	cmp.b	chn_drid-chn_link(a1),d6 ; same drive?
+	bne.s	dos_checkloop		 ; ... no, carry on
+	lea	chn_name-chn_link(a1),a4 ; name of file already open
+	move.l	(sp),a0
+	bsr.l	ioa_cknm		; check file name
+	bne.s	dos_checkloop		; ... no match
+	bra.s	dos_smsclose		; file open more than one time
+
+dos_realclose
+	move.l	(sp),a0
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.dclse
+	cmp.b	#4,chn_accs(a0)
+	bne.s	dos_smsclose
+
+	dc.w	qpc.ddelt		; Delete temporary directory file
+dos_smsclose
+	move.l	(sp)+,a0
+	moveq	#0,d0
+	move.b	chn_drid(a0),d0
+	lsl.b	#2,d0
+	lea	sys_fsdd(a6),a2
+	move.l	(a2,d0.w),a2
+	subq.b	#1,iod_nrfl(a2) 	; decrement file count
+	lea	chn_link(a0),a0
+	lea	sys_fsdt(a6),a1
+	move.w	mem.rlst,a4
+	jsr	(a4)			; unlink file from list
+	lea	-chn_link(a0),a0
+	move.w	mem.rchp,a4
+	jmp	(a4)
+
+	end

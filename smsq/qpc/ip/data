@@ -1,0 +1,13 @@
+; Data definitions for IP devices
+        nolist
+
+; IP linkage block
+ipd_end  equ    $b0
+
+; Channel definition block
+chn_data equ    $18             ; long  IP internal data handle
+chn_id   equ    $1c             ; long  ID to identify IP channels
+chn.id   equ    'IPID'
+chn_end  equ    $20
+
+        list

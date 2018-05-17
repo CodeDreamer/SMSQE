@@ -1,0 +1,15 @@
+program dev8_smsq_qpc_cdaudio_x
+
+section header
+section init
+section thing
+section exten
+section gen_util
+section utils
+
+input   dev8_smsq_qpc_cdaudio_base_rel
+input   dev8_smsq_qpc_cdaudio_thing_rel
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_thg_parm_rel
+library dev8_smsq_smsq_end_rel

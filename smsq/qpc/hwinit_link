@@ -1,0 +1,5 @@
+program dev8_smsq_qpc_hwinit
+
+input   dev8_smsq_qpc_hwinit_rel
+library dev8_smsq_smsq_version_rel
+library dev8_smsq_smsq_end_rel

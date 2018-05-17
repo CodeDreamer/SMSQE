@@ -736,7 +736,13 @@
 ; 3.17	Window move with transparency fixed for pulled-down wdws (WL).
 ;
 ; 3.18	Menu appsub wdws may have csizes for text objects (wl).
+;
+; 3.19	Integrated QPC specific code (MK).
+;	Fixed pending new-line bug in csize for appsub windows (MK).
 
-smsq_vers equ	 '3.18'
+
+smsq_vers equ	 '3.19'
 
 	end
+
+

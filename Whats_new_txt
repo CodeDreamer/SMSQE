@@ -23,6 +23,15 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 =====
+3.19
+=====
+
+QPC specific code integrated.
+appsub window CSIZE bugfix.
+
+
+
+=====
 3.18
 =====
 Different CSIZEs in application windows.

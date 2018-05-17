@@ -1,0 +1,16 @@
+program dev8_smsq_qpc_procs_x
+
+section header
+section init
+section thing
+section exten
+section utils
+section gen_util
+
+input   dev8_smsq_qpc_procs_base_rel
+input   dev8_smsq_qpc_procs_thing_rel
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_thg_parm_rel
+input   dev8_uti_usemenus_rel
+library dev8_smsq_smsq_end_rel

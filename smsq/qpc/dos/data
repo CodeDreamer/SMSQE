@@ -1,0 +1,18 @@
+; Data definitions for DOS
+        nolist
+
+; DOS disk linkage block
+dsd_end  equ    $b0
+
+; DOS physical definition
+
+dsd.plen equ    $50
+
+; Channel definition block
+
+chn_hand equ    $70             ; long  DOS file handle
+chn_buff equ    $74             ;       File buffer
+chn.buff equ    $2C             ;       Buffer length
+;chn_end  equ    $74
+
+        list

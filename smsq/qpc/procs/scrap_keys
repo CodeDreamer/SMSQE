@@ -1,0 +1,22 @@
+qss_thg equ     $00     ; long  Address of info thing
+qss_osm equ     $04     ; word  Old scrap modify counter
+qss_ocm equ     $06     ; word  Old clipboard modify counter
+
+qss_inf equ     $10     ;       INFO parameter block
+qss_typ equ     $10+$04 ; byte  Current type
+qss_cnt equ     $10+$0c ; word  Scrap modify count
+qss_bfl equ     $10+$14 ; long  Buffer length minimum
+
+qss_get equ     $30     ;       GET parameter block
+qss_dtp equ     $30+$03 ; byte  Data type
+qss_dst equ     $30+$04 ; long  Destination address
+qss_dbl equ     $30+$08 ; long  Length of destination buffer
+qss_usc equ     $30+$0c ; long  User supplied code
+
+qss_put equ     $40     ;       PUT parameter block
+qss_pdt equ     $40+$03 ; byte  Data type
+qss_pad equ     $40+$08 ; long  Source address
+qss_pfl equ     $40+$0c ; byte  Add string flag
+qss_puc equ     $40+$10 ; long  User supplied code
+
+qss_len equ     $60     ;       Buffer length

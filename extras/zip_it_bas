@@ -112,7 +112,7 @@
 1210   READ nbr%
 1220   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE ddr$&dest$
 1230   PRINT "Binaries done..."
-1240   DATA 12               : REMark ADJUST THIS if files are addded/removed
+1240   DATA 13               : REMark ADJUST THIS if files are addded/removed
 1250   DATA "dev8_smsq_atari_SMSQ.PRG", "atari_SMSQ.PRG"
 1260   DATA "dev8_smsq_gold_gold",      "GoldCard_bin"
 1270   DATA "dev8_smsq_gold_gold8",     "GoldCard_256colours_bin"
@@ -122,45 +122,46 @@
 1310   DATA "dev8_smsq_java_java",      "SMSQmulator"
 1320   DATA "dev8_ee_ptr_gen",          "ptr_gen"
 1330   DATA "dev8_ee_wman_wman",        "wman"
-1340   DATA "dev8_whats_new_txt",       "whats_new_txt"
-1350   DATA "dev8_changes_txt",         "changes_txt"
-1360   DATA "dev8_readme_txt",          "readme_txt"
-1370 END DEFine do_binaries
-1380 :
-1390 DEFine PROCedure z
-1400   LOCal lp%,zip$
-1410   RESTORE 1260
-1420   zip$=' -j9 '&'ram1_m.zip '
-1430   REPeat lp%
-1440     READ a$
-1450     IF a$="":EXIT lp%
-1460     zip$=zip$&a$&" "
-1470   END REPeat lp%
-1480   do_zip zip$
-1490 END DEFine z
-1500 :
-1510 DEFine PROCedure do_zip (zip$)
-1520   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-1530   EW dev1_progs_zip;zip$
-1540   s
-1550 END DEFine do_zip
-1560 :
-1570 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-1580 DATA "dev8_iod_con2_ptr_wremv_asm"
-1590 DATA ""
-1600 :
-1610 DEFine PROCedure do_copy
-1620 LOCal ddr$,lp%,a$ ,f$
-1630   ddr$="ram3_"
-1640   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
-1650   RESTORE 830
-1660   REPeat lp%
-1670     READ a$
-1680     IF a$="":EXIT lp%
-1690     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
-1700   END REPeat lp%
-1710   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
-1720   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
-1730   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
-1740 END DEFine do_copy
-1750 :
+1340   DATA "dev8_smsq_qpc_smsqe_bin",  "qpc_smsqe.bin"
+1350   DATA "dev8_whats_new_txt",       "whats_new_txt"
+1360   DATA "dev8_changes_txt",         "changes_txt"
+1370   DATA "dev8_readme_txt",          "readme_txt"
+1380 END DEFine do_binaries
+1390 :
+1400 DEFine PROCedure z
+1410   LOCal lp%,zip$
+1420   RESTORE 1260
+1430   zip$=' -j9 '&'ram1_m.zip '
+1440   REPeat lp%
+1450     READ a$
+1460     IF a$="":EXIT lp%
+1470     zip$=zip$&a$&" "
+1480   END REPeat lp%
+1490   do_zip zip$
+1500 END DEFine z
+1510 :
+1520 DEFine PROCedure do_zip (zip$)
+1530   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+1540   EW dev1_progs_zip;zip$
+1550   s
+1560 END DEFine do_zip
+1570 :
+1580 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+1590 DATA "dev8_iod_con2_ptr_wremv_asm"
+1600 DATA ""
+1610 :
+1620 DEFine PROCedure do_copy
+1630 LOCal ddr$,lp%,a$ ,f$
+1640   ddr$="ram3_"
+1650   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
+1660   RESTORE 830
+1670   REPeat lp%
+1680     READ a$
+1690     IF a$="":EXIT lp%
+1700     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
+1710   END REPeat lp%
+1720   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
+1730   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
+1740   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
+1750 END DEFine do_copy
+1760 :
