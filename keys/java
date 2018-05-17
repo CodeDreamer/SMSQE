@@ -56,7 +56,7 @@ jt5.xs2cp	equ	  17		;   transfer from scrap to clopboard
 jt5.time	equ	  18		;   get time from java
 jt5.mbar	equ	  19		;   make menu bar visible
 jt5.comb	equ	  20		;   alpha combine 2 blocks
-
+jt5.xblk	equ	  21		;   xor colour into block
 
 ; smsqmultor config info flag
 

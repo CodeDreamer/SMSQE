@@ -2,7 +2,7 @@
 ; replacement window move routine, moves wdw or outline about the screen
 ; this uses the gu_achp and gu_rchp calls, include them;
 ; this only works when using a mouse!!!
-; copyright (c) w. lenerz 1991 - 2003 and many routines adapted from TT!
+; copyright (c) w. lenerz 1991 - 2013 and many routines adapted from TT!
 ; 2003-05-27	v. 1.12        - totally revamped version
 ; 2003-05-28	v. 1.13 	prov version for QPC + better ptr handling (mk)
 ; 2003-06-03	v. 1.14 	common version for all machines
@@ -13,6 +13,7 @@
 ; 2005-01-21	v. 1.17 	outline move: spurious outline :fixed (wl)
 ; 2012-04-21	v. 1.18 	check for smsqmulator made when testing for ptr move (wl)
 ; 2013-04-28	v. 1.19 	added wdw move with alpha blending (wl)
+; 2013-10-07	v. 1.20 	bugfix for alpha move of pulled down wdw (wl)
 ;
 ;---------------------------------------------------------------------------
 	section wman
@@ -65,8 +66,8 @@ ptr_rec equ	limits+8		; my pointer record
 psp	equ	ptr_rec+24		; ptr to (old) pointer sprite
 kpoint	equ	psp+4			; space for pointer orig rel to wdw
 dsize	equ	kpoint+4		; destination size
-dsize2	equ	dsize+4 		; small wdw destination size
-mptr	equ	dsize2+4		; my window save area
+dsize2	equ	dsize+4 		; my wdw save area row incrment
+mptr	equ	dsize2+4		; save area for my window only
 xyoff	equ	mptr+4			; xyoffset if secondary wdw
 spec4	equ	xyoff+4 		; special add if mode 4 & pulled down!
 chblk	equ	spec4+4 		; channel defn block
@@ -82,8 +83,10 @@ alphav	equ	mtyp+1			; alpha value (byte)
 spare	equ	alphav+1		; spare to make even
 spxlw	equ	spare+1
 rpxlw	equ	spxlw+2 		; constants for pixel calculations
-sarea	equ	rpxlw+2 		; save area
-my_space equ	sarea+4 		; some slack space
+sarea	equ	rpxlw+2 		; save area for entire screen (if wdw is primary) or for primary
+					; = source area 2
+savorig equ	sarea+4 		; orig of this area
+my_space equ	savorig+4		; some slack space
 tot_mem equ	my_space+16		; (8 bytes needed)
 
 ; "some" regs to save
@@ -176,10 +179,10 @@ changewin
 	bne	errexit2		; ooops ->....
 	move.l	4(a1),xyoff(a5) 	; xy origin (should 0,0 for primary wdws)
 	move.b	ww_pulld(a4),d0 	; wdw pulled down?
-	beq.s	mv_save 		; no
+	beq.s	mv_save 		; no, so it's a primary wdw
 	move.b	pt_dmode(a3),d0 	; display mode
 	bne.s	mv_save 		; not mode 4!
-	move.w	4(a1),d0		; now mode 4  klugdg eif not on byte boundary
+	move.w	4(a1),d0		; now mode 4  kludge if not on byte boundary
 	divs	#8,d0			; x orig - on byte boundary?
 	swap	d0			; this is 4 or 0
 	move.w	d0,spec4(a5)		; special mode 4 kludge
@@ -253,6 +256,9 @@ no_qpc
 	tst.l	d0			; OK?
 	bne	errexit3		; no!!!!
 	move.l	chblk(a5),a2		; get pointer to chan defn block
+	move.l	sd_xhito(a2),d0
+	neg.l	d0
+	move.l	d0,savorig(a5)		; (negative) wdw orig in screen
 	clr.l	d2
 	move.w	sd_xouts(a2),d2 	; set x size
 	clr.l	d0
@@ -388,7 +394,7 @@ pt_prest
 	movem.l rstregs,-(sp)
 	move.l	chblk(a5),a0		; get pointer to chan defn block
 	move.l	dsize(a5),a2		; and increment
-	move.l	d1,d2			; orig in save area
+	move.l	d1,d2			; orig in save area (source area 1)
 	movem.l (a1),d1/d3		; size & orig of wdw
 	add.l	sd_xmin(a0),d3		; true origin in screen
 	move.l	sd_wsave(a0),a4 	; save area base
@@ -422,7 +428,7 @@ ptr_ok	movem.l (sp)+,rstregs
 
 tot_which				; do we do a normal or an alpha move?
 	tst.b	mtyp(a5)
-	beq.s	tot_rest
+	beq.s	tot_rest		; nomal move
 	bra.s	tot_alpha
 		
 tot_save				; save entire wdw into save area
@@ -438,20 +444,22 @@ tot_rest
 	movem.l rstregs,-(sp)		; keep regs
 	bsr.s	cprm
 	bra.s	cpy_jmp
-; same as above, but alpha in the entire wdw from backgtound save area to screen
+
+; same as above, but alpha in the entire wdw from background save area to screen
+; source area 2 is the background, i.e. the entire screen, or the primaty if wdw is pulled down
 tot_alpha
 	movem.l rstregs,-(sp)		; keep regs
-	move.l	sarea(a5),a1		; point to save area for background (source2)
+	move.l	sarea(a5),a1		; point to save area for background (source area2)
 	clr.l	d6
-	move.b	alphav(a5),d6
+	move.b	alphav(a5),d6		; alpha value
+	move.l	dsize(a5),d7		; source area 2 row increase
+	move.l	savorig(a5),d4		; (negative) wdw orig
 	bsr.s	cprm			; (destroys a5)
 	tst.b	d6			; would wdw be totally transparent?
 	beq.s	cpy_jmp 		; yes, this doesn't make sense, use totally opaque instead
 	cmp.b	#255,d6
 	beq.s	cpy_jmp 		; use faster routine if totally opaque
-	move.l	a3,d7			; destination (screen) row increment
-	addq.l	#4,d7			; source2 row inc  = dest inc + 4
-	move.l	d3,d4			; origin of source 2 is same as in destination
+	add.l	d3,d4			; orig in source area 2
 	move.l	sys_clnk(a6),a0
 	move.l	pt_vecs(a0),a0
 	jsr	pv_cmbbk(a0)		; combine window save area & backgound save area
@@ -460,13 +468,13 @@ tot_alpha
 	    
 ; calculate parameters (adapted from TT's code!)
 cprm	move.l	xysz(a5),d1		; set size
-	clr.l	d2			; origin in save area always top left
-	move.l	winorg(a5),d3		; set destiantion origin
+	clr.l	d2			; origin in save area always top left, source area 1
+	move.l	winorg(a5),d3		; set destination area origin
 	move.l	chblk(a5),a0		; channel defn block
-	move.l	dsize2(a5),a2		; source inscrement
-	move.l	bytel(a5),a3		; screen increment
-	move.l	mptr(a5),a4		; source base address
-	move.l	sd_scrb(a0),a5		; screen base
+	move.l	dsize2(a5),a2		; row increment source area1
+	move.l	bytel(a5),a3		; screen (destination area) increment
+	move.l	mptr(a5),a4		; source area1 base address
+	move.l	sd_scrb(a0),a5		; screen (destination) base
 	rts
       
 ; calculate the amount of memory needed for a save area of a given size

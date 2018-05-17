@@ -2,6 +2,13 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
+
+3.17
+    BUGFIXES
+	ee_wman_move_asm		1.20	Window move with transparency fixed for pulled-down wdws L
+
+
+-----------------------------------------------------------------------------
 3.16
     BUGFIXES
 	iod_con2_aur8_colrm_asm 	1.01	Fixed striped colours in COLOUR_NATIVE mode (MK)

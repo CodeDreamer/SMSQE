@@ -732,7 +732,9 @@
 ;
 ; 3.16	COLOUR_NATIVE for aurora modes fixed (MK).
 ;	Window move with transparency implemented (for display modes 16, 32 and 33) (wl).
+;
+; 3.17	Window move with transparency fixed for pulled-down wdws (WL).
 
-smsq_vers equ	 '3.16'
+smsq_vers equ	 '3.17'
 
 	end

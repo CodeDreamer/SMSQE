@@ -90,7 +90,13 @@ bm_xblok
 	bra.s	cnx_blke
 
 cn_xblock
-	bsr	cnb_setuc		; set up the colours and counters
+
+	moveq	#jt5.xblk,d0
+	dc.w	jva.trp5
+	bne.s	xb2
+	rts
+
+xb2	bsr	cnb_setuc		; set up the colours and counters
 	beq.s	cnx_one 		; special case for small blocks
 	bra.s	cnx_blke
 
@@ -181,11 +187,11 @@ bm_block
 
 
 cn_fblock
-	moveq	#5,d0
+	moveq	#jt5.fill,d0
 	dc.w	jva.trp5
-	cmp.l	#-14,d0
-	beq.s	cb2
+	bne.s	cb2
 	rts
+
 cb2	bsr	cnb_setuc		; set up the colours and counters
 	beq.s	cnb_one 		; special case for small blocks
 	bra.s	cnb_blke

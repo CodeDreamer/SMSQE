@@ -95,7 +95,12 @@ bm_xblok
 	bra.s	cnx_blke
 
 cn_xblock
-	bsr	cnb_setuc		; set up the colours and counters
+	moveq	#-jt5.xblk,d0
+	dc.w	jva.trp5
+	bne.s	cb3
+	rts
+
+cb3	bsr	cnb_setuc		; set up the colours and counters
 	bra.s	cnx_blke
 
 cnx_loop
@@ -127,6 +132,8 @@ cnx_exit
 	moveq	#0,d0
 	rts
 
+
+
 ;	Drop a block in
 
 bm_block
@@ -136,8 +143,7 @@ bm_block
 cn_fblock
 	moveq	#-jt5.fill,d0
 	dc.w	jva.trp5
-	cmp.l	#-14,d0
-	beq.s	cb2
+	bne.s	cb2
 	rts
 
 cb2	bsr	cnb_setuc		; set up the colours and counters
