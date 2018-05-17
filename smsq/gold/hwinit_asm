@@ -1,5 +1,5 @@
 ; SMSQ Q40 Hardware Initialisation V3
-
+; 2003-05-18			3.00	config item for massage language (wl)
 ; Called with a7 a valid, safe stack
 ;	      d4 the host (QDOS) version number
 ; The hardware is initialised.
@@ -54,21 +54,25 @@ glc_sqr  dc.b	0
 glcxser2 dc.b	0
 glcxbflp dc.b	1
 glcxbwin dc.b	1
-glc_lang dc.w	44
-glcxbtarg dc.b	0
+glc_lang dc.w	44			; 6
+glcxbtarg dc.b	0			; 8
 glcxbpart dc.b	0
-glc_scr  dc.b	0
+glc_scr  dc.b	0			; a
 glc_mode dc.b	0
-glcxidisp dc.b	0,0,0,0,0,0,0,0,0,0
-glc_nqimi dc.b	0
+glcxidisp dc.b	0,0,0,0,0,0,0,0,0,0	; c
+glc_nqimi dc.b	0			; 16
 glc_clock dc.b	0
-glcxxxx   dc.b	0,0,0,0
+glcxxxx   dc.b	0,0			; 18
+qcf_mlan  dc.w	44
 glc.conf  equ	*-glc_cx
 
 	mkcfhead {SMSQ},{smsq_vers}
 
 	mkcfitem 'OSPL',word,0,glc_lang,,,\
-       {Country Code (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
+       {Default Keyboard language (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
+
+	mkcfitem 'OSPM',word,'L',qcf_mlan,,,\
+       {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	mkcfitem 'OSPi',code,0,glc_nqimi,,,\
        {Do you wish to ignore the QIMI interface},0,N,{No},$ff,Y,{Yes}

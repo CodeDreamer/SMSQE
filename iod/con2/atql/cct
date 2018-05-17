@@ -1,6 +1,7 @@
 dev8_iod_con2_ptr_setup_rel
 dev8_iod_con2_ptr_init_rel
 dev8_iod_con2_ptr_install_rel
+dev8_iod_con2_ptr_vec_rel
 dev8_iod_con2_ql_defs_rel
 dev8_iod_con2_atql_procv_rel
 dev8_iod_con2_atql_disp_size_rel
@@ -73,6 +74,7 @@ dev8_iod_con2_ptr_wchk_rel
 dev8_iod_con2_ptr_tstov_rel
 dev8_iod_con2_ptr_wsave_rel
 dev8_iod_con2_ptr_sadd_rel
+dev8_iod_con2_ptr_sysspr_rel
 
 dev8_iod_con2_ql_smulc_rel
 dev8_iod_con2_ql_mblock_rel
@@ -90,7 +92,7 @@ dev8_iod_con2_ql_sprite_drop_rel
 dev8_iod_con2_ql_sprite_move_rel
 dev8_iod_con2_ql_sprite_ptr_rel
 dev8_iod_con2_ql_sprite_save_rel
-dev8_iod_con2_ql_sprite_0_rel
+dev8_iod_con2_ptr_zero_rel
 
 dev8_smsq_kbd_keyrow_rel
 

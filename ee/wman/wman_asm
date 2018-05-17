@@ -1,51 +1,62 @@
-* Link in the Window Manager Routines  V1.00   1986  Tony Tebby  QJUMP
+* Link in the Window Manager Routines  V1.01   1986  Tony Tebby  QJUMP
+*						2002  Marcel Kilgus
 *
-        section base
+* 2002-11-13  1.01  Intialises system palette (MK)
 *
-        xref    wm_entry 
-        xref    met_nptr
-        xref    met_pver
+* THIS FILE IS NOT USED IN SMSQ/E, it is for stand-alone WMAN only!
+* smsq_smsq_wman_asm is for SMSQ/E. I adapted it nontheless. Untested! (MK)
 
-        xref.l  wm.pver
+	section base
+*
+	xref	wm_entry
+	xref	wm_initsp
+	xref	met_nptr
+	xref	met_pver
+
+	xref.l	wm.pver
 
 *
-        include dev8_keys_qdos_io
+	include dev8_keys_qdos_sms
+	include dev8_keys_qdos_io
+	include dev8_keys_con
 *
-pt_wman equ     $28
-*
-        bra.l   start
-        section language
-        section wman
+	bra.l	start
+	section language
+	section wman
 start
-        sub.l   a0,a0
-        moveq   #iop.pick,d0            pick command window
-        moveq   #0,d1
-        moveq   #0,d2
-        moveq   #-1,d3
-        trap    #3
+	sub.l	a0,a0
+	moveq	#iop.pick,d0		pick command window
+	moveq	#0,d1
+	moveq	#0,d2
+	moveq	#-1,d3
+	trap	#3
 
-        moveq   #iop.pinf,d0            info
-        trap    #3
-        tst.l   d0
-        bne.s   wm_nptr
-        lea     met_pver,a1             error message
-        cmp.l   #wm.pver,d1             up to date?
-        blt.s   wm_perr                 ... no
+	moveq	#iop.pinf,d0		info
+	trap	#3
+	tst.l	d0
+	bne.s	wm_nptr
+	lea	met_pver,a1		error message
+	cmp.l	#wm.pver,d1		up to date?
+	blt.s	wm_perr 		... no
 
-        pea     wm_entry(pc)            find our entry vector
-        move.l  sp,a1
-        moveq   #iop.slnk,d0            set linkage
-        moveq   #pt_wman,d1             the window manager vector
-        moveq   #4,d2                   4 bytes
-        trap    #3
-        addq.l  #4,sp                   clean up stack
-        tst.l   d0
-        beq.s   wm_rts
+	bsr	wm_initsp		initialise system palette
+	bne.s	wm_rts
+
+	pea	wm_entry(pc)		find our entry vector
+	move.l	sp,a1
+	moveq	#iop.slnk,d0		set linkage
+	moveq	#pt_wman,d1		the window manager vector
+	moveq	#4,d2			4 bytes
+	trap	#3
+	addq.l	#4,sp			clean up stack
+
+	tst.l	d0
+	beq.s	wm_rts
 wm_nptr
-        lea     met_nptr,a1
+	lea	met_nptr,a1
 wm_perr
-        move.l  a1,d0
-        bset    #31,d0
+	move.l	a1,d0
+	bset	#31,d0
 wm_rts
-        rts
-        end
+	rts
+	end

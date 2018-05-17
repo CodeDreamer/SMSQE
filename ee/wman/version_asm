@@ -130,7 +130,13 @@
 ;	V1.52	       and checks explicitly for D3 reset by app sw hit
 ;
 ;	V1.53	       underscore checks improved
-
-wm_vers equ	'1.53'
-wm.pver equ	'1.62'
+;
+;	V1.54	       high colour definition introduced (early test version)
+;
+;	V2.00	       high colour changes finished (MK)
+;		       introduced system palette (MK)
+;		       wm.setsp, wm.getsp, wm.trap3 added
+;		       rewrote most of the scroll/pan bar draw routines (MK)
+wm_vers equ	'2.00'
+wm.pver equ	'2.00'
 	end

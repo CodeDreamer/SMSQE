@@ -1,0 +1,66 @@
+; CON driver vectored routines table  V1.00		2003  Marcel Kilgus
+; 2003-05-13	v. 1.01 	added pt_size	(wl)
+	section driver
+
+	xdef	pv_table
+
+	xref	pt_fspr
+	xref	pt_sspr
+	xref.l	pt.vers
+
+	xref.s	pt.spxlw
+	xref.s	pt.rpxlw
+
+	include 'dev8_keys_con'
+
+; Table entries are 6 bytes long. This way we can also handle really large jumps
+pv_table
+	jmp	pt_pinf 		; $00
+	nop
+	jmp	pt_fspr 		; $06
+	nop
+	jmp	pt_sspr 		; $0c
+	nop
+	jmp	pt_size 		; $10
+	nop
+;+++
+;  PV_PINF	 $00
+;
+;  Call parameters			Return parameters
+;  D1					D1   pointer version number
+;  D2					D2   preserved
+;  D3					D3   preserved
+;
+;  A0					A0   preserved
+;  A1					A1   pointer to WMAN
+;  A2					A2   preserved
+;  A3	pointer to CON linkage block	A3   preserved
+;---
+pt_pinf
+	move.l	#pt.vers,d1		; set pointer version number
+	move.l	pt_wman(a3),a1		; and interface vector
+	moveq	#0,d0
+	rts
+
+;+++
+; PV_SIZE	$10
+;
+;  Call Parameters			return parameters
+;  D0					D0   pt.spxlw | pt.rpxlw
+;  D1					D1   preserved
+;  D2					D2   preserved
+;  D3					D3   preserved
+;
+;  A0					A0   preserved
+;  A1					A1   preserved
+;  A2					A2   preserved
+;  A3	pointer to CON linkage block	A3   preserved
+;----
+pt_size
+	move.w	#pt.spxlw,d0
+	swap	d0
+	move.w	#pt.rpxlw,d0
+	rts
+
+
+	end

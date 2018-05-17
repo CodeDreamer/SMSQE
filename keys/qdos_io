@@ -170,6 +170,8 @@ iopp.frz equ      -3  ;   set freeze
 iop.swdf equ    $7d   ; set window definition
 iop.wsav equ    $7e   ; locate and save window
 iop.wrst equ    $7f   ; restore window
+iop.fspr equ    $80   ; find fitting sprite definition
+iop.sspr equ    $81   ; set/get system sprite
 
 ; timeout keys
 

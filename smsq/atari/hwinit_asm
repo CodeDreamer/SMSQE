@@ -1,5 +1,5 @@
 ; SMSQ Atari Hardware Initialisation V3
-
+; 2003-05-18			3.01	added message language coinfig item (wl)
 ; Called with A7 a valid, safe stack
 ; The hardware is initialised.
 ; If d7 = 0	the RAM is setup.
@@ -54,23 +54,24 @@ asq_fram dc.b	$ff
 asq_cx
 asq_adpt dc.b	0
 asq_par  dc.b	0
-asq_ser1 dc.b	0
+asq_ser1 dc.b	0		; 2
 asq_ser2 dc.b	0
-asq_bflp dc.b	1
+asq_bflp dc.b	1		; 4
 asq_bwin dc.b	1
-asq_lang dc.w	44
-asq_targ dc.b	0
+asq_lang dc.w	44		; 6
+asq_targ dc.b	0		; 8
 asq_part dc.b	0
-asq_scsh dc.w	512
-asq_scsv dc.w	256
-asq_scrv dc.w	50
-asq_scrh dc.w	15625
-asq_scbh dc.w	128
-asq_scbv dc.w	0
-asq_ascr dc.b	-1
+asq_scsh dc.w	512		; a
+asq_scsv dc.w	256		; c
+asq_scrv dc.w	50		; e
+asq_scrh dc.w	15625		; 10
+asq_scbh dc.w	128		; 12
+asq_scbv dc.w	0		; 14
+asq_ascr dc.b	-1		; 16
 	 dc.b	0
+	 dc.w	0		; 18
+qcf_mlan dc.w	44		; 1a
 	 dc.w	0
-
 	xref.l	smsq_vers
 	mkcfhead {SMSQ},{smsq_vers}
 
@@ -80,8 +81,11 @@ asq_ascr dc.b	-1
 	mkcfitem 'OSPP',byte,'P',asq_part,,,\
        {WIN1 partition number},0,11
 
-	mkcfitem 'OSPL',word,'L',asq_lang,,,\
-       {Default Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
+	mkcfitem 'OSPK',word,'L',asq_lang,,,\
+       {Default Keyboard Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
+
+	mkcfitem 'OSPL',word,'L',qcf_mlan,,,\
+       {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	mkcfitem 'OSPF',code,'F',asq_fram,,,\
        {Use Fast RAM if exists},$ff,Y,{Yes},$00,N,{No}

@@ -1,4 +1,9 @@
 ; SBAS_CMPSTT - Compile Statement Table     V2.00     1994 Tony Tebby
+;
+; 2003-02-03  2.01  Fixed bug in the handling of dynamically sized compiler
+;		    tokens (i.e. only bo.formp).
+;		    In this case a PROCedure with 358 parameters (sic! I'm not
+;		    kidding, this was real life code!) crashed SBasic (MK)
 
 	section sbas
 
@@ -82,7 +87,7 @@ scs_exten
 	add.w	d0,d0			 ; in words
 scs_copy
 	move.w	(a1)+,(a3)+		 ; 2 byte
-	subq.b	#2,d0
+	subq.w	#2,d0			 ; ** in 2.01
 	bgt.s	scs_copy
 	bra.s	scs_loop
 

@@ -1,5 +1,6 @@
 * Read pointer	 V1.06	   1986  Tony Tebby   QJUMP
-*
+* 2003-01-24	1.07	calls sprite drawing routine also when current item status change (wl)
+* 2003 May 15	1.08	don't redraw sprites with no sprite block
 	section wman
 *
 	xdef	wm_rptr
@@ -49,7 +50,7 @@ rptr_do
 	rts
 *
 wrp_outwn
-	jsr    wm_clrci 		 ; clear current area
+	bsr    wm_clcit 		 ; clear current area
 	move.l #1<<31+pt.inwin,d5	 ; ignore key on back in window
 	clr.w  d6
 	bra.s  read_pointer
@@ -109,7 +110,7 @@ wrp_srev
 	cmp.l	#err.nc,d0
 	blt.l	wrp_exit		 ; ... oops
 	bgt.s	wrp_act 		 ; ... good
-
+					 ; ok, here pointer call returned err.nc
 	tst.l	d6			 ; new version?
 	bpl.s	wrp_basic
 
@@ -160,7 +161,7 @@ wrp_norm
 *
 * process event keystroke
 *
-	bsr.l	wm_clrci		 ; clear current item
+	bsr	wm_clcit		 ; clear current item
 wrp_ekey
 	move.l	ww_plitm(a4),d0 	 ; pointer to loose item list
 	beq.l	wrp_ewin		 ; ... none
@@ -195,7 +196,7 @@ wrp_chit
 	bsr.l	wm_chit 		 ; check hit area
 	beq.s	wrp_ckin		 ; ... same hit area, check key
 wrp_clear
-	bsr.l	wm_clrci		 ; clear current item
+	bsr	wm_clcit		 ; clear current item
 	bra.s	wrp_ckey		 ; ... ok, check key
 *
 * check for loose menu item keystroke
@@ -204,39 +205,39 @@ wrp_ckin
 	tst.b	d2			 ; any key?
 	beq.l	wrp_swind		 ; no, same area, do sub_window
 wrp_ckey
-	cmp.b	#k.do,d2		 ; was it no key, hit or do?
-	bls.l	wrp_newci		 ; ... yes, check for new hit area
-	move.l	ww_plitm(a4),d0 	 ; pointer to loose item list
-	beq.s	wrp_ssel		 ; ... none, check sub-windows for key
+	cmp.b	#k.do,d2		; was it no key, hit or do?
+	bls.l	wrp_newci		; ... yes, check for new hit area
+	move.l	ww_plitm(a4),d0 	; pointer to loose item list
+	beq.s	wrp_ssel		; ... none, check sub-windows for key
 	move.l	d0,a3
 wrp_lkey
-	tst.w	(a3)			 ; any more items?
-	blt.s	wrp_ssel		 ; ... no
-	move.w	wwl_item(a3),d3 	 ; item number
-	cmp.b	wwl_skey(a3),d2 	 ; matching keystroke?
-	beq.s	wrp_lkset		 ; ... yes
-	add.w	#wwl.elen,a3		 ; ... no
-	bra.s	wrp_lkey		 ; try next
+	tst.w	(a3)			; any more items?
+	blt.s	wrp_ssel		; ... no
+	move.w	wwl_item(a3),d3 	; item number
+	cmp.b	wwl_skey(a3),d2 	; matching keystroke?
+	beq.s	wrp_lkset		; ... yes
+	add.w	#wwl.elen,a3		; ... no
+	bra.s	wrp_lkey		; try next
 *
 wrp_lkset
-	moveq	#pt.inwin,d5		 ; force recheck
-	bsr.l	wm_clrci		 ; clear current item
-	bra.l	wrp_lstat		 ; ... and do loose menu item status
+	moveq	#pt.inwin,d5		; force recheck
+	bsr	wm_clcit		; clear current item
+	bra.l	wrp_lstat		; ... and do loose menu item status
 *
 * check for sub-window selection keystroke
 *
 wrp_ssel
-	move.l	ww_pappl(a4),d0 	pointer to application sub-window list
-	beq.l	read_pointer		... none, try again
+	move.l	ww_pappl(a4),d0 	;  pointer to application sub-window list
+	beq.l	read_pointer		; ... none, try again
 	move.l	d0,a2
-	moveq	#-1,d3			count sub-windows
+	moveq	#-1,d3			; count sub-windows
 wrp_skey
-	move.l	(a2)+,d0		any more sub-windows?
-	ble.l	wrp_swind		... no
-	addq.w	#1,d3			next
-	move.l	d0,a3			pointer to sub-window
-	cmp.b	wwa_skey(a3),d2 	matching keystroke?
-	bne.s	wrp_skey		... no
+	move.l	(a2)+,d0		; any more sub-windows?
+	ble.l	wrp_swind		; ... no
+	addq.w	#1,d3			; next
+	move.l	d0,a3			; pointer to sub-window
+	cmp.b	wwa_skey(a3),d2 	; matching keystroke?
+	bne.s	wrp_skey		; ... no
 *
 * sub-window has been selected
 *
@@ -295,7 +296,7 @@ wrp_swsel
 	moveq	#-1,d2			 ; sub-window select
 	moveq	#0,d4			 ; no event
 	clr.w	d6			 ; not select now
-	jsr	wm_clrci		 ; clear current item
+	bsr	wm_clcit		 ; clear current item
 
 * check if in sub_window
 *
@@ -344,14 +345,22 @@ wrp_limark
 	cmp.b	#wsi.unav,ws_litem(a1,d3.w)
 	beq.l	read_pointer		 ; unavailable, try again
 *
-	move.w	d3,ws_citem(a1) 	set current item
-	move.l	ww_lattr(a4),ws_cibrw(a1) set border attributes
-	move.l	wwl_xsiz(a3),ws_cihxs(a1) and hit area
+; here we have:
+; A0 = channel ID
+; A1 = status area
+; A3 = pointer to (loose) item
+; A4 = working defn
+	move.w	d3,ws_citem(a1) 	; set current item
+*
+	bsr	wc_ldraw		; redraw this item now
+*
+	move.l	ww_lattr(a4),ws_cibrw(a1) ; set border attributes
+	move.l	wwl_xsiz(a3),ws_cihxs(a1) ; and hit area
 	move.l	wwl_xorg(a3),d0
-	add.l	wsp_xorg(a1),d0 	... absolute
+	add.l	wsp_xorg(a1),d0 	; ... absolute
 	move.l	d0,ws_cihxo(a1)
 	bsr.l	wm_drbdr
-	move.w	ww_wattr+wwa_papr(a4),ws_cipap(a1) set paper colour
+	move.w	ww_wattr+wwa_papr(a4),ws_cipap(a1) ; set paper colour
 *
 * check for HIT in loose menu item
 *
@@ -444,4 +453,98 @@ wrp_cret
 	move	d7,ccr
 	movem.l (sp)+,callreg
 	rts
+
+*******
+*  redraw "current item" when it no longer is the current item
+*  (only for sprites)
+*  +
+*  clear current item (all item types)
+*
+*	d0  r	error return from wm_clrci
+*	a0 c  p channel ID of window
+*	a1 c  p pointer to window status area
+*	a4 c  p pointer to working definition
+*		all other registers preserved
+*
+********
+
+clcreg	reg	d1/d3/a2/a3
+wm_clcit
+	move.w	ws_citem(a1),d0 	; is there a current loose item?
+	bmi.s	wci_rts2		; ... no
+; now we have to find the item that corresponds to the current item
+; by searching through the item list until we find the item whose item
+; nbr is that of the current item
+	movem.l clcreg,-(sp)
+	move.l	ww_plitm(a4),a3 	; point to item list
+wci_tst cmp.w	#-1,(a3)		; end of list reached?
+	beq.s	wci_rts 		; ... yes !!!!
+	cmp.w	wwl_item(a3),d0 	; is it THIS loose item?
+	beq.s	wci_fnd 		; ... yes
+	add.l	#wwl.elen,a3		; ... no, point next loose item in list
+	bra.s	wci_tst
+wci_fnd 				; a3 now points item
+	move.l	ws_ciact(a1),d0 	; current item action routine
+	beq.s	wci_do			; there is none, do it now!
+	cmp.l	wwl_pact(a3),d0 	; is it this routine?
+	bne.s	wci_rts 		; no, so it is an appsub menu item!
+
+wci_do	move.w	ws_citem(a1),-(sp)
+	st	ws_citem(a1)		; fake no current item
+	bsr.s	wc_ldraw		; draw it
+	move.w	(sp)+,ws_citem(a1)	; get current item back
+wci_rts
+	movem.l (sp)+,clcreg
+wci_rts2
+	moveq	#0,d0
+	jmp	wm_clrci		; now clear current item
+
+*******
+*   force redraw an item  - if it is a sprite
+*   and if the sprite contains a sprite control block
+*   for the other sprites, there is no need to redraw them
+*	d0  r	error return
+*	a0 c  p channel ID of window
+*	a1   su pointer to status area
+*	a3 c  p pointer to loose item definition
+*	a4 c  p pointer to working definition
+*
+*******
+	xref	wm_drlit
+regist	reg    d1-d3/a2
+stk_act  equ	8
+*
+wc_ldraw
+
+	move.b	wwl_type(a3),d0 	; item type
+	subq.b	#2,d0			; sprite ?
+	bne.s	wc_out			; ...no
+
+	cmp.b	#2,wwl_type(a3) 	; is it a sprite?
+	bne.s	wc_out			; no, don't redraw
+	move.l	wwl_pobj(a3),d0 	; pointer to object
+	beq.s	wc_out			; ...none, don't need to redraw
+	move.l	a3,-(sp)
+	move.l	d0,a3			; point object
+	move.b	pto_ctrl(a3),d0 	; get sprite control byte
+	move.l	(sp)+,a3
+	btst	#pto..blk,d0		; is it a sprite with a control block?
+	bne.s	wc_do			; yes
+wc_out	moveq	#0,d0			; ... no, do nothing
+	rts
+wc_do	movem.l regist,-(sp)		; save registers
+	lea	ww_xsize(a4),a1 	; pointer to window definition
+	moveq	#iow.defw,d0		; ... redefine it
+	moveq	#0,d2			; ... no border
+	moveq	#-1,d3
+	trap	#3			; do it now
+*
+	move.l	ww_wstat(a4),a1 	; pointer to window status area
+	moveq	#0,d3			; force redraw
+wc_item
+	bsr.l	wm_drlit		draw this loose item only
+wc_exit
+	movem.l (sp)+,regist		restore registers
+	rts
+
 	end

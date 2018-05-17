@@ -1,8 +1,11 @@
-* Pointer version of console initialisation code  V2.00    1991   Tony Tebby
+* Pointer version of console initialisation code  V2.01    1991   Tony Tebby
 *
+* 2003-03-01  2.01  Added call to system sprite initialisation (MK)
+
 	xdef	pt_init
 *
 	xref	pt_installv
+	xref	pt_isspr
 *
 	xref	cn_dfnt1
 	xref	cn_dfnt2
@@ -61,17 +64,17 @@ pti_nasty
 	moveq	#0,d7
 	move.b	d2,d7
 
-	move.l	sys_clnk(a6),d6 	 ; console linkage already set?
+	move.l	sys_clnk(a6),d6 	; console linkage already set?
 	move.l	d6,a3
-	bne.l	pti_setinstall		 ; ... yes, just set the install ptr
+	bne.l	pti_setinstall		; ... yes, just set the install ptr
 
 pti_alloc
-	moveq	#sms.achp,d0		 first allocate the linkage block
+	moveq	#sms.achp,d0		; first allocate the linkage block
 	move.l	#pt_end+pt.dcon,d1
-	moveq	#0,d2			 owned by 0
+	moveq	#0,d2			; owned by 0
 	trap	#1
 
-	move.l	a0,a3			linkage block address
+	move.l	a0,a3			; linkage block address
 	move.l	#pt.ident,pt_ident(a3)
 
 	move.l	a3,sys_clnk(a6) 	; save console linkage
@@ -81,46 +84,46 @@ pti_alloc
 	lea	cn_dfnt2(pc),a4
 	move.l	a4,pt_sfnt2(a3)
 *
-	move.b	#pt.supmd,pt_pstat(a3)	set pointer suppressed
+	move.b	#pt.supmd,pt_pstat(a3)	; set pointer suppressed
 *
-	move.w	#pt.kaccl,pt_kaccl(a3)	set default accelerators
+	move.w	#pt.kaccl,pt_kaccl(a3)	; set default accelerators
 	move.w	#pt.xaccl,pt_xaccl(a3)
 	move.w	#pt.yaccl,pt_yaccl(a3)
 	move.b	#pt.wake,pt_wake(a3)
 	move.b	#pt.relax,pt_relax(a3)
 *
-	st	pt_dmode(a3)		mode not set
-	st	pt_cdpth(a3)		colour depth not set
+	st	pt_dmode(a3)		; mode not set
+	st	pt_cdpth(a3)		; colour depth not set
 *
 	lea	pt_end+sd_keyq(a3),a2
-	move.l	a2,pt_dumq1(a3) 	set dummy keyboard queue address
-	move.l	#sd_keyq,pt_kqoff(a3)	... offset
+	move.l	a2,pt_dumq1(a3) 	; set dummy keyboard queue address
+	move.l	#sd_keyq,pt_kqoff(a3)	; ... offset
 
-	moveq	#12,d1			very short dummy queue 1
-	move.w	ioq.setq,a5		reset it
+	moveq	#12,d1			; very short dummy queue 1
+	move.w	ioq.setq,a5		; reset it
 	jsr	(a5)
-	move.l	a2,(a2) 		point to myself!!!
+	move.l	a2,(a2) 		; point to myself!!!
 
-	move.l	a2,sys_ckyq(a6) 	current queue
+	move.l	a2,sys_ckyq(a6) 	; current queue
 *
 	move.l	a2,a4
-	lea	sd.dq2(a2),a2		dummy keyboard queue 2
-	moveq	#pt.dq2,d1		reasonable length
+	lea	sd.dq2(a2),a2		; dummy keyboard queue 2
+	moveq	#pt.dq2,d1		; reasonable length
 	move.w	ioq.setq,a5
-	jsr	(a5)			set up queue
-	move.l	a4,(a2) 		and link to dummy 1
+	jsr	(a5)			; set up queue
+	move.l	a4,(a2) 		; and link to dummy 1
 
+	jsr	pt_isspr		; set up system sprite table
 pti_setinstall
 	lea	pt_cdtab(a3),a4
-	move.b	d5,(a4,d7.w)		 ; set mode for this colour depth
+	move.b	d5,(a4,d7.w)		; set mode for this colour depth
 
 	lea	pt_installv,a1
-	lsl.w	#2,d7			 ; index driver install table
+	lsl.w	#2,d7			; index driver install table
 	move.l	a1,pt_drtab-pt_cdtab(a4,d7.w) ; set pointer
 
-	move.l	d6,d0			 ; return >0 if already existed
+	move.l	d6,d0			; return >0 if already existed
 	movem.l (sp)+,reglist
 	rts
-
 
 	end

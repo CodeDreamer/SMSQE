@@ -1,5 +1,8 @@
 * Draw menu object or loose menu item  V1.01	 1986	Tony Tebby   QJUMP
-*
+* 2003-01-24	1.02	draws sprites according to item status (wl)
+* 2003-05-06	1.03	uses pto..blk to check for sprite block
+
+
 	section wman
 *
 	xdef	wm_drmit
@@ -11,6 +14,9 @@
 	include dev8_keys_k
 	include dev8_keys_qdos_io
 	include dev8_keys_qdos_pt
+	include dev8_keys_qdos_sms
+	include dev8_keys_con
+	include dev8_keys_sys
 	include dev8_keys_wwork
 	include dev8_keys_wstatus
 *
@@ -27,7 +33,7 @@
 *
 *		all other registers preserved
 *
-reglist  reg	d1/d2/d3/d4/d5/d7/a1/a2/a4
+reglist  reg	d1/d2/d3/d4/d5/d6/d7/a1/a2/a4
 fill.blk equ	8			8 bytes for fill block
 stk_d3b  equ	$13
 stk_stat equ	$1c
@@ -40,12 +46,21 @@ wm_drlit
 	bclr	#0,ws_litem(a1,d1.w)	... redraw status
 	bne.s	wdl_satt		... yes
 	moveq	#0,d0			set ok
-	tst.b	stk_d3b(sp)		draw all?
+	tst.b	d3			draw all?
 	blt.s	wdo_exit		... no
 *
 wdl_satt
 	lea	wwa_attr+ww_lattr(a4),a4 attributes
-	tst.b	ws_litem(a1,d1.w)	status?
+;	 tst.b	 ws_litem(a1,d1.w)	 status? (old)
+*
+* now check whether this item is the current item
+* and set d6 accordingly
+	moveq	#0,d6			flag - not current item
+	cmp.w	ws_citem(a1),D1 	is this the current item?
+	bne.s	wdl_ncur		...no
+	moveq	#-1,d6			yes, show it
+wdl_ncur
+	move.b	ws_litem(a1,d1.w),d6	status?
 	bgt.s	wdl_ssiz		... unvailablle
 	add.w	#wwa.alen,a4
 	beq.s	wdl_ssiz		... available
@@ -109,7 +124,8 @@ wdo_menu
 	blt.s	wdo_exit		... no
 wdo_satt
 	lea	wwa_attr+wwa_iatt(a3),a4 attributes
-	tst.b	d2			status?
+	moveq	#0,d6			flag: not current item
+	move.b	d2,d6			status?
 	bgt.s	wdo_do			... unvailablle
 	add.w	#wwa.alen,a4
 	beq.s	wdo_do			... available
@@ -252,11 +268,58 @@ wdo_sstrg
 *
 * do sprite, blob or pattern
 *
+* (what I need here is an indication of the status of the item)
+* use D6
+; D6.b	= -ive: selected
+;	= 0	available
+;	= +ive	unavailable
+; D6.L	= -ive this is a loose menu item and it is the current item
+
 wdo_obj
 	move.l	wwm_pobj(a2),a1 	set object pointer
 	subq.b	#4,d7			is it sprite?
 	beq.s	wdo_blob		... no, blob
-	bgt.s	wdo_patt		... no, pattern
+; new wl
+	subq.b	#2,d7			is it pattern?
+	beq.s	wdo_patt		... yes
+; check whether we have an extended sprite
+; this must be a chained sprite (which has the same screen mode)
+; and where the chainage is as follows:
+; sprite to be used if available item (can point back to 1st sprite) 0
+; sprite to be used if current item available			     4
+; sprite to be used if selected item				     8
+; sprite to be used if current item, selected			     12
+; sprite to be used if unavailable item 			     16
+; if any is missing, it is replaced by the first sprite
+wdo_new
+	move.b	pto_ctrl(a1),d0 	; get control bits
+	btst	#pto..blk,d0		; is it an extended sprite?
+	beq.s	wdo_old 		; ... no
+	move.l	pto_blk(a1),d0		; pointer to sprite pointer block
+	beq.s	wdo_old 		; ... but there is none!
+	add.l	#pto_blk,d0		; absolute pointer
+	add.l	d0,a1			; point to that block now
+	move.l	(a1),d0 		; available item
+	tst.b	d6			; item status
+	bgt.s	unav			; ... item is unavailable
+	beq.s	avail			; ... item is available
+sel	move.l	8(a1),d0		; pointer to sprite, selected
+	beq.s	avail			; ... there is none!, use available
+	addq.l	#8,a1			; offset
+avail	tst.l	d6			; current item?
+	bge.s	wdo_spt 		; ... no, normal
+	tst.l	4(a1)			; ... yes is there a ptr to curr item sprite
+	beq.s	wdo_spt 		; ... no , use normal
+	addq.l	#4,a1			; point to it
+	move.l	(a1),d0 		; offset
+	bra.s	wdo_spt
+
+unav	move.l	16(a1),d0		pointer to this sprite
+	beq.s	wdo_old 		... but there is none
+	add.l	#16,d0
+wdo_spt add.l	d0,a1			point to correct sprite now
+
+wdo_old
 	bsr.s	wdo_ojst		justify arbitrary object
 	moveq	#iop.wspt,d0		set sprite
 	bra.s	wdo_drop		and drop object
@@ -295,14 +358,14 @@ wdo_rts
 *	a2 c u	pointer to justification
 *
 wdo_ojst
-	cmp.l	#wdo.otab,a1		special object?
-	bhs.s	wdo_njst		... no
-	move.w	a1,d1
-	lsl.w	#3,d1			eight byte table
-	move.l	wdo_otab(pc,d1.w),d2	object size
-	move.l	wdo_otab+4(pc,d1.w),d1	and origin
-	bra.s	wdo_just		and justify
-wdo_njst
+	movem.l d1-d2/a0/a3,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a3 	CON linkage
+	move.l	pt_vecs(a3),a0		CON vectors
+	jsr	pv_fspr(a0)		get actually used sprite definition
+	movem.l (sp)+,d1-d2/a0/a3
+
 	move.l	pto_org(a1),d1		set object origin
 	move.l	pto_size(a1),d2 	set object size
 *
@@ -324,16 +387,5 @@ wdo_asize
 wdo_ajust
 	add.w	d0,d1			add justification
 	rts
-
-wdo.otab equ	8
-wdo_otab
-	dc.w	14,7,0,0
-	dc.w	13,11,6,6
-	dc.w	12,8,6,4
-	dc.w	12,9,6,4
-	dc.w	14,9,6,4
-	dc.w	14,12,6,5
-	dc.w	16,10,8,4
-	dc.w	16,9,8,4
 
 	end

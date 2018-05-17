@@ -1,21 +1,22 @@
 ; Config Area Definition SMSQ
-        nolist
+	nolist
 
-sms_idapt  equ  0          ; byte       initial display adapter
-sms_immu   equ  0          ; byte       set to set up mmu
-sms_cpar   equ  1          ; byte       0 if no par port
-sms_issqr  equ  2          ; byte       1 for square pixels
-sms_csr1   equ  2          ; byte       0 if no ser1 port
-sms_csr2   equ  3          ; byte       0 if no ser2 port
-sms_bflp   equ  4          ; byte       0 no floppy boot, 1 or 2
-sms_bwin   equ  5          ; byte       BOOT WIN drive
-sms_defl   equ  6          ; word       default language
-sms_btarg  equ  8          ; byte       boot target
-sms_bpart  equ  9          ; byte       boot partition
-sms_issize equ  $a         ; byte       initial screen size (VGA / Aurora)
-sms_ismode equ  $b         ; byte       initial screen mode
-sms_idisp  equ  $a         ; 6 words    initial disp_size
-sms_acsir  equ  $16        ; byte       ACSI auto detect removable (Atari)
-sms_nqimi  equ  $16        ; byte       ignore qimi (Gold card)
-sms_clock  equ  $17        ; byte       clock speed (QXL)
-sms_128k   equ  $18        ; byte       set if reset for small memory
+sms_idapt  equ	0	   ; byte	initial display adapter
+sms_immu   equ	0	   ; byte	set to set up mmu
+sms_cpar   equ	1	   ; byte	0 if no par port
+sms_issqr  equ	2	   ; byte	1 for square pixels
+sms_csr1   equ	2	   ; byte	0 if no ser1 port
+sms_csr2   equ	3	   ; byte	0 if no ser2 port
+sms_bflp   equ	4	   ; byte	0 no floppy boot, 1 or 2
+sms_bwin   equ	5	   ; byte	BOOT WIN drive
+sms_defl   equ	6	   ; word	default keyboard language
+sms_btarg  equ	8	   ; byte	boot target
+sms_bpart  equ	9	   ; byte	boot partition
+sms_issize equ	$a	   ; byte	initial screen size (VGA / Aurora)
+sms_ismode equ	$b	   ; byte	initial screen mode
+sms_idisp  equ	$a	   ; 6 words	initial disp_size
+sms_acsir  equ	$16	   ; byte	ACSI auto detect removable (Atari)
+sms_nqimi  equ	$16	   ; byte	ignore qimi (Gold card)
+sms_clock  equ	$17	   ; byte	clock speed (QXL)
+sms_128k   equ	$18	   ; byte	set if reset for small memory
+sms_dlan   equ	$1a	   ; word	default messages language

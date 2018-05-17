@@ -1,0 +1,458 @@
+|                                                                             |
+|  Vector $7C                                                   WM.SETSP      |
+|                                                                             |
+|       Set system palette entries                                            |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D1.w start index                     D1   preserved                        |
+|  D2.w number of elements              D2   preserved                        |
+|                                       D3+  all preserved                    |
+|                                                                             |
+|  A0                                   A0   preserved                        |
+|  A1   pointer to palette entries / 0  A1   preserved                        |
+|  A2                                   A2   preserved                        |
+|  A3                                   A3   preserved                        |
+|  A4                                   A4   preserved                        |
+|  A5   not used by any routine                                               |
+|  A6   not used by any routine                                               |
+|                                                                             |
+|  Error returns:                                                             |
+|       IPAR    Illegal index number / invalid number of elements             |
+|                                                                             |
+
+Set the entries of the system palette to the values in the buffer, beginning
+with the index in D1 (counting from 0) and ending with the index D1 + D2 - 1.
+
+If A1 = 0 then the entries are taken out of the default table. Otherwise
+the buffer must hold an array of words with the colour values of the
+different items. The colour format is the standard WMAN colour format as
+described elsewhere.
+
+
+|                                                                             |
+|  Vector $80                                                   WM.GETSP      |
+|                                                                             |
+|       Read system palette entries                                           |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D1.w start index                     D1   preserved                        |
+|  D2.w number of elements / -1         D2.w preserved / item count           |
+|                                       D3+  all preserved                    |
+|                                                                             |
+|  A0                                   A0   preserved                        |
+|  A1   pointer to entry buffer         A1   preserved                        |
+|  A2                                   A2   preserved                        |
+|  A3                                   A3   preserved                        |
+|  A4                                   A4   preserved                        |
+|  A5   not used by any routine                                               |
+|  A6   not used by any routine                                               |
+|                                                                             |
+|  Error returns:                                                             |
+|       IPAR    Illegal index number / invalid number of elements             |
+|                                                                             |
+
+Copies entries of the system palette into the given buffer, beginning with
+the index in D1 (counting from 0) and ending with the index D1 + D2 - 1. The
+buffer must be big enough to hold all requested entries.
+
+If D1 is given as -1 the function just returns the number of items held in
+the system palette. This can increase when more items get defined in new
+WMAN version. This is guaranteed to be below 256.
+
+
+|                                                                             |
+|  Vector $84                                                   WM.TRAP3      |
+|                                                                             |
+|       Trap #3 replacement that handles WMAN colour codes                    |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D0.l function code                   D0   error code                       |
+|  D1.w colour code                     D1   preserved                        |
+|  D2+  parameter                       D2+  result according to trap         |
+|                                                                             |
+|  A0.l channel id                      A0   preserved                        |
+|  A1+  parameter                       A1+  result according to trap         |
+|                                                                             |
+|  Error returns:                                                             |
+|       same as original traps                                                |
+|                                                                             |
+
+This is a drop-in replacement for a "trap #3" call.
+D0 reacts to any of the codes iow.defb, iow.defw, iow.spap, iow.sstr, iow.sink
+and iow.blok. Those routines are exchanged by some that can handle the extended
+WMAN colour codes. Other function codes are directly passed to an ordinary
+"trap #3" call.
+The condiditon codes are guaranteed to be set properly according to D0, for
+all traps.
+
+
+|                                                                             |
+|  Vector $88                                                   WM.OPW        |
+|                                                                             |
+|       Emulate OPW.WIND, OPW.CON and OPW.SCR vectored routines               |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D0.l OPW.WIND, OPW.CON or OPW.SCR    D0    error code                      |
+|  D1                                   D1    smashed                         |
+|  D2                                   D2    smashed                         |
+|  D3                                   D3    smashed                         |
+|                                                                             |
+|  A0.l ptr to name (OPW.WIND only)     A0.l  channel ID                      |
+|  A1.l ptr to parameter block          A1    smashed                         |
+|  A2                                   A2    smashed                         |
+|  A3                                   A3    smashed                         |
+|                                                                             |
+|  Error returns:                                                             |
+|       same as original functions                                            |
+|                                                                             |
+
+This is a replacement for the OPW.WIND, OPW.CON and OPW.SCR vectored routines.
+In contrast to the originals the paramater block pointed to by A1 is in
+words instead of bytes:
+
+$00  border colour (word)
+$02  border width (word)
+$04  paper/strip colour (word)
+$06  ink colour (word)
+
+OPW.CON and OPW.SCR define the window using an additional block of four words:
+
+$08  width (word)
+$0A  height (word)
+$0C  X-origin (word)
+$0E  Y-origin (word)
+
+
+|                                                                             |
+|  Vector $8C                                                   WM.SSCLR      |
+|                                                                             |
+|       Set single colour pattern                                             |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D0                                   D0   0                                |
+|  D1.w colour number                   D1   preserved                        |
+|                                       D2+  all preserved                    |
+|                                                                             |
+|  A1.l ptr to window status area       A1   preserved                        |
+|  A2.l ptr to pattern space            A2   preserved                        |
+|  A3                                   A3   preserved                        |
+|  A4                                   A4   preserved                        |
+|  A5   not used by any routine                                               |
+|  A6   not used by any routine                                               |
+|                                                                             |
+
+Returns a pattern that is filled with the given colour. The space pointed to
+by A1 must hold at least $60 bytes. Does not work for stippled colours.
+
+
+|                                                                             |
+|  Vector $90                                                   WM.JBPAL      |
+|                                                                             |
+|       Set system palette number of job                                      |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D1.l job ID / -1                     D1   preserved                        |
+|  D2                                   D2   preserved                        |
+|  D3.w palette number / -1             D3+  all preserved                    |
+|                                                                             |
+|  A0                                   A0   preserved                        |
+|  A1   ptr to job palette or 0 (D3=-1) A1   preserved                        |
+|  A2                                   A2   preserved                        |
+|  A3                                   A3   preserved                        |
+|  A4                                   A4   preserved                        |
+|  A5   not used by any routine                                               |
+|  A6   not used by any routine                                               |
+|                                                                             |
+|  Error returns:                                                             |
+|       IJOB    Invalid job ID                                                |
+|                                                                             |
+
+Sets the active system palette for the given job. If D1 is -1 then the
+current job will be used.
+D3 can be supplied as -1 which can be used to give the job its very own
+palette. In this case a pointer to the palette can be supplied in A1.
+Attention: the contents of this area is not copied, it is used directly
+and must remain there as long as the job uses this palette!
+If A1 is supplied as 0 the palette pointer will not be touched.
+
+
+---
+Sprite definition
+
+pto_form $00  byte  sprite mode
+         $01  byte  colour mode / system sprite number
+pto_vers $02  byte  dynamic sprite version number
+pto_ctrl $03  byte  sprite control
+pto_xsiz $04  word  X size
+pto_ysiz $06  word  Y size
+pto_xorg $08  word  X offset
+pto_yorg $0a  word  Y offset
+pto_cpat $0c  long  relative pointer to colour pattern
+pto_mask $10  long  relative pointer to mask/alpha channel
+pto_nobj $14  long  relatuve pointer to next object
+
+sprite mode can be any of the following:
+        0       system sprite
+        1       traditional QL colour sprite
+        2       GD2 colour sprite
+
+System sprite:
+        When the sprite mode is 0 for system sprite then the second byte
+        is the number of the sprite. ALL other values are ignored in that
+        case, i.e. a system sprite reference is only 2 bytes long.
+
+QL colour sprite:
+        0       mode 4
+        1       mode 8
+
+GD2 colour sprite:
+        0       1 bit black&white
+        3       1 bit palette mapped
+        4       2 bit fixed gr palette
+        7       2 bit palette mapped
+        8       4 bit fixed irgb palette
+        15      4 bit palette mapped
+        16      8 bit fixed palette (equals Aurora palette)
+        31      8 bit palette mapped
+        32      16 bit QPC/QXL %gggbbbbbrrrrrggg format
+        33      16 bit Q40 %gggggrrrrrbbbbbw format
+        64      32 bit $RRGGBB00 format
+
+Sprite control:
+        %mpa000cc
+
+        cc stands for a chache version number. Programs can increment this
+        value to signal the cache that the sprite has changed. A special
+        value is pto_fupd (force update, %11), which causes the system to
+        never use the cached version.
+        key: pto.cver
+
+        a flags whether the sprite uses an alpha channel instead of a mask
+        (also see below)
+        key: pto.alph
+
+        m and p signal whether the pattern (p) or the mask (m) is compressed.
+        key: pto.pcmp and pto.mcmp
+
+Alpha channel:
+        When the pto.alph flag is set in the sprite control byte, the mask
+        is considered to be an alpha channel. An alpha channel allows gradual
+        mixes between the background and the sprite pattern. Every pixel is
+        represented by exactly one byte. 0 means the pixel is completely
+        transparent, 255 means the pixel is completely opaque. Values in
+        between determine the degree of mixing of background and foreground.
+        Alpha channel information is not padded at the end of each line.
+        There's one byte for every pixel and nothing more.
+
+RLE compression:
+        Both pattern and mask/alpha channel can be compressed using a simple
+        RLE (run length encoding) algorithm. This is usefull with data that
+        is largely homogene, which is often the case with masks.
+        Compressed data must be signaled in the sprite control byte
+        (pto.pcmp, pto.mcmp) and starts with the bytes 'RLEx', with 'x' being
+        either 1, 2 or 4. This is the item size the algorithm is working with.
+        8 bit RLE compression of 32 bit data wouldn't yield in good results,
+        therefore the algoritm can also work on 16 bit or 32 bit data.
+        After the ID there's one long word containing the size of the data in
+        uncompressed form. After that the compressed data itself is following.
+
+        The compressed data always consists of one byte and one or more items.
+        If the leading byte is in the range of 0<=x<128 then x+1 uncompressed
+        items are following. Otherwise only one item is following, which
+        represents 257-x times the same item in the uncompressed data.
+
+Examples:
+
+A small blue circle, with hard transparency mask in 8 bit mode:
+
+sp_circle
+        dc.w    $0210,0                 ; 8 bit mode
+        dc.w    5,5,0,0                 ; size 5x5 pixels with origin at 0x0
+        dc.l    s8p_circle-*
+        dc.l    s8m_circle-*
+        dc.l    0
+
+s8p_circle
+        dc.b    $00,$27,$27,$27,$00,0,0,0       ; Note the padding
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $00,$27,$27,$27,$00,0,0,0
+
+x       equ     -1
+s8m_circle
+        dc.b    0,x,x,x,0,0,0,0         ; Same padding as pattern
+        dc.b    x,x,x,x,x,0,0,0
+        dc.b    x,x,x,x,x,0,0,0
+        dc.b    x,x,x,x,x,0,0,0
+        dc.b    0,x,x,x,0,0,0,0
+
+
+Now the same circle with some soft alpha shading
+
+sp_circle
+        dc.w    $0210,pto.alph          ; 8 bit mode, alpha blending
+        dc.w    5,5,0,0                 ; size 5x5 pixels with origin at 0x0
+        dc.l    s8p_circle-*
+        dc.l    s8a_circle-*
+        dc.l    0
+
+s8p_circle
+        dc.b    $00,$27,$27,$27,$00,0,0,0       ; Note the padding
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $27,$27,$27,$27,$27,0,0,0
+        dc.b    $00,$27,$27,$27,$00,0,0,0
+
+s8a_circle
+        dc.b    $00,$40,$40,$40,$00     ; Note: no padding!
+        dc.b    $40,$80,$80,$80,$40
+        dc.b    $40,$80,$FF,$80,$40
+        dc.b    $40,$80,$80,$80,$40
+        dc.b    $00,$40,$40,$40,$00
+
+
+Finally the same circle with alpha blending and compression
+
+sp_circle
+        dc.w    $0210,pto.alph+pto.pcmp+pto.mcmp ; 8 bit mode
+        dc.w    5,5,0,0                 ; size 5x5 pixels with origin at 0x0
+        dc.l    s8p_circle-*
+        dc.l    s8a_circle-*
+        dc.l    0
+
+s8p_circle
+        dc.b    'RLE1'                  ; bytes sized RLE algorithm
+        dc.l    8*5                     ; uncompressed data size
+        dc.b    $00,$00,$FE,$27,$FD,$00         ; 1st line
+        dc.b    $FC,$27,$FE,$00                 ; 2nd line
+        dc.b    $FC,$27,$FE,$00                 ; ...
+        dc.b    $FC,$27,$FE,$00
+        dc.b    $00,$00,$FE,$27,$FD,$00         ; saved 8 bytes in total. Yeah
+
+s8a_circle
+        dc.b    'RLE1'
+        dc.l    5*5
+        dc.b    $00,$00,$FE,$40,$01,$00         ; 1st line
+        dc.b    $40,$FE,$80,$FF,$40             ; 2nd line
+        dc.b    $02,$80,$FF,$80,$FF,$40         ; begins at 2nd byte of 3rd line
+        dc.b    $FE,$80,$01,$40                 ; begins at 2nd byte of 4th line
+        dc.b    $00,$FE,$40,$00,$00             ; 5th line
+
+Of course RLE compression doesn't make much sense here, it's just for the sake
+of the example. Note also that the compression of pattern and mask are
+independant, in this case one could have left the alpha channel alone and only
+compress the pattern. If the 8 bytes are worth it...
+
+
+---
+New colour format:
+
+        %00000000cccccccc       exactly as before
+        %00000001pppppppp       palette
+        %00000010pppppppp       system palette
+        %00000011gggggggg       gray scale
+        %00000100cc00tttd       3d border (border calls only!). see below
+        %01ssxxxxxxyyyyyy       palette stipple. see below
+        %1rrrrrgggggbbbbb       15 bit RGB
+
+Stipple format
+--------------
+   s = stipple code (0 = dot, 1 = horizontal, 2 = vertical, 3 = checkers)
+   x = stipple colour
+   y = main colour
+
+As x and y can only hold 6 bit only the first 64 entries of the palette can
+be used for stippling.  Due to the design of the palette those entries
+alone still cover the whole colour range quite well.
+
+3d border format
+----------------
+   d = direction (0 = raised, 1 = lowered)
+   t = type
+   c = compatibility mode
+
+To see what types are available have a look at the qlborders.gif file.
+
+The compatibility modes are avaiable on some border types and they tell how
+to sqeeze a non-standard border size into a QL border. Some modes paint areas
+with the current paper colour, therefore it is a wise idea to always set the
+paper colour before the border. The WMAN routines have already been changed
+to take this into account.
+
+In case of a non-standard border width another border call on this window
+MUST be made through the WMAN routines instead of the standard border calls
+(e.g. by calling wm.trap3). Otherwise the overall window size will be altered.
+
+The colours to paint the border are defined in the system palette (sp.3ddark
+and sp.3dlight). Future versions may shade the paper colour, therefore
+it's again a good idea to set the paper colour before the border call.
+
+---
+System palette entries
+
+Name            Number   Meaning
+------------------------------------------------------------------------------
+sp.winbd        $0200    Window border
+sp.winbg        $0201    Window background
+sp.winfg        $0202    Window foreground
+sp.winmg        $0203    Window middleground
+sp.titlebg      $0204    Title background
+sp.titletextbg  $0205    Title text background
+sp.titlefg      $0206    Title foreground
+sp.litemhigh    $0207    Loose item highlight
+sp.litemavabg   $0208    Loose item available background
+sp.litemavafg   $0209    Loose item available foreground
+sp.litemselbg   $020a    Loose item selected background
+sp.litemselfg   $020b    Loose item selected foreground
+sp.litemunabg   $020c    Loose item unavailable background
+sp.litemunafg   $020d    Loose item unavailable foreground
+sp.infwinbd     $020e    Information window border
+sp.infwinbg     $020f    Information window background
+sp.infwinfg     $0210    Information window foreground
+sp.infwinmg     $0211    Information window middleground
+sp.subinfbd     $0212    Subsidiary information window border
+sp.subinfbg     $0213    Subsidiary information window background
+sp.subinffg     $0214    Subsidiary information window foreground
+sp.subinfmg     $0215    Subsidiary information window middleground
+sp.appbd        $0216    Application window border
+sp.appbg        $0217    Application window background
+sp.appfg        $0218    Application window foreground
+sp.appmg        $0219    Application window middleground
+sp.appihigh     $021a    Application window item highlight
+sp.appiavabg    $021b    Application window item available background
+sp.appiavafg    $021c    Application window item available foreground
+sp.appiselbg    $021d    Application window item selected background
+sp.appiselfg    $021e    Application window item selected foreground
+sp.appiunabg    $021f    Application window item unavailable background
+sp.appiunafg    $0220    Application window item unavailable foreground
+sp.scrbar       $0221    Pan/scroll bar
+sp.scrbarsec    $0222    Pan/scroll bar section
+sp.scrbararr    $0223    Pan/scroll bar arrow
+sp.buthigh      $0224    Button highlight
+sp.butbd        $0225    Button border
+sp.butbg        $0226    Button background
+sp.butfg        $0227    Button foreground
+sp.hintbd       $0228    Hint border
+sp.hintbg       $0229    Hint background
+sp.hintfg       $022a    Hint foreground
+sp.hintmg       $022b    Hint middleground
+sp.errbg        $022c    Error message background
+sp.errfg        $022d    Error message foreground
+sp.errmg        $022e    Error message middleground
+sp.shaded       $022f    Shaded area
+sp.3ddark       $0230    Dark 3D border shade
+sp.3dlight      $0231    Light 3D border shade
+sp.vertfill     $0232    Vertical area fill
+sp.subtitbg     $0233    Subtitle background
+sp.subtittxtbg  $0234    Subtitle text background
+sp.subtitfg     $0235    Subtitle foreground
+sp.mindexbg     $0236    Menu index background
+sp.mindexfg     $0237    Menu index foreground
+sp.separator    $0238    Seperator lines etc.

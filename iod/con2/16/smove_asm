@@ -1,4 +1,8 @@
-; Screen move				v2.00   1991 Tony Tebby
+; Screen move				v2.01   1991 Tony Tebby
+;						 2003 Marcel Kilgus
+;
+; 2003-01-15  2.01  Serious bug fixed that showed up when the screen was the
+;		    destination (mostly the case in low memory situations) (MK)
 ;
 ;	Move the overlapping part from one save area to another.  These are
 ;	called SAVE and SCREEN in the comments, since the routine will move
@@ -93,7 +97,7 @@ psm_sdst
 	bsr.s	psm_hspr		; hide the sprite
 	move.l	sd_scrb(a0),a5		; restore directly to screen
 	move.l	chn_drvr-sd.extnl(a0),a3
-	move.w	pt_bytel-iod_iolk(a0),a3 ; and row increment
+	move.w	pt_bytel-iod_iolk(a3),a3 ; and row increment
 	add.l	sd_xhito(a0),d3 	; and real origin
 	bra.s	psm_move		; do the move
 ;

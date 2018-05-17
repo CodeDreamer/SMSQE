@@ -1,4 +1,5 @@
 ; Initialise SMSQ  V2.02     1994  Tony Tebby
+; 2003-01-22	2.03	use sms_dlan to copy default language (wl)
 
 	section base
 
@@ -31,9 +32,9 @@
 
 smsq_base
 	lea	ini_sstk,a7		 ; set ssp
- move.l #$20400,-(sp) #####
- bsr.l blat	      #####
- addq.l #4,sp
+	move.l #$20400,-(sp) #####
+	bsr.l blat	     #####
+	addq.l #4,sp
 
 	bra.l	sms_reset		 ; reset
 
@@ -48,7 +49,7 @@ sms_reset
 	move.l	a4,d7			 ; set requested RAMTOP
 
 sms_init
- jsr	 smsi_qmon	 ***********
+	jsr	smsi_qmon	***********
 	moveq	#0,d0
 	lea	$20000,a0
 	move.b	ini_ouch,d1		 ; save ouch status
@@ -60,22 +61,22 @@ smsi_cll
 
 	move.b	d1,ini_ouch
 
- move.l #$20400,-(sp) #####
- bsr.l blat	      #####
+	move.l #$20400,-(sp) #####
+	bsr.l blat	     #####
 	jsr	init_vec		 ; initialise vector area
- bsr.l blat	      #####
- jsr	 smsi_qmon	 ***********
+	bsr.l blat	     #####
+	jsr	smsi_qmon	***********
 	jsr	init_trp		 ; initialise TRAP vectors
- bsr.l blat	      #####
+	bsr.l blat	     #####
 ; jsr	  smsi_qmon	  ***********
 	jsr	init_sys		 ; initialise system vars
- bsr.l blat	      #####
+	bsr.l blat	     #####
 ; jsr	  smsi_qmon	  ***********
 	jsr	init_exrv		 ; initialise exception redirection vec
- bsr.l blat	      #####
+	bsr.l blat	     #####
 ; jsr	  smsi_qmon	  ***********
 	jsr	init_sbst		 ; initialise SuperBASIC stub
- bsr.l blat	      #####
+	bsr.l blat	     #####
 ; jsr	  smsi_qmon	  ***********
 
 ; system initialisation complete
@@ -85,7 +86,7 @@ smsi_cll
 ;sbtrns      jsr     mem_atpa		      ; starting here, if it ever does
 ; if this is changed back, look for all ;sbtrns
 	jsr	mem_achp		 ; starting here, if it ever does
- bsr.l blat	      #####
+	bsr.l blat	     #####
 
 	lea	chp.len(a0),a2
 	move.w	#(jcb_end-chp.len)/4-1,d0
@@ -102,19 +103,19 @@ smsi_jclear
 	lea	sb.jobsz(a6),a1
 	move.l	a1,usp
 
- bsr.l blat	      #####
+	bsr.l blat	     #####
 ; jsr	  smsi_qmon	  ***********
- move.l  (sp)+,d0     #####
+	move.l	(sp)+,d0     #####
 	move.w	#$0700,sr		 ; go, but no interrupts yet!!
- move.l  d0,-(sp)     #####
+	move.l	d0,-(sp)     #####
 smsi_job
 
- bsr.l blatu	      #####
+	bsr.l blatu	     #####
 	jsr	init_ext		 ; initialise (SBASIC and) extensions
- bsr.l blatu	      #####
+	bsr.l blatu	     #####
 
 	trap	#0
-	move.w	sms_defl+sms.conf,d1	 ; default language
+	move.w	sms_dlan+sms.conf,d1	 ; default language
 	moveq	#0,d2
 	moveq	#sms.lset,d0		 ; set it
 	trap	#do.smsq
@@ -136,8 +137,8 @@ smsi_job
 					 ; and a0 <> 0
 
 smsi_qmon
- tst.b	 ini_ouch
- beq.s	 smsi_rts
+	tst.b	ini_ouch
+	beq.s	smsi_rts
 	lea	smsq_base-4,a0
 
 smsi_next
@@ -150,27 +151,27 @@ smsi_next
 smsi_rts
 	rts
 blatu
- tst.b	 ini_ouch
- bgt.s	 blatx
- rts
+	tst.b	ini_ouch
+	bgt.s	blatx
+	rts
 
 blat
- tst.b	 ini_ouch
- beq.s	 blat_rts
- blt.s	 x_flash
+	tst.b	ini_ouch
+	beq.s	blat_rts
+	blt.s	x_flash
 blatx
- cmp.b	 #1,ini_ouch ; only produce blats on ini_ouch = 1
- bne.s	 blat_rts
- movem.l d0/a4,-(sp)
- move.l  $0c(sp),a4
- move.l  #$ffff0000,(a4)
- addq.l  #4,$0c(sp)
- move.l  #4000000,d0
- subq.l  #1,d0
- bgt.s	 *-2
- movem.l (sp)+,d0/a4
+	cmp.b	#1,ini_ouch ; only produce blats on ini_ouch = 1
+	bne.s	blat_rts
+	movem.l d0/a4,-(sp)
+	move.l	$0c(sp),a4
+	move.l	#$ffff0000,(a4)
+	addq.l	#4,$0c(sp)
+	move.l	#4000000,d0
+	subq.l	#1,d0
+	bgt.s	*-2
+	movem.l (sp)+,d0/a4
 blat_rts
- rts
+	rts
 
 ; This flash routine sends the net low for one period, then high for one period.
 ; This is repeated a4 times and then there are two periods low.

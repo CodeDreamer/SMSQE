@@ -3,7 +3,7 @@ program dev8_smsq_q40_driver_16
 section header
 section base      ; base area for any extension or program
 section version   ; version messages
-
+section kbd
 section driver
 section sprite
 section blob
@@ -17,7 +17,7 @@ section con       ; console
 section gw
 section ctab      ; console tables
 
-input   dev8_smsq_q40_driver_16_rel
+input dev8_smsq_q40_driver_16_rel
 library dev8_iod_con2_q4016_lib
 library dev8_util_thg_parm_rel
 library dev8_iod_iou_lib

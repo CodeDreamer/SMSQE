@@ -316,8 +316,17 @@
 *	accumulated set up updates including on edge of window events, job
 *	events,  wake speed = 0.
 *
+*	V1.73
+*	wallpaper colour is now drawn on the fly (MK)
+*	16 bit shadow routine added (MK)
 *
-pt.vers equ	'1.72'
+*	V2.00
+*	added mode 64 (true colour in 32bit) for sprites (MK)
+*	added even more modes (JG & MK)
+*	fixed crashes and weird behaviour in low memory situations (MK)
+*	added support for large sprites (MK)
+*
+pt.vers equ	'2.00'
 pt_vers equ	pt.vers
 	dc.l	pt.vers
 

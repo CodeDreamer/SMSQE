@@ -22,12 +22,15 @@ procs	DC.W	0,0,1
 	dc.l	0
 
 current_line
-	move.w	sb_line(a6),d4	; try to get line number
-	bne	rt_int		; ... got it
+	moveq	#0,d4
 	tst.b	sb_cmdl(a6)	; command line parsing?
 	bne	rt_int		; ... yes, so return line number 0
+	cmp.l	#'SBAS',-4(a6)	; Sbasic ?
+	beq.s	sbas		;    ... yes
+	move.w	sb_line(a6),d4	;    ... no, try to get line number
+	bra	rt_int		;
 ; this is copied from TT's sbas_sttadd_asm
-	move.l	a4,d0
+sbas	move.l	a4,d0
 	subq.l	#2,d0		; this is in "current" statement
 	jsr	sb_addstt	; find line and statement number
 	swap	d0		; line number in upper word

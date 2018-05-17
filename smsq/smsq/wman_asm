@@ -1,10 +1,19 @@
-; base area SMSQ Window Manager V1
+; Base area SMSQ Window Manager V1.02				 Tony Tebby
+;							   2002  Marcel Kilgus
+;
+; 2002-11-13  1.01  Initialises system palette (MK)
+; 2003-01-25  1.02  Moved SMSQ/E specific code here (MK)
 
 	section header
 
+	xdef	wm_getspvec
+	xdef	wm_setspvec
+
 	xref.l	wm_vers
 	xref	wm_entry
+	xref	wm_initsp
 	xref	smsq_end
+	xref	wm_initp
 
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_sys'
@@ -28,12 +37,46 @@ smsq_name
 	section base
 
 smsq_wman
+	bsr	wm_initsp		 ; initialise system palette
+	bsr	wm_initp
 	moveq	#sms.xtop,d0
 	trap	#do.sms2
 	move.l	sys_clnk(a6),a5 	 ; console linkage
 	pea	wm_entry		 ; window manager entry vector
 	move.l	(sp)+,pt_wman(a5)	 ; in pointer location
 	moveq	#0,d0
+	rts
+
+;+++
+; Get pointer to system palette block
+;
+;	d1  r	current job ID
+;	a0  r	pointer to palette
+;---
+wm_getspvec
+	movem.l d2,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a0 	; console linkage
+	move.l	pt_wmpal(a0),a0
+	movem.l (sp)+,d2
+	tst.l	d0
+	rts
+
+;+++
+; Set pointer to system palette block
+;
+;	a0 c  p pointer to palette
+;---
+wm_setspvec
+	movem.l d1-d2,-(sp)
+	move.l	a0,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a0
+	move.l	(sp)+,pt_wmpal(a0)
+	movem.l (sp)+,d1-d2
+	tst.l	d0
 	rts
 
 	end

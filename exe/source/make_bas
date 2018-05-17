@@ -294,9 +294,9 @@
 3030         EW prg$&'cctf',cct$,lib$
 3040         my_err=Q_ERR
 3050         IF my_err
-3060      plog '- fatal error.'&CHR$(10):RETurn -1
+3060            plog '- fatal error.'&CHR$(10):RETurn -1
 3070         ELSE
-3080      plog '- OK.'&CHR$(10)
+3080            plog '- OK.'&CHR$(10)
 3090         END IF
 3100     =0: plog 'Done.'&CHR$(10):RETurn 1
 3110     =-1:plog 'Assembler errors - no concatenation.'&CHR$(10):RETurn -1

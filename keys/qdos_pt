@@ -1,99 +1,113 @@
 * pointer interface keys and structures
-        nolist
+	nolist
 *
-*       Pointer return event vector bits
+*	Pointer return event vector bits
 *
-pt.kystk equ    $01     keystroke in window event
-pt.kyprs equ    $02     key still pressed in window event
-pt.keyup equ    $04     key up in window event
-pt.move  equ    $08     pointer move event
-pt.outwn equ    $10     pointer out of window
-pt.inwin equ    $20     pointer in window
-pt.offsc equ    $40     pointer off screen
+pt.kystk equ	$01	keystroke in window event
+pt.kyprs equ	$02	key still pressed in window event
+pt.keyup equ	$04	key up in window event
+pt.move  equ	$08	pointer move event
+pt.outwn equ	$10	pointer out of window
+pt.inwin equ	$20	pointer in window
+pt.offsc equ	$40	pointer off screen
 *
 * window query events
 *
-pt.wqury equ    $80     window query
-pt.wmove equ    $81     window move
-pt.wsize equ    $82     window resize
+pt.wqury equ	$80	window query
+pt.wmove equ	$81	window move
+pt.wsize equ	$82	window resize
 *
-pt..kyst equ    0       keystroke  in window event bit
-pt..kypr equ    1       keypress in window event bit
-pt..kyup equ    2       key up in window event bit
-pt..move equ    3       pointer move event bit
-pt..outw equ    4       pointer out of window bit
-pt..inwn equ    5       pointer in window bit
-pt..ofsc equ    6       pointer off screen bit
+pt..kyst equ	0	keystroke  in window event bit
+pt..kypr equ	1	keypress in window event bit
+pt..kyup equ	2	key up in window event bit
+pt..move equ	3	pointer move event bit
+pt..outw equ	4	pointer out of window bit
+pt..inwn equ	5	pointer in window bit
+pt..ofsc equ	6	pointer off screen bit
 *
-pt..splt equ    8       split sub-window
-pt..join equ    9       join sub-window
-pt..pan  equ    10      pan sub-window
-pt..scrl equ    11      scroll sub-window
+pt..splt equ	8	split sub-window
+pt..join equ	9	join sub-window
+pt..pan  equ	10	pan sub-window
+pt..scrl equ	11	scroll sub-window
 *
-pt..do   equ    16      do command
-pt..can  equ    17      cancel command
-pt..help equ    18      help!!!
-pt..wmov equ    19      window move
-pt..wsiz equ    20      window size
-pt..zzzz equ    21      sleep
-pt..wake equ    22      wake
-pt..null equ    23      null event !!
+pt..do	 equ	16	do command
+pt..can  equ	17	cancel command
+pt..help equ	18	help!!!
+pt..wmov equ	19	window move
+pt..wsiz equ	20	window size
+pt..zzzz equ	21	sleep
+pt..wake equ	22	wake
+pt..null equ	23	null event !!
 *
 * PT.RPTR pointer record
 *
-pp_chid  equ    $00     channel ID or -1
-pp_chnr  equ    $02     channel number or -1
-pp_sbwnr equ    $04     sub-window number or -1
-pp_xpos  equ    $06     x position or -1
-pp_ypos  equ    $08     y position or -1
-pp_kstrk equ    $0a     keystroke
-pp_kpres equ    $0b     key depressed
-pp_event equ    $0c     event vector  
-pp_jevnt equ    $0c     job event
-pp_wevnt equ    $0d     window byte of event vector
-pp_sevnt equ    $0e     sub-window byte of event vector
-pp_pevnt equ    $0f     pointer byte of event vector
-pp_subdf equ    $10     sub-window definition (4 words)
-pp_end   equ    $18
+pp_chid  equ	$00	channel ID or -1
+pp_chnr  equ	$02	channel number or -1
+pp_sbwnr equ	$04	sub-window number or -1
+pp_xpos  equ	$06	x position or -1
+pp_ypos  equ	$08	y position or -1
+pp_kstrk equ	$0a	keystroke
+pp_kpres equ	$0b	key depressed
+pp_event equ	$0c	event vector  
+pp_jevnt equ	$0c	job event
+pp_wevnt equ	$0d	window byte of event vector
+pp_sevnt equ	$0e	sub-window byte of event vector
+pp_pevnt equ	$0f	pointer byte of event vector
+pp_subdf equ	$10	sub-window definition (4 words)
+pp_end	 equ	$18
 *
 * Definitions of objects
 *
-pto_form equ    $00     word    FORM of object
-pto_vers equ    $02     byte    dynamic sprite VERSion number
-pto_vcch equ    $03     byte    cache control version number
-pto_size equ    $04             x and y SIZE of object
-pto_xsiz equ    $04     word    X SIZe of object
-pto_ysiz equ    $06     word    Y SIZe of object
-pto_org  equ    $08             ORiGin of object
-pto_xorg equ    $08     word    X ORiGin of object
-pto_yorg equ    $0a     word    Y ORiGin of object
-pto_cpat equ    $0c     long    relative pointer to Colour PATtern
-pto_mask equ    $10     long    relative pointer to MASK
-pto_nobj equ    $14     long    relative pointer to Next OBJect
-pto.hdrl equ    $18             object HeaDeR Length
+pto_form equ	$00	word	FORM of object
+pto_vers equ	$02	byte	dynamic sprite VERSion number
+pto_ctrl equ	$03	byte	sprite control bits
+pto.cver equ	%00000011	cache version number bits
+pto.fupd equ	%00000011	pto.cver value for "force cache update"
+pto.alph equ	%00100000	sprite uses alpha channel
+pto..alph equ	5
+pto.pcmp equ	%01000000	pattern compressed bit
+pto.mcmp equ	%10000000	mask compressed bit
+pto.cmp  equ	%11000000	sprite compressed bit
+pto..blk equ	2		bit set if sprite block present
+pto..opt equ	4		bit set if options (pointer) present
+pto_size equ	$04		x and y SIZE of object
+pto_xsiz equ	$04	word	X SIZe of object
+pto_ysiz equ	$06	word	Y SIZe of object
+pto_org  equ	$08		ORiGin of object
+pto_xorg equ	$08	word	X ORiGin of object
+pto_yorg equ	$0a	word	Y ORiGin of object
+pto_cpat equ	$0c	long	relative pointer to Colour PATtern
+pto_mask equ	$10	long	relative pointer to MASK
+pto_nobj equ	$14	long	relative pointer to Next OBJect
+pto.hdrl equ	$18		object HeaDeR Length
+
+pto_opts equ	$18	long	optional (relative pointer to) options
+pto_blk  equ	$1c	long	optional relative pointer to sprite block
+pto.xshl equ	$20		eXtended Sprite Header Length
+
 *
 * Definition of partial save area header
 *
-ptp_link equ    $00     long    user defined LINK longword
-ptp_flag equ    $04     word    FLAG word
-ptp.flag equ    $4afc           what you expect to find there
-ptp_xsiz equ    $06     word    total X SIZe 
-ptp_ysiz equ    $08     word    total Y SIZe
-ptp_rinc equ    $0a     word    Row INCrement
-ptp_mode equ    $0c     word    MODE of saved data
-ptp_bits equ    $0e
-ptp.hdrl equ    $0e             HeaDeR Length
+ptp_link equ	$00	long	user defined LINK longword
+ptp_flag equ	$04	word	FLAG word
+ptp.flag equ	$4afc		what you expect to find there
+ptp_xsiz equ	$06	word	total X SIZe 
+ptp_ysiz equ	$08	word	total Y SIZe
+ptp_rinc equ	$0a	word	Row INCrement
+ptp_mode equ	$0c	word	MODE of saved data
+ptp_bits equ	$0e
+ptp.hdrl equ	$0e		HeaDeR Length
 *
 * sub-window definitions
 *
-sw_xsize equ    $00     word    sub-window X size
-sw_ysize equ    $02     word    sub-window Y size
-sw_xorg  equ    $04     word    sub-window X origin
-sw_yorg  equ    $06     word    sub-window Y origin
-sw_attr  equ    $08     8 bytes attributes
-sw_kflg  equ    $08     byte    cursor key flag
-sw..kfl  equ      0             ... in bit 0
-sw_psprt equ    $10     long    pointer to sprite
-sw.defl  equ    $14             sub-window DEFinition Length
+sw_xsize equ	$00	word	sub-window X size
+sw_ysize equ	$02	word	sub-window Y size
+sw_xorg  equ	$04	word	sub-window X origin
+sw_yorg  equ	$06	word	sub-window Y origin
+sw_attr  equ	$08	8 bytes attributes
+sw_kflg  equ	$08	byte	cursor key flag
+sw..kfl  equ	  0		... in bit 0
+sw_psprt equ	$10	long	pointer to sprite
+sw.defl  equ	$14		sub-window DEFinition Length
 *
-        list
+	list

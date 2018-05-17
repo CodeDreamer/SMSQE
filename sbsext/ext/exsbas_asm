@@ -1,11 +1,17 @@
-* EX, EW and ET V2.0    1984 Sinclair Research and Tony Tebby	QJUMP
-*		        1994 Tony Tebby SBASIC compatible version
+* EX, EW and ET V2.00	 1984 Sinclair Research and Tony Tebby  QJUMP
+*			 1994 Tony Tebby SBASIC compatible version
 *
+; 2002-11-10	 2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
+
 	section exten
 *
 	xdef	etsb
 	xdef	ewsb
 	xdef	exsb
+
+	xdef	fetsb
+	xdef	fewsb
+	xdef	fexsb
 *
 	xref	ut_ckcomma
 	xref	ut_cksemi
@@ -19,6 +25,8 @@
 	xref	ut_chanf
 	xref	prior
 
+	xref	ut_rtfd1
+
 	xref	uxt_bopt
 *
 	include 'dev8_keys_sbasic'
@@ -31,6 +39,28 @@
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_sbsext_ext_ex_defs'
 	include 'dev8_sbsext_ut_opdefx_keys'
+
+*
+fexsb
+	pea	fex_exit	stack return address
+	bra.s	exsb		Function EX
+fetsb
+	bsr.s	etsb		Function ET
+
+fex_exit
+	tst.l	d1		parameter error?
+	bne.l	ut_rtfd1	 no, ret job ID
+
+fex_rts
+	rts			hard error
+
+fewsb
+	bsr.s	ewsb		Function EW
+
+	tst.l	d1		parameter error?
+	beq.s	fex_rts 	 yes, return hard error
+	move.l	d0,d1		 no, return program's error code
+	bra.l	ut_rtfd1
 *
 etsb
 	move.w	#1,-(sp)	flag to prevent activation
@@ -153,7 +183,6 @@ prog_sbst
 	move.l	sb_vars+sb_sbjob(a5),d0 start address
 	rts
 
-
 prog_sbas
 	move.l	a0,job_sbas(sp) it's SBASIC
 	bsr.s	prog_sbst	set start address
@@ -174,7 +203,6 @@ prog_create
 	exg	a0,a4		restore channel id
 	tst.l	d0		did it create ok
 	bne.s	ex_close	... no
-
 
 	move.l	a4,a1		set address to load
 	move.l	a4,a2		... and keep it
@@ -242,7 +270,7 @@ ex_pip_out
 	move.l	d4,a0
 	moveq	#ioa.sown,d0
 	trap	#2
-*	
+*
 ex_files
 	addq.l	#6,a2		look for flag
 	cmp.w	#$4afb,(a2)+
@@ -320,7 +348,7 @@ ex_err.0
 *
 ex_active
 	move.w	job_wait(sp),d7 is it et (or ex or ew)?
-	bgt.s	ex_exit 	... et, do not activate
+	bgt.s	ex_exit_ok	... et, do not activate
 	move.l	job_id(sp),d5	start at most recent job
 ex_act_loop
 	move.l	d5,d1
@@ -341,7 +369,7 @@ ex_act_top
 	move.w	d7,d3		top job waits if ew
 	trap	#1
 	tst.w	d7		ew?
-	bne.s	ex_exit 	... yes, do not pause
+	bne.s	ex_exit_ok	... yes, do not pause
 *
 	moveq	#25,d3		suspend for .5 of a second, to give job a chance
 	bsr.s	ex_proc
@@ -358,7 +386,13 @@ ex_susp
 	sub.l	a1,a1		no flag
 	trap	#1
 *
-ex_exit
+ex_exit_ok			; pjw
+	move.l	job_id(sp),d1	return this job's ID
+	add.w	#ex_frame,sp	remove local variables
+	rts
+
+ex_exit 			; pjw
+	moveq	#0,d1		flag parameter error
 	add.w	#ex_frame,sp	remove local variables
 	rts
 

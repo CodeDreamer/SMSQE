@@ -571,8 +571,25 @@
 ;
 ; 2.99	RND no longer returns invalid floating point for RND=0
 ;	A3 addressing problems in pointer open routine fixed.
-;	Q40 MMU initialisation corrected.
-
-smsq_vers equ	 '2y99'
+;
+;    d	Fixed free/total sector info of STAT and DIR for large drives (MK)
+;	Re-implemented sms.frtp the way it was supposed to be (MK)
+;	Changed FREE_MEM SBASIC function to use sms.frtp (MK)
+;	Background colour now drawn on-the-fly instead of consuming memory (MK)
+;	Changed RAM disc for fast memory use (MK)
+;
+;    e	QPC implemented "fast" memory (MK)
+;
+;    f	EXTRAS command changed to show all SBASIC commands no matter where
+;	    their code is located (MK)
+;
+; 3.00	Fixed bug in screen driver that could crash the machine in low memory
+;	    situations (MK)
+;	Added many sprite modes (mode 64, mode 32/33 etc.) (MK & JG)
+;	Added support for large sprites (MK)
+;	New high colour WMAN with lots of new features (MK & WL)
+;	New sprite format
+;	Better handling of hard disks for Q40 (JG)
+smsq_vers equ	 '3.00'
 
 	end

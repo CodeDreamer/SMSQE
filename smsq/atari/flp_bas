@@ -1,10 +1,10 @@
 100 OPEN #1,'con_300x12a40x30': CLS: BORDER 1,4
 110 IF cmd$='':INPUT 'SMSQ/E Atari options: Qmon Copy New Mono> ';cmd$
-130 p$='dev8_sys_boot_st_flp'
-140 f$='dev8_sys_boot_file'
-150 ah$='dev8_sys_boot_st_host'
-160 ld$='dev8_smsq_smsq_loader'
-165 hi$='dev8_smsq_atari_hwinit'
+120 p$='dev8_sys_boot_st_flp'
+130 f$='dev8_sys_boot_file'
+140 ah$='dev8_sys_boot_st_host'
+150 ld$='dev8_smsq_smsq_loader'
+160 hi$='dev8_smsq_atari_hwinit'
 170 qm$='dev8_qmon_atari_smsq'
 180 os1f$='dev8_smsq_smsq_fh_os'
 190 os1$='dev8_smsq_smsq_os'
@@ -19,47 +19,49 @@
 280 ex3$='dev8_smsq_atari_driver_ser'
 290 ex4$='dev8_smsq_atari_driver_mono'
 300 ex5$='dev8_smsq_atari_driver_ql'
-305 ex6$='dev8_smsq_smsq_wman'
-310 ex9$='dev8_smsq_smsq_hotkey'
-320 nl$='dev8_sys_boot_null'
-340 IF 'c' INSTR cmd$ = 0
-350   IF 'q' INSTR cmd$ = 0: qm$ = nl$
-355   IF 'm' INSTR cmd$ = 0: ex4$ = nl$
-360   IF 'n' INSTR cmd$ = 0
-370   EW f$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex9$, 'dev8_smsq_atari_SMSQ.PRG'
-375 REMark    EW f$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex9$, 'dev8_smsq_atari_SMSQ.PRG'
-380   ELSE
-390     EW p$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex9$, 'flp1_*d2d';'smsq'
-400   END IF
-410 ELSE
-420   rc 'dev8_smsq_atari_flp_bas'
-430   rc p$
-440   rc f$
-450   rc ah$
-460   rc ld$
-465   rc hi$
-470   rc qm$
-480   rc os1f$
-490   rc os1$
-500   rc ca$
-510   rc os2$
-520   rc ns1$
-530   rc ln1$
-540   rc ln2$
-550   rc ln3$
-560   rc ex1$
-570   rc ex2$
-580   rc ex3$
-590   rc ex4$
-600   rc ex5$
-605   rc ex6$
-610   rc ex9$
-620   rc nl$
-630 END IF
-650 DEFine PROCedure rc (a$)
-660   COPY_O a$ TO 'ram8_' & a$ (6 TO)
-670 END DEFine rcopy
-680 :
-690 DEFine PROCedure sa
-700   SAVE_O dev8_smsq_atari_flp_bas
-710 END DEFine sa
+310 ex6$='dev8_smsq_smsq_wman'
+320 ex7$='dev8_smsq_smsq_hotkey'
+330 ex8$='dev8_smsq_atari_sysspr'
+340 nl$='dev8_sys_boot_null'
+350 IF 'c' INSTR cmd$ = 0
+360   IF 'q' INSTR cmd$ = 0: qm$ = nl$
+370   IF 'm' INSTR cmd$ = 0: ex4$ = nl$
+380   IF 'n' INSTR cmd$ = 0
+390   EW f$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex7$,ex8$, 'dev8_smsq_atari_SMSQ.PRG'
+400   ELSE
+410     EW p$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex7$,ex8$, 'flp1_*d2d';'smsq'
+420   END IF
+430 ELSE
+440   rc 'dev8_smsq_atari_flp_bas'
+450   rc p$
+460   rc f$
+470   rc ah$
+480   rc ld$
+490   rc hi$
+500   rc qm$
+510   rc os1f$
+520   rc os1$
+530   rc ca$
+540   rc os2$
+550   rc ns1$
+560   rc ln1$
+570   rc ln2$
+580   rc ln3$
+590   rc ex1$
+600   rc ex2$
+610   rc ex3$
+620   rc ex4$
+630   rc ex5$
+640   rc ex6$
+650   rc ex7$
+660   rc ex8$
+670   rc nl$
+680 END IF
+690 DEFine PROCedure rc (a$)
+700   COPY_O a$ TO 'ram8_' & a$ (6 TO)
+710 END DEFine rcopy
+720 :
+730 DEFine PROCedure sa
+740   SAVE_O dev8_smsq_atari_flp_bas
+750 END DEFine sa
+760 :

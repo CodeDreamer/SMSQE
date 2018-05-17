@@ -1,194 +1,210 @@
 * Keys for console / pointer device
-        nolist
-ptm.ql4  equ    $00             ;       QL 4 colour mode
-ptm.atm  equ    $02             ;       Atari mono mode
-ptm.ql8  equ    $08             ;       QL 8 colour mode
-ptm.pc16 equ    $20             ;       PC 16 bit colour
-ptm.q40  equ    $21             ;       Q40 16 bit colour mode
+	nolist
+ptm.ql4  equ	$00		;	QL 4 colour mode
+ptm.atm  equ	$02		;	Atari mono mode
+ptm.ql8  equ	$08		;	QL 8 colour mode
+ptm.aur8 equ	$10		;	Aurora 256 colour mode
+ptm.pc16 equ	$20		;	PC 16 bit colour
+ptm.q40  equ	$21		;	Q40 16 bit colour mode
 
-ptd.ql   equ    $00             ;       QL colours
-ptd.04   equ    $01             ;       4 bit 16 colours
-ptd.08   equ    $02             ;       8 bit 256 colours
-ptd.16   equ    $03             ;       16 bit 64k colours
-ptd.24   equ    $04             ;       24 bit 16M colours
+ptd.ql	 equ	$00		;	QL colours
+ptd.04	 equ	$01		;	4 bit 16 colours
+ptd.08	 equ	$02		;	8 bit 256 colours
+ptd.16	 equ	$03		;	16 bit 64k colours
+ptd.24	 equ	$04		;	24 bit 16M colours
 
 *
 * Area keys
 *
-cn.bptop equ    %01110001       ;       Bit Pattern for TOP of area
-cn.bpbot equ    %01110100       ;       Bit Pattern for BOTtom of area
-cn.bpcln equ    %01110010       ;       Bit Pattern for Cursor LiNe
-cn.bpcrt equ    %01100010       ;       Bit Pattern for Cursor RighT
-cn.bpcur equ    %00100010       ;       Bit Pattern for CURsor
-cn.bpall equ    %01110111       ;       Bit Pattern for ALL
+cn.bptop equ	%01110001	;	Bit Pattern for TOP of area
+cn.bpbot equ	%01110100	;	Bit Pattern for BOTtom of area
+cn.bpcln equ	%01110010	;	Bit Pattern for Cursor LiNe
+cn.bpcrt equ	%01100010	;	Bit Pattern for Cursor RighT
+cn.bpcur equ	%00100010	;	Bit Pattern for CURsor
+cn.bpall equ	%01110111	;	Bit Pattern for ALL
 *
-*       Format of pointer device driver definition block
+*	Format of pointer device driver definition block
 *
-pt_lext  equ    $00
-pt_aext  equ    $04
-pt_lpoll equ    $08
-pt_apoll equ    $0c
-pt_lschd equ    $10
-pt_aschd equ    $14
-pt_liod  equ    $18
-pt_aio   equ    $1c
-pt_aopen equ    $20
-pt_aclos equ    $24
+pt_lext  equ	$00
+pt_aext  equ	$04
+pt_lpoll equ	$08
+pt_apoll equ	$0c
+pt_lschd equ	$10
+pt_aschd equ	$14
+pt_liod  equ	$18
+pt_aio	 equ	$1c
+pt_aopen equ	$20
+pt_aclos equ	$24
 
-pt_wman  equ    $28   l pointer to window manager version / vector
+pt_wman  equ	$28   l pointer to window manager version / vector
 
-pt_wmove equ    $2c   b top window move / resize status (0, $80, $81)
-pt_keyrw equ    $2d   b last keyrow
-pt_xicnt equ    $2e   w count of external interrupts
-pt_accel equ    $30   w accelerator (keyboard cursor)
-pt_kaccl equ    $32   w accelerator constant (d=1+ticks/kaccl)
-pt.kaccl equ    8
-pt_xaccl equ    $34   w x mouse accelerator (x=x+(xinc*(xaccl+xinct)/(xaccl+1)
-pt.xaccl equ    3
-pt_yaccl equ    $36   w y mouse accelerator
-pt.yaccl equ    3
+pt_wmove equ	$2c   b top window move / resize status (0, $80, $81)
+pt_keyrw equ	$2d   b last keyrow
+pt_xicnt equ	$2e   w count of external interrupts
+pt_accel equ	$30   w accelerator (keyboard cursor)
+pt_kaccl equ	$32   w accelerator constant (d=1+ticks/kaccl)
+pt.kaccl equ	8
+pt_xaccl equ	$34   w x mouse accelerator (x=x+(xinc*(xaccl+xinct)/(xaccl+1)
+pt.xaccl equ	3
+pt_yaccl equ	$36   w y mouse accelerator
+pt.yaccl equ	3
 *
-pt_npos  equ    $38   l new position (set by poll)
-pt_nxpos equ    $38   w new x position
-pt_nypos equ    $3a   w new y position
-pt_pos   equ    $3c   l current position
-pt_xpos  equ    $3c   w
-pt_ypos  equ    $3e   w
-pt_inc   equ    $40   l positional increment
-pt_xinc  equ    $40   w
-pt_yinc  equ    $42   w
+pt_npos  equ	$38   l new position (set by poll)
+pt_nxpos equ	$38   w new x position
+pt_nypos equ	$3a   w new y position
+pt_pos	 equ	$3c   l current position
+pt_xpos  equ	$3c   w
+pt_ypos  equ	$3e   w
+pt_inc	 equ	$40   l positional increment
+pt_xinc  equ	$40   w
+pt_yinc  equ	$42   w
 *
-pt_addr  equ    $44   l current (or old) screen address of pointer
+pt_addr  equ	$44   l current (or old) screen address of pointer
 *
-pt_bstat equ    $48   b button status
-ptb.bnce equ      -2      ... button bouncing
-ptb.up   equ       0      ... button up
-ptb.pres equ       1      ... button pressed
-pt_bsupp equ    $49   b button suppressed
-ptb.psup equ      -1      ... press suppressed
-ptb.ssup equ       1      ... stroke suppressed
-pt_bpres equ    $4a   b button pressed (space/HIT or ENTER/DO)
-pt_bcurr equ    $4b   b button currently pressed (becomes stroke)
+pt_bstat equ	$48   b button status
+ptb.bnce equ	  -2	  ... button bouncing
+ptb.up	 equ	   0	  ... button up
+ptb.pres equ	   1	  ... button pressed
+pt_bsupp equ	$49   b button suppressed
+ptb.psup equ	  -1	  ... press suppressed
+ptb.ssup equ	   1	  ... stroke suppressed
+pt_bpres equ	$4a   b button pressed (space/HIT or ENTER/DO)
+pt_bcurr equ	$4b   b button currently pressed (becomes stroke)
 
-pt_wake  equ    $4c   b external interrupts to wake up pointer
-pt.wake  equ    3
-pt_relax equ    $4d   b relaxation time before pointer falls onto kbd input
-pt.relax equ    25
-pt_reltm equ    $4e   b relaxation timer
-pt_kprtm equ    $4f   b keypress timer
+pt_wake  equ	$4c   b external interrupts to wake up pointer
+pt.wake  equ	3
+pt_relax equ	$4d   b relaxation time before pointer falls onto kbd input
+pt.relax equ	25
+pt_reltm equ	$4e   b relaxation timer
+pt_kprtm equ	$4f   b keypress timer
 *
-pt_pstat equ    $50   b pointer status - 0 visible, -ve pending, +ve immovable
-pt.supky equ      1       keyboard input - suppress forever
-pt.show  equ      -1      show pointer next time around
-pt.supio equ      -128+20   IO - if no ptr read within 20 ticks - suppress
-pt.supmd equ      1       suppress for mode
-pt.supcc equ      1       suppress on ctrl c
-pt.supsr equ      pt.supio  save or restore - suppress as IO
-pt.clrdq equ      20      wait before clear dummy queue
-pt_pmode equ    $51     previous mode
-pt_schfg equ    $52     scheduler flag, true if scheduler updated pointer record
-; pt_freez equ    $53     pointer freezer
-; pt.freez equ      5       1/10 sec
+pt_pstat equ	$50   b pointer status - 0 visible, -ve pending, +ve immovable
+pt.supky equ	  1	  keyboard input - suppress forever
+pt.show  equ	  -1	  show pointer next time around
+pt.supio equ	  -128+20   IO - if no ptr read within 20 ticks - suppress
+pt.supmd equ	  1	  suppress for mode
+pt.supcc equ	  1	  suppress on ctrl c
+pt.supsr equ	  pt.supio  save or restore - suppress as IO
+pt.clrdq equ	  20	  wait before clear dummy queue
+pt_pmode equ	$51	previous mode
+pt_schfg equ	$52	scheduler flag, true if scheduler updated pointer record
+; pt_freez equ	  $53	  pointer freezer
+; pt.freez equ	    5	    1/10 sec
 
-pt_change equ   $58     address of screen size / colour depth change routine
-pt_pfrx  equ    $5c     x position, fractional part
-pt_pfry  equ    $5e     y position, fractional part
-pt_psprt equ    $60     pointer to sprite
-pt_spsav equ    $64     sprite save area
-pt.spspx equ      64       64x64 pixels
-pt.spspy equ      64
-pt_head  equ    $68     head pointer to linked list of primary windows
-pt_tail  equ    $6c     tail pointer to linked list of primary windows
+pt_change equ	$58	address of screen size / colour depth change routine
+pt_pfrx  equ	$5c	x position, fractional part
+pt_pfry  equ	$5e	y position, fractional part
+pt_psprt equ	$60	pointer to sprite
+pt_spsav equ	$64	sprite save area
+pt.spspx equ	  64	   64x64 pixels
+pt.spspy equ	  64
+pt_head  equ	$68	head pointer to linked list of primary windows
+pt_tail  equ	$6c	tail pointer to linked list of primary windows
 *
-pt_dumq1 equ    $80     pointer to first dummy queue
-pt_kqoff equ    $84     offset of keyboard queue from (a0)
-pt_copen equ    $88     pointer to standard console open
+pt_dumq1 equ	$80	pointer to first dummy queue
+pt_kqoff equ	$84	offset of keyboard queue from (a0)
+pt_copen equ	$88	pointer to standard console open
 *
-pt_lstuf equ    $8c  b  last button press for stuffer
-pt_stuf1 equ    $8d  b  first character to stuff
-pt.stuf1 equ      $ff
-pt_stuf2 equ    $8e  b  second character to stuff
-pt.stuf2 equ      '.'
+pt_lstuf equ	$8c  b	last button press for stuffer
+pt_stuf1 equ	$8d  b	first character to stuff
+pt.stuf1 equ	  $ff
+pt_stuf2 equ	$8e  b	second character to stuff
+pt.stuf2 equ	  '.'
 *
-pt_offscr equ   $8f  b  bits set if pointer on limits of screen
-pt..otop   equ     3
-pt..obot   equ     2
-pt..oleft  equ     1
-pt..oright equ     0
+pt_offscr equ	$8f  b	bits set if pointer on limits of screen
+pt..otop   equ	   3
+pt..obot   equ	   2
+pt..oleft  equ	   1
+pt..oright equ	   0
 
-pt_rec   equ    $90     current pointer record
-pt_cchad equ    $a8  l  current channel address (the window the pointer is in)
-pt_cwstt equ    $ac  b  current window status +1 wrong mode, -1 key input
-pt_cwbsy equ    $ad  b  current window busy count
-pt.cwbsy equ      10      number of scheduler loops before true busy
-pt_supcr equ    $ae  b  suppress cursor key stuffing
-pt_bpoll equ    $af  b  buttons set on poll
-pt_svers equ    $b0  b  dynamic Sprite VERSion
-pt_mvers equ    $b1  b  Max count for this sprite VERSion
-pt_randi equ    $b2  w  RANDom number Initial value (for spray)
-pt.randm equ      $e72b   RANDom amount to Multiply by
-pt.randa equ      3       RANDom amount to Add on
-pt_spbuf equ    $b4  l  pixel SPray BUFfer
-pt_spbsz equ    $b8  l  pixel SPray Buffer SiZe
-pt_hbase equ    $bc  l  hardware base
+pt_rec	 equ	$90	current pointer record
+pt_cchad equ	$a8  l	current channel address (the window the pointer is in)
+pt_cwstt equ	$ac  b	current window status +1 wrong mode, -1 key input
+pt_cwbsy equ	$ad  b	current window busy count
+pt.cwbsy equ	  10	  number of scheduler loops before true busy
+pt_supcr equ	$ae  b	suppress cursor key stuffing
+pt_bpoll equ	$af  b	buttons set on poll
+pt_svers equ	$b0  b	dynamic Sprite VERSion
+pt_mvers equ	$b1  b	Max count for this sprite VERSion
+pt_randi equ	$b2  w	RANDom number Initial value (for spray)
+pt.randm equ	  $e72b   RANDom amount to Multiply by
+pt.randa equ	  3	  RANDom amount to Add on
+pt_spbuf equ	$b4  l	pixel SPray BUFfer
+pt_spbsz equ	$b8  l	pixel SPray Buffer SiZe
+pt_hbase equ	$bc  l	hardware base
 *
-pt_kyrwr equ    $c0  l  pointer to keyrow read code
+pt_kyrwr equ	$c0  l	pointer to keyrow read code
 *
-pt_ptrok equ    $c4  l  points to OK
-pt_nuldr equ      pt_ptrok-pt_aclos+pt_liod
+pt_ptrok equ	$c4  l	points to OK
+pt_nuldr equ	  pt_ptrok-pt_aclos+pt_liod
 *
-pt_aiorm equ    $c8  l  pointer to ROM I/O routine
-pt_aoprm equ    $cc  l  pointer to ROM open routine
-pt_aclrm equ    $d0  l  pointer to ROM close routine
-pt_romdr equ      pt_aiorm-pt_aio+pt_liod
-pt_ochad equ    $d4  l  old current channel address
+pt_aiorm equ	$c8  l	pointer to ROM I/O routine
+pt_aoprm equ	$cc  l	pointer to ROM open routine
+pt_aclrm equ	$d0  l	pointer to ROM close routine
+pt_romdr equ	  pt_aiorm-pt_aio+pt_liod
+pt_ochad equ	$d4  l	old current channel address
 
-pt_dmode equ    $dc  b  display made
-pt_ptlim equ    $dd     set if pointer movement limited (temporary)
-pt_ckeyw equ    $de     clear if cursor keys move pointer on a window basis
-pt_ckey  equ    $df     clear if cursor keys move pointer
-pt_minxy equ    $e0     pointer limits
-pt_maxxy equ    $e4
+pt_dmode equ	$dc  b	display made
+pt_ptlim equ	$dd	set if pointer movement limited (temporary)
+pt_ckeyw equ	$de	clear if cursor keys move pointer on a window basis
+pt_ckey  equ	$df	clear if cursor keys move pointer
+pt_minxy equ	$e0	pointer limits
+pt_maxxy equ	$e4
 
 ; old names
-pt_sbase equ    $e8     screen base
-pt_bytes equ    $ec     bytes per screen
-pt_bytel equ    $f0     bytes per line
-pt_ssize equ    $f2     screen size
-pt_ssizx equ    $f2
-pt_ssizy equ    $f4
+pt_sbase equ	$e8	screen base
+pt_bytes equ	$ec	bytes per screen
+pt_bytel equ	$f0	bytes per line
+pt_ssize equ	$f2	screen size
+pt_ssizx equ	$f2
+pt_ssizy equ	$f4
 ; new names
-pt_scren equ    $e8    ; long  address of visible SCREeN
-pt_scrsz equ    $ec    ; long  SCReen SiZe in bytes
-pt_scinc equ    $f0    ; word  SCreen row INCrement
-pt_xscrs equ    $f2    ; word  X SCReen Size in pixels
-pt_yscrs equ    $f4    ; word  Y SCReen Size in pixels
+pt_scren equ	$e8    ; long  address of visible SCREeN
+pt_scrsz equ	$ec    ; long  SCReen SiZe in bytes
+pt_scinc equ	$f0    ; word  SCreen row INCrement
+pt_xscrs equ	$f2    ; word  X SCReen Size in pixels
+pt_yscrs equ	$f4    ; word  Y SCReen Size in pixels
 
-pt_xtotl equ    $f6    ; word  X total pixels
-pt_xvref equ    $f8    ; word  X visible reference for xtotl
-pt_ytotl equ    $fa    ; word  Y total pixels
-pt_yvref equ    $fc    ; word  Y visible reference for ytotl
-pt_frate equ    $fe    ; word  frame rate
+pt_xtotl equ	$f6    ; word  X total pixels
+pt_xvref equ	$f8    ; word  X visible reference for xtotl
+pt_ytotl equ	$fa    ; word  Y total pixels
+pt_yvref equ	$fc    ; word  Y visible reference for ytotl
+pt_frate equ	$fe    ; word  frame rate
 
-pt_bgstp equ    $102   ; word  background stipple
-pt_bgclm equ    $104   ; long  background colour mask
-pt_sfnt1 equ    $108   ; long  pointer to Standard FoNT 1
-pt_sfnt2 equ    $10c   ; long  pointer to Standard FoNT 2
+pt_bgstp equ	$102   ; word  background stipple
+pt_bgclm equ	$104   ; long  background colour mask
+pt_sfnt1 equ	$108   ; long  pointer to Standard FoNT 1
+pt_sfnt2 equ	$10c   ; long  pointer to Standard FoNT 2
 
-pt_spcch equ    $110   ; long  pointer to sprite cache
-pt_palql equ    $114   ; long  pointer to QL palette
-pt_pal256 equ   $118   ; long  pointer to 256 colour palette
-pt_pspck equ    $11c   ; long  pointer to pointer sprite for checking
-pt_bgcld equ    $120   ; long  background colour definition
+pt_spcch equ	$110   ; long  pointer to sprite cache
+pt_palql equ	$114   ; long  pointer to QL palette
+pt_pal256 equ	$118   ; long  pointer to 256 colour palette
+pt_pspck equ	$11c   ; long  pointer to pointer sprite for checking
+pt_bgcld equ	$120   ; long  background colour definition
+pt_wmpal equ	$124   ; long  WMAN system palette
 
-pt_ident equ    $128   ; long  identifier
-pt.ident equ      'PTR2'
-pt_drtab equ    $12c   ; 5*long driver installation routine addresses
-pt_cdpth equ    $140   ; byte   current colour depth
-pt_cdtab equ    $141   ; 5*byte modes for each resolution
-pt_end   equ    $150   ; length of pointer linkage block
+pt_ident equ	$128   ; long  identifier
+pt.ident equ	  'PTR2'
+pt_drtab equ	$12c   ; 5*long driver installation routine addresses
+pt_cdpth equ	$140   ; byte	current colour depth
+pt_cdtab equ	$141   ; 5*byte modes for each resolution
+pt_sstb  equ	$146   ; long  pointer to system sprites table
+pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
+pt_vecs  equ	$150   ; long  pointer to block with vectored routines
+pt_end	 equ	$154   ; length of pointer linkage block
+
 *
-sd.extnl equ    $30         screen definition extension length
+* Pointer interface vectors
+*
+pv_pinf  equ	$00    ; Get pointer information (IOP.PINF equivalent)
+pv_fspr  equ	$06    ; find fitting sprite definition
+pv_sspr  equ	$0c    ; set system sprite/get system sprite address
+pv_size  equ	$10    ; get pixel rounding sizes
+
+*
+* Channel definition block
+*
+sd.extnl equ	$30	    screen definition extension length
 sd_xhits equ   -$18  word   x hit size
 sd_yhits equ   -$16  word   y hit size
 sd_xhito equ   -$14  word   x hit origin (screen coordinates)
@@ -201,76 +217,77 @@ sd_youto equ   -$0a  word   y outline origin (screen coordinates)
 sd_prwlb equ   -$08  long   primary link list bottom up (primary window)
 sd_pprwn equ   -$08  long   pointer to primary window (secondary window)
 sd_prwlt equ   -$04  long   primary link list top down (primary window)
-sd_sewll equ    $00  long   secondary window link list pointer
-sd_wsave equ    $04  long   window save area
-sd_wssiz equ    $08  long   size of window save area
-sd_wwdef equ    $0c  long   pointer to window working definition
+sd_sewll equ	$00  long   secondary window link list pointer
+sd_wsave equ	$04  long   window save area
+sd_wssiz equ	$08  long   size of window save area
+sd_wwdef equ	$0c  long   pointer to window working definition
 *
-sd_wlstt equ    $10  byte   window lock status
-sd.wlock equ    -1          locked
-sd.wunlk equ    0           unlocked
-sd.wnolk equ    1           no lock
-sd.slock equ    $ffffff80   set lock
-sd.sunlk equ    $ffffff81   set unlock
-sd_prwin equ    $11  byte   bit 7 set if primary window
-sd..prwn equ    7
-sd_behav equ    $11  byte   bit 0 set if well behaved
-sd..well equ    0
-sd..frez equ    1           freeze on locking (well behaved primary only!!)
-sd..botm equ    2           bottom (unpickable) window
-sd.wbsec equ    $01         well behaved secondary
-sd.wbprm equ    $81         well behaved primary
-sd.bbsec equ    $00         badly behaved secondary
-sd.bbprm equ    $80         badly behaved primary
-sd.wpapr equ    $87         wallpaper
-sd_wmode equ    $12  byte   window's own display mode
-sd_mysav equ    $13  byte   true if my save area
-sd_wmove equ    $14  byte   window move/query ($80 query, $81 move, $81 resize)
-sd_pick  equ    $15  byte   pick status
-sd.pick  equ      7         just picked
-sd_bcolw equ    $16         border colour (word)
-sd_xmin  equ    $18
-sd_ymin  equ    $1a
-sd_xsize equ    $1c
-sd_ysize equ    $1e
-sd_borwd equ    $20
-sd_xpos  equ    $22
-sd_ypos  equ    $24
-sd_xinc  equ    $26
-sd_yinc  equ    $28
-sd_font  equ    $2a
-sd_scrb  equ    $32
-sd_pmask equ    $36
-sd_smask equ    $3a
-sd_imask equ    $3e
-sd_cattr equ    $42
-sd..ul   equ      0
-sd..flsh equ      1
-sd..over equ      2
-sd..xor  equ      3
-sd..dhgt equ      4
-sd..xwdt equ      5
-sd..dwdt equ      6
-sd..gmod equ      7
-sd_curf  equ    $43
-sd_pcolr equ    $44
-sd_scolr equ    $45
-sd_icolr equ    $46
-sd_bcolr equ    $47
-sd_nlsta equ    $48
-sd_fmod  equ    $49
-sd_xorg  equ    $4a
-sd_yorg  equ    $50
-sd_scal  equ    $56
-sd_fbuf  equ    $5c
-sd_linel equ    $64
-sd_sflag equ    $66        ; size flag, set by defbd, csize if wind to small
-sd.sfout equ      1        ; or lsb set if graphic cursor is outside window
-sd_end   equ    $68 $$$$$ but not always!
-sd_keyq  equ    $68
-sd.stdln equ      $130 ... standard length including queue
+sd_wlstt equ	$10  byte   window lock status
+sd.wlock equ	-1	    locked
+sd.wunlk equ	0	    unlocked
+sd.wnolk equ	1	    no lock
+sd.slock equ	$ffffff80   set lock
+sd.sunlk equ	$ffffff81   set unlock
+sd_prwin equ	$11  byte   bit 7 set if primary window
+sd..prwn equ	7
+sd_behav equ	$11  byte   bit 0 set if well behaved
+sd..well equ	0
+sd..frez equ	1	    freeze on locking (well behaved primary only!!)
+sd..botm equ	2	    bottom (unpickable) window
+sd.wbsec equ	$01	    well behaved secondary
+sd.wbprm equ	$81	    well behaved primary
+sd.bbsec equ	$00	    badly behaved secondary
+sd.bbprm equ	$80	    badly behaved primary
+sd.wpapr equ	$87	    wallpaper
+sd_wmode equ	$12  byte   window's own display mode
+sd_mysav equ	$13  byte   true if my save area
+sd_wmove equ	$14  byte   window move/query ($80 query, $81 move, $81 resize)
+sd_pick  equ	$15  byte   pick status
+sd.pick  equ	  7	    just picked
+sd_bcolw equ	$16  word   border colour
+sd_xmin  equ	$18  word   window left pixel, exclusive of border
+sd_ymin  equ	$1a  word   ditto top pixel
+sd_xsize equ	$1c  word   window width, exclusive of border
+sd_ysize equ	$1e  word   ditto height
+sd_borwd equ	$20  word   border height, border width is double this
+sd_xpos  equ	$22  word   cursor position relative to left pixel above
+sd_ypos  equ	$24  word   ditto top pixel
+sd_xinc  equ	$26  word   cursor pixel width
+sd_yinc  equ	$28  word   cursor pixel height
+sd_font  equ	$2a  2*long font addresses, primary first. default char in secondary
+sd_scrb  equ	$32  long   base address of screen
+sd_pmask equ	$36  long   paper colour mask
+sd_smask equ	$3a  long   strip colour mas
+sd_imask equ	$3e  long   ink colour mas
+sd_cattr equ	$42  byte   character attributes
+sd..ul	 equ	  0	underline (row 9, or the lowest row, is all ink)
+sd..flsh equ	  1	flash (ignored in mode 4)
+sd..over equ	  2	transparent background (only character area is touched)
+sd..xor  equ	  3	XOR characters/graphics (character/pixel colour XOR'ed in)
+sd..dhgt equ	  4	double height (chars spread in Y)
+sd..xwdt equ	  5	extended width (8 bits used from character font entries)
+sd..dwdt equ	  6	double width (chars spread in X, mode 8 always sets this)
+sd..gmod equ	  7	graphics positioned characters (offscreen ignored until NL)
+
+sd_curf  equ	$43  byte   cursor flag (0 suppressed, >0 visible, <0 invisible)
+sd_pcolr equ	$44  byte   paper colour byte
+sd_scolr equ	$45  byte   strip colour byte
+sd_icolr equ	$46  byte   ink colour byte
+sd_bcolr equ	$47  byte   border colour byte
+sd_nlsta equ	$48  byte   new line status (0 none, >0 implicit, <0 explicit)
+sd_fmod  equ	$49  byte   fill mode (0 off, 1 on)
+sd_yorg  equ	$4a  float  graphics window origin (added to Y coords)
+sd_xorg  equ	$50  float  ditto for X
+sd_scal  equ	$56  float  graphics scale factor (range from bottom row to top row)
+sd_fbuf  equ	$5c  long   pointer to ALCHP'ed fill buffer, 0 if none
+sd_linel equ	$64  word   line length in bytes
+sd_sflag equ	$66  byte   size flag, set by defbd, csize if wind to small
+sd.sfout equ	  1	    or lsb set if graphic cursor is outside window
+sd_end	 equ	$68 $$$$$ but not always!
+sd_keyq  equ	$68
+sd.stdln equ	  $130 ... standard length including queue
 *
-sd.dq1l  equ    12
-sd.dq2   equ    sd_keyq+8       (beware ... used in qtyp)
+sd.dq1l  equ	12
+sd.dq2	 equ	sd_keyq+8	(beware ... used in qtyp)
 *
-        list
+	list

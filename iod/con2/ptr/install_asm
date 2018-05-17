@@ -1,5 +1,7 @@
-* Install a new console driver	V2.01	 2000	 Tony Tebby
+* Install a new console driver	V2.02	 2000	 Tony Tebby
 *
+* 2003-04-24  2.02  Added table pointer for vectored routine
+
 	xdef	pt_install
 	xdef	pt_installu
 	xdef	pt_installv
@@ -12,6 +14,7 @@
 	xref	pt_modex
 	xref	pt_cchset
 	xref	pt_changer
+	xref	pv_table
 
 	xref	pt_scanmode
 	xref	pt_scancrop
@@ -135,6 +138,8 @@ pt_installv
 	move.l	(sp)+,pt_aclos(a3)
 	pea	pt_changer(pc)
 	move.l	(sp)+,pt_change(a3)
+	pea	pv_table(pc)
+	move.l	(sp)+,pt_vecs(a3)
 
 	lea	pt_modex,a0
 	lea	sms.t1tab+sms.dmod*4,a5  ; pointer mode routine

@@ -1,10 +1,10 @@
 100 OPEN #1,'con_250x12a40x50': CLS: BORDER 1,4
 110 IF cmd$='': INPUT 'SMSQ/E GOLD options: Qmon Copy> ';cmd$
-130 f$='dev8_sys_boot_file'
-140 v$='dev8_smsq_smsq_vers'
-150 h$='dev8_smsq_gold_host'
-160 ld$='dev8_smsq_smsq_loader'
-165 hi$='dev8_smsq_gold_hwinit'
+120 f$='dev8_sys_boot_file'
+130 v$='dev8_smsq_smsq_vers'
+140 h$='dev8_smsq_gold_host'
+150 ld$='dev8_smsq_smsq_loader'
+160 hi$='dev8_smsq_gold_hwinit'
 170 qm$='dev8_qmon_gold_smsq'
 180 os1f$=''
 190 os1$='dev8_smsq_smsq_os'
@@ -17,58 +17,63 @@
 260 ln2a$='dev8_smsq_gold_kbd_abc_lang'
 270 ln3$='dev8_smsq_sbas_lang'
 280 ex1$='dev8_smsq_sbas_procs_x'   : REMark this must be after "roms"
-310 ex2a$='dev8_smsq_gold_kbd_abc'
-320 ex2$='dev8_smsq_gold_driver_most'
-330 ex3a$='dev8_smsq_gold_driver_ql'
-338 ex3q$='dev8_smsq_gold_qimi'
-339 ex3w$='dev8_smsq_smsq_wman'
+290 ex2a$='dev8_smsq_gold_kbd_abc'
+300 ex2$='dev8_smsq_gold_driver_most'
+310 ex3a$='dev8_smsq_gold_driver_ql'
+320 ex3q$='dev8_smsq_gold_qimi'
+330 ex3w$='dev8_smsq_smsq_wman'
 340 ex4$='dev8_smsq_gold_driver_dv3'
 350 ex5$='dev8_smsq_gold_driver_nd'
 360 ex6$='dev8_smsq_gold_driver_nds'
-370 ex9$='dev8_smsq_smsq_hotkey'
-375 ex10$='dev8_smsq_gold_roms'
-380 nl$='dev8_sys_boot_null'
-390 :
-400 IF 'c' INSTR cmd$ = 0
-410   IF 'q' INSTR cmd$ = 0: qm$ = nl$
-420   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,qm$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex9$,ex10$,ex1$, 'dev8_SMSQ_GOLD_gold'
-430 ELSE
-440   rc 'dev8_smsq_gold_flp_bas'
-450   rc f$
-460   rc v$
-470   rc h$
-480   rc ld$
-485   rc hi$
-490   rc qm$
-500   rc os1f$
-510   rc os1$
-520   rc ca$
-530   rc os2$
-540   rc ns1$
-550   rc ns2$
-560   rc ln1$
-570   rc ln2$
-580   rc ln2a$
-590   rc ln3$
-600   rc exc$
-610   rc ex1$
-620   rc ex2$
-630   rc ex2a$
-640   rc ex3a$
-648   rc ex3q$
-649   rc ex3w$
-650   rc ex4$
-660   rc ex5$
-670   rc ex6$
-680   rc ex9$
-690   rc ex10$
-710   rc nl$
-720 END IF
-730 :
-740 DEFine PROCedure rc (a$)
-750   IF a$<>'': COPY_O a$ TO 'ram8_' & a$ (6 TO)
-760 END DEFine rcopy
-770 :
-780 DEFine PROCedure sa
-790   SAVE_O dev8_smsq_gold_flp_bas
-800 END DEFine sa
+370 ex7$='dev8_smsq_smsq_hotkey'
+380 ex8$='dev8_smsq_gold_sysspr'
+390 nl$='dev8_sys_boot_null'
+400 :
+410 IF 'c' INSTR cmd$ = 0
+420   IF 'q' INSTR cmd$ = 0: qm$ = nl$
+430   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,qm$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex1$, 'dev8_SMSQ_GOLD_gold'
+435 REMark   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,qm$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex1$, 'dev8_SMSQ_GOLD_gold'
+440 ELSE
+450   rc 'dev8_smsq_gold_flp_bas'
+460   rc f$
+470   rc v$
+480   rc h$
+490   rc ld$
+500   rc hi$
+510   rc qm$
+520   rc os1f$
+530   rc os1$
+540   rc ca$
+550   rc os2$
+560   rc ns1$
+570   rc ns2$
+580   rc ln1$
+590   rc ln2$
+600   rc ln2a$
+610   rc ln3$
+620   rc exc$
+630   rc ex1$
+640   rc ex2$
+650   rc ex2a$
+660   rc ex3a$
+670   rc ex3q$
+680   rc ex3w$
+690   rc ex4$
+700   rc ex5$
+710   rc ex6$
+720   rc ex7$
+730   rc ex9$
+740   rc nl$
+750 END IF
+760 :
+770 DEFine PROCedure rc (a$)
+780   IF a$<>'': COPY_O a$ TO 'ram8_' & a$ (6 TO)
+790 END DEFine rcopy
+800 :
+810 DEFine PROCedure sa
+820   SAVE_O dev8_smsq_gold_flp_bas
+830 END DEFine sa
+840 :
+850 DEFine PROCedure t
+860   LOAD DEV8_smsq_gold_make_bas
+870 END DEFine t

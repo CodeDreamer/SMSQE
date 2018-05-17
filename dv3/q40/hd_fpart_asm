@@ -1,5 +1,7 @@
 ; DV3 Q40 Find Partition (Atari root)	   V3.01    1999  Tony Tebby
-
+; 2003-01-17  V3.01 Fixed the ICD extension (8 additional partitions in table)	 (JG)
+;
+;
 	section dv3
 
 	xdef	hd_fpart
@@ -69,10 +71,10 @@ hfp_partloop
 	subq.w	#1,d2			 ; extended group yet?
 	bne.s	hfp_partloop
 	tst.l	d2			 ; all tried?
-	beq.s	hfp_root
+	bne.s	hfp_root		 ; was: beq.s	hfp_root		 ;
 	moveq	#-8,d2
 	neg.w	d2			 ; try eight more
-	lea	art_pext-4*art.plen(a1),a1
+	lea	art_pext-art_p0-4*art.plen(a1),a1 ; (JG: this should work now!)
 	bra.s	hfp_partloop
 
 hfp_xlink

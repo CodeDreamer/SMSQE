@@ -1,0 +1,9 @@
+program dev8_smsq_q40_sysspr
+
+section header
+section base	  ; base area for any extension or program
+section version   ; version messages
+
+input dev8_smsq_smsq_sysspr_rel
+input dev8_iod_con2_sprite_hc_lib
+library dev8_smsq_smsq_end_rel

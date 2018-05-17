@@ -1,5 +1,5 @@
 * Pointer IO intercept	V1.07	 1985	Tony Tebby   QJUMP
-*
+* 2003 Feb 16		1.08	bugfix
 	section driver
 *
 	xdef	pt_io
@@ -73,12 +73,13 @@ pt_io
 	cmp.b	#iop.pick,d0		are we picking?
 	beq.s	pti_do			yes, ignore lock then
 	cmp.b	#iop.wpap,d0		wallpaper?
-	beq.s	pti_do			... yes
+	beq.s	pti_do			... yes, ignore lock then
 
 ptio_nc
 	moveq	#err.nc,d0
 	bra.l	ptio_exit
-	rts
+*	 rts				 1.08
+
 *
 * do io operation
 *
@@ -252,8 +253,8 @@ pt_dcsec
 pt_dcsdone
 	movem.l (sp)+,d0/d1/d2/a0/a1/a2
 pt_do_cr
-	tst.b	sd_curf(a0)	 cursor visible?
-	ble.s	pt_iojmp
+	tst.b	sd_curf(a0)		cursor visible?
+	ble.s	pt_iojmp		... no
 
 	movem.l d0/d1/d2/a1/a2,-(sp)	save regs
 	moveq	#iow.dcur,d0		disable cursor
@@ -265,10 +266,10 @@ pt_do_cr
 	tst.b	sd_curf(a0)
 	ble.s	ptio_exit
 	clr.b	sd_curf(a0)
-	movem.l d0/d1/a1,-(sp)
+	movem.l d0/d1/d2/a1/a2,-(sp)	*** 1.08 (in old version, regs saved...
 	moveq	#iow.ecur,d0		re-enable cursor
 	jsr	cn_io
-	movem.l (sp)+,d0/d1/d2
+	movem.l (sp)+,d0/d1/d2/a1/a2	*** 1.08 ... were not regs restored)
 	tst.l	d0
 	bra.s	ptio_exit
 
@@ -349,5 +350,5 @@ pth_setv
 	move.b	d4,pt_pstat(a3) 	reset visibility flag
 pth_rts
 	rts
-*
+
 	end

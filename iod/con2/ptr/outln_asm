@@ -1,5 +1,6 @@
 * Define window outline    V1.05     1986  Jonathan Oakley  QJUMP
-*
+* 2003 Feb 16		    1.06	keep A1, as per documentation (wl)
+
 	section driver
 *
 	include 'dev8_keys_con'
@@ -82,15 +83,21 @@ poum_ipar
 pt_doutln
 	movem.l (a1),d6/d7		; get window size/origin parameters
 	addq.l	#1,d6			; size = -1?
-	bne.s	pou_soutd6		 ; ... no
-	btst	#sd..well,sd_behav(a0)	; already outlined?
+	beq.s	pou_ns			; ... yes  ** 1.06
+	move.l	a1,-(sp)		; keep a1  ** 1.06
+	bsr	pou_soutd6
+	bra.s	pou_rt2
+
+pou_ns	btst	#sd..well,sd_behav(a0)	; already outlined?
 	bne.s	pou_rtsok
 	movem.l sd_xhits(a0),d6/d7	; ... yes, use current hit area
+	move.l	a1,-(sp)		; make sure this is kept even if secondary wdw
 	move.l	sd_xsize(a0),-(sp)	; save size
 	move.l	sd_xmin(a0),-(sp)
 	bsr.s	pou_soutl
 	move.l	(sp)+,sd_xmin(a0)	; reset size
 	move.l	(sp)+,sd_xsize(a0)
+pou_rt2 move.l	(sp)+,a1		: get A1 back
 	tst.l	d0
 	rts
 

@@ -3,68 +3,54 @@
 ; for compatibilty with some hardware, this section should only have
 ; "constants" set up during initialisation.
 
-        nolist
+	nolist
 
-sms.base equ    $900
+sms.base equ	$900
 
-sms.qlvb equ    $c0                         ; QL vector base
+sms.qlvb equ	$c0			    ; QL vector base
 
-sms.res  equ    $13c                        ; staging post for reset
-sms.resl equ    $5ffffffe+sms.base-sms.res  ; bra.l   sms.base
+sms.res  equ	$13c			    ; staging post for reset
+sms.resl equ	$5ffffffe+sms.base-sms.res  ; bra.l   sms.base
 
-sms.rese equ    $180                        ; "soft reset" entries
-sms.resn equ      8                         ; eight of them
-sms.ress equ    $60fe+sms.res-sms.rese      ; bra.s   sms.resl
+sms.rese equ	$180			    ; "soft reset" entries
+sms.resn equ	  8			    ; eight of them
+sms.ress equ	$60fe+sms.res-sms.rese	    ; bra.s   sms.resl
 
-sms.sysb equ    $400             ; long  sysvar base address
-sms.usetop equ  $404             ; long  useable top of memory (slow RAM)
-sms.128kb equ   $408             ; long  address of 128kbyte buffer
-sms.strac equ   $40c             ; long  saved trace vector (bus error handler)
-sms.ssr   equ   $410             ; word  saved status reg (bus error handler)
+sms.sysb equ	$400		 ; long  sysvar base address
+sms.usetop equ	$404		 ; long  useable top of memory (slow RAM)
+sms.128kb equ	$408		 ; long  address of 128kbyte buffer
+sms.strac equ	$40c		 ; long  saved trace vector (bus error handler)
+sms.ssr   equ	$410		 ; word  saved status reg (bus error handler)
 
-sms.framb equ   $41c             ; long  base of fast RAM (Atari)
-sms.framt equ   $420             ; long  top of fast RAM (Atari)
-sms.sbjob equ   $424             ; long  SBASIC job vector
-sms.hwtab equ   $428             ; long  Hardware table
-sms.qlser equ   $42c             ; long  QL serial linkage
-sms.wbase equ   $430             ; 8 byt routine to move.w d0,(a5)+ in base area
-                                 ; jmp.l to move.w d0,(a5)+ in base area
+sms.framb equ	$41c		 ; long  base of fast RAM (Atari)
+sms.framt equ	$420		 ; long  top of fast RAM (Atari)
+sms.sbjob equ	$424		 ; long  SBASIC job vector
+sms.hwtab equ	$428		 ; long  Hardware table
+sms.qlser equ	$42c		 ; long  QL serial linkage
+sms.wbase equ	$430		 ; 8 byt routine to move.w d0,(a5)+ in base area
+				 ; jmp.l to move.w d0,(a5)+ in base area
 
-sms.machine equ $43c             ; 4 byte machine def (module select format)
-sms.conf  equ   $440             ; $40 byte config area
-sms.ctop  equ   $480             ; ... top of
+sms.machine equ $43c		 ; 4 byte machine def (module select format)
+sms.conf  equ	$440		 ; $40 byte config area
+sms.ctop  equ	$480		 ; ... top of
 
-sms.mtable equ  $480                        ; memory manager tables
-sms.mtsize equ  $300
+sms.mtable equ	$480			    ; memory manager tables
+sms.mtsize equ	$300
 
-sms.cinvd  equ  $780                        ; cache invalidate (data)
-sms.cinvi  equ  $790                        ; cache invalidate (instruction)
-sms.cdisb  equ  $7a0                        ; cache disable (both)
-sms.cdisi  equ  $7b0                        ; cache disable (instruction)
-sms.cenab  equ  $7c0                        ; cache enable (both)
-sms.cenai  equ  $7d0                        ; cache enable (instruction)
-sms.ctrap  equ  $7e0                        ; cache handling on trap
-sms.cinpt  equ  $7ee                        ; cache handling on input ops
-sms.spoll  equ  $7f0                        ; address of scheduler poll entry
-sms.hpoll  equ  $7f4                        ; address of hardware poll tidy
-sms.rte    equ  $7f8                        ; address of sms.rte
-sms.t1max  equ  $7fe                        ; maximum trap 1 key = $3e
-sms.t1tab  equ  $800                        ; table of long word trap 1 vectors
+sms.cinvd  equ	$780			    ; cache invalidate (data)
+sms.cinvi  equ	$790			    ; cache invalidate (instruction)
+sms.cdisb  equ	$7a0			    ; cache disable (both)
+sms.cdisi  equ	$7b0			    ; cache disable (instruction)
+sms.cenab  equ	$7c0			    ; cache enable (both)
+sms.cenai  equ	$7d0			    ; cache enable (instruction)
+sms.ctrap  equ	$7e0			    ; cache handling on trap
+sms.cinpt  equ	$7ee			    ; cache handling on input ops
+sms.spoll  equ	$7f0			    ; address of scheduler poll entry
+sms.hpoll  equ	$7f4			    ; address of hardware poll tidy
+sms.rte    equ	$7f8			    ; address of sms.rte
+sms.t1max  equ	$7fe			    ; maximum trap 1 key = $3e
+sms.t1tab  equ	$800			    ; table of long word trap 1 vectors
 
-sms.nextm  equ  sms.base-4                  ; pointer to header of next extension
+sms.nextm  equ	sms.base-4		    ; pointer to header of next extension
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-sms.qrom   equ  $c000                       ; QL ROM base
+sms.qrom   equ	$c000			    ; QL ROM base

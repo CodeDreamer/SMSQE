@@ -1,21 +1,36 @@
-; Procedure to execute programs  V2.00     1988   Tony Tebby   QJUMP
+; Procedure to execute programs    V2.00     1988   Tony Tebby   QJUMP
+
+; 2003-01-18  V2.01  added function fep     pjwitte 2oo3
+
 
         section hotkey
 
         xdef    exep
+        xdef    fep
 
         xref    hot_parm
         xref    hot_ldit
         xref    hot_thus
         xref    hot_thfr
-        xref    hk_do
 
+        xref    hk_xthid                 ; ex hotkey, return job ID
+                                         
         xref    gu_achp0
         xref    gu_rchp
         xref    gu_pause
 
+        xref    ut_rtfd1                 ; return float
+
         include 'dev8_ee_hk_data'
         include 'dev8_ee_hk_xhdr'
+
+;+++
+; jobID = FEP(filename |program name| |I| |G|P|U| |window|memory|)
+;---
+fep
+        bsr.s   exep                     ; do a normal exep, then
+        bne.s   ex_rts                   ; dont bother if error
+        bra.l   ut_rtfd1                 ; return job ID as float
 
 ;+++
 ; EXEP filename |program name| |I| |G|P|U| |window|memory|
@@ -38,11 +53,15 @@ exep
         move.l  a0,a1                    ; item
         or.w    d2,d1                    ; any odd parameters?
         bne.s   ex_do                    ; ... yes
-        jsr     hk_do
+
+        jsr     hk_xthid                 ; execut hotkey, return jobid
+
         beq.s   ex_pause                 ; sehr gut
 ex_do
         move.w  #hki.xfil,hki_type(a1)   ; tough, now try file
-        jsr     hk_do                    ; do it
+
+        jsr     hk_xthid                 ; do it
+
 ex_pause
         jsr     hot_thfr                 ; free
         bne.s   ex_rchp                  ; oops

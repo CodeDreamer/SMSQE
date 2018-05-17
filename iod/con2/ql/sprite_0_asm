@@ -2,34 +2,6 @@
 ;
 	section sprite
 ;
-	xdef	sp_table
-sp_table
-	dc.w	8			; there are 8 sprites
-	dc.l	sp_arrow-sp_table
-	dc.l	sp_lock-sp_table
-	dc.l	sp_null-sp_table
-	dc.l	sp_mode-sp_table
-	dc.l	sp_key-sp_table
-	dc.l	sp_busy-sp_table
-	dc.l	sp_wmove-sp_table
-	dc.l	sp_wsize-sp_table
-;
-	xdef	sp_zero
-;
-sp_zero
-	dc.w	$0100,$0000	4 colour mode
-	dc.w	1,1,0,0 	1*1 pixel sprite origin at 0,0
-	dc.l	sp_z-*
-	dc.l	sp_z-*
-	dc.l	s8_zero-*
-s8_zero
-	dc.w	$0101,$0000	8 colour mode
-	dc.w	1,1,0,0 	1*1 pixel sprite origin at 0,0
-	dc.l	sp_z-*
-	dc.l	sp_z-*
-sp_z
-	dc.l	0
-;
 	xdef	sp_arrow
 ;
 sp_arrow
@@ -404,9 +376,9 @@ s8m_busy
 ;
 ; Window Move sprite   V0.0     1985  Tony Tebby  QJUMP
 ;
-	xdef	sp_wmove
+	xdef	sp_wmovep
 ;
-sp_wmove
+sp_wmovep
 	dc.w	$0100,$0000	4 colour mode
 	dc.w	16,10,8,4	16*10 pixel sprite origin at 8,4
 	dc.l	s4p_wmov-*
@@ -468,9 +440,9 @@ s8m_wmov
 ;
 ; Window Size sprite   V0.0     1985  Tony Tebby  QJUMP
 ;
-	xdef	sp_wsize
+	xdef	sp_wsizep
 ;
-sp_wsize
+sp_wsizep
 	dc.w	$0100,$0000	4 colour mode
 	dc.w	16,9,8,4	16*9 pixel sprite origin at 8,4
 	dc.l	s4p_wsiz-*

@@ -20,55 +20,61 @@
 290 ex3w$ = 'dev8_smsq_smsq_wman'
 300 ex4$ = 'dev8_smsq_qxl_driver_nd'
 310 ex5$ = 'dev8_smsq_qxl_driver_dv3e'
-320 ex9$ = 'dev8_smsq_smsq_hotkey'
-330 last$ = 'dev8_smsq_qxl_ecache'
-340 dml$ = 'dev8_smsq_qxl_dummy'
-350 qm$  = 'dev8_qmon_qxl_bin'
-360 IF 'c' INSTR cmd$ = 0
-370 :
-380   r$='ram1_smsqe.exe' : f$='dev8_smsq_qxl_smsqe.exe'
-390   DELETE f$
-400       EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex9$,last$, r$
-410   REMark EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,     ex5$,ex9$,qm$,last$, r$
-420   EW cct, bl$,r$, f$
-430   DELETE r$
-440   OPEN #4,f$
-450   lenf=FLEN(#4)
-460   lens% = INT ((lenf+511)/512)
-470   lenb% = lenf - lens% * 512
-480   IF lenb%: lenb% = lenb% + 512
-490   BPUT #4\2, lenb% MOD 256, lenb% DIV 256, lens% MOD 256, lens% DIV 256
-500   CLOSE #4
-510 ELSE
-520   rc 'dev8_smsq_qxl_flp_bas'
-530   rc 'dev8_smsq_smsq_version_asm'
-540   rc p$
-550   rc bl$
-560   rc hst$
-570   rc ld$
-580   rc hi$
-590   rc qm$
-600   rc os1$
-610   rc ca$
-620   rc os2$
-630   rc ns1$
-640   rc ln1$
-650   rc ln2$
-660   rc ln3$
-670   rc ex1$
-680   rc ex2$
-690   rc ex3$
-700   rc ex3b$
-710   rc ex3w$
-720   rc ex4$
-730   rc ex5$
-740   rc ex9$
-750   rc last$
-760 END IF
-770 DEFine PROCedure rc (a$)
-780   IF a$<> '': COPY_O a$ TO 'ram8_' & a$ (6 TO)
-790 END DEFine rcopy
-800 :
-810 DEFine PROCedure sa
-820   SAVE_O dev8_smsq_qxl_flp_bas
-830 END DEFine sa
+320 ex6$= 'dev8_smsq_smsq_hotkey'
+330 ex7$ = 'dev8_smsq_qxl_sysspr'
+340 last$ = 'dev8_smsq_qxl_ecache'
+350 dml$ = 'dev8_smsq_qxl_dummy'
+360 qm$  = 'dev8_qmon_qxl_bin'
+370 IF 'c' INSTR cmd$ = 0
+380 :
+390   r$='ram1_smsqe.exe' : f$='dev8_smsq_qxl_smsqe.exe'
+400   DELETE f$
+410       EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex6$,ex7$,last$, r$
+420   REMark EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,     ex5$,ex9$,qm$,last$, r$
+430   EW cct, bl$,r$, f$
+440   DELETE r$
+450   OPEN #4,f$
+460   lenf=FLEN(#4)
+470   lens% = INT ((lenf+511)/512)
+480   lenb% = lenf - lens% * 512
+490   IF lenb%: lenb% = lenb% + 512
+500   BPUT #4\2, lenb% MOD 256, lenb% DIV 256, lens% MOD 256, lens% DIV 256
+510   CLOSE #4
+520 ELSE
+530   rc 'dev8_smsq_qxl_flp_bas'
+540   rc 'dev8_smsq_smsq_version_asm'
+550   rc p$
+560   rc bl$
+570   rc hst$
+580   rc ld$
+590   rc hi$
+600   rc qm$
+610   rc os1$
+620   rc ca$
+630   rc os2$
+640   rc ns1$
+650   rc ln1$
+660   rc ln2$
+670   rc ln3$
+680   rc ex1$
+690   rc ex2$
+700   rc ex3$
+710   rc ex3b$
+720   rc ex3w$
+730   rc ex4$
+740   rc ex5$
+750   rc ex9$
+760   rc last$
+770 END IF
+780 DEFine PROCedure rc (a$)
+790   IF a$<> '': COPY_O a$ TO 'ram8_' & a$ (6 TO)
+800 END DEFine rcopy
+810 :
+820 DEFine PROCedure sa
+830   SAVE_O dev8_smsq_qxl_flp_bas
+840 END DEFine sa
+850 :
+860 DEFine PROCedure b
+870   LOAD dev8_smsq_qxl_make_bas
+880 END DEFine b
+890 :

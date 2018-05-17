@@ -1,0 +1,54 @@
+As of versions 3.00, this file contains a brief overview of what is new in
+each version of SMSQ/E.
+
+
+A more detailed description of the changes made to the source code itself
+is contained in changes_txt.
+
+Moreover, there is a directory called "New".
+
+This contains documentation on the new features that are introduced with this
+new version of SMSQ/E,to the extent that such documentation exists.
+Please note that, for the sake of completeness, the same documentation also
+exists in the "doc" directory. At each new version of SMSQ/E the content of the
+"new" directory is erased and only the documentation/description of new
+features are kept in that "new" directory.
+
+
+This file only contains a short description of the new features.
+
+
+
+What is new in versions :
+
+----
+3.00
+----
+
+
+SMSQ/E version 3.00 comes with many new features, notably:
+
+*  a new window manager, WMAN, which has:
+			
+   - more colours usable from WMAN
+   - system palettes usable by jobs
+   - more sprite forms are implemented (different modes)
+   - sprites that can use alpha blending and RLE compression
+   - sprites in loose items that may change according to the status of the item
+     (for all : see display_txt)
+
+*  system sprites are handled completely differently, it is expected that
+   the list will be extended
+
+*  background colours no longer take up memory
+
+*  New keywords (FEX etc) for extended job control
+     (see doc_FEX_txt)
+
+*  a help index for those using QD, useful for finding a file containing a
+   certain label (see doc_help_index_txt).
+
+* better Q40 disk partitions handling
+
+
+Descriptions in HTML and text.

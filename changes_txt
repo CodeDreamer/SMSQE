@@ -1,8 +1,171 @@
 SMSQ/E	file(s) 			version
 Version changed 			of file changes made
 ------------------------------------------------------------------------------
+3.00
+
+  CHANGES FOR BETTER HANDLING OF BACKGROUND COLOURS - THEY NO LONGER TAKE UP
+  MEMORY IF BACKGROUND COLOUR IS USED AND FILL BACKGROUND WITH COLOUR GIVEN
+  (MK)
+	iod_con2_ptr_fillsv_asm 	2.11	added capability to draw directly to screen
+	iod_con2_ptr_wpap_asm		1.01	doesn't create background window if colour is given
+	iod_con2_ptr_mode_asm		1.12	fills the screen with bgcolour instead of just black
+	iod_con2_ptr_wremv_asm		1.03	added call to pt_fillsv
+	iod_con2_16_shad_asm		1.00	added call to pt_fillsv this also replaces iod_con2_16_Q40_shad_asm
+	iod_con2_ptr_version_asm		mentions changes
+	iod_con2_q4016_cct			removed reference to iod_con2_16_Q40_shad_asm
+						replaced by iod_con2_16_shad_asm
+	smsq_q40_driver_16_link 		added kbd section
+	iod_con2_16_Q40_shad_asm		(new adapted)
+
+  NEW WINDOW MANAGER INCLUDING SYSTEM PALETTE
+  THIS NEEDED CHANGES IN FOLLOWING FILES (MK)
+	ee_wman_drarr_asm		1.01	allocate dmore space for pattern on stack
+	ee_wman_drbar_asm		1.11	numerous changes for high colour + bar background
+	ee_wman_drbdr_asm		1.05	adapted for high colours
+	ee_wman_swdef_asm		1.02	same
+	ee_wman_switm_asm		0.03	same
+	ee_wman_wdraw_asm		1.03	same + support for non standard border sizes
+	ee_wman_wset_asm		1.05	same
+	ee_wman_ssclr_asm		1.00	same
+	ee_wman_version_asm
+	ee_wman_entry_asm		1.01	Added wm_setpal, wm_getpal and wm_trap3 entries
+	ee_wman_wman_asm		1.01	Untested, not used for SMSQE!
+	ee_wman_docu_txt		documentation of new facilities
+	smsq_smsq_wman_asm		1.01	Initialises system palette
+  AND THE ADDITION OF THE FOLLOWING FILES (MK) :
+	ee_wman_trap3_asm		1.00	New colour trap dispatcher
+	ee_wman_syspal_asm		1.00	WMAN system palette handling
+	ee_wman_3db_asm 		1.00	Draw 3d border
+	keys_syspal
+
+	ee_wman_cct				changed to suit
+
+	ee_wman_opwin_asm		1.00	emulate vectored routines OPW.WIND, OPW.CON, OPW.SCR
+	ee_wman_procs_base_asm		1.00	new Sbasic procedures definition
+	ee_wman_procs_procs_asm 	1.00	new sbasic procdures for system palette and use of syspal colours under Basic
+	ee_wman_procs_link
+
+  SUPPORT FOR 24 BIT (AND OTHER NATIVE MOES!) SPRITES, RLE COMPRESSION
+  ALPHA BENDING (JG + MK)
+	iod_con2_16_spcch_asm		2.12	increased sprite mode support + bug fixes
+					2.13	Moved sprite list scan to pt_fsprd
+					2.14	Added RLE Compression
+	iod_con2_ql_spcch_asm		2.01
+
+	iod_con2_q4016_sppref_asm	2.02	added more definitions
+	iod_con2_qxl16_sppref_asm	2.02	same
+	iod_con2_ptr_version_asm
+	iod_con2_q4016_palsprite_asm	1.00	additional mode palettes
+	iod_con2_qxl16_palsprite_asm	1.00	additional mode palettes
+	iod_con2_16_drop_asm		2.01	preserves sprite width
+	iod_con2_16_sprite_drop_asm	1.01	added alpha blending code
+	iod_con2_sprite_0_asm		0.01	new sprite definitions (+ PD)
+	iod_con2_sprite_hc_cct		created for this (hi colour sprites)
+	iod_con2_sprite_ql_cct		same but for ql sprites only
+	iod_con2_ql_sprite_0_asm	updated as well for this
+	iod_con2_ptr_zero_asm		1.00	added
+	iod_con2_16_sprite_move_asm	1.01	requirements change
+	iod_con2_qpc16_cct		modified to suit
+	iod_con2_qxl16_cct
+	iod_con2_q4016_cct
+	iod_con2_goldql_cct		added
+
+	deleted:
+	iod_con2_pc16_sprite_0_asm
+	iod_con2_q4016_sprite_0_asm
+	iod_con2_16_sprite_0_asm
+	and all other unnecessary sprite_0 files I could find
+
+  CHANGES FOR INCLUSION OF NEW KEYWORDS FEX etc (PW)
+
+	ee_hot_init_asm 		2.04	added FEP fn definition
+	ee_hot_exep_asm 		2.01	added FEP function
+	ee_hot_xthid_asm		1.00	support routine
+	ee_hot_cct				changed to suit
+	sbas_procs_tk2procs_asm 	2.04	added function definitions FET,FEX,FEW,EXF
+	sbsext_ext_exsbas_asm		2.01	added functions FET,FEX,FEW (+wl:EXF)
+
+
+  CHANGES TO ENABLE THE DEFAULT CONFIGURED KEYBOARD LANGUAGE TO BE SEPARATE FROM
+  THE DEFAULT CONFIGURED MESSAGES LANGUAGE  (wl)
+
+	smsq_smsq_config_keys
+	smsq_smsq_base_asm		2.03	copies language from config block
+	smsq_q40_hwinit_asm		1.00	new config item for this
+	smsq_atari_hwinit_asm		3.01	same
+	smsq_gold_hwinit_asm		3.01	same
+	smsq_qxl_hwinit_asm		3.01	same
+
+  CHANGES FOR SPRITE DRAWING DEPENDING ON ITEM STATUS (wl)
+
+	ee_rptr_asm			1.07	calls draw routine even when item becomes current item
+	ee_drobj_asm			1.03	draws sprites accoring to item status
+						+ use iop.fspr (MK)
+  BUGFIXES    (MK+wl)
+
+	iod_con2_ql_smove_asm
+	iod_con2_16_smove_asm		2.01	bugfix when screen was the destination
+	smsq_sbas_cmpstt_asm		2.01	basic procs ok even with great nbr of procedures
+	iod_con2_ptr_outln_asm		1.06	keep a1, as per documentation (wl)
+	iod_con2_ptr_wspbl_asm		2.01	preserve regs as per documentation (wl)
+
+
+  CHANGES FOR SYSTEM SPRITES (MK)
+	keys_sysspr				new
+	iod_con2_ptr_chkbp_asm		2.02	Added check to handle system sprites
+	iod_con2_ptr_fsprd_asm		1.01	(new) high colour version find sprite defn
+	iod_con2_ptr_fwind_asm		1.07	Adapted for new system sprite routines (MK)
+	iod_con2_ptr_io_asm		1.08	new elements in table, removed unnecessary instruction
+	iod_con2_ptr_sysspr_asm 	1.00	added, conv. sys sprite "address" into real address
+	iod_con2_ql_spcch_asm		2.01	extracted code for pt_fspr
+	iod_con2_ptr_init_asm		2.01	added call to syssprite initialization
+	iod_con2_ptr_rle_asm		1.00	added
+	iod_con2_ptr_sadd_asm		2.01	return changed
+	iod_con2_sprite_xxx_asm 		all added
+
+
+	all system sprites put into a separate module (mk + wl)
+	smsq_smsq_sysspr_asm		1.00	module header
+	smsq_q40_sysspr_link			new link file for this
+	the make & flp progs are amended correspondingly
+
+
+  ADDITIONS FOR CON/PTR VECTORS (MK)
+
+	iod_con2_ptr_vec_asm		1.00	added
+	iod_con2_ptr_install_asm	2.02	aded table ptr for vectored routines
+
+  CHANGES TO KEY FILES
+
+	changes in these files are too numerous to list, some examples below
+	keys_colour
+	keys_qdos_io
+	keys_qdos_pt
+	keys_con				added pt_wmpal, pv vectors
+	keys_wstatus				added ws_scach
+	keys_wman				added wm.setsp, wm.getsp, wm.trap3 and wmc.xxx
+	keys_sysspr				new
+
+  MISCELANEOUS CHANGES
+
+	Created the "New" subdirectory
+
+	dv3_q40_hd_fpart_asm		3.01	Fixed the ICD extension (8 additional partitions in table) (jg)
+
+	many changes tpo various cct files, to make sure that all other changes
+	are taken into account
+
+	ee_hk_smsq_asm			2.01	added configutation block (mk)
+
+	removal of the "iod_con2_pc16" subdirectory, the relevant files are
+	moved into the QXL16 subdirectory
+
+	sbsext_utq_xxx_asm			all addded
+-----------------------------------------------------------------------------
+
 2z99
-	Qx0 bugfixes
+
+  QX0 BUGFIXES
 	dev8_iod_con2_q40_blob_drop_asm 	bugfix for movep
 	DEV8_smsq_kbd_ibm_base_asm		1.00	also links in italian kbd
 
@@ -19,7 +182,7 @@ Version changed 			of file changes made
 
 	iod_con2_q40_blob_drop_asm	2.01	replaced refs to movep (FD)
 	iod_con2_q40_sprite_move_asm	1.01	replaced refs to movep (FD)
-	iod_con2_q40_mblock_asm 	2.01	replaced refs to movep (FD)
+	iod_con2_q40ql_mblock_asm	2.01	replaced refs to movep (FD)
 	iod_con2_q40_sprite_drop_asm	1.01	replaced refs to movep (FD)
 	sbsext_ext_q60_colr_asm 	2.01	replaced refs to movep (FD)
 	sbsext_ext_q60_cct			modified for this change (FD+WL)
@@ -143,7 +306,10 @@ Version changed 			of file changes made
 keys:
 
 FD = Fabrizio Diversi
+PD = Phoebus Dokos
+JG = Jƒr˜me Grimbert
 JH = John Hall
 MK = Marcel Kilgus
 TT = Tony Tebby
+PW = Per Witte
 WL = Wolfgang Lenerz

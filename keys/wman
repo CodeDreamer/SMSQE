@@ -33,6 +33,12 @@ wm.ename  equ       $6c
 wm.upbar  equ       $70
 wm.erstr  equ       $74
 wm.rptrt  equ       $78
+wm.setsp  equ       $7c
+wm.getsp  equ       $80
+wm.trap3  equ       $84
+wm.opw    equ       $88
+wm.ssclr  equ       $8c
+wm.jbpal  equ       $90
 ;
 wm.drall  equ       0           ; draw all
 wm.drsel  equ       -1          ; draw selectively
@@ -44,5 +50,17 @@ text      equ       0
 sprite    equ       2
 blob      equ       4
 patt      equ       6
+;
+; Keys for colours (high order byte)
+;
+wmc.ql     equ       $00        ; traditional QL colours
+wmc.pal    equ       $01        ; palette colours
+wmc.syspal equ       $02        ; system palette colour
+wmc.gray   equ       $03        ; gray colour
+wmc.3db    equ       $04        ; 3d border colour
+wmc.stip   equ       $40        ; stipple colour
+wmc..stip  equ       14         ;   bit number in 16 bit word
+wmc.rgb    equ       $80        ; 15bit rgb
+wmc..rgb   equ       15         ;   bit number in 16 bit word
 ;
           list

@@ -1,0 +1,6 @@
+sbsext_utq is a QDOS/Minerva compatible version of sbsext_ut. Only the
+different files are kept here, all others are directly referenced from
+the sbsext_ut directory. The differences are only in the way SBASIC
+vectors are called.
+
+Marcel Kilgus, 2002-11-25

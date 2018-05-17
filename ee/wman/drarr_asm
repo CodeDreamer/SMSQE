@@ -1,4 +1,7 @@
-* Window Manager Draw Arrows	V1.00	 1986	Tony Tebby   QJUMP
+* Window Manager Draw Arrows	V1.01	 1986	Tony Tebby   QJUMP
+*					  2002	Marcel Kilgus
+*
+* 2002-11-13  1.01  Allocated more space for pattern on stack (MK)
 *
 	section wman
 *
@@ -29,9 +32,9 @@
 *	a4 c  p window definition
 *
 reglist reg	d4-d7/a1/a2
-pattern equ	$20			pattern frame
-frame	equ	$20+4			pattern + pointer to blob
-blob	equ	$20
+pattern equ	$60			pattern frame
+frame	equ	$60+4			pattern + pointer to blob
+blob	equ	$60
 *
 wm_drupa
 	movem.l reglist,-(sp)

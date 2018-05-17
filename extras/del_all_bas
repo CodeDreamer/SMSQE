@@ -1,4 +1,4 @@
-100 REMark read the documentation in the help subdirectory
+100 REMark rEDead the documentation in the help subdirectory
 110 REMark also for the 'current_line' keyword
 120 REMark lrespr cline_bin before using this prog.
 130 REMark if the "restoring" message always refers to 0, then you haven't loaded cline_bin
@@ -48,7 +48,7 @@
 570   DATA "smsq_qd_lib","smsq_sbas_lib","smsq_sbas_procs_lib","smsq_shd_lib"
 580   DATA "smsq_sms_lib","smsq_spp_lib","smsq_uq_lib","sys_sdp_lib","util_cv_lib"
 590   DATA "util_dummy_lib","util_gut_lib","util_pars_lib","util_thg_lib"
-600   DATA "sys_boot_lib","smsq_mem_fh_lib"
+600   DATA "sys_boot_lib","smsq_mem_fh_lib","IOD_CON2_SPRITE_HC_LIB","iod_con2_sprite_ql_lib"
 610   DATA ""
 620 END DEFine generic_libs
 630 :
@@ -83,7 +83,7 @@
 920   DATA "smsq_atari_driver_dv3","smsq_atari_driver_ser","smsq_atari_driver_ql"
 930   DATA "smsq_atari_driver_mono","smsq_atari_hwinit","smsq_atari_nasty"
 940   DATA "smsq_atari_kbd_lang","smsq_atari_SMSQ.PRG"
-950   DATA "sys_boot_st_host"
+950   DATA "sys_boot_st_host","smsq_atari_sysspr"
 960   DATA ""
 970 END DEFine atari_targets
 980 :
@@ -107,7 +107,7 @@
 1160   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
 1170   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
 1180   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot","smsq_gold_gold"
-1190   DATA ""
+1190   DATA "smsq_gold_sysspr",""
 1200 END DEFine gold_targets
 1210 :
 1220 DEFine PROCedure q40
@@ -130,89 +130,90 @@
 1390   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_rom"
 1400   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"
 1410   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
-1420   DATA ""
-1430 END DEFine q40_targets
-1440 :
-1450 DEFine PROCedure qxl
-1460   qxl_libs
-1470   qxl_targets
-1480 END DEFine qxl
-1490 :
-1500 DEFine PROCedure qxl_libs
-1510   read_datas CURRENT_LINE
-1520   delete_files
-1530   DATA "dv3_qxl_lib","iod_con2_qxl16_lib","iod_con2_qxlql_lib","smsq_qxl_hdop_lib"
-1540   DATA ""
-1550 END DEFine qxl_libs
-1560 :
-1570 DEFine PROCedure qxl_targets
-1580   read_datas CURRENT_LINE
-1590   delete_files
-1600   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
-1610   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
-1620   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x","smsq_qxl_smsqe.exe"
-1630   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e"
-1640   DATA ""
-1650 END DEFine qxl_targets
-1660 :
-1670 DEFine PROCedure read_datas (line_number)
-1680 REMark this reads the datas as of the line number given as params
-1690 REMark and puts them in the global array delete$
-1700 LOCal lp%,a$
-1710   DIM delete$(100,100)
-1720   RESTORE line_number                   : REMark start reading from here
-1730   PRINT "restoring : ";line_number
-1740   FOR lp% = 0 TO 100
-1750     READ a$                             : REMark get filename
-1760     IF a$ ="":EXIT lp%                  : REMark finished
-1770     delete$(lp%)="dev8_"&a$
-1780   END FOR lp%
-1790 END DEFine read_datas
-1800 :
-1810 DEFine PROCedure delete_files
-1820 REMark delete all files held in delete$
-1830 LOCal stop_here%,lp%
-1840   stop_here%=DIMN(delete$,1)
-1850   FOR lp%=0 TO stop_here%
-1860     IF delete$(lp%)="":EXIT lp%
-1870     DELETE delete$(lp%)
-1880   END FOR lp%
-1890 END DEFine delete_files
-1900 :
-1910 DEFine PROCedure sa
-1920   SAVE_O dev8_extras_del_all_bas
-1930 END DEFine sa
-1940 :
-1950 DEFine PROCedure delete_files_with_extension(ext$,mdir$,ddown%)
-1960 REMark this deletes all files in the dir mdir$ with the extension ext$
-1970 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
-1980 REMark by calling itself recursively
-1990 LOCal chan%,lp%,myfile$,a$,device$,t%,exlen%
-2000   FOR lp%=1 TO 50
-2010     myfile$="ram1_dele_extns"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
-2020     chan%=FOP_OVER (myfile$)            : REMark try to open unique file
-2030     IF chan%>0:EXIT lp%
-2040   END FOR lp%
-2050   IF chan%<0:RETurn                     : REMark ooops!!!!
-2060   exlen%=LEN(ext$)
-2070   device$=mdir$(1 TO 5)
-2080   WDIR#chan%,mdir$                      : REMark dir of this rep in file
-2090   GET#chan%\0                           : REMark reset file pointer to start
-2100   REPeat lp%
-2110     IF EOF(#chan%):EXIT lp%
-2120     INPUT#chan%,a$                      : REMark get filename
-2130     IF a$="":NEXT lp%
-2140     a$=device$&a$
-2150     t%= ' ->' INSTR a$                  : REMark is it a subdir?
-2160     IF t% AND ddown%
-2170       delete_files_with_extension ext$,a$(1 TO t%-1),ddown% : REMark yes, possibly drill down
-2180       NEXT lp%
-2190     END IF
-2200     t%=LEN(a$)
-2210     IF t%<exlen%:NEXT lp%               : REMark filename is shorter than extension
-2220     IF a$(t%-exlen%+1 TO) ==ext$ : DELETE a$
-2230   END REPeat lp%
-2240   CLOSE#chan%
-2250   DELETE myfile$
-2260 END DEFine delete_files_with_extension
-2270 :
+1420   DATA "smsq_q40_sysspr"
+1430   DATA ""
+1440 END DEFine q40_targets
+1450 :
+1460 DEFine PROCedure qxl
+1470   qxl_libs
+1480   qxl_targets
+1490 END DEFine qxl
+1500 :
+1510 DEFine PROCedure qxl_libs
+1520   read_datas CURRENT_LINE
+1530   delete_files
+1540   DATA "dv3_qxl_lib","iod_con2_qxl16_lib","iod_con2_qxlql_lib","smsq_qxl_hdop_lib"
+1550   DATA ""
+1560 END DEFine qxl_libs
+1570 :
+1580 DEFine PROCedure qxl_targets
+1590   read_datas CURRENT_LINE
+1600   delete_files
+1610   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
+1620   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
+1630   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x","smsq_qxl_smsqe.exe"
+1640   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e","smsq_qxl_sysspr"
+1650   DATA ""
+1660 END DEFine qxl_targets
+1670 :
+1680 DEFine PROCedure read_datas (line_number)
+1690 REMark this reads the datas as of the line number given as params
+1700 REMark and puts them in the global array delete$
+1710 LOCal lp%,a$
+1720   DIM delete$(100,100)
+1730   RESTORE line_number                   : REMark start reading from here
+1740   PRINT "restoring : ";line_number
+1750   FOR lp% = 0 TO 100
+1760     READ a$                             : REMark get filename
+1770     IF a$ ="":EXIT lp%                  : REMark finished
+1780     delete$(lp%)="dev8_"&a$
+1790   END FOR lp%
+1800 END DEFine read_datas
+1810 :
+1820 DEFine PROCedure delete_files
+1830 REMark delete all files held in delete$
+1840 LOCal stop_here%,lp%
+1850   stop_here%=DIMN(delete$,1)
+1860   FOR lp%=0 TO stop_here%
+1870     IF delete$(lp%)="":EXIT lp%
+1880     DELETE delete$(lp%)
+1890   END FOR lp%
+1900 END DEFine delete_files
+1910 :
+1920 DEFine PROCedure sa
+1930   SAVE_O dev8_extras_del_all_bas
+1940 END DEFine sa
+1950 :
+1960 DEFine PROCedure delete_files_with_extension(ext$,mdir$,ddown%)
+1970 REMark this deletes all files in the dir mdir$ with the extension ext$
+1980 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
+1990 REMark by calling itself recursively
+2000 LOCal chan%,lp%,myfile$,a$,device$,t%,exlen%
+2010   FOR lp%=1 TO 50
+2020     myfile$="ram1_dele_extns"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+2030     chan%=FOP_OVER (myfile$)            : REMark try to open unique file
+2040     IF chan%>0:EXIT lp%
+2050   END FOR lp%
+2060   IF chan%<0:RETurn                     : REMark ooops!!!!
+2070   exlen%=LEN(ext$)
+2080   device$=mdir$(1 TO 5)
+2090   WDIR#chan%,mdir$                      : REMark dir of this rep in file
+2100   GET#chan%\0                           : REMark reset file pointer to start
+2110   REPeat lp%
+2120     IF EOF(#chan%):EXIT lp%
+2130     INPUT#chan%,a$                      : REMark get filename
+2140     IF a$="":NEXT lp%
+2150     a$=device$&a$
+2160     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+2170     IF t% AND ddown%
+2180       delete_files_with_extension ext$,a$(1 TO t%-1),ddown% : REMark yes, possibly drill down
+2190       NEXT lp%
+2200     END IF
+2210     t%=LEN(a$)
+2220     IF t%<exlen%:NEXT lp%               : REMark filename is shorter than extension
+2230     IF a$(t%-exlen%+1 TO) ==ext$ : DELETE a$
+2240   END REPeat lp%
+2250   CLOSE#chan%
+2260   DELETE myfile$
+2270 END DEFine delete_files_with_extension
+2280 :

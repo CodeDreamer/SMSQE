@@ -1,0 +1,102 @@
+			Job Control Enhancements
+			------------------------
+
+		  By pjwitte, January 18th 2003, V1.00
+
+The S*Basic extensions FEX, FEW, FET and FEP have been added to SMSQ/E
+V3.00 and later. These are function calls corresponding to the procedures
+EX (EXEC), EW (EXEC_W), ET and EXEP.
+
+
+FEX
+
+	job_id = FEX(<file name>)
+
+Executes and returns the ID of the job <file name>. This ID can be used
+to manipulate the job in various ways by using the other job control
+extensions, such as SPJOB, AJOB, RJOB, etc. The full syntax using input
+and output channels, as well as filters, is supported. See the TK2
+documentation, section 8.xx for details.
+
+Note: In the event of filters being set up, only the ID of the first job
+is returned.
+
+Note: The name FEX clashes with the eponymous keyword from FileInfo2. By
+the time you read this a later version of FI2 may be available, otherwise
+you will need to patch one or the other of the keywords to access both.
+
+
+FET
+
+As for FEX above, except the job is not activated.
+
+
+FEW
+
+	er = FEW(<file name>)
+
+Returns the error code returned by the (first) job. Syntax as for FEX
+above.
+
+Note: FEW tries to open the channels of files supplied in the parameter
+list before executing the job(s). Any errors arising from this, including
+erroneous parameters, are returned to the caller as "hard" errors.
+
+
+FEP
+
+	job_id = FEP(<thing name>)
+
+Executes and returns the ID of the job <thing name>. FEP is the
+implementation of EXEP as a function. Refer to your Qpac2 manual for
+details.
+
+
+-------------------------------------------------------------
+
+EXF
+	job_id = EXF (<file_name>)
+
+This keyword is, in function, totally identical to the FEX keyword introduced
+by version 3.00 of SMSQ/E (it uses the same code, just another name).
+
+
+Note by W. Lenerz:
+
+
+SMSQ/E's FEX might clash with the FEX keyword contained in FileInfo II.
+
+To avoid having to patch either SMSQ/E or FileInfo II (even though an Sbasic
+program to patch FileInfo II is supplied) you can simply use the EXF keyword,
+instead of SMSQ/E's FEX keyword.
+
+Please note that the addition of the EXF keyword was made by me, not by the
+original author of the new FEX etc... additions to SMSQ/E, i.e. Per Witte.
+Please note that Per disapproves strongly of the inclusion of EXF in SMSQ/E
+and it was included on my own inititative.
+
+Indeed, Per has explained his reasons as follows:
+
+
+
+Something like 400 keywords are now integrated into the SBasic repertoire of
+language and commands. There is no reason to suppose that this figure will
+not grow considerably in the future. It is hard enough to remember what they
+all do, and what their names and parameters are. Good then that most of
+these names are descriptive or follow certain logical conventions. The
+reason I disapprove of the use of the mnemonic EXF for FEX is that I feel
+that it unnecessarily breaks the established nomenclature and opens the door
+to crassness and anarchy at the core of the SMSQ/E command language. If such
+were allowed to proliferate without restraint it would eventually undermine
+the aesthetical, logical and functional integrity of the system.
+
+
+
+Per is right in what he says. However, I feel that, as registrar, I must make
+sure that new versions of SMSQ/E do not break (or potentially break) existing
+software, to the extent this is possible.
+
+My solution will be that, as of now, new keywords proposed for inclusion in
+SMSQ/E must not clash with the list of known and published keywords. This
+list is contained in the "doc" directory and can also be obtained directly
+from Franˆois Van Emelen.

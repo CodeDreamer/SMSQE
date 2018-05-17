@@ -1,4 +1,7 @@
-; Write sprite or blob		       V2.00   1991 Tony Tebby
+; Write sprite or blob				V2.01	 1991 Tony Tebby
+;
+; 2003-02-17  2.01  Moved check for system sprite to generic routine (MK)
+;		    Bugfix, corrected preserved trap registers (wl)
 ;
 ;	This routine deals with vectored sprites, and finds
 ;	objects of the appropriate mode.  If it doesn't recognise
@@ -10,7 +13,6 @@
 	include 'dev8_keys_qdos_pt'
 	include 'dev8_keys_con'
 ;
-	xref	sp_table
 	xref	sp_drop
 	xref	bl_drop
 	xref	pt_drop
@@ -35,7 +37,9 @@
 ;	A1	pointer to blob 		preserved
 ;	A2	pointer to pattern		preserved
 ;
+trapreg reg	a1/a2
 pt_lblob
+	movem.l trapreg,-(sp)		; make sure we keep these regs
 	jsr	pt_chkbp		; find valid version of objects
 	blt.s	ptl_exit		; ...oops
 ;
@@ -95,35 +99,34 @@ ptl_lpe
 	bne.s	ptl_loop		; not yet
 	moveq	#0,d0			; yes, no problems
 ptl_exit
+	movem.l (sp)+,trapreg
 	rts
 	page
 ;
 ; write sprite into window
 ;
 pt_wspr1
-	lea	sp_table(pc),a5 	table of pre-defined sprites is here
-	cmp.w	(a5),a1 		is pointer small enough to be in table?
-	bge.s	ptd_cspr		no, check sprite
-	add.l	a1,a1
-	add.l	a1,a1			get offset in table
-	move.l	2(a5,a1.l),a1		thus relative pointer to sprite
-	add.l	a5,a1			make that absolute
-ptd_cspr
-	jsr	pt_chksp		check pointer, get correct mode
-	blt.s	ptd_exit		whoops
-	lea	sp_drop(pc),a5		drop in sprite
+	movem.l trapreg,-(sp)
+	jsr	pt_chksp		; check pointer, get correct mode
+	blt.s	ptd_exit		; whoops
+	lea	sp_drop(pc),a5		; drop in sprite
 	bra.s	drop
 ;
 ;	Write blob into window
 ;
 pt_wblb1
-	jsr	pt_chkbp		check blob and pattern
-	blt.s	ptd_exit		wrong
-pt_doblb
-	lea	bl_drop(pc),a5		drop in blob of pattern
+	movem.l trapreg,-(sp)
+	jsr	pt_chkbp		; check blob and pattern
+	blt.s	ptd_exit		; wrong
+	lea	bl_drop(pc),a5		; drop in blob of pattern
 drop
-	jsr	pt_drop(pc)		drop in object
+	jsr	pt_drop(pc)		; drop in object
 ptd_exit
+	movem.l (sp)+,trapreg
 	rts
 ;
+pt_doblb
+	lea	bl_drop(pc),a5		; drop in blob of pattern
+	jmp	pt_drop(pc)		; drop in object
+
 	end

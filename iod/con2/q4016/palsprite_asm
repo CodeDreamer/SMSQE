@@ -1,0 +1,57 @@
+; Q40 sprite (mode 16) palette
+;
+; 2002-12-15  1.00	Added additional mode palettes (JG)
+	section driver
+;
+	xdef	pt_palsprite
+	xdef	pt_pal16sprite
+	xdef	pt_pal4sprite
+	xdef	pt_pal2sprite
+;
+; mapping grbgrbgx into native colours
+pt_palsprite
+	dc.w	$0000,$0108,$2000,$2108,$0012,$011A,$2012,$211A
+	dc.w	$0240,$0348,$2240,$2348,$0252,$035A,$2252,$235A
+	dc.w	$4800,$4908,$6800,$6908,$4812,$491A,$6812,$691A
+	dc.w	$4A40,$4B48,$6A40,$6B48,$4A52,$4B5A,$6A52,$6B5A
+	dc.w	$0024,$012C,$2024,$212C,$0036,$013E,$2036,$213E
+	dc.w	$0264,$036C,$2264,$236C,$0276,$037E,$2276,$237E
+	dc.w	$4824,$492C,$6824,$692C,$4836,$493E,$6836,$693E
+	dc.w	$4A64,$4B6C,$6A64,$6B6C,$4A76,$4B7E,$6A76,$6B7E
+	dc.w	$0480,$0588,$2480,$2588,$0492,$059A,$2492,$259A
+	dc.w	$06C0,$07C8,$26C0,$27C8,$06D2,$07DA,$26D2,$27DA
+	dc.w	$4C80,$4D88,$6C80,$6D88,$4C92,$4D9A,$6C92,$6D9A
+	dc.w	$4EC0,$4FC8,$6EC0,$6FC8,$4ED2,$4FDA,$6ED2,$6FDA
+	dc.w	$04A4,$05AC,$24A4,$25AC,$04B6,$05BE,$24B6,$25BE
+	dc.w	$06E4,$07EC,$26E4,$27EC,$06F6,$07FE,$26F6,$27FE
+	dc.w	$4CA4,$4DAC,$6CA4,$6DAC,$4CB6,$4DBE,$6CB6,$6DBE
+	dc.w	$4EE4,$4FEC,$6EE4,$6FEC,$4EF6,$4FFE,$6EF6,$6FFE
+	dc.w	$9000,$9108,$B000,$B108,$9012,$911A,$B012,$B11A
+	dc.w	$9240,$9348,$B240,$B348,$9252,$935A,$B252,$B35A
+	dc.w	$D800,$D908,$F800,$F908,$D812,$D91A,$F812,$F91A
+	dc.w	$DA40,$DB48,$FA40,$FB48,$DA52,$DB5A,$FA52,$FB5A
+	dc.w	$9024,$912C,$B024,$B12C,$9036,$913E,$B036,$B13E
+	dc.w	$9264,$936C,$B264,$B36C,$9276,$937E,$B276,$B37E
+	dc.w	$D824,$D92C,$F824,$F92C,$D836,$D93E,$F836,$F93E
+	dc.w	$DA64,$DB6C,$FA64,$FB6C,$DA76,$DB7E,$FA76,$FB7E
+	dc.w	$9480,$9588,$B480,$B588,$9492,$959A,$B492,$B59A
+	dc.w	$96C0,$97C8,$B6C0,$B7C8,$96D2,$97DA,$B6D2,$B7DA
+	dc.w	$DC80,$DD88,$FC80,$FD88,$DC92,$DD9A,$FC92,$FD9A
+	dc.w	$DEC0,$DFC8,$FEC0,$FFC8,$DED2,$DFDA,$FED2,$FFDA
+	dc.w	$94A4,$95AC,$B4A4,$B5AC,$94B6,$95BE,$B4B6,$B5BE
+	dc.w	$96E4,$97EC,$B6E4,$B7EC,$96F6,$97FE,$B6F6,$B7FE
+	dc.w	$DCA4,$DDAC,$FCA4,$FDAC,$DCB6,$DDBE,$FCB6,$FDBE
+	dc.w	$DEE4,$DFEC,$FEE4,$FFEC,$DEF6,$DFFE,$FEF6,$FFFE
+;
+; mapping irgb into native colours
+pt_pal16sprite
+	dc.w	$0000,$0020,$8000,$8021,$0400,$0421,$8401,$8421
+	dc.w	$4210,$003E,$F800,$F83F,$07C0,$07FF,$FFC1,$FFFF
+; mapping gr into native colours
+pt_pal4sprite
+	dc.w	$0000,$07C1,$F800,$FFFF
+
+; mapping w into native colours
+pt_pal2sprite
+	dc.w	$0000,$FFFF
+	end

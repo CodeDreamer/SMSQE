@@ -29,6 +29,7 @@ wsp_yorg equ    $1e   word   sub-window y origin
 *
 ws_ptpos equ    $20   long   pointer position (absolute)
 ws_wmode equ    $24   word   window mode
+ws_scach equ    $26   byte   last used sprite cache version
 *
 ws_ciact equ    $2c   long   pointer to current item action routine
 ws_citem equ    $30   word   current item in sub-window

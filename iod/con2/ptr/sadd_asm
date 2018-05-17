@@ -1,4 +1,7 @@
-; Set up pointer area addresses  V2.00	 1991	Tony Tebby
+; Set up pointer area addresses 		V2.02   1991  Tony Tebby
+;
+; 2003-02-24  2.01  Now also returns sprite width in MSW of d5 (MK)
+; 2003-04-30  2.02  Returns -1 in MSW of d5 instead of width if no alpha channel
 ;
 	section driver
 ;
@@ -13,6 +16,7 @@
 	include dev8_keys_con
 	include dev8_keys_err
 	include dev8_keys_sys
+	include dev8_keys_qdos_pt
 ;
 ; set pointers within window for blob or sprite object
 ;
@@ -21,7 +25,7 @@
 ;	d2  r	column
 ;	d4   p
 ;	d3  r	row
-;	d5  r	sprite word counter
+;	d5  r	sprite width or -1 / sprite word counter
 ;	d6  r	row counter
 ;	d7  r	right shift (low word) / 16-shift (high word)
 ;
@@ -33,10 +37,16 @@
 ;	a6  r	address increment of screen
 ;
 pt_swind
-	addq.l	#4,a5			ignore form
+	moveq	#-1,d5			default to "no alpha channel"
+	btst	#pto..alph,pto_ctrl(a5) is there an alpha channel?
+	beq.s	psw_noalpha
+	move.w	pto_xsiz(a5),d5 	save width for alpha drawing
+	swap	d5
+psw_noalpha
+	addq.w	#pto_xsiz,a5		ignore form etc
 	move.w	(a5)+,d2		set width
 	moveq	#pt.spxsw,d0
-	moveq	#pt.rpxsw,d5		round up
+	move.w	#pt.rpxsw,d5		round up
 	add.w	d2,d5			... number of sprite words
 	lsr.w	d0,d5
 	move.w	(a5)+,d3		and height
@@ -76,7 +86,7 @@ err_or
 ;	d2  r	column
 ;	d3  r	row
 ;	d4   p
-;	d5  r	sprite word counter (-1)
+;	d5  r	sprite width or -1 / sprite word counter (-1)
 ;	d6  r	row counter
 ;	d7  r	right shift (low word) / 16-shift (high word)
 ;
@@ -93,9 +103,15 @@ pt_sadd
 pt_saddp
 	move.l	pt_spsav(a3),a1 	... save area
 ;
-	addq.w	#4,a5			ignore form
+	moveq	#-1,d5			default to "no alpha channel"
+	btst	#pto..alph,pto_ctrl(a5) is there an alpha channel?
+	beq.s	psa_noalpha
+	move.w	pto_xsiz(a5),d5 	save width for alpha drawing
+	swap	d5
+psa_noalpha
+	addq.w	#pto_xsiz,a5		ignore form etc
 	moveq	#pt.spxsw,d0
-	moveq	#pt.rpxsw,d5		round up
+	move.w	#pt.rpxsw,d5		round up
 	add.w	(a5)+,d5		... number of long words
 	lsr.w	d0,d5
 	move.w	(a5)+,d6		and height

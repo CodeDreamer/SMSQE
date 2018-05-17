@@ -1,64 +1,70 @@
 100 OPEN #1,'con_300x12a40x30': CLS: BORDER 1,4
 110 IF cmd$='':INPUT 'SMSQ/E Q40 options: Qmon Copy Version> ';cmd$
-111 IF 'v' INSTR cmd$
-112   INPUT 'Version (2x9x) ';v$
-113   p$='Q40 V' & v$
-116 END IF
-120 nl$='dev8_sys_boot_null'
-140 f$='dev8_sys_boot_file'
-151 qr$='dev8_sys_boot_q40_rom'
-160 ld$='dev8_smsq_smsq_loader'
-165 hi$='dev8_smsq_q40_hwinit'
-170 qm$='dev8_qmon_q40_smsq'
-190 os1$='dev8_smsq_smsq_1mb_os' : REMark change for fast memory
-200 ca$='dev8_smsq_smsq_cache40c'
-205 caq$='dev8_smsq_q40_cache'
-210 os2$='dev8_smsq_sbas_control'
-220 ns1$=nl$
-225 ns2$='dev8_smsq_q40_nasty'
-230 ln1$='dev8_smsq_smsq_lang'
-240 ln2$='dev8_smsq_q40_kbd_lang'
-250 ln3$='dev8_smsq_sbas_lang'
-260 ex1$='dev8_smsq_sbas_procs_x_q60'
-270 ex2$='dev8_smsq_q40_driver_dv3'
-280 ex3$='dev8_smsq_q40_driver_ser'
-290 ex4a$='dev8_smsq_q40_driver_ql'
-300 ex4b$='dev8_smsq_q40_driver_16'
-306 ex4w$='dev8_smsq_smsq_wman'
-310 ex9$='dev8_smsq_smsq_hotkey'
-340 IF 'c' INSTR cmd$ = 0
-350   IF 'q' INSTR cmd$ = 0: qm$ = nl$
-390   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex9$,ns2$, 'dev8_smsq_q40_rom'; p$
-410 ELSE
-420   rc 'dev8_smsq_q40_flp_bas'
-430   rc nl$
-440   rc f$
-451   rc qr$
-452   rc hi$
-460   rc ld$
-470   rc qm$
-490   rc os1$
-500   rc ca$
-505   rc caq$
-510   rc os2$
-520   rc ns1$
-525   rc ns2$
-530   rc ln1$
-540   rc ln2$
-550   rc ln3$
-560   rc ex1$
-570   rc ex2$
-580   rc ex3$
-590   rc ex4a$
-600   rc ex4b$
-605   rc ex4w$
-610   rc ex9$
-620   rc nl$
-630 END IF
-650 DEFine PROCedure rc (a$)
-660   COPY_O a$ TO 'ram8_' & a$ (6 TO)
-670 END DEFine rcopy
-680 :
-690 DEFine PROCedure sa
-700   SAVE_O dev8_smsq_q40_flp_bas
-710 END DEFine sa
+120 IF 'v' INSTR cmd$
+130   INPUT 'Version (2x9x) ';v$
+140   p$='Q40 V' & v$
+150 END IF
+160 nl$='dev8_sys_boot_null'
+170 f$='dev8_sys_boot_file'
+180 qr$='dev8_sys_boot_q40_rom'
+190 ld$='dev8_smsq_smsq_loader'
+200 hi$='dev8_smsq_q40_hwinit'
+210 qm$='dev8_qmon_q40_smsq'
+220 os1$='dev8_smsq_smsq_1mb_os' : REMark change for fast memory
+230 ca$='dev8_smsq_smsq_cache40c'
+240 caq$='dev8_smsq_q40_cache'
+250 os2$='dev8_smsq_sbas_control'
+260 ns1$=nl$
+270 ns2$='dev8_smsq_q40_nasty'
+280 ln1$='dev8_smsq_smsq_lang'
+290 ln2$='dev8_smsq_q40_kbd_lang'
+300 ln3$='dev8_smsq_sbas_lang'
+310 ex1$='dev8_smsq_sbas_procs_x_q60'
+320 ex2$='dev8_smsq_q40_driver_dv3'
+330 ex3$='dev8_smsq_q40_driver_ser'
+340 ex4a$='dev8_smsq_q40_driver_ql'
+350 ex4b$='dev8_smsq_q40_driver_16'
+360 ex4w$='dev8_smsq_smsq_wman'
+370 ex5$='dev8_smsq_q40_sysspr'
+380 ex9$='dev8_smsq_smsq_hotkey'
+390 IF 'c' INSTR cmd$ = 0
+400   IF 'q' INSTR cmd$ = 0: qm$ = nl$
+410   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex5$,ex9$,ns2$, 'dev8_smsq_q40_rom'; p$
+420 ELSE
+430   rc 'dev8_smsq_q40_flp_bas'
+440   rc nl$
+450   rc f$
+460   rc qr$
+470   rc hi$
+480   rc ld$
+490   rc qm$
+500   rc os1$
+510   rc ca$
+520   rc caq$
+530   rc os2$
+540   rc ns1$
+550   rc ns2$
+560   rc ln1$
+570   rc ln2$
+580   rc ln3$
+590   rc ex1$
+600   rc ex2$
+610   rc ex3$
+620   rc ex4a$
+630   rc ex4b$
+640   rc ex4w$
+650   rc ex5$
+660   rc ex9$
+670   rc nl$
+680 END IF
+690 DEFine PROCedure rc (a$)
+700   COPY_O a$ TO 'ram8_' & a$ (6 TO)
+710 END DEFine rcopy
+720 :
+730 DEFine PROCedure sa
+740   SAVE_O dev8_smsq_q40_flp_bas
+750 END DEFine sa
+760 :
+770 DEFine PROCedure t
+780   LRESPR dev8_smsq_q40_rom
+790 END DEFine t

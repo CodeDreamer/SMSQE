@@ -1,11 +1,11 @@
 ; Sprite moving code	V1.00	 1985	 Tony Tebby
-;
-;	d0 c s	column offset / green composite
-;	d1 c s	row offset    / red composite
-;	d2   s	green sprite
-;	d3   s	red sprite
+; 2003 Mar 09		 1.01	requirements changed (MK)
+;	d0 c s	column offset
+;	d1 c s	row offset
+;	d2   s
+;	d3   s
 ;	d4   s	sprite mask
-;	d5 c s	sprite word counter
+;	d5 c s	sprite width / sprite word counter
 ;	d6 c s	row counter / draw up (msb)
 ;	d7 c p	right shift (low word) / 16-shift (high word)
 ;

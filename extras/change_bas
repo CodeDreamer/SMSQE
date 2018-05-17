@@ -3,8 +3,8 @@
 120 END DEFine p
 130 :
 140 DEFine PROCedure change (old$,new$,d$)
-150 REMark change new for ol  in all files held on d$
-160 REMark this does NOT recursed into directories
+150 REMark change new for old in ALL files held on d$
+160 REMark this does NOT recurse into directories
 170 LOCal lp%,c%,a$
 180   c%=FOP_OVER('ram1_px')
 190   DIR#c%,d$

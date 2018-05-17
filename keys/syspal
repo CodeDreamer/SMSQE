@@ -1,0 +1,63 @@
+        nolist
+;
+;       System palette entries
+;
+sp.winbd        equ     $0200   ; Window border
+sp.winbg        equ     $0201   ; Window background
+sp.winfg        equ     $0202   ; Window foreground
+sp.winmg        equ     $0203   ; Window middleground
+sp.titlebg      equ     $0204   ; Title background
+sp.titletextbg  equ     $0205   ; Title text background
+sp.titlefg      equ     $0206   ; Title foreground
+sp.litemhigh    equ     $0207   ; Loose item highlight
+sp.litemavabg   equ     $0208   ; Loose item available background
+sp.litemavafg   equ     $0209   ; Loose item available foreground
+sp.litemselbg   equ     $020a   ; Loose item selected background
+sp.litemselfg   equ     $020b   ; Loose item selected foreground
+sp.litemunabg   equ     $020c   ; Loose item unavailable background
+sp.litemunafg   equ     $020d   ; Loose item unavailable foreground
+sp.infwinbd     equ     $020e   ; Information window border
+sp.infwinbg     equ     $020f   ; Information window background
+sp.infwinfg     equ     $0210   ; Information window foreground
+sp.infwinmg     equ     $0211   ; Information window middleground
+sp.subinfbd     equ     $0212   ; Subsidiary information window border
+sp.subinfbg     equ     $0213   ; Subsidiary information window background
+sp.subinffg     equ     $0214   ; Subsidiary information window foreground
+sp.subinfmg     equ     $0215   ; Subsidiary information window middleground
+sp.appbd        equ     $0216   ; Application window border
+sp.appbg        equ     $0217   ; Application window background
+sp.appfg        equ     $0218   ; Application window foreground
+sp.appmg        equ     $0219   ; Application window middleground
+sp.appihigh     equ     $021a   ; Application window item highlight
+sp.appiavabg    equ     $021b   ; Application window item available background
+sp.appiavafg    equ     $021c   ; Application window item available foreground
+sp.appiselbg    equ     $021d   ; Application window item selected background
+sp.appiselfg    equ     $021e   ; Application window item selected foreground
+sp.appiunabg    equ     $021f   ; Application window item unavailable background
+sp.appiunafg    equ     $0220   ; Application window item unavailable foreground
+sp.scrbar       equ     $0221   ; Pan/scroll bar
+sp.scrbarsec    equ     $0222   ; Pan/scroll bar section
+sp.scrbararr    equ     $0223   ; Pan/scroll bar arrow
+sp.buthigh      equ     $0224   ; Button highlight
+sp.butbd        equ     $0225   ; Button border
+sp.butbg        equ     $0226   ; Button background
+sp.butfg        equ     $0227   ; Button foreground
+sp.hintbd       equ     $0228   ; Hint border
+sp.hintbg       equ     $0229   ; Hint background
+sp.hintfg       equ     $022a   ; Hint foreground
+sp.hintmg       equ     $022b   ; Hint middleground
+sp.errbg        equ     $022c   ; Error message background
+sp.errfg        equ     $022d   ; Error message foreground
+sp.errmg        equ     $022e   ; Error message middleground
+sp.shaded       equ     $022f   ; Shaded area
+sp.3ddark       equ     $0230   ; Dark 3D border shade
+sp.3dlight      equ     $0231   ; Light 3D border shade
+sp.vertfill     equ     $0232   ; Vertical area fill
+sp.subtitbg     equ     $0233   ; Subtitle background
+sp.subtittxtbg  equ     $0234   ; Subtitle text background
+sp.subtitfg     equ     $0235   ; Subtitle foreground
+sp.mindexbg     equ     $0236   ; Menu index background
+sp.mindexfg     equ     $0237   ; Menu index foreground
+sp.separator    equ     $0238   ; Seperator lines etc.
+
+        list

@@ -60,12 +60,14 @@ qcf_targ		dc.b	 0	 ; 08
 qcf_part		dc.b	 0	 ;
 qcf_issize	dc.b	 0	 ; 0a
 qcf_ismode	dc.b	 1	 ;
+qcf_fill	ds.b	 14	 ; 0c ... 19
+qcf_mlan	dc.w	 44	 ; 1a
 
 	xref.l	smsq_vers
 	mkcfhead {SMSQ},{smsq_vers}
 
 	mkcfitem 'OSPL',word,'L',qcf_lang,,,\
-       {Default Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
+       {Default Keyboard Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	mkcfitem 'OSPD',code,'D',qcf_ismode,,,\
        {Initial display mode}\
@@ -74,6 +76,9 @@ qcf_ismode	dc.b	 1	 ;
 	mkcfitem 'OSPM',code,'M',qcf_mmu,,,\
        {Set up MMU for QLiberator}\
 	0,N,{No},$ff,Y,{Yes}
+
+	mkcfitem 'OSPK',word,'L',qcf_mlan,,,\
+       {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	mkcfend
 	ds.w	0
@@ -111,7 +116,7 @@ hwinit
 	cpusha				; then push and invalidate
 
 	tst.l	d7			; RAM set?
-	bne.s	hwi_peri			; ... yes, do not do TTRs
+	bne.s	hwi_peri		; ... yes, do not do TTRs
 
 	itt0	#$00ffe000		; set ITT0 for all cached write through
 	itt1	#$00000000		; disable ITT1
@@ -119,7 +124,7 @@ hwinit
 	dtt1	#$00ffe020		; set DTT1 for all cached copyback
 ;	dtt1	#$00ffe000		; set DTT1 for all cached write through
 
-; NB the tranparent translation is changed is the MMU is set
+; NB the transparent translation is changed is the MMU is set
 
 hwi_peri
 	st	q40_ebr 		; reset extension bus
@@ -128,7 +133,7 @@ hwi_peri
 	clr.b	q40_eie
 	clr.b	q40_50uie
 	move.b	qcf_ismode,q40_dmode	; initial mode
-	clr.b	q40_kack			; acknowledge junk
+	clr.b	q40_kack		; acknowledge junk
 	clr.b	q40_fack
 	clr.b	q40_50uack
 	st	q40_led 		; LED on
@@ -151,16 +156,16 @@ hwi_mem
 	move.l	d4,-(sp)
 	lea	smsq_end,a0		; OS1 header
 qmon_loop
-	move.l	sbl_mbase(a0),d0		; header length
-	beq.s qmon_done    ; no more
-	cmp.l #'QMON',4(a0,d0.l)		; qmon?
-	beq.s qmon_call
-	add.l sbl_mlength(a0),d0
-	add.l d0,a0			; next header
-	bra.s qmon_loop
+	move.l	sbl_mbase(a0),d0	; header length
+	beq.s	qmon_done		; no more
+	cmp.l	#'QMON',4(a0,d0.l)	; qmon?
+	beq.s	qmon_call
+	add.l	sbl_mlength(a0),d0
+	add.l	d0,a0			; next header
+	bra.s	qmon_loop
 qmon_call
 	lea	8(a0,d0.l),a0
-	moveq #-1,d0
+	moveq	#-1,d0
 	jsr	(a0)			; call qmon
 qmon_done
 	move.l	(sp)+,d4
@@ -207,11 +212,11 @@ hwi_setRAM
 	move.l	d4,2
 	st	q40_lowram		; read from RAM
 
-	move.l	(sp)+,a0			; return address
+	move.l	(sp)+,a0		; return address
 
 	clr.l	-(sp)			; facilities
 	clr.l	-(sp)			; language
-	move.l	d6,-(sp)			; processor, mmu/fpu, std disp
+	move.l	d6,-(sp)		; processor, mmu/fpu, std disp
 	move.l	#'Q40 ',-(sp)		; Q40
 
 	move.l	a4,d7			; ram top
@@ -246,16 +251,16 @@ mmu.cpmode equ	%11+%11000+%0100000	; resident + used and modified + copyback
 
 hwi_mmuset
 	lea	mmu.ptr(a4),a1
-	move.l	#$04000000+mmu.cpmode,a0	; 64 Mbyte limit
+	move.l	#$04000000+mmu.cpmode,a0; 64 Mbyte limit
 	move.w	#$04000000/$2000-1,d0	; 8k pages (8k entries)
 hwim_pgloop
 	sub.w	#$2000,a0
-	move.l	a0,-(a4)			; page entries
+	move.l	a0,-(a4)		; page entries
 	dbra	d0,hwim_pgloop
 
 	move.w	#$2000/32-1,d0
 hwim_ptloop
-	sub.w	#32*4,a1			; 32 pages per pointer (256 pointers)
+	sub.w	#32*4,a1		; 32 pages per pointer (256 pointers)
 	move.l	a1,-(a4)
 	dbra	d0,hwim_ptloop
 
@@ -272,10 +277,10 @@ hwim_rtloop
 	screg	srp,a4
 	screg	tc,#$c000		; enable MMU
 
-	itt0   #$007fc000			; set ITT0
-	itt1   #$fe01c040			; set ITT1
-	dtt0   #$007fc000			; set DTT0
-	dtt1   #$fe01c040			; set DTT1
+	itt0   #$007fc000		; set ITT0
+	itt1   #$fe01c040		; set ITT1
+	dtt0   #$007fc000		; set DTT0
+	dtt1   #$fe01c040		; set DTT1
 
 	rts
 

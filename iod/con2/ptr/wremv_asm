@@ -1,4 +1,7 @@
-* Window remove 			v1.02   1986  J.R.Oakley  QJUMP
+* Window remove 			v1.03   1986  J.R.Oakley  QJUMP
+*						 2002  Marcel Kilgus
+*
+* 2002-03-09  1.03  Changed for new on-the-fly wallpaper (MK)
 *
 *	Remove a window.  To do this we must put the window at the bottom of
 *	the pile, then go through the pile from bottom to top "restoring"
@@ -22,6 +25,7 @@
 	xref	pt_tstov
 	xref	pt_wsave
 	xref	pt_wrest
+	xref	pt_fillsv
 	xref.s	pt.spxlw ; shift pixel to long word
 	xref.s	pt.rpxlw ; round up pixel to long word (2^spxlw-1)
 	xref	cn_io
@@ -80,8 +84,8 @@ alc_out
 	bsr	pt_alcsv		  ; allocate it
 	beq.s	ssave			; OK, set save area pointer
 *
-*	If we can't use a save area, then we must clear the outline to black
-*	and use the screen directly.
+*	If we can't use a save area, then we must clear the outline to
+*	background colour and use the screen directly.
 *
 oioreg	reg	d4-d7/a4
 *
@@ -93,6 +97,8 @@ ptw_svul
 	sub.w	#sd_prwlt,a0		; the "real" cdb
 	tst.b	sd_wlstt(a0)		; is it locked?
 	bne.s	ptw_svul		; yes, or unlockable: do next
+	cmp.b	#sd.wpapr,sd_behav(a0)	; wallpaper?
+	beq.s	ptw_svul		; yes, next please
 	movem.l sd_xouts(a4),d1/d2	; does it overlap this?
 	add.l	d2,d1
 	jsr	pt_tstov(pc)		; find out
@@ -102,19 +108,8 @@ ptw_svul
 	jsr	pt_wsave(pc)		; and save if possible
 	bra.s	ptw_svul		; do next window
 
-
 *
 ptw_clrw
-	clr.l	sd_pmask(a4)		; paper is black (hack hack)
-	move.l	sd_xouto(a4),sd_xmin(a4)  ; this is the bit to clear
-	move.l	sd_xouts(a4),sd_xsize(a4) ; and it's this big
-	moveq	#iow.clra,d0		  ; clear the outline
-*
-	movem.l oioreg,-(sp)
-	move.l	a4,a0			; point to cdb
-	jsr	cn_io			; call standard console
-	movem.l (sp)+,oioreg
-*
 	sub.l	a0,a0			; there's no save area
 *
 ssave
@@ -122,6 +117,9 @@ ssave
 	st	sd_mysav(a4)		; it's all mine!
 *
 	move.l	a4,a0
+	moveq	#-1,d2
+	jsr	pt_fillsv		; fill area with background
+
 	move.l	stk.a3(sp),a3		; restore dddb
 	lea	pt_tail(a3),a4		; point to window at bottom of pile
 	movem.l sd_xouts(a0),d1/d2
