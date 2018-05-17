@@ -3,6 +3,7 @@
 *
 ; 2003-11-10	2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
 * 2004-05-15	2.02	Added ex_m (wl)
+* 2005-01-25	2.03	added call to Home thing (mk)
 	section exten
 *
 	xdef	etsb
@@ -29,12 +30,16 @@
 	xref	ut_rtfd1
 
 	xref	uxt_bopt
+
+	xref	gu_shome
+
 *
 	include 'dev8_keys_sbasic'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_err'
 	include 'dev8_keys_jcb'
 	include 'dev8_keys_chn'
+	include 'dev8_keys_thg'
 	include 'dev8_keys_qdos_io'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_keys_qdos_sms'
@@ -87,6 +92,7 @@ ex_ew_et
 	clr.l	-(sp)
 	clr.l	-(sp)		the last job id
 	move.l	d0,-(sp)	and the owner job id
+	clr.l	-(sp)			; future pointer to filename
 *
 	cmp.l	a5,a3		any parameters?
 	beq.s	ex_bp.1 	... no!!
@@ -154,7 +160,9 @@ ex_err.3
 	xref	ut_getext
 	xref	uxt.bas
 	xref	uxt.sav
-
+* !
+	move.l	a1,file_nm(sp)
+* !
 	jsr	ut_getext		get extension
 	cmp.l	uxt.bas,d1		was it _bas?
 	seq	job_sbas(sp)		... yes flag it
@@ -170,11 +178,13 @@ ex_err.3
 	trap	#4
 	trap	#3
 	tst.l	d0		done?
-	bne.s	ex_close	... no, it errored
+;!!!	    bne.s   ex_close	    ... no, it errored
+	bne	ex_close	... no, it errored
 	sub.w	d2,a1		backspace to start
 	moveq	#err.ipar,d0	... assume it will error
 	subq.b	#1,5(a6,a1.l)	is it executable?
-	bne.s	ex_close	... no
+;!!	   bne.s   ex_close	   ... no
+	bne	ex_close	... no
 	move.l	6(a6,a1.l),d0	data space
 	move.l	(a6,a1.l),d2	length of file
 	sub.l	a1,a1		start at start
@@ -209,6 +219,14 @@ prog_create
 	tst.l	d0		did it create ok
 	bne.s	ex_close	... no
 
+* !!!
+* additions for "home" thing
+	move.l	file_nm(sp),a1		; filename to set
+	add.l	a6,a1			; now absolute
+	jsr	gu_shome		; job ID is already in d1
+; !!!
+; end additions
+
 	move.l	a4,a1		set address to load
 	move.l	a4,a2		... and keep it
 	add.l	d2,a4		set up address of stack
@@ -235,7 +253,9 @@ ex_close
 ex_sbload
 	moveq	#ioa.sown,d0
 	trap	#2		set channel owned by job
-	bsr.s	prog_sbst	set start address
+
+ ;;	  bsr.s   prog_sbst	  set start address
+	bsr	prog_sbst	set start address
 	move.l	d0,a0
 	move.l	(a0)+,(a1)+	bra.s; 0000
 	move.l	(a0)+,(a1)+	00004afb
@@ -463,4 +483,5 @@ ex_ut_fname
 	bsr.l	ut_fname
 	movem.l (sp)+,d4/d6/a2
 	rts
+
 	end

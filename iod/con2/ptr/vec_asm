@@ -1,6 +1,8 @@
-; CON driver vectored routines table  V1.00		2003  Marcel Kilgus
-; 2003-05-13	v. 1.01 	added pt_size	(wl)
-; 2004-04-01	v. 1.02 	added pt_cursp	(wl)
+; CON driver vectored routines table  V1.02		2003  Marcel Kilgus
+;
+; 2003-05-13  1.01  added pt_size   (wl)
+; 2004-04-01  1.02  added pt_cursp  (wl)
+
 	section driver
 
 	xdef	pv_table
@@ -25,10 +27,11 @@ pv_table
 	nop
 	jmp	pt_size 		; $12
 	nop
-	jmp	pt_mblock		; $16
+	jmp	pt_mblock		; $18
 	nop
-	jmp	pt_cursp		; $1a
+	jmp	pt_cursp		; $1e
 	nop
+
 ;+++
 ;  PV_PINF	 $00
 ;
@@ -67,6 +70,5 @@ pt_size
 	swap	d0
 	move.w	#pt.rpxlw,d0
 	rts
-
 
 	end

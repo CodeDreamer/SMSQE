@@ -1,5 +1,6 @@
 ; Sprite moving code	V1.00	 1985	 Tony Tebby
-;
+; 2005-02-13	1.01	cnged head comment for sprite clipping (MK)
+
 ;	d0 c s	column offset / green composite
 ;	d1 c s	row offset    / red composite
 ;	d2   s	green sprite

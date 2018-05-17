@@ -2,7 +2,7 @@
 ;						       2003  Marcel Kilgus
 ;
 ; 2003-02-17  2.01  Extracted code for pt_fsprd
-
+; 2005-02-13  2.01  return sp_error and not arrow if sprite not recognized (wl)
 	section driver
 
 	xdef	pt_fspr
@@ -14,7 +14,7 @@
 	xdef	pt.rpxsw
 	xdef	pt.spsln
 	xdef	pt.spcln
-
+	xref	sp_error
 	xref	pt_ssref
 
 	include 'dev8_keys_con'
@@ -117,7 +117,7 @@ ptf_nosprite
 	bra.s	ptf_srstrt
 
 ptf_default
-	move.l	#sp.arrow,a1
+	lea	sp_error,a1
 	bra.s	ptf_sysspr
 
 ptf_setp

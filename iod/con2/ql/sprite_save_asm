@@ -1,4 +1,8 @@
-; Update the save area for a sprite  V1.00     1985  Tony Tebby
+; Update the save area for a sprite		V1.01	 1985	Tony Tebby
+;							  2005	Marcel Kilgus
+;
+; 2005-01-25  1.01  Changes for mouse pointer clipping (MK)
+;
 ;
 ;	d0 c s	old-new horizontal long word pointer
 ;	d1 c s	old-new row pointer
@@ -10,7 +14,7 @@
 ;	d7   p	horizontal shift for sprite
 ;
 ;	a0   s
-;	a1 c u	pointer to save area
+;	a1 cr	pointer to linkage block / ptr to save area (sp_save, sp_new)
 ;	a2 c s	old pointer to screen
 ;	a3 c u	new pointer to screen
 ;	a4 c u	pointer to sprite pattern
@@ -23,11 +27,17 @@
 	xdef	sp_new
 	xdef	sp_remove
 ;
+	include dev8_keys_con
+;
 sp_save
+	cmp.w	pt_spszy(a1),d6 save area height different from sprite height?
+	bne	do_all		yes, do it all new
+
 	ext.l	d6		set normal direction
 	cmp.l	a2,a3		find out which direction to move
 	bgt.l	move_down	... downwards
 	beq.l	exit		... not at all
+
 ;
 ; move up
 ;
@@ -43,6 +53,7 @@ u_chk_horiz
 ;
 ; now move all the pointers to the end of the sprite
 ;
+	move.l	pt_spsav(a1),a1 save area pointer
 	bset	#31,d6		flag reverse direction
 	move.w	d5,d4		width-1
 	move.w	d6,d3		height-1
@@ -69,7 +80,7 @@ u_chk_horiz
 ;
 	move.l	a1,a0		set temporary address register
 	move.l	a3,-(sp)	save new pointer to screen
-	move.l	a1,-(sp)	save save area pointer
+	move.l	a1,-(sp)	save save area ptr
 ;
 ; restore the top bit of the old area
 ;
@@ -190,6 +201,7 @@ d_chk_horiz
 	cmp.w	d0,d5		is movement>=width?
 	blt.l	do_all		... yes
 ;
+	move.l	pt_spsav(a1),a1 save area pointer
 	move.l	a1,a0		set temporary address registers
 	move.l	a3,-(sp)	save new pointer to screen
 	move.l	a1,-(sp)	save save area pointer
@@ -312,9 +324,11 @@ do_all
 ;
 sp_new
 	ext.l	d6		mark direction as normal
+	move.w	d6,d3
+	move.w	d6,pt_spszy(a1) remember height of save area
+	move.l	pt_spsav(a1),a1 save area pointer
 	move.l	a3,-(sp)
 	move.l	a1,-(sp)
-	move.w	d6,d3
 new_row
 	move.w	d5,d4
 new_rword
@@ -328,8 +342,9 @@ new_rword
 ; entry to remove sprite from screen
 ;
 sp_remove
-	move.w	d6,d3
 	move.l	a1,-(sp)
+	move.w	pt_spszy(a1),d3 height of save area
+	move.l	pt_spsav(a1),a1 save area pointer
 rem_row
 	move.l	d5,d4
 rem_rword
@@ -340,7 +355,10 @@ rem_rword
 	dbra	d3,rem_row
 ;
 	move.l	(sp)+,a1
+	rts
 ;
 exit
+	move.l	pt_spsav(a1),a1 save area pointer
 	rts
+
 	end

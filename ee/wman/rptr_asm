@@ -4,6 +4,7 @@
 * 2003-05-15	1.08	don't redraw sprites with no sprite block (wl)
 * 2003-05-20	1.09	Uses pv_fspr before trying to check sprite data (mk)
 * 2004-01-26	1.10	Even better check to distinguish between loose menu & appsub items (wl)
+* 2004-10-10	1.11	Removed some redundant code at wc_ldraw (mk)
 *
 	section wman
 *
@@ -525,10 +526,6 @@ regist	reg    d1-d3/a2
 stk_act  equ	8
 *
 wc_ldraw
-
-	move.b	wwl_type(a3),d0 	; item type
-	subq.b	#2,d0			; sprite ?
-	bne.s	wc_out			; ...no
 
 	cmp.b	#2,wwl_type(a3) 	; is it a sprite?
 	bne.s	wc_out			; no, don't redraw

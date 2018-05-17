@@ -121,13 +121,16 @@ hwinit_hreset				; special hard reset entry
 	st	q40_lowrom		; read from ROM ***** this code must be in high memory
 	movem.l 0,a0/a1
 	move.l	a0,a7
-	jmp	(a1)			; hard reset = standard rom resetsoft reset
+	jmp	(a1)			; hard reset = standard rom reset
 
-hwinit
+hwinit					; soft reset
 	moveq	#0,d0			; disable caches
 	pcreg	cacr
 	cpusha				; then push and invalidate
-
+;
+	move.l	d0,a0
+	dc.w	$4E7B,$8801		; movec a0,vbr : re-init VBR to 0
+;
 	tst.l	d7			; RAM set?
 	bne.s	hwi_peri		; ... yes, do not do TTRs
 

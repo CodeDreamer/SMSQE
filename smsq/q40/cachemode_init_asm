@@ -51,8 +51,8 @@ smsq_name2
 qx0c_base
 	lea	procs,a1		; procedures
 	move.w	sb.inipr,a2
-	jsr	(a2)			; link them in & return
-; the rest isn't used any more
+	jsr    (a2)		       ; link them in
+
 	lea	qx0c_cf(pc),a2
 	move.b	(a2),d0 		; preconfigured cache mode
 	subq.b	#1,d0			; is it serialized?

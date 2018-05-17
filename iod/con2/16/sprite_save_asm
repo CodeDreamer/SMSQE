@@ -1,7 +1,10 @@
-; Update the save area for a sprite  V1.00     1985  Tony Tebby
+; Update the save area for a sprite  V1.01     1985  Tony Tebby
+;						2005  Marcel Kilgus
 ;
-;	d0 c s	old-new horizontal long word pointer
-;	d1 c s	old-new row pointer
+; 2005-01-25  1.01  Changes for mouse pointer clipping (MK)
+;
+;	d0   s
+;	d1   s
 ;	d2   s
 ;	d3   s
 ;	d4   s
@@ -10,14 +13,16 @@
 ;	d7   p	horizontal shift for sprite
 ;
 ;	a0   s
-;	a1 c u	pointer to save area
-;	a2 c s	old pointer to screen
-;	a3 c u	new pointer to screen
+;	a1 c p	pointer to linkage block
+;	a2 c s	old pointer to screen (sp_remove)
+;	a3 c u	new pointer to screen (sp_new)
 ;	a4 c u	pointer to sprite pattern
 ;	a5 c u	pointer to sprite mask
 ;	a6 c u	address increment of screen
 ;
 	section driver
+;
+	include dev8_keys_con
 ;
 	xdef	sp_save
 	xdef	sp_new
@@ -33,6 +38,8 @@ sp_new
 	move.l	a3,-(sp)
 	move.l	a1,-(sp)
 	move.w	d6,d3
+	move.w	d6,pt_spszy(a1)     remember save area height
+	move.l	pt_spsav(a1),a1     ptr to save area
 new_row
 	move.w	d5,d4
 new_rword
@@ -49,8 +56,9 @@ new_rword
 ; entry to remove sprite from screen
 ;
 sp_remove
-	move.w	d6,d3
 	move.l	a1,-(sp)
+	move.w	pt_spszy(a1),d3 height of saved sprite
+	move.l	pt_spsav(a1),a1 ptr to save area
 rem_row
 	move.l	d5,d4
 rem_rword

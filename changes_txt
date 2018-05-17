@@ -1,7 +1,64 @@
   
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
+-----------------------------------------------------------------------------
+3.11
+    BUGFIXES (thanks to MK for pointing these out, the errors he corrected were all mine)
 
+	DEV8_ee_wman_entry_asm		1.03	added wm_cpspr (finally!)
+	dev8_ee_wman_rptr_asm		1.11	Removed some redundant code at wc_ldraw (mk)
+	smsq_spp_poll_asm		2.11	direct suppression if not still counting (mk)
+
+	keys_wman			-	set all keys, including wm.cpspr
+	keys_qdos_io			-	removed redundant iop.fspr & iop.sspr
+
+	ee_hot_link			-	uses sbsext_utq_lib (for qdos compatibility)
+	ee_wman_link			-	uses sbsext_utq_lib (for qdos compatibility)
+	ee_wman_procs_link		-	uses sbsext_utq_lib (for qdos compatibility)
+
+
+   SUPPORT FOR HOME THING (MK)
+	util_gut_shome_asm		1.01	call to home thing (mk+wl)
+	util_gut_fexec_asm		0.01	Added call to gu_shome (mk)
+	util_gut_fexnm_asm		0.01	Added call to gu_shome (mk)
+	util_gut_cctx			-	amended to suit
+	sbsext_ext_exsbas_asm		2.03	added call to gu_shome (mk)
+
+3.10
+
+
+   SPRITE CLIPPING (MK)
+	iod_con2_ptr_sadd_asm		2.03	many changes for pointer sprite clipping
+	iod_con2_ptr_limit_asm		1.01	same
+	iod_con2_ql_sprite_save_asm	1.01	same
+	iod_con2_16_sprite_save_asm	1.01	same
+	iod_con2_ql_sprite_move_asm	1.01	changed to suit (head comment)
+	iod_con2_16_sprite_move_asm	1.01	same
+	iod_con2_q40ql_sprite_move_asm	1.02	same
+	keys_con			-	changed to suit
+	key_qdos_pt			.	changed to suit
+
+   SPRITES WITH NO (=SOLID) MASK (MK)
+	iod_con2_atmono_sprite_drop_asm 1.01	extension for sprites with solid mask
+	iod_con2_q40ql_sprite_drop_asm	1.01	same
+	iod_con2_q4016_sprite_drop_asm	1.01	same
+	iod_con2_ql_sprite_drop_asm	1.01	same
+	iod_con2_ptr_version_asm	-	amended to suit
+
+   NEW COPY SPRITE VECTOR ADDED (MK)
+	ee_wman_cpspr_asm		1.00	added
+	ee_wman_version_asm		.	amended to suit
+	ee_wman_cct			.	amended to suit
+
+   BUGFIXES
+	iod_con2_16_shad_asm		1.01	no double shadow at intersection (MK)
+	iod_con2_ql_spcch_asm		2.01	return error sprite if error (wl)
+	ee_wman_3db_asm 		1.03	Double border type fixed (MK)
+	ee_wman_syspal_asm		1.01	Fixed error return of wm.jbpal (MK)
+	smsq_sbas_lang_asm		2.01	some german text corrected (wl)
+
+   MISC
+	smsqemake			.	Some bugfixes (wl - thanks to Duncan Neithercut)
 -----------------------------------------------------------------------------
 3.09
 

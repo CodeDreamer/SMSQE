@@ -1,6 +1,6 @@
 ; Sprite moving code	V1.00	 1985	 Tony Tebby
-;	 1.01	 FD	 REMOVED REFERENCES TO MOVEP for Q60/Q40
-
+;		1.01	FD	REMOVED REFERENCES TO MOVEP for Q60/Q40
+; 2005-02-13	1.02	changed header comment for sprite clipping (wl)
 ;
 ;	d0 c s	column offset / green composite
 ;	d1 c s	row offset    / red composite
@@ -11,7 +11,7 @@
 ;	d6 c s	row counter / draw up (msb)
 ;	d7 c p	right shift (low word) / 16-shift (high word)
 ;
-;	a1 c u	pointer to save area
+;	a1 c u	pointer to linkage block
 ;	a2 c s	old pointer to screen
 ;	a3 c s	new pointer to screen
 ;	a4 c u	pointer to sprite pattern

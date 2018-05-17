@@ -70,7 +70,9 @@ pto..opt equ	4
 pto.alph equ	%00100000	sprite uses alpha channel
 pto..alph equ	5
 pto.pcmp equ	%01000000	pattern compressed bit
+pto..pcmp equ	6
 pto.mcmp equ	%10000000	mask compressed bit
+pto..mcmp equ	7
 pto.cmp  equ	%11000000	sprite compressed bit
 pto_size equ	$04		x and y SIZE of object
 pto_xsiz equ	$04	word	X SIZe of object

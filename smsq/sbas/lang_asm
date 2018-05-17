@@ -1,4 +1,5 @@
 ; SBAS_LANG  Language Dependent Modules  V2.0   1994  Tony Tebby
+; 2005-04-12	2.01	some german text corrected (wl)
 
 	xref	smsq_end
 
@@ -220,7 +221,7 @@ deu_unlp mkstr	{kann keine offene Schleife finden\}
 deu_blvr mkstr	{undefinierte Schleifen-Variable\}
 deu_bsel mkstr	{falsch strukturiertes SELect\}
 deu_ends mkstr	{END SELect darf hier nicht stehen\}
-deu_dtcl mkstr	{DATA in Befehlszeige wird ignoriert\}
+deu_dtcl mkstr	{DATA in Befehlszeile wird ignoriert\}
 deu_brds mkstr	{unerlaubte Parameter f‡r READ\}
 deu_recr mkstr	{SBASIC kann keine READs innerhalb DATAs ausf‡hren\}
 deu_eod  mkstr	{Ende von DATA\}

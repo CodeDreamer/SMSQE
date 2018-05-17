@@ -179,11 +179,10 @@ com_iserve-> comi_error
 -----------------------------------------
 
 All new references to include and other files must be made to files
-located on device 'dev3_'. The source code now contains reference to files
+located on device 'dev8_'. The source code now contains reference to files
 located on drive "win1_". To allow some sort of more drive independence, it
-will be attempted to migrate these references, over time, to dev3_.
-Use dev_use 3,xxxy_ to set the dev device to whatever you want. Obviously, for
-the time being, this will be win1_, since all of the code still refers to this.
+will be attempted to migrate these references, over time, to dev8_.
+Use dev_use 8,xxxy_ to set the dev device to whatever you want.
 
 
 
@@ -201,6 +200,9 @@ might make more sense to write things differently.
 
 In that case, it might be a good idea to consult with the registrar, who
 will attempt to find a solution that all authors can live with.
+
+
+
 
 
 So long, have fun with the sources.

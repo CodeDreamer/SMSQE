@@ -1,7 +1,8 @@
-; Sprite dropping code	  V1.10 			 1985 Tony Tebby
+; Sprite dropping code	  V1.11 			 1985 Tony Tebby
 ;							  2003 Marcel Kilgus
 ;
 ; 2003-02-11  1.10  Added alpha blending code (MK)
+; 2005-03-27  1.11  Extension for empty (solid) mask (MK)
 ;
 ;	d0   s
 ;	d1   s
@@ -26,11 +27,18 @@
 sp_drop
 	move.l	a5,a4		; set pointer to sprite pattern
 	add.l	(a5)+,a4
-	add.l	(a5),a5 	; and sprite mask
-;
-	add.w	d0,a4		; offset to start
-	add.w	d0,a5
+	move.l	a5,d3
+	move.l	(a5),a5
+	move.l	a5,d4
+	beq.s	spd_nomask	; ... sprite mask ptr is 0
+	add.l	d3,a5		; absolute sprite mask ptr
+spd_nomask
+;	 add.w	 d0,a4		 ; offset to start (not needed anymore? MK)
+;	 add.w	 d0,a5
 sp_dropi
+	move.l	a5,d0		; any mask?
+	beq.s	sp_nomask
+
 	tst.l	d5		; alpha blending requested (MSW positive)?
 	bpl.s	alpha_dropi
 
@@ -51,7 +59,18 @@ next_line
 	add.w	a6,a3		; move address to next line
 	dbra	d6,sp_line	; next line
 	rts
+;
+sp_nomask
+	move.l	d5,d4		; set counter
+;
+snm_long_word
+	move.l	(a4)+,(a3)+
+	subq.w	#1,d4		; next long word
+	bgt.s	snm_long_word	; ... there is another one
 
+	add.w	a6,a3		; move address to next line
+	dbra	d6,sp_nomask	; next line
+	rts
 ;
 alpha_dropi
 	swap	d5		; get real sprite width

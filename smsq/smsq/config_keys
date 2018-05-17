@@ -12,9 +12,11 @@ sms_bwin   equ	5	   ; byte	BOOT WIN drive
 sms_defl   equ	6	   ; word	default keyboard language
 sms_btarg  equ	8	   ; byte	boot target
 sms_bpart  equ	9	   ; byte	boot partition
+sms_idisp  equ	$a	   ; 6 words	initial disp_size
 sms_issize equ	$a	   ; byte	initial screen size (VGA / Aurora)
 sms_ismode equ	$b	   ; byte	initial screen mode
-sms_idisp  equ	$a	   ; 6 words	initial disp_size
+sms_xres   equ	$c	   ; word	initial x resolution
+sms_yres   equ	$e	   ; word	initial y resolution
 sms_acsir  equ	$16	   ; byte	ACSI auto detect removable (Atari)
 sms_nqimi  equ	$16	   ; byte	ignore qimi (Gold card)
 sms_clock  equ	$17	   ; byte	clock speed (QXL)

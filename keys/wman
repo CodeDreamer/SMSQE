@@ -1,66 +1,67 @@
-          nolist
+	  nolist
 ;
-;         Window manager vectors
+;	  Window manager vectors
 ;
-wm_vers   equ       $00
-wm.setup  equ       $04
-wm.smenu  equ       $08
-wm.prpos  equ       $0c
-wm.pulld  equ       $10
-wm.unset  equ       $14
-wm.wrset  equ       $18
-wm.wdraw  equ       $1c
-wm.mdraw  equ       $20
-wm.index  equ       $24
-wm.swdef  equ       $28
-wm.ldraw  equ       $2c
-wm.rptr   equ       $30
-wm.mhit   equ       $34
-wm.pansc  equ       $38
-wm.idraw  equ       $3c
-wm.chwin  equ       $40
-wm.drbdr  equ       $44
-wm.msect  equ       $48
-wm.stlob  equ       $4c
-wm.stiob  equ       $50
-wm.fsize  equ       $54
-wm.swinf  equ       $58
-wm.swlit  equ       $5c
-wm.swapp  equ       $60
-wm.swsec  equ       $64
-wm.rname  equ       $68
-wm.ename  equ       $6c
-wm.upbar  equ       $70
-wm.erstr  equ       $74
-wm.rptrt  equ       $78
-wm.setsp  equ       $7c
-wm.getsp  equ       $80
-wm.trap3  equ       $84
-wm.opw    equ       $88
-wm.ssclr  equ       $8c
-wm.jbpal  equ       $90
+wm_vers   equ	    $00
+wm.setup  equ	    $04
+wm.smenu  equ	    $08
+wm.prpos  equ	    $0c
+wm.pulld  equ	    $10
+wm.unset  equ	    $14
+wm.wrset  equ	    $18
+wm.wdraw  equ	    $1c
+wm.mdraw  equ	    $20
+wm.index  equ	    $24
+wm.swdef  equ	    $28
+wm.ldraw  equ	    $2c
+wm.rptr   equ	    $30
+wm.mhit   equ	    $34
+wm.pansc  equ	    $38
+wm.idraw  equ	    $3c
+wm.chwin  equ	    $40
+wm.drbdr  equ	    $44
+wm.msect  equ	    $48
+wm.stlob  equ	    $4c
+wm.stiob  equ	    $50
+wm.fsize  equ	    $54
+wm.swinf  equ	    $58
+wm.swlit  equ	    $5c
+wm.swapp  equ	    $60
+wm.swsec  equ	    $64
+wm.rname  equ	    $68
+wm.ename  equ	    $6c
+wm.upbar  equ	    $70
+wm.erstr  equ	    $74
+wm.rptrt  equ	    $78
+wm.setsp  equ	    $7c
+wm.getsp  equ	    $80
+wm.trap3  equ	    $84
+wm.opw	  equ	    $88
+wm.ssclr  equ	    $8c
+wm.jbpal  equ	    $90
+wm.cpspr  equ	    $94
 ;
-wm.drall  equ       0           ; draw all
-wm.drsel  equ       -1          ; draw selectively
+wm.drall  equ	    0		; draw all
+wm.drsel  equ	    -1		; draw selectively
 ;
-;         Keys for values in window manager data structures
+;	  Keys for values in window manager data structures
 ;
-textu     equ       -1
-text      equ       0
-sprite    equ       2
-blob      equ       4
-patt      equ       6
+textu	  equ	    -1
+text	  equ	    0
+sprite	  equ	    2
+blob	  equ	    4
+patt	  equ	    6
 ;
 ; Keys for colours (high order byte)
 ;
-wmc.ql     equ       $00        ; traditional QL colours
-wmc.pal    equ       $01        ; palette colours
-wmc.syspal equ       $02        ; system palette colour
-wmc.gray   equ       $03        ; gray colour
-wmc.3db    equ       $04        ; 3d border colour
-wmc.stip   equ       $40        ; stipple colour
-wmc..stip  equ       14         ;   bit number in 16 bit word
-wmc.rgb    equ       $80        ; 15bit rgb
-wmc..rgb   equ       15         ;   bit number in 16 bit word
+wmc.ql	   equ	     $00	; traditional QL colours
+wmc.pal    equ	     $01	; palette colours
+wmc.syspal equ	     $02	; system palette colour
+wmc.gray   equ	     $03	; gray colour
+wmc.3db    equ	     $04	; 3d border colour
+wmc.stip   equ	     $40	; stipple colour
+wmc..stip  equ	     14 	;   bit number in 16 bit word
+wmc.rgb    equ	     $80	; 15bit rgb
+wmc..rgb   equ	     15 	;   bit number in 16 bit word
 ;
-          list
+	  list

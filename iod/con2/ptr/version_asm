@@ -338,8 +338,12 @@
 *	Fixed wallpaper on mode change (MK)
 *	More con vectors (WL)
 *	More system sprites (MK)
+*
+*	V2.02
+*	Support for sprites with no (=solid mask) (MK)
+*	Fixed high colour shadow at the overlapping part (MK)
 
-pt.vers equ	'2.01'
+pt.vers equ	'2.02'
 pt_vers equ	pt.vers
 	dc.l	pt.vers
 

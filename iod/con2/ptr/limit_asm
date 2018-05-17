@@ -1,5 +1,7 @@
-* Limit sprite to be within screen area
+* Limit sprite to be within screen area 	1.01	     Tony Tebby
+*							2005 Marcel Kilgus
 *
+* 2005-26-01  1.01  Allow sprite clipping in Y direction (MK)
 *
 *
 *	d0   s
@@ -21,22 +23,20 @@ pt_limit
 	moveq	#0,d2
 *
 y_low
-	sub.w	pto_yorg(a0),d1 	is origin above the screen?
-	cmp.w	#1,d1
-	bgt.s	y_high			... no	(include top line sacrosanct)
+	cmp.w	#1,d1			at upper edge?
+	bgt.s	y_high			... no
 	move.w	#1,d1			... yes, reset y
 	moveq	#1<<pt..otop,d2 	on limit
 	bra.s	set_y
 y_high
-	move.w	pt_ssizy(a3),d0 	find bottom of screen less height
-	sub.w	pto_ysiz(a0),d0
-	cmp.w	d0,d1			is top of sprite below this?
+	move.w	pt_ssizy(a3),d0 	bottom of screen
+	subq.w	#1,d0
+	cmp.w	d0,d1			is mouse position below this?
 	blt.s	set_y			... no
 	move.w	d0,d1			... yes, reset y
 	moveq	#1<<pt..obot,d2 	on limit
 
 set_y
-	add.w	pto_yorg(a0),d1 	move pointer back to origin of sprite
 	swap	d1
 *
 	sub.w	pto_xorg(a0),d1 	is origin left of the screen?

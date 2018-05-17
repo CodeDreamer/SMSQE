@@ -665,8 +665,20 @@
 ;	QXL version bugfixes and restart possibility (BC).
 ;	QPC new basic commands (QPC_WINDOWSIZE, PAR_GETFILTER, PAR_SETFILTER) (MK).
 ;	Outline move spurious outline problem fixed (wl).
+;
+; 3.10	Bugfixes: lower right corner of high colour shadows fixed (MK).
+;	Wrong errror return of wm..jbpla fixed (MK)
+;	Double 3D border type fixed (MK).
+;	Wrong error sprite return fixed (wl).
+;	Sprite clipping at window borders implemented (MK).
+;	Implemented sprites with no (= solid) mask (MK).
+;	New copy sprite vector added (MK).
+;
+; 3.11	Bugfixes (thanks to MK)
+;	Call to HOME thing via EXxx commands added (wl)
+;
 
-smsq_vers equ	 '3.09'
+smsq_vers equ	 '3.11'
 
 
 

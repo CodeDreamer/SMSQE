@@ -187,13 +187,14 @@ pt_wdata equ	$124   ; long  pointer to WMAN data area
 pt_ident equ	$128   ; long  identifier
 pt.ident equ	  'PTR2'
 pt_drtab equ	$12c   ; 5*long driver installation routine addresses
-pt_cdpth equ	$140   ; byte	current colour depth
+pt_cdpth equ	$140   ; byte  current colour depth
 pt_cdtab equ	$141   ; 5*byte modes for each resolution
 pt_sstb  equ	$146   ; long  pointer to system sprite table
 pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
 pt_vecs  equ	$150   ; long  pointer to block with vectored routines
-pt_cjob  equ	$154   ; long pointer to cursor sprite job table
-pt_end	 equ	$158   ; length of pointer linkage block
+pt_cjob  equ	$154   ; long  pointer to cursor sprite job table
+pt_spszy equ	$15a   ; word  pointer sprite save area y size
+pt_end	 equ	$15c   ; length of pointer linkage block
 
 *
 * Pointer interface vectors

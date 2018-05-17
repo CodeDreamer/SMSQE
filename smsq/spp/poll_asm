@@ -1,4 +1,6 @@
 ; SER polling routine  V2.10	    1999 Tony Tebby
+; 2005-10-10	2.11	direct suppression if not still counting (MK)
+
 
 	section spp
 
@@ -29,6 +31,7 @@ sppp_loop
 
 	subq.w	#1,spd_cdct(a3) 	 ; ... no carrier, countdown
 	bgt.s	sppp_next		 ; still counting
+	blt.s	sppp_supp1		 ; ... suppress it
 	tas	buf_eoff(a2)		 ; ... timed out, set eof
 
 sppp_supp1
@@ -38,7 +41,7 @@ sppp_restart
 	move.w	d1,spd_cdct(a3) 	 ; carrier - reset timer
 
 sppp_next
-	add.w	#spd.len,a4
+	add.w	#spd.len,a3
 sppp_eloop
 	dbra	d7,sppp_loop
 

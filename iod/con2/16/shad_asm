@@ -1,5 +1,7 @@
-; IOD_CON2_16_SHAD_ASM - Mode 32&33 shadow routine V1.00  2002  Marcel Kilgus
-; Base on original QL mode routine by Tony Tebby.
+; IOD_CON2_16_SHAD_ASM - Mode 32&33 shadow routine V1.01  2002  Marcel Kilgus
+; Based on original QL mode routine by Tony Tebby.
+;
+; 2005-04-07  1.01  Does not put shadow twice at the intersection (MK)
 ;
 ;	Routine to put a shadow "behind" a window.
 ;
@@ -43,6 +45,7 @@ pt_shad
 shade
 	movem.l sd_xhits(a0),d4/d5/d6/d7 ; get parameters
 	bsr.s	shad_area		; and shadow size / position
+	move.l	d2,-(sp)
 	bsr.s	block_sh		; shade that bit
 ;
 ;	Side shadow - calculations as for top, but swapping x and y.
@@ -54,6 +57,8 @@ shade
 	bsr.s	shad_area
 	swap	d2
 	swap	d3
+	move.l	(sp)+,d0		; x,y shadow size
+	sub.w	d0,d2			; subtract overlapping area
 	bsr.s	block_sh
 	moveq	#0,d0			; no error
 	movem.l (sp)+,reglist

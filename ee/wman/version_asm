@@ -151,8 +151,12 @@
 ;	V2.03	       Fixed pointer save on new move operation (wl)
 ;
 ;	V2.04	       Fixed spurious outline when using outline move, on mouse button release
+;
+;	V2.05	       New vector wm_cpspr to copy a sprite definition (MK)
+;		       Fixed error return of wm.jbpal (MK)
+;		       Double 3d border type fixed (MK)
 
-wm_vers equ	'2.04'
+wm_vers equ	'2.05'
 wm.pver equ	'2.01'
 
 	end

@@ -1,4 +1,6 @@
-; WMAN system palette	V1.00			2002 Marcel Kilgus
+; WMAN system palette	V1.01			2002 Marcel Kilgus
+;
+; 2005-03-25  1.01  Fixed error return of wm.jbpal (MK)
 
 	xdef	wm_setsp
 	xdef	wm_getsp
@@ -620,6 +622,7 @@ wmjp_noreset
 	move.l	a1,d0			; ptr to palette given?
 	beq.s	wmjp_rts		; no, exit
 	move.l	a1,wjb.ownpal(a0)
+	moveq	#0,d0
 wmjp_rts
 	movem.l (sp)+,d1-d2/d4/a0
 	rts

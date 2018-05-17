@@ -1,137 +1,139 @@
-100 a$=cmd$
-110 version$=""
-120 REMark command string format: docopy smsversion (with a decimal point: x.yy)
-130 docopy%=0
-140 IF a$<>""
-150   IF "docopy" INSTR a$:docopy%=1
-160   t%="." INSTR a$
-170   IF t%
-180     version$=a$(t%-1 TO t%+2)
-190   END IF
-200 END IF
-210 smsqe$="smsqe"&version$&".zip"
-220 ddr$="ram3_"
-230 p
-240 IF docopy%:  do_copy a$
-250 :
-260 DEFine PROCedure p
-270   do_all
-280   do_individual_dirs
-290 END DEFine p
-300 :
-310 DEFine PROCedure do_all
-320 REMark this zips the entire SMSQE sources
-330 REMark ensure that all non source files have been erased first!
-340 LOCal zip$
-350   d
-360    do_zip " -Q4r9 "&ddr$&smsqe$&" dd_* dv3_* ee_* extras_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt licence_doc licence_txt"
-370 END DEFine do_all
-380 :
-390 DEFine PROCedure do_individual_dirs
-400 LOCal lp%,dirname$
-410   RESTORE 500
-420   REPeat lp%
-430     READ dirname$
-440     IF dirname$="":EXIT lp%
-450     do_zip " -Q4r9 "&ddr$&dirname$&".zip "&dirname$&"_*"
-460   END REPeat lp%
-470   do_qxl_pc
-480 END DEFine do_individual_dirs
-490 :
-500   DATA "dd","dv3","ee","extras","iod","keys","lang","mac","minerva","sbsext","smsq","sys","util"
-510   DATA ""
-520 :
-530 DEFine PROCedure do_qxl_pc
-540 LOCal a$
-550   a$=DOS_DRIVE$(7)
-560   DOS_DRIVE 7,"c:\smsqe\qxl\"
-570   do_zip " -Q4j9 "&ddr$&"qxl.zip "& "msd7_*.asm msd7_qxl.inc msd7_qxlh.exe msd7_CURRENT.STS"
-580   DOS_DRIVE 7,a$
-590 END DEFine do_qxl_pc
-600 :
-610 DEFine PROCedure sa
-620   SAVE_O dev8_extras_zip_it_bas
-630 END DEFine sa
-640 :
-650 DEFine PROCedure d
-660 LOCal lp%,dirname$
-670   DELETE ddr$&smsqe$
-680   RESTORE 500
-690   REPeat lp%
-700     READ dirname$
-710     IF dirname$="":EXIT lp%
-720   DELETE ddr$&dirname$&".zip"
-730   END REPeat lp%
-740 END DEFine d
-750 :
-760 DEFine PROCedure s
-770 REMark this restes the data etc dirs to acceptable values
-780   DEST_USE dev1_
-790   DATA_USE dev1_basic_
-800   PROG_USE dev1_progs_
-810 END DEFine s
-820 :
-830 DEFine PROCedure do_binaries
-840 REMark this zips all binary versions
-850 LOCal nbr%,lp%,source$,dest$,zip$,f$
-860   f$ =ddr$&smsqe$
-870   CLS
-880   zip$ =' -j9 '&f$&' '
-890   RESTORE 830
-900   READ nbr%
-910   FOR lp% =1 TO nbr%
-920     READ source$,dest$
-930     PRINT "copying "& source$
-940     COPY_O source$,ddr$&dest$
-950     zip$=zip$&ddr$&dest$ & ' '
-960   END FOR lp%
-970   DELETE f$
-980   do_zip zip$
-990   RESTORE  830
-1000   READ nbr%
-1010   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE dest$
-1020   DATA 7
-1030   DATA "dev8_smsq_atari_SMSQ.PRG", "atari_SMSQ.PRG"
-1040   DATA "dev8_smsq_gold_gold",      "GoldCard_bin"
-1050   DATA "dev8_smsq_q40_rom",        "Q40_rom"
-1060   DATA "dev8_smsq_qxl_smsqe.exe",  "qxl_smsqe.exe"
-1070   DATA "dev8_whats_new_txt",       "whats_new_txt"
-1080   DATA "dev8_changes_txt",         "changes_txt"
-1090   DATA "dev8_readme_txt",          "readme_txt"
-1100 END DEFine t
-1110 :
-1120 DEFine PROCedure z
-1130   LOCal lp%,zip$
-1140   RESTORE 1120
-1150   zip$=' -j9 '&'ram1_m.zip '
-1160   REPeat lp%
-1170     READ a$
-1180     IF a$="":EXIT lp%
-1190     zip$=zip$&a$&" "
-1200   END REPeat lp%
-1210   do_zip zip$
-1220 END DEFine z
-1230 :
-1240 DEFine PROCedure do_zip (zip$)
-1250   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-1260   EW dev1_progs_zip;zip$
-1270   s
-1280 END DEFine do_zip
-1290 :
-1300 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-1310 DATA "dev8_iod_con2_ptr_wremv_asm"
-1320 DATA ""
-1330 :
-1340 DEFine PROCedure do_copy
-1350 LOCal ddr$,lp%,a$
-1360   ddr$="ram3_"
-1370   COPY  ddr$&smsqe$,"msd8_"&smsqe$
-1380   RESTORE 500
-1390   REPeat lp%
-1400     READ a$
-1410     IF a$="":EXIT lp%
-1420     COPY_O ddr$&a$&".zip","msd8_"&a$&".zip"
-1430   END REPeat lp%
-1440   COPY_O ddr$&"qxl.zip","msd8_qxl.zip"
-1450 END DEFine do_copy
-1460 :
+100 REMark this prog is also called from dev1_basic_smsqe_new_version_bas - don't change unless that is changed, too
+110 a$=cmd$
+120 version$=""
+130 REMark command string format: docopy smsversion (with a decimal point: x.yy)
+140 docopy%=0
+150 IF a$<>""
+160   IF "docopy" INSTR a$:docopy%=1
+170   t%="." INSTR a$
+180   IF t%
+190     version$=a$(t%-1 TO t%+2)
+200   END IF
+210 END IF
+220 smsqe$="smsqe"&version$&".zip"
+230 ddr$="ram3_"
+240 p
+250 IF docopy%:  do_copy a$
+260 :
+270 DEFine PROCedure p
+280   do_all
+290   do_individual_dirs
+300 END DEFine p
+310 :
+320 DEFine PROCedure do_all
+330 REMark this zips the entire SMSQE sources
+340 REMark ensure that all non source files have been erased first!
+350 LOCal zip$
+360   d
+370    do_zip " -Q4r9 "&ddr$&smsqe$&" dd_* dv3_* ee_* extras_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt licence_doc licence_txt"
+380 END DEFine do_all
+390 :
+400 DEFine PROCedure do_individual_dirs
+410 LOCal lp%,dirname$
+420   RESTORE 510
+430   REPeat lp%
+440     READ dirname$
+450     IF dirname$="":EXIT lp%
+460     do_zip " -Q4r9 "&ddr$&dirname$&".zip "&dirname$&"_*"
+470   END REPeat lp%
+480   do_qxl_pc
+490 END DEFine do_individual_dirs
+500 :
+510   DATA "dd","dv3","ee","extras","iod","keys","lang","mac","minerva","sbsext","smsq","sys","util"
+520   DATA ""
+530 :
+540 DEFine PROCedure do_qxl_pc
+550 LOCal a$
+560   a$=DOS_DRIVE$(7)
+570   DOS_DRIVE 7,"c:\smsqe\qxl\"
+580   do_zip " -Q4j9 "&ddr$&"qxl.zip "& "msd7_*.asm msd7_qxl.inc msd7_qxlh.exe msd7_CURRENT.STS"
+590   DOS_DRIVE 7,a$
+600 END DEFine do_qxl_pc
+610 :
+620 DEFine PROCedure sa
+630   SAVE_O dev8_extras_zip_it_bas
+640 END DEFine sa
+650 :
+660 DEFine PROCedure d
+670 LOCal lp%,dirname$
+680   DELETE ddr$&smsqe$
+690   RESTORE 510
+700   REPeat lp%
+710     READ dirname$
+720     IF dirname$="":EXIT lp%
+730   DELETE ddr$&dirname$&".zip"
+740   END REPeat lp%
+750 END DEFine d
+760 :
+770 DEFine PROCedure s
+780 REMark this restes the data etc dirs to acceptable values
+790   DEST_USE dev1_
+800   DATA_USE dev1_basic_
+810   PROG_USE dev1_progs_
+820 END DEFine s
+830 :
+840 DEFine PROCedure do_binaries
+850 REMark this zips all binary versions
+860 LOCal nbr%,lp%,source$,dest$,zip$,f$
+870   f$ =ddr$&smsqe$
+880   CLS
+890   zip$ =' -j9 '&f$&' '
+900   RESTORE 840
+910   READ nbr%
+920   FOR lp% =1 TO nbr%
+930     READ source$,dest$
+940     PRINT "copying "& source$
+950     COPY_O source$,ddr$&dest$
+960     zip$=zip$&ddr$&dest$ & ' '
+970   END FOR lp%
+980   DELETE f$
+990   do_zip zip$
+1000   RESTORE  840
+1010   READ nbr%
+1020   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE dest$
+1030   DATA 8
+1035   DATA "dev7_smsq_gold_gold_hi","aurora_high_colour"
+1040   DATA "dev8_smsq_atari_SMSQ.PRG", "atari_SMSQ.PRG"
+1050   DATA "dev8_smsq_gold_gold",      "GoldCard_bin"
+1060   DATA "dev8_smsq_q40_rom",        "Q40_rom"
+1070   DATA "dev8_smsq_qxl_smsqe.exe",  "qxl_smsqe.exe"
+1080   DATA "dev8_whats_new_txt",       "whats_new_txt"
+1090   DATA "dev8_changes_txt",         "changes_txt"
+1100   DATA "dev8_readme_txt",          "readme_txt"
+1110 END DEFine t
+1120 :
+1130 DEFine PROCedure z
+1140   LOCal lp%,zip$
+1150   RESTORE 1130
+1160   zip$=' -j9 '&'ram1_m.zip '
+1170   REPeat lp%
+1180     READ a$
+1190     IF a$="":EXIT lp%
+1200     zip$=zip$&a$&" "
+1210   END REPeat lp%
+1220   do_zip zip$
+1230 END DEFine z
+1240 :
+1250 DEFine PROCedure do_zip (zip$)
+1260   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+1270   EW dev1_progs_zip;zip$
+1280   s
+1290 END DEFine do_zip
+1300 :
+1310 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+1320 DATA "dev8_iod_con2_ptr_wremv_asm"
+1330 DATA ""
+1340 :
+1350 DEFine PROCedure do_copy
+1360 LOCal ddr$,lp%,a$
+1370   ddr$="ram3_"
+1380   COPY  ddr$&smsqe$,"msd8_"&smsqe$
+1390   RESTORE 510
+1400   REPeat lp%
+1410     READ a$
+1420     IF a$="":EXIT lp%
+1430     COPY_O ddr$&a$&".zip","msd8_"&a$&".zip"
+1440   END REPeat lp%
+1450   COPY_O ddr$&"qxl.zip","msd8_qxl.zip"
+1460 END DEFine do_copy
+1470 :

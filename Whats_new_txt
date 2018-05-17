@@ -19,6 +19,25 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+======
+ 3.11
+======
+
+Support for the home thing
+
+
+======
+ 3.10
+======
+
+Cursor Sprite Clipping is implemented:
+
+The cursor sprite,w hen reaching the edges of the screen is "clipped" until its
+origin.
+
+Sprites with no (= solid) masks are implemented. These take less space.
+
+Some bugfixes.
 
 ======
  3.09
