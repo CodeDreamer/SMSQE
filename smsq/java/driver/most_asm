@@ -1,9 +1,9 @@
-; Base area SMSQmulator Drivers  V.1.03 (c) W. Lenerz 2012-2015
-
+; Base area SMSQmulator Drivers  V.1.04 (c) W. Lenerz 2012-2016
 
 ; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
 ; v. 1.02 2015 May 24  possibly use ieee routines
 ; v. 1.03 2015 Jul 29  integrated the rtc routines
+; v. 1.04 2016 Oct 13  call to init copy QL screen routine
 
 	section header
 
@@ -49,6 +49,7 @@ smsq_name
 	xref	scrap_init
 	xref	snd_init
 	xref	tmr_init
+	xref	cpyscr_init
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sys'
@@ -88,6 +89,7 @@ start
 	jsr	scrap_init
 	jsr	snd_init
 	jsr	tmr_init
+	jsr	cpyscr_init
 sys_init
 
 ; When we have linked in the interrupt servers, we can enable the interrupts
@@ -246,6 +248,8 @@ sms_rrtc
 
 sms_srtc
 sms_artc
+	moveq	#jt5.qry,d0
+	dc.w	jva.trp5
 	move.l	sms.rte,-(sp)
 	moveq	#0,d0
 	rts

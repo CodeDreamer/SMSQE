@@ -68,7 +68,7 @@ hmf_wstart
 
 	moveq	#jt8.frmt,d0		; format drive
 	addq.l	#4,a7
-	dc.w	jva.trp9		; do it (create container of D1 megabytes)
+	dc.w	jva.trpa		; do it (create container of D1 megabytes)
 					; nbr of sectors returned in d2, also sets Z flag
 	bne.s	hmf_fmtf		; oops
 

@@ -1,5 +1,7 @@
 ;	Draw a rectangular block 16 bit colour	v2.00   1998  Tony Tebby
 ;
+;	2.02 (c) W. Lenerz 2016 Oct 23
+;
 ;	The block size and origin are assumed to have been adjusted for
 ;	correct position within the area to be set.
 ;
@@ -25,41 +27,23 @@
 	xdef	bm_xblok
 
 	xdef	cn_clr2lw
-
 	include 'dev8_keys_java'
-	include 'dev8_keys_err'
-;
-; set block parameters
-;
-;	d1 cr	width,height  / number of full long words
-;	d2 c	origin
-;	d3  r	number of rows
-;	d4  r	set if extra word on left
-;	d5  r	set is extra word on right
-;	a1 cr	base of area / base address of block
-;	a2 c	line increment
-;
-;cnb_setuc
-;	 bsr.l	 cn_clr2lw		 ; set colour masks in two long words
-;cnb_setup
 
-
-;	XOR a block
 bm_xblok
-cn_xblock
-	moveq	#jt5.xblk,d0
+	moveq	#jt5.xbkbm,d0
 	dc.w	jva.trp5
 
+cn_xblock
+	moveq	#jt5.xorbk,d0
+	dc.w	jva.trp5
 
-;	Drop a block in
+cn_fblock
+	moveq	#jt5.fblk,d0
+	dc.w	jva.trp5
 
 bm_block
-cn_fblock
-	moveq	#jt5.fill,d0
+	moveq	#jt5.fbkbm,d0
 	dc.w	jva.trp5
-
-
-
 
 
 ; set colour masks
@@ -98,8 +82,5 @@ cnc_check
 cnc_solid
 cnc_vert
 	rts
-
-
-
 
 	end

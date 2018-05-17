@@ -21,6 +21,23 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 =====
+3.28
+=====
+
+Bugfix by Marcel kilgus. With a string like a$="1234", print a$(5 to) would
+not give an error (though print a$(5) did).
+The new function FSEND_EVENT is the same as SEND_EVENT but returns error code.
+SMSQEmake can autoresize when targets are added/deleted.
+
+
+=====
+3.27
+=====
+
+Bugfix ;  the maximum string array size is 32766, not 32767.
+
+
+=====
 3.26
 =====
 

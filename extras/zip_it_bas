@@ -53,126 +53,124 @@
 620 :
 630 DEFine PROCedure do_qxl_pc
 640 LOCal a$
-650   a$=DEV_USE$(7)
-660   DEV_USE 7,"nfa1_qxl_"
-670   do_zip " -Q4j9 "&ddr$&"qxl.zip "& "dev7_*.asm dev7_qxl.inc dev7_qxlh.exe dev7_current.sts"
-680   DEV_USE 7,a$
-690 END DEFine do_qxl_pc
-700 :
-710 DEFine PROCedure sa
-720   SAVE_O dev8_extras_zip_it_bas
-730 END DEFine sa
-740 :
-750 DEFine PROCedure del_zips
-760 REMark just delete the zip files
-770 LOCal lp%,dirname$
-780   DELETE ddr$&smsqe$
-790   RESTORE CURRENT_LINE
-800   REPeat lp%
-810     READ dirname$
-820     IF dirname$="":EXIT lp%
-830   DELETE ddr$&dirname$&".zip"
-840   END REPeat lp%
-850   DATA "dd","dv3","ee","extras","iod","keys","lang","mac","minerva","sbsext","smsq","sys","uti","util"
-860   DATA ""
-870 END DEFine d
-880 :
-890 DEFine PROCedure s
-900 REMark this resets the data etc dirs to acceptable values, no longer used
-910   DEST_USE dev1_
-920   DATA_USE dev1_basic_
-930   PROG_USE dev1_progs_
-940 END DEFine s
-950 :
-960 DEFine PROCedure t
-970   ddr$="ram3_"
-980   smsqe$="3.12"
-990   do_binaries 0
-1000 END DEFine t
-1010 :
-1020 DEFine PROCedure do_binaries (do_delete%)
-1030 REMark this zips all binary versions and then possibly deletes them
-1040 LOCal nbr%,lp%,source$,dest$,zip$,f$
-1050   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
-1060   CLS
-1070   zip$ =' -Q4j9 '&f$&' '
-1080   RESTORE CURRENT_LINE
-1090   REPeat lp%
-1100     READ source$,dest$
-1110     IF source$="":EXIT lp%
-1120     PRINT "copying "& source$
-1130     COPY_O source$,ddr$&dest$
-1140     zip$=zip$&ddr$&dest$ & ' '
-1150     IF do_delete% AND NOT ("_txt" INSTR source$): DELETE source$
-1160   END REPeat lp%
-1170   DELETE f$
-1180   PRINT "Zipping binaries..."
-1190   do_zip zip$
-1200   REMark now delete destinations
-1210   RESTORE CURRENT_LINE
-1220   REPeat lp%
-1230     READ dest$,dest$
-1240     IF dest$="":EXIT lp%
-1250     DELETE ddr$&dest$
-1260   END REPeat lp%
-1270   PRINT "Binaries done..."
-1280   DATA "dev8_smsq_atari_SMSQ.PRG",  "SMSQE.PRG"       : REMark PRG file for ATARI ST/TT, ready to be used
-1290   DATA "dev8_smsq_gold_gold",       "GoldCard_bin"    : REMark gold card Ql colours
-1300   DATA "dev8_smsq_gold_gold8",      "GoldCard_256colours_bin"
-1310   DATA "dev8_smsq_q40_rom",         "Q40_rom"         : REMark q40/q60 use as rom / lrespr file
-1320   DATA "dev8_smsq_qxl_smsqe.exe",   "SMSQEQXL.EXE"    : REMark EXE to be run under DOS on i386 compatible systems with a QXL card installed, ready to be used
-1330   DATA "dev8_smsq_aurora_SMSQE",    "Aurora_bin"      : REMark aurora 8 bit
-1340   DATA "dev8_smsq_java_java",       "SMSQE"           : REMark Code file for SMSQmulator, ready to be used
-1350   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
-1360   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1370   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1380   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1390   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1400   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1410   DATA "dev8_whats_new_txt",        "whats_new_txt"
-1420   DATA "dev8_changes_txt",          "changes_txt"
-1430   DATA "dev8_readme_txt",           "readme_txt"
-1440   DATA "","" : REMark leave TWO empty strings here
-1450 END DEFine do_binaries
-1460 :
-1470 DEFine PROCedure z
-1480   LOCal lp%,zip$
-1490   RESTORE 1260
-1500   zip$=' -j9 '&'ram1_m.zip '
-1510   REPeat lp%
-1520     READ a$
-1530     IF a$="":EXIT lp%
-1540     zip$=zip$&a$&" "
-1550   END REPeat lp%
-1560   do_zip zip$
-1570 END DEFine z
-1580 :
-1590 DEFine PROCedure do_zip (zip$)
-1600 LOCal destt$,progg$,dataa$
-1610   destt$=DESTD$
-1620   progg$=PROGD$
-1630   dataa$=DATAD$
-1640   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-1650   EW dev1_progs_zip;zip$
-1660   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
-1670 END DEFine do_zip
-1680 :
-1690 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-1700 DATA "dev8_iod_con2_ptr_wremv_asm"
-1710 DATA ""
-1720 :
-1730 DEFine PROCedure do_copy
-1740 LOCal ddr$,lp%,a$ ,f$
-1750   ddr$="ram3_"
-1760   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
-1770   RESTORE 830
-1780   REPeat lp%
-1790     READ a$
-1800     IF a$="":EXIT lp%
-1810     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
-1820   END REPeat lp%
-1830   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
-1840   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
-1850   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
-1860 END DEFine do_copy
-1870 :
+650   a$="nfa1_qxl_*"
+660   do_zip " -Q4j9 "&ddr$&"qxl.zip "& a$
+670 END DEFine do_qxl_pc
+680 :
+690 DEFine PROCedure sa
+700   SAVE_O dev8_extras_zip_it_bas
+710 END DEFine sa
+720 :
+730 DEFine PROCedure del_zips
+740 REMark just delete the zip files
+750 LOCal lp%,dirname$
+760   DELETE ddr$&smsqe$
+770   RESTORE CURRENT_LINE
+780   REPeat lp%
+790     READ dirname$
+800     IF dirname$="":EXIT lp%
+810   DELETE ddr$&dirname$&".zip"
+820   END REPeat lp%
+830   DATA "dd","dv3","ee","extras","iod","keys","lang","mac","minerva","sbsext","smsq","sys","uti","util"
+840   DATA ""
+850 END DEFine d
+860 :
+870 DEFine PROCedure s
+880 REMark this resets the data etc dirs to acceptable values, no longer used
+890   DEST_USE dev1_
+900   DATA_USE dev1_basic_
+910   PROG_USE dev1_progs_
+920 END DEFine s
+930 :
+940 DEFine PROCedure t
+950   ddr$="ram3_"
+960   smsqe$="3.12"
+970   do_binaries 0
+980 END DEFine t
+990 :
+1000 DEFine PROCedure do_binaries (do_delete%)
+1010 REMark this zips all binary versions and then possibly deletes them
+1020 LOCal nbr%,lp%,source$,dest$,zip$,f$
+1030   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
+1040   CLS
+1050   zip$ =' -Q4j9 '&f$&' '
+1060   RESTORE CURRENT_LINE
+1070   REPeat lp%
+1080     READ source$,dest$
+1090     IF source$="":EXIT lp%
+1100     PRINT "copying "& source$
+1110     COPY_O source$,ddr$&dest$
+1120     zip$=zip$&ddr$&dest$ & ' '
+1130     IF do_delete% AND NOT ("_txt" INSTR source$): DELETE source$
+1140   END REPeat lp%
+1150   DELETE f$
+1160   PRINT "Zipping binaries..."
+1170   do_zip zip$
+1180   REMark now delete destinations
+1190   RESTORE CURRENT_LINE
+1200   REPeat lp%
+1210     READ dest$,dest$
+1220     IF dest$="":EXIT lp%
+1230     DELETE ddr$&dest$
+1240   END REPeat lp%
+1250   PRINT "Binaries done..."
+1260   DATA "dev8_smsq_atari_SMSQ.PRG",  "SMSQE.PRG"       : REMark PRG file for ATARI ST/TT, ready to be used
+1270   DATA "dev8_smsq_gold_gold",       "GoldCard_bin"    : REMark gold card Ql colours
+1280   DATA "dev8_smsq_gold_gold8",      "GoldCard_256colours_bin"
+1290   DATA "dev8_smsq_q40_rom",         "Q40_rom"         : REMark q40/q60 use as rom / lrespr file
+1300   DATA "dev8_smsq_qxl_smsqe.exe",   "SMSQEQXL.EXE"    : REMark EXE to be run under DOS on i386 compatible systems with a QXL card installed, ready to be used
+1310   DATA "dev8_smsq_aurora_SMSQE",    "Aurora_bin"      : REMark aurora 8 bit
+1320   DATA "dev8_smsq_java_java",       "SMSQE"           : REMark Code file for SMSQmulator, ready to be used
+1330   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
+1340   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1350   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1360   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1370   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1380   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1390   DATA "dev8_whats_new_txt",        "whats_new_txt"
+1400   DATA "dev8_changes_txt",          "changes_txt"
+1410   DATA "dev8_readme_txt",           "readme_txt"
+1420   DATA "","" : REMark leave TWO empty strings here
+1430 END DEFine do_binaries
+1440 :
+1450 DEFine PROCedure z
+1460   LOCal lp%,zip$
+1470   RESTORE 1240
+1480   zip$=' -j9 '&'ram1_m.zip '
+1490   REPeat lp%
+1500     READ a$
+1510     IF a$="":EXIT lp%
+1520     zip$=zip$&a$&" "
+1530   END REPeat lp%
+1540   do_zip zip$
+1550 END DEFine z
+1560 :
+1570 DEFine PROCedure do_zip (zip$)
+1580 LOCal destt$,progg$,dataa$
+1590   destt$=DESTD$
+1600   progg$=PROGD$
+1610   dataa$=DATAD$
+1620   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+1630   EW dev1_progs_zip;zip$
+1640   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
+1650 END DEFine do_zip
+1660 :
+1670 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+1680 DATA "dev8_iod_con2_ptr_wremv_asm"
+1690 DATA ""
+1700 :
+1710 DEFine PROCedure do_copy
+1720 LOCal ddr$,lp%,a$ ,f$
+1730   ddr$="ram3_"
+1740   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
+1750   RESTORE 810
+1760   REPeat lp%
+1770     READ a$
+1780     IF a$="":EXIT lp%
+1790     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
+1800   END REPeat lp%
+1810   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
+1820   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
+1830   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
+1840 END DEFine do_copy
+1850 :

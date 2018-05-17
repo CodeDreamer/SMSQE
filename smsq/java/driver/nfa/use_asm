@@ -1,14 +1,20 @@
-; NFA/SFA USE use name	  v. 2.03	(c) L. Lenerz  2012
+; NFA/SFA USE use name	  v. 2.04	(c) L. Lenerz  2012-2016
+
+; 2.04 implements win_drive
+; 2.03 ?
+; v 2.02 when xxx_USE device is called, pass this on to Java
+    
 
 
 ; based on
 ; RAM Disk USE use name   V2.01     1989  Tony Tebby  QJUMP
-; v 0.01 when xxx_USE device is called, pass this on to Java
-
+;
+    
 	section exten
 
 	xdef	nfa_use
 	xdef	sfa_use
+	xdef	win_drive
 	xdef	win_use
 	xdef	flp_use
 	xdef	mem_use
@@ -32,6 +38,11 @@ flp_use
 	move.l	#'FLP0',d7
 	bra.s	comn_use
 
+win_drive				; win drive needs 2 params
+	move.l	a3,d7
+	add.l	#16,d7
+	cmp.l	d7,a5
+	bne.s	set_err
 win_use
 	move.l	#'WIN0',d7
 	bra.s	comn_use
@@ -65,4 +76,6 @@ set_nam subq.l	#8,a5
 	tst.l	d0
 set_out rts
 
+set_err moveq	#-15,d0
+	rts
 	end

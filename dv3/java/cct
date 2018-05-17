@@ -1,4 +1,5 @@
 dev8_dv3_java_fd_init_rel
+dev8_dv3_java_hd_init_rel
 
 dev8_dv3_fd_thing_rel
 dev8_dv3_java_fd_check_rel
@@ -18,3 +19,25 @@ dev8_dv3_fd_ckrw_rel
 dev8_dv3_qxl_fd_hold_rel
 dev8_dv3_fd_version_rel
 dev8_dv3_java_fd_drive_rel
+
+dev8_dv3_qxl_hd_poll_check_rel
+dev8_dv3_hd_poll_rel
+dev8_dv3_hd_pflush_rel
+dev8_dv3_hd_check_rel
+dev8_dv3_hd_direct_rel
+dev8_dv3_hd_slbfill_rel
+dev8_dv3_java_hd_mformat_rel
+dev8_dv3_hd_fchk_rel
+dev8_dv3_qxl_hd_fpart_rel
+dev8_dv3_hd_done_rel
+dev8_dv3_hd_thing_rel
+dev8_dv3_hd_slbupd_rel
+dev8_dv3_hd_flush_rel
+dev8_dv3_java_hd_ckwp_rel
+dev8_dv3_qxl_hd_ckrdy_rel
+dev8_dv3_java_hd_rsect_rel
+dev8_dv3_java_hd_wsect_rel
+dev8_dv3_qxl_hd_hold_rel
+dev8_dv3_qxl_hd_lock_rel
+dev8_dv3_qxl_hd_ststp_rel
+dev8_dv3_hd_version_rel

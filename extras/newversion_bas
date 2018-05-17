@@ -48,7 +48,7 @@
 570   PRINT#ochan%;"Please be patient..."
 580   EW dev8_extras_del_all_bas;"auto stop keep"
 590   PRINT#ochan%, "zipping all to ram3_"
-600   EW dev8_extras_zip_it_bas;"quit delete binaries docopy version"&svers$
+600   EW dev8_extras_zip_it_bas;"quit binaries docopy version"&svers$
 610   PRINT#ochan%,"Making version and changelog html files..."
 620   versions ochan%
 630   make_indexphp ochan%

@@ -28,20 +28,20 @@ ip_init
 	dc.w	jva.trp9		; close all previous sockets
 
 	lea	ip_link,a3
-	jsr	iou_idset		 ; setup IP linkage
-	jmp	iou_idlk		 ; and link in
+	jsr	iou_idset		; setup IP linkage
+	jmp	iou_idlk		; and link in
 
 ip_link
 	dc.l	ipd_end+iod.sqhd
-	dc.l	1<<iod..ssr+1<<iod..scn  ; serial and name
+	dc.l	1<<iod..ssr+1<<iod..scn ; serial and name
 
-	novec			 ; no servers
+	novec				; no servers
 	novec
 	novec
-	vec	ip_io		 ; but a full set of opens
+	vec	ip_io			; but a full set of opens
 	vec	ip_open
 	vec	ip_close
 
-	vec	ip_cnam 	 ; name
+	vec	ip_cnam 		; get name of channel
 
 	end

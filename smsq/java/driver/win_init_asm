@@ -1,8 +1,9 @@
-; SMSQmulator WIN Driver initialisation  V1.00 (c) W.Lenerz 2012-2013
+; SMSQmulator WIN Driver initialisation  V1.01 (c) W.Lenerz 2012-2016
 
 ; This handles linking in the driver into the OS.
 ;
 ; copyright (C) w. Lenerz 2012	published under the SMSQE licence
+; v. 1.01 implement win_drive & win_drive$
 ; v. 1.00 device is called WIN
 ; v. 0.01 functional
 ; v. 0.00 stub
@@ -166,14 +167,30 @@ null	dc.w	0		; external interrupt server (none)
 	dc.w	-1
 
 ; the basic procedures
-; v 0.00 none is impemented
 	section procs
 
 proctab
 	proc_stt
 	proc_def WIN_USE
+	proc_def WIN_DRIVE
 	proc_end
 	proc_stt
 	proc_def WIN_USE$ , win_useq
+	proc_def WIN_DRIVE$ , win_useq
 	proc_end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	end

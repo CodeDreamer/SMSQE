@@ -1,5 +1,10 @@
 ; Extended colour mode for Java ; based on QL (Gold card)
 
+; copyright (C) W lenerz 2012-2016
+
+; 1.01 catch mode change for automatic mode setting if scr emu.
+
+
 	section init
 
 	xdef	pt_xmodec		 ; check if mode can be set
@@ -48,6 +53,8 @@ ptxm_ok
 pt_xmodec
 	assert	ptm.ql4,0
 	assert	ptm.ql8,8
+	moveq	#jt5.emumd,d0
+	dc.w	jva.trp5		; try to set screen emulation mode
 	moveq	#$ffffffff-ptm.ql8,d0
 	and.b	pt_dmode(a3),d0 	; is it ql mode?
 	beq.s	ptxm_ok 		; ... yes can do mode

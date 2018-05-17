@@ -1,4 +1,4 @@
-; Misc. keywords for scrap, menu bar, fp. ops. V1.00 (c) W. Lenerz 2013-2015
+; Misc. keywords for scrap, menu bar, fp. ops. etc V1.03 (c) W. Lenerz 2013-2016
 
 
 ************************************************************************
@@ -8,7 +8,12 @@
 *
 *	Set QL or IEEE floating point routines
 *
-*	v. 1.00  copyright W. Lenerz 2013
+*	Get SMSQmulator version, hstmachine name
+*
+*	v. 1.03  2016 Dec 02 add windowtitle, netname$,popup
+*	v. 1.02  2016 Oct 27 add JVA_VER$
+*
+*	copyright (C) W. Lenerz 2016
 *
 ************************************************************************
 
@@ -16,9 +21,12 @@
 	section scrap
 
 	include dev8_keys_thg
+	include dev8_keys_sbasic
 	include dev8_keys_menu
 	include dev8_keys_scrap
 	include dev8_keys_java
+	include dev8_mac_proc2
+
 
 	xdef	scrap_init
 
@@ -28,25 +36,33 @@
 	xref	ut_frscp
 	xref	qpc_patchfpu
 	xref	qpc_patch2ql
+	xref	ut_retst
+	xref	ut_ckri6
+	xref	ut_chkri
+	xref	ut_gtnm1
 
 
-scrap_init lea	   procs,a1
+scrap_init
+	lea	procsnm,a1
 	move.w	$110,a2
 	jmp	(a2)
 
-procs	dc.w	5
-	dc.w	jvasget-*
-	dc.b	7,'JVASGET'
-	dc.w	jvasput-*
-	dc.b	7,'JVASPUT'
-	dc.w	jvambar-*
-	dc.b	7,'JVAMBAR'
-	dc.w	jvaqlfp-*
-	dc.b	7,'JVAQLFP'
-	dc.w	jvaiefp-*
-	dc.b	7,'JVAIEFP'
-	dc.l	0,0
 
+procsnm
+	proc_stt
+	proc_def JVASGET
+	proc_def JVASPUT
+	proc_def JVAMBAR
+	proc_def JVAQLFP
+	proc_def JVAIEFP
+	proc_def JVA_WINDOWTITLE
+	proc_def JVA_POPUP
+	proc_end
+	proc_stt
+	proc_def JVA_VER$,jva_vers
+	proc_def JVA_NETNAME$
+	proc_end
+		 
 stack	equ	32060
 
 mregs	reg	a0/a1/a4/d2
@@ -84,7 +100,6 @@ exit	movem.l (a7)+,mregs
 	rts
 
 
-
 jvasput movem.l mregs,-(a7)
 	move.l	#'GET ',d2		; we're GETting things from the scrap
 	jsr	ut_usscp		; use extension
@@ -111,10 +126,13 @@ jvasput movem.l mregs,-(a7)
 	moveq	#jt5.xs2cp,d0
 	dc.w	jva.trp5		; get data at (a1)  to java
 	bra.s	exit3
-	   
+
+
+
 jvambar moveq	#jt5.mbar,d0
 	dc.w	jva.trp5
 	rts
+
 
 
 jvaqlfp lea	qpc_patch2ql,a2 	; routine to jump to
@@ -126,6 +144,39 @@ fp_comn move.w	sr,d7
 	jsr	(a2)			; patch vectors
 	move.w	d7,sr			; reset status as it was
 	moveq	#0,d0
+	rts
+
+
+
+jva_vers jsr	 ut_ckri6		 ; make sure there's space for 6 bytes
+	moveq	#jt5.vers,d0
+	dc.w	jva.trp5		; get SMSQmulator version into d2
+	subq.l	#6,a1
+	move.l	d2,2(a6,a1.l)		;
+	move.w	#4,(a6,a1.l)
+	jmp	ut_retst		; return it
+
+
+jva_windowtitle
+	jsr	ut_gtnm1
+	bne.s	wdw_rts
+	moveq	#jt5.wtit,d0
+	dc.w	jva.trp5
+wdw_rts rts
+
+
+jva_netname$
+	moveq	#66,d1
+	jsr	ut_chkri		 ; check/expand RI stack
+	move.l	sb_arthp(a6),a1 	 ; cleaned up stack
+	moveq	#jt9.name,d0
+	dc.w	jva.trp9		 ; get name
+	bne.s	wdw_rts
+	jmp	ut_retst
+
+
+jva_popup
+	dc.w	jva.trpb
 	rts
 
 	end

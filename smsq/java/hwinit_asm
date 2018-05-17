@@ -74,7 +74,7 @@ hwinit_name
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
 	dc.l	'3.27'
-	dc.l	'0000'
+	dc.l	'0005'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0

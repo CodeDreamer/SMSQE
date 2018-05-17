@@ -37,7 +37,7 @@ hd_wsint
 
 	move.l	d0,-(a7)
 	moveq	#jt8.wsec,d0
-	dc.w	jva.trp9		; java side handles the rest, including setting the regs on return
+	dc.w	jva.trpa		; java side handles the rest, including setting the regs on return
 	jmp	hd_release		; release (and set cc accoding to d0)
 
 hdr_rts rts

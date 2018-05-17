@@ -1,6 +1,7 @@
 ; SBAS_IEXPR - Interpreter Expression Evaluation     1992 Tony Tebby
 ;
-; 2006-04-01  1.01  Fixed return of 'date$()(20)', i.e. index of last char (MK)
+; 2006-04-01  1.01  Fixed return of 'date$()(20)', i.e. index of last char  (MK)
+; 2017-01-06  1.02  Check x is valid for a$(x to) and date$()(x to)	    (MK)
 
 	section sbas
 
@@ -574,6 +575,8 @@ bpass_from
 	bcc.s	bpass_to		 ; default
 	move.w	(a2)+,d3		 ; real start
 	ble.l	bel_inor		 ; ... oops
+	cmp.w	d3,d5			 ; check start is not past EOS	** 1.02
+	blt.l	bel_inor		 ; ... oops			** 1.02
 bpass_to
 	lsr.l	#1,d1
 	bne.l	bel_iind		 ; there are other ranges!!
@@ -1342,6 +1345,8 @@ bo_indvtv
 	bhi.s	bos_inor
 
 bsi_indx
+	cmp.w	d3,d4			 ; check start is not past EOS	** 1.02
+	bls.s	bos_inor		 ;				** 1.02
 	move.w	d4,d2
 	sub.w	d3,d2			 ; number of chars
 	ble.s	bos_zinor		  ; ...oops

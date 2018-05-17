@@ -3,6 +3,9 @@
 ; based on
 ; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
 
+; 2.02 2016 Oct 24  better way to kill the sound
+; 2.01 adapted for SMSQmulator
+
 	section sound
 
 	xdef	ssss_init
@@ -25,8 +28,6 @@ ssss_qend   equ $1c
 ssss_qbase  equ $20
 ssss.len    equ 100*1024
 ssss_end    equ ssss_qbase+ssss.len
-
-
 
 ;+++
 ; SSSS initialisation.
@@ -123,7 +124,6 @@ sss_mrts
 
 ; add multiple samples
 ; A1 points to samples, D2 = nbr of samples (?)
-
 sss_addm
 	cmp.l	ssss_qend(a3),a1	      ; end of queue
 	blt.s	sss_aset		      ; ... no
@@ -138,28 +138,41 @@ cont	move.l	d0,-(a7)
 	move.l	(a7)+,d0
 	rts
 
-; kill the sound
+; kill the sound (pre 2.02)
 
+;sss_kill2
+;	 movem.l d1/d2/a1/a2,-(sp)
+;	 move.l  ssss_qin(a3),a2    ; the bytes will go here
+;
+;	 moveq	 #$ffffff80,d1
+;	 moveq	 #$ffffff80,d2
+;sss_kloop
+;	 bsr.s	 sss_add1	    ; add zero
+;	 beq.s	 sss_kloop	    ; keep on until queue is not full
+
+;	 move.l  a2,ssss_qout(a3)   ; one sample only in queue
+;	 move.l  d0,-(a7)
+;	 moveq	 #jt5.sssk,d0
+;	 dc.w	 jva.trp5
+;	 move.l  (a7)+,d0
+;	 movem.l (sp)+,d1/d2/a1/a2
+;	 rts
+
+
+; kill the sound : reset all pointers & tell java
 sss_kill
 	movem.l d1/d2/a1/a2,-(sp)
-	move.l	ssss_qin(a3),a2    ; the bytes will go here
-
-	moveq	#$ffffff80,d1
-	moveq	#$ffffff80,d2
-sss_kloop
-	bsr.s	sss_add1	   ; add zero
-	beq.s	sss_kloop	   ; keep on until queue is not full
-
-	move.l	a2,ssss_qout(a3)   ; one sample only in queue
-	move.l	d0,-(a7)
+	lea	ssss_qbase(a3),a2
+	move.l	a2,ssss_qstart(a3)
+	move.l	a2,ssss_qin(a3)
+	move.l	a2,ssss_qout(a3)
 	moveq	#jt5.sssk,d0
 	dc.w	jva.trp5
-	move.l	(a7)+,d0
 	movem.l (sp)+,d1/d2/a1/a2
 	rts
 
-; return length  of samples in queue
 
+; return length  of samples in queue
 sss_sample
 	move.l	ssss_qin(a3),d0
 	sub.l	ssss_qout(a3),d0

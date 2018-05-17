@@ -1,5 +1,6 @@
-; SBAS_PROCS_XTPROCS - Extra SBASIC Procedures V2.04    1994  Tony Tebby
+; SBAS_PROCS_XTPROCS - Extra SBASIC Procedures V2.05    1994  Tony Tebby
 ;
+; 2016-11-17  2.05  Added FSEND_EVENT (wl)
 ; 2005-12-10  2.04  Added POKES_F, PEEKS_F (MK)
 
 	section procs
@@ -46,6 +47,7 @@ sb_xtprocs
 	proc_def PROCESSOR
 
 	proc_def WAIT_EVENT
+	proc_def FSEND_EVENT
 
 	proc_def DMEDIUM_NAME$
 	proc_def DMEDIUM_DRIVE$
@@ -56,6 +58,7 @@ sb_xtprocs
 	proc_def DMEDIUM_TYPE
 	proc_def DMEDIUM_TOTAL
 	proc_def DMEDIUM_FREE
+
 
 	proc_end
 	end

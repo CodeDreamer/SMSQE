@@ -24,7 +24,7 @@
 ;---
 hd_ckwp
 	moveq	#jt8.ckwp,d0			; is disk write protected?
-	dc.w	jva.trp9			; return NZ if write proted
+	dc.w	jva.trpa			; return NZ if write proted
 	sne	ddf_wprot(a4)
 hdwp_exit
 	rts

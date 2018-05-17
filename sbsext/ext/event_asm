@@ -1,21 +1,31 @@
 ; Test event handling from basic
 
+; 1.01 2016 Nov 17 added fsend_event (wl)
+
 	section test
 
 ; SEND_EVENT job id, events
 ; events = WAIT_EVENT (event mask)
+; error=FSEND_EVENT (job id, events)
 
 	xdef	send_event
 	xdef	wait_event
+	xdef	fsend_event
 
 	xref	job_gid
 	xref	ut_gtin1
 	xref	ut_gxin1
 	xref	ut_retin
+	xref	ut_rtfd1
 
 	include dev8_keys_qdos_sms
 	include dev8_sbsext_ext_keys
 
+fsend_event
+	bsr.s	send_event
+	move.l	d0,d1
+	clr.l	d0
+	jmp	ut_rtfd1
 
 send_event
 	moveq	#8,d5			2 params

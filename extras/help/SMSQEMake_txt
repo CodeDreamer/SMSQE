@@ -39,7 +39,7 @@ LOAD  "winX_extras_compile_boot" where X is  the device the sources
 are on. Modify line 100 to have the "dev_use 8,win2_" command point
 to your  win drive with the sources.  Then RUN this program. Select
 the  target(s) you want  : at least  the generic +  the machine you
-want to compile  SMSQE for. Select  "Make" and 'All".  Hit "OK" and
+want to compile  SMSQE for. Select  "Make" and "All".  Hit "OK" and
 wait until  compilation is compelete.  A warning window  pops up if
 there were errors during compilation.
 
@@ -233,14 +233,14 @@ When you hit/do the "OK" item, all selected link files will be treated,
 so that all new files in it will be compiled.
 
 
-F - The DEL item
+F - The "DEL" item
 
 If the DEL item is selected, then, before a compilation run is started,
 SMSQEMake will	try to delete  all previously compiled	files, i.e. all
 _rel,  _err, _map_, _log and _lib files (but not, of course, the source
 files  themselves!) and the compiled targets. This is done by "EXECing"
 the file called  "dev8_extras_del_all_bas". Note  that EXECing	a basic
-fileis a eature of SMSQ/E and may not work under dufferent OSes
+file is a feature of SMSQ/E and may not work under different OSes
 
 Please also note:
 -----------------
@@ -294,7 +294,13 @@ For QPC:
 <dev> smsq_qpc_smsqe.bin
 
 
-H - Command line parameters
+H - The "SaT" item
+
+This item simply Selects all Targets.
+
+
+
+I - Command line parameters
 
 It is possible to pass command	line  parameters  to  the  program,  as
 follows:
@@ -321,7 +327,7 @@ errors.
 "-tr" means : set ptRgen (and wamn) target
 
 
-I - A proposed way of working
+J - A proposed way of working
 
 I propose you use this program as follows:
 
@@ -335,7 +341,7 @@ possibly with the All item.
 Set the "Make" item so that  a	final  version	will  be  built.  Start
 everything with "OK".
 
-J - Error reports
+K - Error reports
 
 Report facilties in  this program  are, as  yet, very  rudimentary: The
 program tries to compile all files depending an any selected link file.

@@ -941,7 +941,7 @@ NEVER be empty, since it only exists for any job if this job opened a file.
 ;		 returned by the RCNT_INFO keyword
 ;	buffer = space for list
 ;
-;	result% = 0 or +ive: number of files got if all went ok
+;	result% = 0 if all went ok
 ;		else negative error code :
 ;		    err.bffl - buffer too small
 ;		    err.ipar - wrong number of parameters
@@ -988,7 +988,7 @@ RCNT_GARR function.
 ;		-1 means get the list for myself (=default)
 ;	    OR as a string with the name of the job
 ;
-;	result% = 0 or +ive: number of files got if all went ok
+;	result% = 0 if no error
 ;		else negative error code :
 ;		    err.bffl - buffer too small
 ;		    err.ipar - wrong number of parameters
@@ -1012,7 +1012,7 @@ This might be used as follows:
     str_max%=0
     blength=RCNT_INFO("Prowess",str_nbr%,str_len%,str_max%): rem get info on size
     buffer=ALCHP(blength)			    : rem get buffer
-    result%=RCNT_GALL (blength,buffer)		    : rem data info buffer
+    result%=RCNT_GALJ "Prowess", (blength,buffer)	       : rem data info buffer
 
 
 
@@ -1054,9 +1054,15 @@ This might be used as follows:
 			
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ;
-; RCNT_GARJ array$
+; RCNT_GARJ {jobID,} array$
 ;
 ;	Get all filenames for a job into an ARRay
+;
+;	where
+;	job_id = (optional) id of job:
+;	    EITHER as a long int where
+;		-1 means get the list for myself (=default)
+;	    OR as a string with the name of the job
 ;
 ;	array$=a 2 dimensional string array.
 ;
@@ -1082,7 +1088,7 @@ This might be used as follows:
     str_nbr%=0
     blength=RCNT_INFO("Prowess",str_nbr%,str_len%,str_max%) : rem get info on size
     dim files$(str_nbr%,str_len%)	 : rem or better dim files$(str_nbr%,41)
-    RCNT_GARJ files$
+    RCNT_GARJ "Prowess" , files$
 					     
 
 

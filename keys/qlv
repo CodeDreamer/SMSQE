@@ -1,154 +1,154 @@
 ; vectored utilities
-        nolist
+	nolist
 
-QL_vbase equ    $00c0          ; vector base
-qlv_jump equ    $4000          ; jump vector area
-qlv.off  equ    qlv_jump-(ql_vbase*3) ; JMP is offset + 3 * ql vector
+QL_vbase equ	$00c0	       ; vector base
+qlv_jump equ	$4000	       ; jump vector area
+qlv.off  equ	qlv_jump-(ql_vbase*3) ; JMP is offset + 3 * ql vector
 
 ; Common heap management
 
-mem.achp equ    $00c0          ; Allocate space in Common HeaP
-mem.rchp equ    $00c2          ; Return space to Common HeaP
+mem.achp equ	$00c0	       ; Allocate space in Common HeaP
+mem.rchp equ	$00c2	       ; Return space to Common HeaP
 
 ; Open Window utilities
 
-opw.wind equ    $00c4          ; Open WINDow using name
-opw.con  equ    $00c6          ; Open CONsole
-opw.scr  equ    $00c8          ; Open SCReen
+opw.wind equ	$00c4	       ; Open WINDow using name
+opw.con  equ	$00c6	       ; Open CONsole
+opw.scr  equ	$00c8	       ; Open SCReen
 
 ; Error handling utilities
 
-ut.wersy equ    $00ca          ; Write an ERror to SYstem window
-ut.werms equ    $00cc          ; Write an ERror MeSsage
-ut.wint  equ    $00ce          ; Write an INTeger
-ut.wtext equ    $00d0          ; Write TEXT
+ut.wersy equ	$00ca	       ; Write an ERror to SYstem window
+ut.werms equ	$00cc	       ; Write an ERror MeSsage
+ut.wint  equ	$00ce	       ; Write an INTeger
+ut.wtext equ	$00d0	       ; Write TEXT
 
 ; General memory management
 
-mem.llst equ    $00d2          ; Link into LiST
-mem.rlst equ    $00d4          ; Remove from LiST
+mem.llst equ	$00d2	       ; Link into LiST
+mem.rlst equ	$00d4	       ; Remove from LiST
 
-mem.alhp equ    $00d8          ; ALlocate in HeaP
-mem.rehp equ    $00da          ; REturn to HeaP
+mem.alhp equ	$00d8	       ; ALlocate in HeaP
+mem.rehp equ	$00da	       ; REturn to HeaP
 
 ; Queue handling utilities
 
-ioq.setq equ    $00dc          ; SET up a Queue in standard form
-ioq.test equ    $00de          ; TEST a queue for pending byte / space available
-ioq.pbyt equ    $00e0          ; Put a BYTe into a queue
-ioq.gbyt equ    $00e2          ; Get a BYTe out of a queue
-ioq.seof equ    $00e4          ; Set EOF in queue
+ioq.setq equ	$00dc	       ; SET up a Queue in standard form
+ioq.test equ	$00de	       ; TEST a queue for pending byte / space available
+ioq.pbyt equ	$00e0	       ; Put a BYTe into a queue
+ioq.gbyt equ	$00e2	       ; Get a BYTe out of a queue
+ioq.seof equ	$00e4	       ; Set EOF in queue
 
 ; string utilities
 
-ut.cstr  equ    $00e6          ; Compare STRings
-utc.drct equ      0              ; direct comparison
-utc.ncas equ      1              ; no case significance
-utc.nmbr equ      2              ; evaluating numbers
-utc.ncnr equ      3              ; no case, numbers
+ut.cstr  equ	$00e6	       ; Compare STRings
+utc.drct equ	  0		 ; direct comparison
+utc.ncas equ	  1		 ; no case significance
+utc.nmbr equ	  2		 ; evaluating numbers
+utc.ncnr equ	  3		 ; no case, numbers
 
 ; Standard serial IO
 
-iou.ssq  equ    $00e8          ; Standard Serial Queue handling
-iou.ssio equ    $00ea          ; Standard Serial IO
+iou.ssq  equ	$00e8	       ; Standard Serial Queue handling
+iou.ssio equ	$00ea	       ; Standard Serial IO
 
 ; Conversions
 
-cv.datil equ    $00d6          ; DATE and time (6 words) to Integer Long
-cv.ildat equ    $00ec          ; Integer (Long) to DAte and Time string
-cv.ilday equ    $00ee          ; Integer (Long) to DAY string
-cv.fpdec equ    $00f0          ; Floating Point to ascii DECimal
-cv.iwdec equ    $00f2          ; integer (word) to ascii decimal
-cv.ibbin equ    $00f4          ; integer (byte) to ascii binary
-cv.iwbin equ    $00f6          ; integer (word) to ascii binary
-cv.ilbin equ    $00f8          ; integer (long) to ascii binary
-cv.ibhex equ    $00fa          ; integer (byte) to ascii hexadecimal
-cv.iwhex equ    $00fc          ; integer (word) to ascii hexadecimal
-cv.ilhex equ    $00fe          ; integer (long) to ascii hexadecimal
-cv.decfp equ    $0100          ; decimal to floating point
-cv.deciw equ    $0102          ; decimal to integer word
-cv.binib equ    $0104          ; binary ascii to integer (byte)
-cv.biniw equ    $0106          ; binary ascii to integer (word)
-cv.binil equ    $0108          ; binary ascii to integer (long)
-cv.hexib equ    $010a          ; hexadecimal ascii to integer (byte)
-cv.hexiw equ    $010c          ; hexadecimal ascii to integer (word)
-cv.hexil equ    $010e          ; hexadecimal ascii to integer (long)
+cv.datil equ	$00d6	       ; DATE and time (6 words) to Integer Long
+cv.ildat equ	$00ec	       ; Integer (Long) to DAte and Time string
+cv.ilday equ	$00ee	       ; Integer (Long) to DAY string
+cv.fpdec equ	$00f0	       ; Floating Point to ascii DECimal
+cv.iwdec equ	$00f2	       ; integer (word) to ascii decimal
+cv.ibbin equ	$00f4	       ; integer (byte) to ascii binary
+cv.iwbin equ	$00f6	       ; integer (word) to ascii binary
+cv.ilbin equ	$00f8	       ; integer (long) to ascii binary
+cv.ibhex equ	$00fa	       ; integer (byte) to ascii hexadecimal
+cv.iwhex equ	$00fc	       ; integer (word) to ascii hexadecimal
+cv.ilhex equ	$00fe	       ; integer (long) to ascii hexadecimal
+cv.decfp equ	$0100	       ; decimal to floating point
+cv.deciw equ	$0102	       ; decimal to integer word
+cv.binib equ	$0104	       ; binary ascii to integer (byte)
+cv.biniw equ	$0106	       ; binary ascii to integer (word)
+cv.binil equ	$0108	       ; binary ascii to integer (long)
+cv.hexib equ	$010a	       ; hexadecimal ascii to integer (byte)
+cv.hexiw equ	$010c	       ; hexadecimal ascii to integer (word)
+cv.hexil equ	$010e	       ; hexadecimal ascii to integer (long)
 
 ; SuperBASIC interpreter
 
-sb.inipr equ    $0110          ; INITialise PRocedure table
-sb.gtint equ    $0112          ; GeT INTeger
-sb.gtfp  equ    $0114          ; GeT Floating Point
-sb.gtstr equ    $0116          ; GeT STRing
-sb.gtlin equ    $0118          ; GeT Long INteger
-qa.resri equ    $011a          ; REServe RI stack
-sb.putp  equ    $0120          ; PUT Parameter
+sb.inipr equ	$0110	       ; INITialise PRocedure table
+sb.gtint equ	$0112	       ; GeT INTeger
+sb.gtfp  equ	$0114	       ; GeT Floating Point
+sb.gtstr equ	$0116	       ; GeT STRing
+sb.gtlin equ	$0118	       ; GeT Long INteger
+qa.resri equ	$011a	       ; REServe RI stack
+sb.putp  equ	$0120	       ; PUT Parameter
 
 ; Arithmetic
 
-qa.op    equ    $011c          ; QL Arithmetic OPeration
-qa.mop   equ    $011e          ; QL Arithmetic Multiple OPeration
+qa.op	 equ	$011c	       ; QL Arithmetic OPeration
+qa.mop	 equ	$011e	       ; QL Arithmetic Multiple OPeration
 
-qa.end   equ      $00          ; END of MOP
-qa.zero  equ      $01          ; push 0.00e00
-qa.nint  equ      $02          ; round fp to Nearest INTeger
-qa.one   equ      $03          ; push 1.00e00
-qa.int   equ      $04          ; truncate fp to INTeger
-qa.pushn equ      $05          ; push n.00e00
-qa.nlint equ      $06          ; round fp to Nearest Long INTeger
-qa.float equ      $08          ; FLOAT integer
-qa.fltli equ      $09          ; FLaT Long Integer
-qa.add   equ      $0a          ; ADD
-qa.sub   equ      $0c          ; SUBtract
-qa.halve equ      $0d          ; HALVE
-qa.mul   equ      $0e          ; MULtiply
-qa.dble  equ      $0f          ; DouBLE
-qa.div   equ      $10          ; DIVide
-qa.recip equ      $11          ; RECIProcal
-qa.abs   equ      $12          ; ABSolute value
-qa.roll  equ      $13          ; ROLL NNOS to TOS, TOS to NOS, NOS to NNOS
-qa.neg   equ      $14          ; NEGate
-qa.over  equ      $15          ; duplicate NOS OVER TOS
-qa.dup   equ      $16          ; DUPlicate TOS
-qa.swap  equ      $17          ; SWAP TOS, NOS
-qa.cos   equ      $18          ; COSine
-qa.sin   equ      $1a          ; SINe
-qa.tan   equ      $1c          ; TANgent
-qa.cot   equ      $1e          ; COTangent
-qa.asin  equ      $20          ; ArcSINe
-qa.acos  equ      $22          ; ArcCOSine
-qa.atan2 equ      $23          ; ArcTANgent x,y
-qa.atan  equ      $24          ; ArcTANgent
-qa.acot  equ      $26          ; ArcCOTangent
-qa.sqrt  equ      $28          ; SQuare RooT
-qa.sqare equ      $29          ; SQUARE
-qa.ln    equ      $2a          ; Log (Natural)
-qa.log10 equ      $2c          ; Log base 10
-qa.exp   equ      $2e          ; Exponential
-qa.pwrf  equ      $30          ; raise to PoWeR (Floating point)
-qa.pi    equ      $32          ; push PI
-qa.maxop equ      $32
+qa.end	 equ	  $00	       ; END of MOP
+qa.zero  equ	  $01	       ; push 0.00e00
+qa.nint  equ	  $02	       ; round fp to Nearest INTeger
+qa.one	 equ	  $03	       ; push 1.00e00
+qa.int	 equ	  $04	       ; truncate fp to INTeger
+qa.pushn equ	  $05	       ; push n.00e00
+qa.nlint equ	  $06	       ; round fp to Nearest Long INTeger
+qa.float equ	  $08	       ; FLOAT integer
+qa.fltli equ	  $09	       ; FLaT Long Integer
+qa.add	 equ	  $0a	       ; ADD
+qa.sub	 equ	  $0c	       ; SUBtract
+qa.halve equ	  $0d	       ; HALVE
+qa.mul	 equ	  $0e	       ; MULtiply
+qa.dble  equ	  $0f	       ; DouBLE
+qa.div	 equ	  $10	       ; DIVide
+qa.recip equ	  $11	       ; RECIProcal
+qa.abs	 equ	  $12	       ; ABSolute value
+qa.roll  equ	  $13	       ; ROLL NNOS to TOS, TOS to NOS, NOS to NNOS
+qa.neg	 equ	  $14	       ; NEGate
+qa.over  equ	  $15	       ; duplicate NOS OVER TOS
+qa.dup	 equ	  $16	       ; DUPlicate TOS
+qa.swap  equ	  $17	       ; SWAP TOS, NOS
+qa.cos	 equ	  $18	       ; COSine
+qa.sin	 equ	  $1a	       ; SINe
+qa.tan	 equ	  $1c	       ; TANgent
+qa.cot	 equ	  $1e	       ; COTangent
+qa.asin  equ	  $20	       ; ArcSINe
+qa.acos  equ	  $22	       ; ArcCOSine
+qa.atan2 equ	  $23	       ; ArcTANgent x,y
+qa.atan  equ	  $24	       ; ArcTANgent
+qa.acot  equ	  $26	       ; ArcCOTangent
+qa.sqrt  equ	  $28	       ; SQuare RooT
+qa.sqare equ	  $29	       ; SQUARE
+qa.ln	 equ	  $2a	       ; Log (Natural)
+qa.log10 equ	  $2c	       ; Log base 10
+qa.exp	 equ	  $2e	       ; Exponential
+qa.pwrf  equ	  $30	       ; raise to PoWeR (Floating point)
+qa.pi	 equ	  $32	       ; push PI
+qa.maxop equ	  $32
 
-qa.load  equ      $00          ; keys for load and store
-qa.stor  equ      $01
+qa.load  equ	  $00	       ; keys for load and store
+qa.stor  equ	  $01
 
-iou.dnam equ    $0122          ; decode Device NAMe
+iou.dnam equ	$0122	       ; decode Device NAMe
 
 ; from now on add $4000 to all
 
-md.read  equ    $0124          ; read a sector
-md.write equ    $0126          ; write a sector
-md.verif equ    $0128          ; verify a sector
-md.rdhdr equ    $012a          ; read sector header
+md.read  equ	$0124	       ; read a sector
+md.write equ	$0126	       ; write a sector
+md.verif equ	$0128	       ; verify a sector
+md.rdhdr equ	$012a	       ; read sector header
 
-sb.parse equ    $012c          ; parse (a2) points to table
-sb.graph equ    $012e          ; main syntax graph
-sb.expgr equ    $0130          ; expression graph
-sb.strip equ    $0132          ; strip spaces from tokenised line
-sb.paerr equ    $0134          ; parser error
-sb.ledit equ    $0136          ; edit line into pf (just line number deletes)
-sb.expnd equ    $0138          ; expand / print line(s) (+$4004 A4 points to PF)
-sb.paini equ    $013a          ; initialise parser
+sb.parse equ	$012c	       ; parse (a2) points to table
+sb.graph equ	$012e	       ; main syntax graph
+sb.expgr equ	$0130	       ; expression graph
+sb.strip equ	$0132	       ; strip spaces from tokenised line
+sb.paerr equ	$0134	       ; parser error
+sb.ledit equ	$0136	       ; edit line into pf (just line number deletes)
+sb.expnd equ	$0138	       ; expand / print line(s) (+$4004 A4 points to PF)
+sb.paini equ	$013a	       ; initialise parser
 
-ql_vtop  equ    $013c          ; top of QL vectors
-        list
+ql_vtop  equ	$013c	       ; top of QL vectors
+	list

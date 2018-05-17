@@ -38,7 +38,7 @@ sf1	clr.l	d5
 	lea	-8(a5),a3
 	move.w	sb.gtint,a2
 	jsr	(a2)			; get one int
-	move.w	(a6,a1.l),d5
+	move.w	(a6,a1.l),d5		;
 	addq.l	#2,sb_arthp(a6)
 	move.l	a3,a5
 	subq.l	#8,a3
@@ -73,7 +73,7 @@ soundfile
 	bne.s	sf_exit 		; ooops
 
 withbuff2
-	movem.l  a2/d5,-(a7)		    ; keep
+	movem.l  a2/d5,-(a7)		; keep
 	jsr	sss_setm(a2)		; set up multiple queue (A1 & A2 return)
 	move.l	a2,d2			; end of queue
 	movem.l  (a7)+,a2/d5
@@ -104,6 +104,7 @@ sf_err	clr.l	d6			; preset no error
 
 sf_out2 tst.w	d5			; do we repeat?
 	beq.s	close			; no
+	subq.w	#1,d5
 	moveq	#iof.posa,d0		; position file pointer
 	clr.l	d1			; ... to beginning of file
 	trap	#3			; ...  now

@@ -12,17 +12,17 @@
 ; 2.01	Length returned by sms.achp unadjusted.
 ;	Job priority byte only.
 ;
-; 2.02	First QXL Version
+; 2.02	First QXL Version.
 ;
-; 2.03	First Turbo compatible Version
+; 2.03	First Turbo compatible Version.
 ;
-; 2.04	Improved QXL screen update checks
+; 2.04	Improved QXL screen update checks.
 ;
-; 2.05	QXL NET device
+; 2.05	QXL NET device.
 ;
-; 2.06	QXL Floppy disk (re)format
+; 2.06	QXL Floppy disk (re)format.
 ;
-; 2.07	Fixes for communicaion loss, 800 pixel screen, date$
+; 2.07	Fixes for communicaion loss, 800 pixel screen, date$.
 ;
 ; 2.08	Completely rewritten QXL/PC comms.
 ;	Fixes for 600x800 pixel, CN.FTOD, printer.
@@ -31,9 +31,9 @@
 ;	INSTR is 5 chars long. Printer works in 8 bit slot.
 ;	CON newline is held pending even if cursor is enabled (QL ROM bug).
 ;
-; 2.10	Correction to screen update for VGA and SVGA
+; 2.10	Correction to screen update for VGA and SVGA.
 ;
-; 2.11	Experimental SBASIC
+; 2.11	Experimental SBASIC.
 ;
 ; 2.12	First test SBASIC version. Multi SBASIC.
 ;
@@ -53,13 +53,13 @@
 ;
 ; 2.19	German corrected.
 ;	INPUT substrings added.
-;	UT_GTxxx (CA_GTxxx) handles substring arrays
-;	Delete subdirectory corrected
+;	UT_GTxxx (CA_GTxxx) handles substring arrays.
+;	Delete subdirectory corrected.
 ;
-; 2.20	Atari HD floppy disks supported
-;	TRIG errors intercepted correctly
+; 2.20	Atari HD floppy disks supported.
+;	TRIG errors intercepted correctly.
 ;
-; 2.21	BASIC VARS in low memory, staging posts for vectors
+; 2.21	BASIC VARS in low memory, staging posts for vectors.
 ;	New functions and procedures completed.
 ;
 ; 2.22	A few errors corrected (including MAP overwrite).
@@ -68,7 +68,7 @@
 ;	HISTORY added.
 ;	QSAVE QLOAD etc. etc. (see V2.37)
 ;
-; 2.23	'Release' Version?
+; 2.23	'Release' Version?.
 ;	Turbo compatibility restored.
 ;	POKE_W accepts oversize numbers.
 ;	SBAS/QD Thing added.
@@ -78,7 +78,7 @@
 ;
 ; 2.25	SBASIC release version: from now on, ALL corrections will be recorded.
 ;	Fixes for DOS format make directory and delete;
-;		  null sub-strings of string arrays as parameters;
+;		  null sub-strings of string arrays as parameters.
 ;		  Assign string variable to integer.
 ;		  FOR and REP loops cleared.
 ;
@@ -130,14 +130,14 @@
 ;	SAVE PAR does not give a spurious error.
 ;	Procedure call mechanism compatible with Q_ERR_ON.
 ;
-; 2.31	Rework of defaulting strategy - fixes QLiberator channel #0 problems!
+; 2.31	Rework of defaulting strategy - fixes QLiberator channel #0 problems!.
 ;	INPUT (etc) a$	where a$ is an array element, clears a$ to spaces.
 ;	'12345678' (2 to 5) (2 to 3) now accepted.
 ;	Internal modification of check write protect: should be invisible.
 ;
 ; 2.32	SB.GTLIN corrected for string to long integer conversion.
 ;	EX basic program immunised against $4AFBs left behind by QLiberator.
-;	"Unset" variables now have name usage 0 (like SuperBASIC) -
+;	"Unset" variables now have name usage 0 (like SuperBASIC)
 ;		- RJOB etc. restored to old style.
 ;	SAVE (noname) after LOAD of a _sav file automatically adds _bas.
 ;
@@ -151,8 +151,8 @@
 ;	Hermes Baud corrected.
 ;	New QXL.EXE with serial comms improved for Duplex operation.
 ;
-; 2.35	MODE 8 open CON sets CSIZE 2,0 (not 0,1 as before!)
-;	NET Server does not screw up QXL interrupt server (as much!)
+; 2.35	MODE 8 open CON sets CSIZE 2,0 (not 0,1 as before!).
+;	NET Server does not screw up QXL interrupt server (as much!).
 ;	QXL Keyboard (and SER) made more immune to interrupt disabling.
 ;	QXL Keyboard status lights (sometimes) reflect internal QXL status.
 ;	DDOWN (etc) do not return silly error code.
@@ -186,8 +186,8 @@
 ;
 ; 2.40	ED - Extended delete back now works reliably across multiple lines.
 ;	   - Edit at bottom of window is now safe(r).
-;	First E version for QXL
-;	HOTKEY (and BT_HOTKEY) amended for HOT_CMD
+;	First E version for QXL.
+;	HOTKEY (and BT_HOTKEY) amended for HOT_CMD.
 ;	UT.CSTR corrected for cases 0 and 1 (QUBIDE).
 ;	FIX for SERMOUSE on GOLD Card.
 ;
@@ -197,7 +197,7 @@
 ;	TT set clock does not overwrite (a2).
 ;	Atari FLP cache handling corrected.
 ;
-; 2.42	Error message numbers -(n*128) give unknown error message
+; 2.42	Error message numbers -(n*128) give unknown error message.
 ;	WGET, WPUT, LGET, LPUT, HGET, HPUT added.
 ;	QVME pan top lhword of screen OK.
 ;	All module titles checked.
@@ -244,7 +244,7 @@
 ;	Atari format OK with odd FLP_TRACK.
 ;	Soft reset (CTRL ALT SHIFT TAB) repaired on TT (and fast RAM 030 cards).
 ;	STE / TT SER2 and SER4 reliablility improved (up to 120 kbaud Mega STE).
-;	Multiple ranges allowed in DLINE
+;	Multiple ranges allowed in DLINE.
 ;	All ROM addresses scanned on SuperGold Card.
 ;
 ; 2.50	"Gold" preserved at address $1000a for Falkenberg Disk interfaces.
@@ -280,7 +280,7 @@
 ;	IOB.EDLN on CON device does not give "buffer full" for single line edit.
 ;	LOOP variables not cleared, but recreated after "EDIT", "LRESPR" etc.
 ;	WMON, WTV do not set outline (but still move it if set) - use OUTLN.
-;	OUTLN (no params) outlines #0 to area occupied by job (window unchanged)
+;	OUTLN (no params) outlines #0 to area occupied by job (window unchanged).
 ;	IOW.OUTL with size=-1 outlines current hit area (window unchanged).
 ;	In place string array element assignement corrected (error since V2.29).
 ;
@@ -290,7 +290,7 @@
 ;	>256 kbyte files on >512 Mbyte disk scatter load corrected.
 ;
 ; 2.55	Atari D (49) KBD CTRL SHIFT 2 produces back arrow.
-;	Gold Card (GB) KBD CTRL SHIFT ~ produces $1e
+;	Gold Card (GB) KBD CTRL SHIFT ~ produces $1e.
 ;	QD5 Thing compiler error line number corrected.
 ;	EOF renamed EOFW (waits for data / end of file).
 ;	EOF (SuperBASIC compatible) does not wait, may miss end of file.
@@ -299,8 +299,8 @@
 ;	Yet another attempt at Super GOLD Card plug in initialisation.
 ;	More delay in SuperGold card serial output.
 ;
-; 2.56	GOLD card: the "more delay" in 2.55 corrected
-;	Cache suppressed time increased to 5 ticks
+; 2.56	GOLD card: the "more delay" in 2.55 corrected.
+;	Cache suppressed time increased to 5 ticks.
 ;
 ; 2.57	Cursor positioning clears pending newline even if position impossible.
 ;	    So - pending line cleared on INPUT even if line empty.
@@ -310,7 +310,7 @@
 ;	CALL LRESPR tidied up to improve QREF output.
 ;	SB_QLIBR set in all SBASIC daughter jobs ('$$external' compatibility).
 ;	Integer FOR range overflow fixed.
-;	DATE, DATE$, DAY$, SDATE all accept 0 (current), 1 (date), 5 or 6 pars
+;	DATE, DATE$, DAY$, SDATE all accept 0 (current), 1 (date), 5 or 6 pars.
 ;	Out of memory handling changed in SBASIC.
 ;	SBASIC recursion beyond about 4000 levels is no longer a problem.
 ;
@@ -322,7 +322,7 @@
 ;	Atari HDOP for BEEP does not smash A1.
 ;	INPUT clears cursor on break.
 ;	BREAK is checked on SBASIC procedure call.
-;	Error message on incomplete define (and posibly incomplete if)
+;	Error message on incomplete define (and posibly incomplete if).
 ;	GOSUB Expression fixed.
 ;	QWA format (WIN) truncate returns d0 = 0 if no sectors released.
 ;	QWA format checks update / random number on disk change.
@@ -331,7 +331,7 @@
 ;	CMD$ set up as string so that CMD$(n) can be accessed.
 ;	l = st$(0) equivalent to l = LEN(st$) for string variables.
 ;	Allocate memory in heap rejects negative values.
-;	WMAN V1.49 more the 4096 rows / columns (maybe)
+;	WMAN V1.49 more the 4096 rows / columns (maybe).
 ;	IO retries work even if there is only one channel.
 ;	Re-organised QXL setup and communications - may cause problems.
 ;
@@ -347,7 +347,7 @@
 ;
 ; 2.64	Completely re-designed QXL - PC coms.
 ;
-; 2.65	QXL Mode 8 and disp_update>1 fixed (horrible 80x86 instruction set!)
+; 2.65	QXL Mode 8 and disp_update>1 fixed (horrible 80x86 instruction set!).
 ;
 ; 2.66	More wait in PC for QXL.
 ;	a=b%*c% fixed where a>32768.
@@ -374,8 +374,8 @@
 ;	DEVTYPE does not return "end of file" if file at end of file.
 ;	An ADD.W changed to ADD.L in EX.
 ;	Name length checked on rename.
-;	Format flp3_1 on QXL does not format WIN1!
-;	Pointer event 6 is now "pointer off screen" (actually on edge of screen)
+;	Format flp3_1 on QXL does not format WIN1!.
+;	Pointer event 6 is now "pointer off screen" (actually on edge of screen).
 ;	(TEST) Job events introduced (sms.sevt sms.wevt SEND_EVENT WAIT_EVENT).
 ;	(TEST) Job event vector mapped to bits 31-24 of pointer event.
 ;	ED if last line has syntax error, scroll is safe (does ESC!).
@@ -384,9 +384,9 @@
 ;	Reliability problems with off screen event (V2.71) fixed.
 ;	IOB.SMUL calls on odd byte boundary do no cause problem for history.
 ;
-; 2.73	SER_CDEOF corrected for SCC ports (Atari Mega STE / TT)
-;	Set date corrected on QXL (it is still one second wrong on some PCs)
-;	38400, 76800, 83333, 125000 and 153600 baud rates available on Atari
+; 2.73	SER_CDEOF corrected for SCC ports (Atari Mega STE / TT).
+;	Set date corrected on QXL (it is still one second wrong on some PCs).
+;	38400, 76800, 83333, 125000 and 153600 baud rates available on Atari,
 ;	    Mega STE and TT SER2.
 ;	ASCI error recovery improved. Auto detection of removable (CONFIG).
 ;	SCSI auto detection of removeable (IBM drives!!).
@@ -398,12 +398,12 @@
 ;	Handling access faults on PEEK and POKE improved
 ;	Name length check in DIR etc.
 ;	G not accepted as hex digit.
-;	sb.putp OK on zero length string!
+;	sb.putp OK on zero length string!.
 ;
 ; 2.74	Atari auto partition check on boot faster if there is no ASCI target 0.
 ;	Window size checks corrected.
 ;	Overflow handling on i%+J%<0 improved.
-;	Cursor limited to even x positions in mode 8
+;	Cursor limited to even x positions in mode 8.
 ;
 ; 2.75	Gold card. Rubbish character transmit on SER close fixed.
 ;		   This problem could also have caused spurious overwrites.
@@ -412,7 +412,7 @@
 ;
 ; 2.76	Pointer positioning iop.sptr improved - problem since 2.71.
 ;	QXL Auto speed detect for network.
-;	Data cache cleared on privilege violation (MC68030 problem)
+;	Data cache cleared on privilege violation (MC68030 problem).
 ;	Automatic scroll on CSIZE direction corrected.
 ;
 ; 2.77	Iofp.off flag implemented in iof.posa (direct sector).
@@ -423,7 +423,7 @@
 ;	Trap #2, ioa.cnam implemented for channel name.
 ;	ioa.cnam implemented in HISTORY, PIPE and SER/PAR/PRT.
 ;	QXL auto speed detect for network.
-;	Make_dir of file xxx__ or xxx___ does not create recursive directories
+;	Make_dir of file xxx__ or xxx___ does not create recursive directories.
 ;	Timeout on ACSI bus recovery corrected.
 ;
 ; 2.78	Job functions (JOB$,  NXJOB etc.) do not access address if bad job id.
@@ -445,7 +445,7 @@
 ; 2.81	WMAN 1.52 job event handling (better).
 ;	GET string into string array does not smash SBASIC data area.
 ;
-; 2.82	Send event only reschedules if the target job has issued a wait event
+; 2.82	Send event only reschedules if the target job has issued a wait event.
 ;	for the event and has a higher priority.
 ;	All trap #1s initialised, even the dummy at the end.
 ;
@@ -453,7 +453,7 @@
 ;	PTR 1.70 pointer events not eliminated when pointer is out of window.
 ;	Gold card initialisation trace permanently incorporated.
 ;	SuperGOLD card 12H/24H clock code modified.
-;	Trap init bug corrected (original bug, could have strange effects)
+;	Trap init bug corrected (original bug, could have strange effects).
 ;
 ; 2.84	PTR 1.71 RPTR presets sub window number etc., to -1.
 ;	Aurora max line table corrected.
@@ -480,7 +480,7 @@
 ;	French keyboard driver (with "normal" number keys) for SuperHermes (UK).
 ;	Aurora monitor detect corrected.
 ;
-; 2.89	Ptr V1.72 Job events handled even if pointer is invisible
+; 2.89	Ptr V1.72 Job events handled even if pointer is invisible.
 ;	Offscreen event (actually edge of screen) only gives out of window
 ;	   if the job is interested in offscreen events.
 ;	Thing use can be called from supervisor mode.
@@ -499,24 +499,24 @@
 ;	In-line defines can have an explicit end define (V2.89).
 ;	Thing use does not smash D3 before TH_USE call (V2.89).
 ;	Dragging the dursor with wake speed 0 does not lock up.
-;	Atari wait for HDD ready abandoned (test cmd crashes some disks)
+;	Atari wait for HDD ready abandoned (test cmd crashes some disks).
 ;
 ; 2.91	Assign to slice of string array repaired (damaged in 2.89).
 ;	Selective suppression of active keystrokes.
 ;	Euro symbol added to fount.
 ;
-; 2.92	First Q40 version
+; 2.92	First Q40 version.
 ;	Revised pointer scheduler routine.
 ;
-; 2.93	Q40 border width truncated to byte
-;	Q40 stipples 1 and 3 reversed
+; 2.93	Q40 border width truncated to byte.
+;	Q40 stipples 1 and 3 reversed.
 ;	V2.92 Q40 changes for floppy disk driver carried into other versions.
-;	DV3 length check on direct sector read / write
-;	Events not thrown away by calls to WM.RPTR within WM.RTPR (eg WM.CHWIN)
+;	DV3 length check on direct sector read / write.
+;	Events not thrown away by calls to WM.RPTR within WM.RTPR (eg WM.CHWIN).
 ;	PIPE open channel ID xxxx0004 not confused with directory (I hope).
 ;
-; 2.94	First extended colour version
-;	Hit not thrown away by certain button event routines (QPAC2).
+; 2.94	First extended colour version.
+;	Hit not thrown away by certain button event routines (QPAC2)
 ;	  - bug introduced in V2.93 when trying to fix Job events.
 ;	FP FOR loop rounding corrected for end point >= 256 x step.
 ;	IDE drives format fixes for spurious bad sectors.
@@ -526,37 +526,37 @@
 ;	IDE and PC floppy disk timeouts measured during init.
 ;	Select on expression compiler bug fixed.
 ;
-; 2.95	Length of negative integer to string conversion fixed!!!
+; 2.95	Length of negative integer to string conversion fixed!!!.
 ;	GD2 - Spurious D0 return from pan/scroll by zero fixed.
 ;	GD2 - Pan with stippled paper fixed for extended colours.
 ;	Another job / pointer event fix fix.
 ;	SSSS free queue length corrected.
 ;
-;    a	Q40 translation for instructions > 16 MB corrected / removed
+;    a	Q40 translation for instructions > 16 MB corrected / removed.
 ;
-;    b	Q40 DISP_SIZE checks > 512x256 not >= 512x256 for large screen
-;	Q40 More rigourous initialisation (does not assume reset)
+;    b	Q40 DISP_SIZE checks > 512x256 not >= 512x256 for large screen.
+;	Q40 More rigourous initialisation (does not assume reset).
 ;
-;    c	Q40 DISP_SIZE size check not lost on QL => 16 bit change
-;	Q40 sms.dmod sets d2 = 0
-;	Q40 ROM reset vector restored
-;	Q40 transparent translation set for ROM
-;	>4Gb drive truncation corrected
+;    c	Q40 DISP_SIZE size check not lost on QL => 16 bit change.
+;	Q40 sms.dmod sets d2 = 0.
+;	Q40 ROM reset vector restored.
+;	Q40 transparent translation set for ROM .
+;	>4Gb drive truncation corrected.
 ;	When reformatting a partition that has changed size and the new
 ;	    format has fewer allocation sectors and the new number of
 ;	    allocation sectors is odd, the free space linked list is now
 ;	    correctly terminated.
 ;
 ;    e	Q40/60 FPU/MMU detection corrected.
-;	Q40 COM interrupts not masked on Q40 motherboard!
-;	Q40 LPT interrupts masked in MultiIOchip and interrupt scanner
+;	Q40 COM interrupts not masked on Q40 motherboard!.
+;	Q40 LPT interrupts masked in MultiIOchip and interrupt scanner.
 ;	Q40 Machine/Processor transferred to system variables.
 ;	Q40 serial mouse re-enabled after mouse buffer full.
 ;	Q40/QXL Insert key coded as Shift Space (was CTRL F6).
 ;	GD2 modified to set $18063!
 ;
-; 2.96	First Atari ST/TT GD2 version
-;	Length of negative integer to string conversion fixed again
+; 2.96	First Atari ST/TT GD2 version.
+;	Length of negative integer to string conversion fixed again.
 ;	Consolidated Q40 V2.95 test versions a to e.
 ;	Atari select drive 1/2 for stopping drive corrected (error since 2.93).
 ;	Single sided formatting restored.
@@ -565,10 +565,10 @@
 ;
 ; 2.97	IBM keyboard / keypad / keyrow / tables updated.
 ;	Atari diskette format density selection corrected (bug since 2.93).
-;	Gold Card Test version
+;	Gold Card Test version.
 ;
 ; 2.98	Q40 (and other SPP common drivers) channel name for ser H/I corrected.
-;	Q40 ... SER_FLOW corrected
+;	Q40 ... SER_FLOW corrected.
 ;	Push unnormalised FP corrected.
 ;	Revised init - soft RESET / hard keyboard RESET for all versions.
 ;
@@ -628,8 +628,8 @@
 ; 3.03	WM_BLOCK prodecure fixed (GG & MK).
 ;	Some bugfixes for SER PAR PRT ports (MK)
 ;	PRT_USE$ used wrong offset - fixed (wl).
-;	Cursor move if one-line wdw fixed (delete still a problem) and added...
-;	...configurable key to enter line into stuffer buffer (wl).
+;	Cursor move if one-line wdw fixed (delete still a problem) and added
+;	  ...configurable key to enter line into stuffer buffer (wl).
 ;	PARNAM$ and PARSTR$ fixed (wl).
 ;	EXTRAS lists all keywords, not only those it thinks are not in ROM (MK).
 ;	new Cachemode module for the Qx0 (FD, based on code donated by Mark Swift).
@@ -645,21 +645,21 @@
 ;	Spp open clears CD inactive count (MK).
 ;	Better 3d border handling (MK).
 ;
-; 3.06	The "Quit" keyword takes an optional parameter (long int) that is...
-;	...passed to the calling job (eg return_code=FEW(your_program)) (PJW).
-;	Q40 flp density is preset to High (1.44 MB disks). If you want to...
-;	...format other density disks, set the density to D or E. (wl).
+; 3.06	The "Quit" keyword takes an optional parameter (long int) that is
+;	   passed to the calling job (eg return_code=FEW(your_program)) (PJW).
+;	Q40 flp density is preset to High (1.44 MB disks). If you want to
+;	  format other density disks, set the density to D or E. (wl).
 ;	Sprites (of 6x10 size) may be used as cursor (wl).
 ;
 ; 3.07	New keyword EX_M use like EX, but the job created is owned by the calling
 ;	job (wl).
-;	Q40 flp density is REALLY preset to High (1.44 MB disks). If you want to...
-;	...format other density disks, set the density to D or E. (wl).
+;	Q40 flp density is REALLY preset to High (1.44 MB disks). If you want to
+;	  format other density disks, set the density to D or E. (wl).
 ;	QXL version allows you to determine which PC drive is win1_ etc... (BC).
 ;	QPC SMSQ/E sampled sound system (SSSS) support (MK).
 ;	QPC small fix in FORMAT of removeable WIN drives (MK).
 ;
-; 3.08	QPC intername version only : new basic commands (PAR_DEFAULTPRINTER$, SER_GET
+; 3.08	QPC internal version only : new basic commands (PAR_DEFAULTPRINTER$, SER_GET.
 ;
 ; 3.09	HOT_GETSTUFF$ added (MK).
 ;	Qx0 code is ROMmable again (wl).
@@ -670,7 +670,7 @@
 ;	Outline move spurious outline problem fixed (wl).
 ;
 ; 3.10	Bugfixes: lower right corner of high colour shadows fixed (MK).
-;	Wrong errror return of wm.jbpla fixed (MK)
+;	Wrong errror return of wm.jbpla fixed (MK).
 ;	Double 3D border type fixed (MK).
 ;	Wrong error sprite return fixed (wl).
 ;	Sprite clipping at window borders implemented (MK).
@@ -748,7 +748,7 @@
 ; 3.22	Added FEX_M keyword (PJW).
 ;	Better edge detection when moving window (wl).
 ;	Atari mono mode works again (wl).
-;	SMSQmulator ieee float ops added  (wl).
+;	SMSQmulator ieee float ops added (wl).
 ;	SMSQmulator removed debug code during initialisation (wl).
 ;
 ; 3.23	DMEDIUM_DENSITY returns -1 if ramdisk, ...NAME$ returns correct name (wl).
@@ -768,7 +768,12 @@
 ;	New SBasic keyword ALPHA_BLEND to set the alpha blending weight (MK).
 ;
 ; 3.27	Max string array size is 32766, not 32767 (wl).
+;
+; 3.28	index of string_length +1 in string slicing before the TO no longer accepted (MK).
+;	FSEND_EVENT function added (wl).
+;	SMSQmulator : JVA_VER$ etc added, better stipple handling, copy QL screen (wl).
+;
 
-smsq_vers equ	 '3.27'
+smsq_vers equ	 '3.28'
 
 	end

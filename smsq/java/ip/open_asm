@@ -1,5 +1,6 @@
-; Open IP	   V1.00				 2004	Marcel Kilgus
-; 1.01 adapted for java wl
+; Open IP	   V1.01				 2004	Marcel Kilgus
+; 1.02 adapted for smsqmulator (wl)
+
 	section ip
 
 	xdef	ip_open
@@ -11,71 +12,57 @@
 	include 'dev8_smsq_java_ip_data'
 	include 'dev8_keys_java'
 
-ip_open
-	movem.l d3/a0,-(sp)
-	move.l	#$dfdfdfdf,d0
-	move.w	(a0)+,d2
-	and.l	(a0)+,d0
-	cmp.l	tcp_name,d0
-	beq.s	ipo_found
-	cmp.l	udp_name,d0
-	beq.s	ipo_found
-	cmp.l	sck_name,d0
-	beq.s	ipo_sck
-	moveq	#err.fdnf,d0
-	bra.s	ipo_exit
+tregs	reg	d3/d7/a0    ; if you change this also change the code at
+			    ; ipo_set and in java, both rely on a0 being at 8(a7)
 
 tcp_name dc.b	'TCP_'
 udp_name dc.b	'UDP_'
 sck_name dc.b	'SCK_'
-
+     
+ip_open
+	movem.l tregs,-(sp)
+	move.l	#$dfdfdfdf,d7
+	and.l	2(a0),d7
+	cmp.l	sck_name,d7		; is it a socket?
+	bne.s	ipo_open		; no, try to open
 ipo_sck
 	cmp.l	#4,d3			; is a channel id in d3?
-	bls.s	ipo_found		; ... probably not
+	bls.s	ipo_open		; ... probably not
 
+; here this is an "accept" call, d3 is not an open key but contains
+; the channel ID of a previously opened channel ("open" for SCK channels only)
 	movem.l d7/a0/a3,-(sp)
 	moveq	#0,d0
 	move.l	d3,a0			; check channel ID
-	jsr	io_ckchn
+	jsr	io_ckchn		; on return A0 = channel address
 	tst.l	d0
 	bmi.s	ipo_ipar
 	cmp.l	#chn.id,chn_id(a0)	; really IP channel?
 	bne.s	ipo_ipar		; ... no
-	move.l	chn_data(a0),d3 	; data address for that channel
+	move.l	chn_data(a0),d3 	; (negative) key in java map for that socket
 	movem.l (sp)+,d7/a0/a3
 
-ipo_found
+ipo_open
+	moveq	#jt9.opn,d0
+	dc.w	jva.trp9		; open channel now, D7 = key returned
+	bne.s	ipo_exit		; oops, couldn't open
 
 	moveq	#chn_end,d1
-	move.w	mem.achp,a2
-	jsr	(a2)
-	bne.s	ipo_exit
-
-	move.l	#chn.id,chn_id(a0)
-	move.l	a0,a2
-	moveq	#jt9.opn,d0
-	dc.w	jva.trp9
-	tst.l	d0
-	bne.s	ipo_error
-
-	move.l	a0,chn_data(a2)
-	move.l	a2,4(sp)
+	move.w	mem.achp,a0		; get memory for channel block
+	jsr	(a0)
+	bne.s	ipo_exit		; oops	(leaves useless socket in map)
+					; but this isn't going to happen often!
+	move.l	#chn.id,chn_id(a0)	; say that this is one of my devices
+	move.l	d7,chn_data(a0) 	; put negative key into channel block
+ipo_set move.l	a0,8(sp)		; replace A0...
 
 ipo_exit
-	movem.l (sp)+,d3/a0
+	movem.l (sp)+,tregs		; ... now
 	rts
 
-ipo_ipar
+ipo_ipar				; bad channel ID on "accept" call.
 	movem.l (sp)+,d7/a0/a3
 	moveq	#err.ipar,d0
-	bra.s	ipo_exit
-
-ipo_error
-	move.l	d0,-(sp)
-	move.l	a2,a0
-	move.w	mem.rchp,a2		; error, release CDB
-	jsr	(a2)
-	move.l	(sp)+,d0
 	bra.s	ipo_exit
 
 	end
