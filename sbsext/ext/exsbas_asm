@@ -1,13 +1,14 @@
 * EX, EW and ET V2.00	 1984 Sinclair Research and Tony Tebby  QJUMP
 *			 1994 Tony Tebby SBASIC compatible version
 *
-; 2002-11-10	 2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
-
+; 2003-11-10	2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
+* 2004-05-15	2.02	Added ex_m (wl)
 	section exten
 *
 	xdef	etsb
 	xdef	ewsb
 	xdef	exsb
+	xdef	emsb
 
 	xdef	fetsb
 	xdef	fewsb
@@ -62,6 +63,10 @@ fewsb
 	move.l	d0,d1		 no, return program's error code
 	bra.l	ut_rtfd1
 *
+
+emsb	clr.w	-(sp)		no waiting
+	moveq	#-1,d0		job owned by me
+	bra.s	ex_ew_et
 etsb
 	move.w	#1,-(sp)	flag to prevent activation
 	bra.s	ex_et

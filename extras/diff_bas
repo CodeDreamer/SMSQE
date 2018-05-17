@@ -5,7 +5,7 @@
 140   read_data_to_exclude
 145   REMark old device first, device with new, changed files second
 150   do_diffs 'dev6_','dev8_'
-160 REMark  zip_it "dev8_"
+160   zip_it "dev8_"
 170 END DEFine p
 180 :
 190 DEFine PROCedure do_diffs(old_device$,new_version$)

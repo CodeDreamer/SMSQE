@@ -647,8 +647,14 @@
 ;	Q40 flp density is preset to High (1.44 MB disks). If you want to...
 ;	...format other density disks, set the density to D or E. (wl)
 ;	Sprites (of 6x10 size) may be used as cursor (wl)
+;
+; 3.07	New keyword EX_M use like EX, but the job created is owned by the calling
+;	job
+;	Q40 flp density is REALLY preset to High (1.44 MB disks). If you want to...
+;	...format other density disks, set the density to D or E. (wl)
+;	QXL version allows you to determine which PC drive is win1_ etc...
 
-smsq_vers equ	 '3.06'
+smsq_vers equ	 '3.07'
 
 
 

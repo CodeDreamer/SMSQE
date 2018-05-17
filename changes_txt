@@ -2,6 +2,26 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
+3.07
+    QXL - CONFIGURABLE DRIVES FOR WIN1 TO 8. THE FILENAME REMAINS
+    "QXL.WIN" BUT DRIVE LETTERS CAN BE ANY DOS DRIVE YOU CARE (BC)
+	smsq_qxl_host_asm		1.01	use config items for drive letters
+	smsq_qxl_QXL2_EXE			this is the new "PC" file, changes below
+	PC side source code:
+	QXL_DATA.ASM			1.01	changes to suit
+	QXL.INC 			1.01	same
+	QXL2.ASM			1.01	same
+	QXL_PHYS.ASM			1.01	same
+
+    MISC
+	sbsext_ext_exsbas_asm		2.02	added EX_M (wl)
+	smsq_sbas_procs_tk2procs_asm	2.06	ditto
+
+    BUGFIXES
+	dv3_q40_fd_init_asm		3.02	Q40 floppy density is REALLY preset to 2 (wl)
+						(see 3.06) damn, a 1 byte change
+						and I still got it wrong!
+-----------------------------------------------------------------------------
 3.06
 
     USE SPRITE AS CURSOR (wl)
@@ -452,6 +472,7 @@ Version   changed			of file   changes made
 
 keys:
 
+BC = Bruno Coativy
 FD = Fabrizio Diversi
 PD = Phoebus Dokos
 GG = George Gwilt

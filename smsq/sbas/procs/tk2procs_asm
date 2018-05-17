@@ -3,6 +3,7 @@
 ; 2002-11-10	2.03	Added functions FET, FEX, FEW	(pjw)
 ; 2003-02-11	2.04	Added function EXF (wl)
 ; 2004-04-02	2.05	Added keywords CURSPRON,CURSPROFF,CURSPRLOAD,SYSSPRLOAD (wl)
+; 2004-05-15	2.06	Added keyword EX_M (wl)
 
 	section procs
 
@@ -63,6 +64,7 @@ sb_tk2procs
 	proc_def EX,exsb	 ; program execution
 	proc_def EW,ewsb
 	proc_def ET,etsb
+	proc_def EX_M,emsb
 	proc_def OPEN		 ; channel open/close
 	proc_def OPEN_IN
 	proc_def OPEN_NEW

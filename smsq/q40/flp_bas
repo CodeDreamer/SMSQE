@@ -25,7 +25,7 @@
 350 ex4b$='dev8_smsq_q40_driver_16'
 360 ex4w$='dev8_smsq_smsq_wman'
 370 ex5$='dev8_smsq_q40_sysspr'
-375 ex6$=rep$&'smsq_q40_cachemode'
+375 ex6$='dev8_smsq_q40_cachemode'
 380 ex9$='dev8_smsq_smsq_hotkey'
 390 IF 'c' INSTR cmd$ = 0
 400   IF 'q' INSTR cmd$ = 0: qm$ = nl$

@@ -19,6 +19,22 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+======
+ 3.07
+======
+
+There is a new keyword:
+EX_M: This behaves a bit like EX in that the calling job continues executing
+(like EX and contray to EW) but the job created is owned by the calling job
+(like EW). This means that if you get rid of the calling job, you will also get
+rid of the created job(s).
+
+A treat for QXL owners: Thanks to Bruno COATIVY, you can now configure whether
+what dos drive letters (C:, D: etc) corresponds to win1_, win2_ etc...
+Just configure the new SMSQE.EXE file, under the "Host" section.
+
+The Q40 flp density workaround in v. 3.06 now works. This is a 1 byte change
+in 1 source file, and I still managed to get it wrong!
 
 
 ======
@@ -37,8 +53,7 @@ disks you must set the density to D or E.
 Sprites (of 6x10 size) may be used as cursor. See the documentation in
 dev8_extras_new_cursor_txt
 
-Attempt to have Gold Card Miracle hard disks working again
-
+Attempt to have Gold Card Miracle hard disks working again.
 
 
 
