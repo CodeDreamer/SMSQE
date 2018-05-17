@@ -759,8 +759,10 @@
 ;	Recent thing implemented (wl).
 ;	JVA_SCRUPDT & JVA_MBAR_STATUS for SMSQmulator (wl).
 ;	cosmetic changes for smsqeweb (pjw)
+;
+; 3.25	Fixed crash for slightly overlapping windows (MK).
 
-smsq_vers equ	 '3.24'
+smsq_vers equ	 '3.25'
 
 
 	end

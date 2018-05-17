@@ -1,7 +1,8 @@
-; Background graphics I/O code	v1.01			2005 Marcel Kilgus
+; Background graphics I/O code	v1.02			2016 Marcel Kilgus
 ;
 ; 2005-11-17  1.00  Initial release (MK)
 ; 2006-03-22  1.01  Additional checks for QDOS PE variant (MK)
+; 2016-03-31  1.02  Fixed crash for slightly overlapping windows (MK)
 
 	section driver
 
@@ -529,7 +530,8 @@ pca_pwloop
 	beq.s	pca_copy		; yes, copy area now
 
 ; okay, some window is up in Z order from ours
-	bsr	pt_tstov		; overlapping? (uses sd_xouts!)
+;;;	   bsr	   pt_tstov		   ; overlapping? (uses sd_xouts!)
+	bsr	pt_tstov_hit		; we're slicing hit, so check ov there
 	bne.s	pca_pwloop		; ...no
 
 ;;;	   movem.l sd_xouts(a0),d3/d4	   ; d3=size, d4=origin
@@ -659,6 +661,37 @@ ptst_lim
 	ble.s	ptst_rts		; it's greater, so no overlap
 	cmp.w	d5,d1			; and compare with xmin
 ptst_rts
+	rts
+
+;+++
+; This is a copy of pt_tstov, but it uses sd_xhit instead of sd_xout
+;---
+pt_tstov_hit
+	bsr.s	chk_lim 		; check the x limits
+	ble.s	not_ovs 		; no overlap
+	addq.l	#2,a0			; point to window's y co-ordinates
+	bsr.s	chk_lim 		; check those
+	subq.l	#2,a0			; get cdb back again
+	ble.s	not_over
+	moveq	#0,d0			; flag overlap
+	bra.s	exit			; and exit
+not_ovs
+	swap	d1
+	swap	d2
+not_over
+	moveq	#-1,d0			; flag no overlap
+exit
+	rts
+
+chk_lim
+	swap	d1
+	swap	d2
+	move.w	sd_xhito(a0),d0
+	cmp.w	d0,d1			; compare window xmin with xmax
+	ble.s	ex_chk			; it's greater, so no overlap
+	add.w	sd_xhits(a0),d0 	; get window xmax
+	cmp.w	d2,d0			; and compare with xmin
+ex_chk
 	rts
 
 	end

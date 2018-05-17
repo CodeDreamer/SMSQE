@@ -4,8 +4,18 @@ Version   changed			of file   changes made
 
 -----------------------------------------------------------------------------
 
-3.24
+3.25
 
+    BACKGROUND IO BUGFIX (mk)
+	iod_con2_ptr_bgio_asm		1.02	Fixed crash for slightly overlapping windows (MK)
+
+    MISC
+	Make				1.26	wrong window size fixed
+	boot				1.00	boots straight into smsqemake
+-----------------------------------------------------------------------------
+
+3.24
+       
     RECENT THING
 	smsq_ioa_opfl_asm		2.02	calls the recent thing on channel open
 	keys_sys			.	new system variable sys_rthg

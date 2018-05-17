@@ -1,8 +1,8 @@
 100 REMark $$asmb=dev8_extras_source_outptr_bin,0,10
 110 REMark $$asmb=dev1_booty_Qlib_ext,0,12
-120 title$='MAKE v1.25'
+120 title$='MAKE v1.26'
 130 IF JOB$(-1)<>''
-140   msgch=FOPEN('con_100x100a0x240'): INK #msgch,7
+140   msgch=FOPEN('con_100x100a0x40'): INK #msgch,7
 150   mainch=FOPEN('nul')
 160   OUTLN#msgch,512,42,0,28
 170   REMark $$heap=4096
@@ -471,7 +471,7 @@
 4800   plog 'Assembling '&asm$&" "&listf$&" "&rel$&listo$
 4810   my_err=EXEPF_W('QMac',#mainch;asm$&' '&listf$&' '&rel$&listo$)
 4820   IF my_err=-7
-4830      rem plog 'QMac thing not found'&CHR$(10)
+4830      REMark plog 'QMac thing not found'&CHR$(10)
 4840      EW prg$&'Mac',#mainch;asm$&' '&listf$&' '&rel$&listo$
 4850      my_err=Q_ERR
 4860   END IF
