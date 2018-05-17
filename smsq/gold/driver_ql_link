@@ -5,6 +5,7 @@ section base      ; base area for any extension or program
 section version   ; version messages
 
 section driver
+section kbd
 section sprite
 section blob
 

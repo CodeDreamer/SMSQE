@@ -440,7 +440,7 @@
 4490   ex9$='dev8_smsq_smsq_hotkey'
 4500   ex10$='dev8_smsq_gold_roms'
 4510   nl$='dev8_sys_boot_null'
-4520   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3b$,ex3q$,ex3w$,ex3sh$,ex4$,ex5$,ex6$,ex9$,ex10$,ex8$,ex1$, 'dev8_SMSQ_Aurora_SMSQE'
+4520   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3b$,ex3q$,ex3w$,ex3sh$,ex4$,ex5$,ex6$,ex9$,ex10$,ex1$, 'dev8_SMSQ_Aurora_SMSQE'
 4530 END DEFine aurora_target
 4540 :
 4550 DEFine PROCedure qx0_target
@@ -1390,16 +1390,16 @@
 13990     DATA lxs,lys,4+xesp*1,2,0,0,move$,sprite+retr,move_sprite
 14000     DATA lxs,lys,4+xesp*2,2,0,0,size$,sprite+retn,size_sprite
 14010     DATA lxs,lys,xsize%-2-xesp*1,2,0,0,sleep$,sprite+retr,zzz_sprite
-14020     DATA lxs,lys,xsize%-2-xesp*2,2,0,0,'A',sous1+retn,"All"
+14020     DATA lxs,lys,xsize%-2-xesp*2,2,0,0,'A',text+retn,"All"
 14030     DATA lxs,lys,xsize%-2-xesp*3,2,0,0,'O',sous1+retn,"OK"
 14040     DATA 6*6,lys-2,titre_x+30,3,0,0   ,'D',text+retn,rep$
 14050     DATA 8*6,lys,8,inf1y+2,0,0,        'G',sous1+retn,"Generic"
 14060     DATA 8*6,lys,8+temp%,inf1y+2,0,0,  'T',sous2+retn,"Atari"
-14070     DATA 8*6,lys,8+temp%*2,inf1y+2,0,0,'L',sous2-2+retn,"GoldCard"
+14070     DATA 8*6,lys,8+temp%*2,inf1y+2,0,0,'G',sous1+retn,"GoldCard"
 14080     DATA 8*6,lys,8+temp%*3,inf1y+2,0,0,'Q',sous1+retn,"Q40/Q60"
 14090     DATA 8*6,lys,8+temp%*4,inf1y+2,0,0,'X',sous2+retn,"QXL"
 14100     DATA 8*6,lys,8+temp%*5,inf1y+2,0,0,'R',sous2+retn-2,"Aurora"
-14110     DATA 8*6,lys,8+temp%*6,inf1y+2,0,0,'M',sous1+retn,"Make"
+14110     DATA 8*6,lys,8+temp%*6,inf1y+2,0,0,'M',sous2+retn,"Make"
 14120 :
 14130   REMark now info wdw objects - here only one, the title
 14140   REMark make the title data: calculate size and x position of this object

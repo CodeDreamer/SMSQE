@@ -1,7 +1,9 @@
-* Pointer scheduler loop routine  V1.12    1985  Tony Tebby	   QJUMP
+* Pointer scheduler loop routine  V1.13    1985  Tony Tebby	   QJUMP
 *					   1986  Jonathan Oakley  QJUMP
+*					   2006  Marcel Kilgus
 *
 * 2005-11-08  1.12  Free a0 for use in pt_sadd, call bg-refresh (MK)
+* 2006-05-15  1.13  New CTRL+C behaviour (MK)
 *
 	section driver
 *
@@ -32,14 +34,29 @@
 *
 *
 pt_sched
-	tst.l	pt_head(a3)		  ; any windows at all?
+	tst.l	pt_head(a3)		; any windows at all?
 	beq.l	pts_rts
 
-	jsr	pt_bgrefresh
+	jsr	pt_bgrefresh		; refresh buried windows if necessary
+
+	tst.w	pt_swwin(a3)
+	bmi.s	pts_checkswitch 	; -ve if old behaviour is wanted
+	moveq	#7,d1			; keyrow with left CTRL key
+	jsr	kbd_keyrow
+	moveq	#%00000010,d6		; left CTRL key
+	and.b	d1,d6
+	moveq	#8,d1			; keyrow with right CTRL key
+	jsr	kbd_keyrow
+	andi.b	#%00000001,d1		; right CTRL key
+	or.b	d6,d1
+	bne.s	pts_checkswitch 	; ... one of them is still pressed
+
+	clr.w	pt_swwin(a3)		; start new window cycle on next switch
 *
 *	Check to see if there has been a Ctrl-C recently: if there
 *	was, then we'll have SYS_CKYQ pointing to dummy queue 1
 *
+pts_checkswitch
 	move.l	pt_dumq1(a3),a1 	; point to dummy queue 1
 	cmp.l	sys_ckyq(a6),a1 	; is dummy 1 current?
 	bne.s	pts_chkp		; no, check pointer
@@ -47,15 +64,38 @@ pt_sched
 ;;	  ble.s   pts_pkbt		  ; no, just pick bottom
 ;;	  move.b  #pt.supcc,pt_pstat(a3)  ; make visible some time in future
 ;;pts_pkbt
-	move.l	pt_tail(a3),a0		; point to...
+
+	move.w	pt_swwin(a3),d1
+	bmi.s	pts_tradctrlc		; -ve if old behaviour is wanted
+
+; new CTRL+C code: pick windows from top to bottom until CTRL is released
+	move.l	pt_head(a3),a0
+pts_swloop
+	move.l	(a0),d0 		; next in pile
+	beq.s	pts_tradctrlc		; no more, keep picking bottommost
+	move.l	d0,a0
+	btst	#sd..botm,sd_behav-sd_prwlt(a0)   ; $$$ wallpaper?
+	bne.s	pts_swloop		; ... yes, skip over it
+	subq.w	#1,d1
+	bcc.s	pts_swloop
+
+	addq.w	#1,pt_swwin(a3)
+	bra.s	pts_switch
+
+; traditional CTRL+C code: pick lowest window in pile
+pts_tradctrlc
+	move.l	pt_tail(a3),a0		; end of pile, pick lowest window
 	btst	#sd..botm,sd_behav-sd_prwlb(a0)   ; $$$ wallpaper?
 	beq.s	pts_cdbbot		; ... no
 	move.l	(a0),a0
 pts_cdbbot
-	lea	-sd_prwlb(a0),a0	; ...cdb of bottom window
-	bsr.l	pts_pkdo		; pick bottom
-	jmp	pt_cptr(pc)		; and centre pointer in it
+	addq.l	#sd_prwlt-sd_prwlb,a0	; now in top-down list
+pts_switch
+	lea	-sd_prwlt(a0),a0	; ...cdb of window
+	bsr.l	pts_pkdo		; pick it
+	jmp	pt_cptr(pc)		; and center pointer in it
 	page
+
 pts_shift dc.b	0,0,0,0,0,1,1,2,2,3,3	; speed 10(not official) to 0
 pts_accbt dc.b	0,0,1,2,4,2,4,2,4,2,4
 *

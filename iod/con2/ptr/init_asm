@@ -1,14 +1,17 @@
-* Pointer version of console initialisation code  V2.04    1991   Tony Tebby
+* Pointer version of console initialisation code  V2.05    1991   Tony Tebby
 *
 * 2003-03-01  2.01  Added call to system sprite initialisation (MK)
 * 2003-03-04  2.02  Initialises pixel aspect ratio (MK)
 * 2004-03-29  2.03  Call sprite cursor job table initialisation (wl)
 * 2005-11-16  2.04  Call background I/O initialisation (MK)
+* 2006-05-15  2.05  Enable background I/O according to SMSQ/E configuration (MK)
+*		    Enable new or old CTRL+C behaviour according to config (MK)
 
 	xdef	pt_init
 *
 	xref	pt_bginit
 	xref	pt_bgprocs
+	xref	pt_bgctl
 	xref	pt_installv
 	xref	pt_isspr
 	xref	curs_init
@@ -22,6 +25,8 @@
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_con'
 	include 'dev8_mac_proc'
+	include 'dev8_smsq_smsq_base_keys'
+	include 'dev8_smsq_smsq_config_keys'
 
 	section init
 
@@ -122,7 +127,17 @@ pti_alloc
 	jsr	(a5)			; set up queue
 	move.l	a4,(a2) 		; and link to dummy 1
 
+	move.b	sms.conf+sms_ctrlc,d1	; 0 = old, 1 = new behaviour
+	sne	d1			; 0/$FF
+	ext.w	d1			; 0/$FFFF
+	not.w	d1			; $FFFF/0
+	move.w	d1,pt_swwin(a3) 	; $FFFF = old behaviour
+
 	jsr	pt_bginit		; init background I/O data
+	moveq	#0,d1
+	moveq	#0,d2
+	move.b	sms.conf+sms_bgio,d1
+	jsr	pt_bgctl		; enable bg I/O if configured to do so
 
 	jsr	pt_isspr		; set up system sprite table
 

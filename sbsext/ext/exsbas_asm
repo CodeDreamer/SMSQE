@@ -3,8 +3,9 @@
 *
 ; 2003-11-10	2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
 * 2004-05-15	2.02	Added ex_m (wl)
-* 2005-01-25	2.03	added call to Home thing (wl)
-* 2005-11-17	2.04	if A1 absolute, use supervisor mode when calling home thing
+* 2005-01-25	2.03	Added call to Home thing (wl)
+* 2005-11-17	2.04	If A1 absolute, use supervisor mode when calling home thing
+* 2006-03-27	2.05	Use system specific execution delay (MK)
 
 	section exten
 *
@@ -34,6 +35,7 @@
 	xref	uxt_bopt
 
 	xref	gu_shome
+	xref	gu_exdelay
 
 *
 	include 'dev8_keys_sbasic'
@@ -185,8 +187,7 @@ ex_err.3
 	sub.w	d2,a1		backspace to start
 	moveq	#err.ipar,d0	... assume it will error
 	subq.b	#1,5(a6,a1.l)	is it executable?
-;!!	   bne.s   ex_close	   ... no
-	bne	ex_close	... no
+	bne.s	ex_close	... no
 	move.l	6(a6,a1.l),d0	data space
 	move.l	(a6,a1.l),d2	length of file
 	sub.l	a1,a1		start at start
@@ -259,8 +260,7 @@ ex_sbload
 	moveq	#ioa.sown,d0
 	trap	#2		set channel owned by job
 
- ;;	  bsr.s   prog_sbst	  set start address
-	bsr	prog_sbst	set start address
+	bsr.s	prog_sbst	set start address
 	move.l	d0,a0
 	move.l	(a0)+,(a1)+	bra.s; 0000
 	move.l	(a0)+,(a1)+	00004afb
@@ -401,16 +401,18 @@ ex_act_top
 	tst.w	d7		ew?
 	bne.s	ex_exit_ok	... yes, do not pause
 *
-	moveq	#25,d3		suspend for .5 of a second, to give job a chance
-	bsr.s	ex_proc
-	sub.b	#$30,d0 	030?
-	blt.s	ex_susp
-	beq.s	ex_susp30
-	moveq	#3,d3
-	bra.s	ex_susp
-ex_susp30
-	moveq	#5,d3
-ex_susp
+;;;	   moveq   #25,d3	   suspend for .5 of a second, to give job a chance
+;;;	   bsr.s   ex_proc
+;;;	   sub.b   #$30,d0	   030?
+;;;	   blt.s   ex_susp
+;;;	   beq.s   ex_susp30
+;;;	   moveq   #3,d3
+;;;	   bra.s   ex_susp
+;;;ex_susp30
+;;;	   moveq   #5,d3
+;;;ex_susp
+	jsr	gu_exdelay	; get system specific execution delay
+	move.l	d0,d3
 	moveq	#sms.ssjb,d0	suspend
 	moveq	#myself,d1	myself
 	sub.l	a1,a1		no flag
@@ -426,12 +428,12 @@ ex_exit 			; pjw
 	add.w	#ex_frame,sp	remove local variables
 	rts
 
-ex_proc
-	moveq	#sms.xtop,d0
-	trap	#1
-	moveq	#70,d0
-	add.b	sys_ptyp(a6),d0
-	rts
+;;;ex_proc
+;;;	   moveq   #sms.xtop,d0
+;;;	   trap    #1
+;;;	   moveq   #70,d0	; Is the 7 here by mistake? Doesn't make sense
+;;;	   add.b   sys_ptyp(a6),d0
+;;;	   rts
 
 ex_bp
 	moveq	#err.ipar,d0

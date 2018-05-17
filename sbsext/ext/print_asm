@@ -1,5 +1,7 @@
-; PRINT / INPUT / WIDTH       V2.00      1990	Tony Tebby   QJUMP
+; PRINT / INPUT / WIDTH       V2.01      1990	Tony Tebby   QJUMP
 ;
+; 2006-04-02  2.01  INPUT returns buffer overlow for compiled programs (MK)
+
 	section exten
 
 	xdef	print
@@ -164,6 +166,8 @@ pr_inpdo
 	tst.b	d7		 ; console (print permitted)?
 	bpl.s	pr_rts2 	 ; ... no, give up
 	move.l	a1,sb_buffp(a6)  ; set pointer
+	cmpi.l	#sb.flag,sb_flag(a6) ; interpreted BASIC?		     MK
+	bne.s	pr_bffl 	 ; ... no, don't try to resize the buffer!   MK
 	move.l	d2,d1		 ; space required
 	jsr	ut_chkbf	 ; allocate
 	bra.s	pr_inpl
@@ -175,6 +179,11 @@ pr_curd
 	move.l	(sp)+,d0
 pr_rts2
 	rts
+
+pr_bffl
+	bsr.s	pr_inpok	 ; do return what we've got so far           MK
+	moveq	#err.bffl,d0	 ; and re-issue error condition 	     MK
+	rts								     MK
 
 pr_inpok
 	sub.l	sb_buffb(a6),a1  ; total length of item

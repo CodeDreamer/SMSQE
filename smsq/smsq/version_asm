@@ -695,7 +695,24 @@
 ;	New commands PEEK_F, PEEKS_F, POKE_F, POKES_F (MK).
 ;	Tries to release a Drive Definition Block if drive table is full (MK).
 ;	JOBID added (PW).
+;
+; 3.13	One-line SELect no longer crashes on multiple expressions (MK).
+;	Function()(x) no longer gives wrong char if x = last char index (MK).
+;	If necessary, INPUT returns buffer overlow for compiled programs (MK).
+;	Fixed swapped CTRL+SHIFT+Y and CTRL+SHIFT+Z on German keyboard (MK).
+;	Fixed return value for sliced strings (MK).
+;	Enable QPC numlock. Provide entry to set numlock for QPC (MK).
+;	Shadow drawing bug (introduced in 3.10) fixed for Aurora (MK).
+;	New system variable sys_xdly (delay after executing a job in 1/50s) (MK).
+;	All inbuilt job executions respect sys_xdly (MK).
+;	QPC initialises sys_xdly with 5 (MK).
+;	New CTRL+C behaviour introduced, uses least-recently-used job order (MK).
+;	New CTRL+C behaviour made configurable in QPC (MK).
+;	Background I/O made configurable in QPC (MK).
+;	Correct length set in home dir if simple device (wl).
+;	New keywords YEAR%, MONTH%, DAY% and WEEKDAY% (MK).
+;	QA.OP/QA.MOP load/store fixed for op-codes below $80 (MK).
 
-smsq_vers equ	 '3.12'
+smsq_vers equ	 '3.13'
 
 	end

@@ -21,6 +21,27 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+
+======
+ 3.13
+======
+
+Several bugfixes.
+
+For QXL users, the keyboard LEDs should work now.
+QPC Numlock should work now.
+New CTRL+C behaviour - instead of poppoing up the last jobs on the window
+stack, it'll pop up the least recently used job.
+
+Background IO made configurable.
+New keywords (functions) YEAR%, MONTH% DAY%, and WEEKDAY%
+DAY%,MONTH% and YEAR% return the day/month/year of a certain date (same
+parameters as for DATE$)
+WEEKDAY% returns the day of the week  (Monday = 1, tuesday = 2 etc) (same parameters as for DATE$)
+
+Faster job execution.
+
+
 ======
  3.12
 ======

@@ -1,8 +1,8 @@
-; Procedure to execute programs    V2.02     1988   Tony Tebby   QJUMP
+; Procedure to execute programs    V2.03     1988   Tony Tebby   QJUMP
 ;
 ; 2003-01-18  2.01  added function fep	   pjwitte 2oo3
 ; 2003-03-11  2.02  Fixed launching of files, bug introduced in 2.01 (MK)
-
+; 2006-03-27  2.03  Use system specific exec delay (MK)
 
 	section hotkey
 
@@ -19,6 +19,7 @@
 					 
 	xref	gu_achp0
 	xref	gu_rchp
+	xref	gu_exdelay
 	xref	gu_pause
 
 	xref	ut_rtfd1		 ; return float
@@ -65,7 +66,8 @@ ex_do
 ex_pause
 	jsr	hot_thfr		 ; free
 	bne.s	ex_rchp 		 ; oops
-	moveq	#25,d0			 ; half a second
+;	 moveq	 #25,d0 		  ; half a second
+	jsr	gu_exdelay		 ; get system specific delay
 	jsr	gu_pause		 ; ... pause
 
 ex_rchp

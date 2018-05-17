@@ -1,6 +1,7 @@
-; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.03	 1992	Tony Tebby
+; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.04	 1992	Tony Tebby
 ;
 ; 2005-12-10  2.03  Added POKE_F, PEEK_F (MK)
+; 2006-06-28  2.04  Added YEAR%, MONTH%, DAY%, WEEKDAY%
 
 	section procs
 
@@ -183,6 +184,10 @@ sb_procs
 	proc_def DAY$
 	proc_def DATE
 	proc_def DATE$
+	proc_def YEAR%,year
+	proc_def MONTH%,month
+	proc_def DAY%,day
+	proc_def WEEKDAY%,weekday
 	proc_def FILL$
 	proc_def VER$
 

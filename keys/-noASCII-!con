@@ -193,6 +193,7 @@ pt_sstb  equ	$146   ; long  pointer to system sprite table
 pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
 pt_vecs  equ	$150   ; long  pointer to block with vectored routines
 pt_cjob  equ	$154   ; long  pointer to cursor sprite job table
+pt_swwin equ	$158   ; word  current window no in pile during CTRL+C switch
 pt_spszy equ	$15a   ; word  pointer sprite save area y size
 pt_bgdat equ	$15c   ; long  pointer to memory for background I/O data
 pt_end	 equ	$160   ; length of pointer linkage block

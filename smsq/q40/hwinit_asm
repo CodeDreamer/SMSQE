@@ -1,3 +1,11 @@
+; This version allows assembly by GWASS and Qmac
+; DEV7 must point to either the GWAS macros or the Qmac macros as appropriate
+; The changes to make this work for Q40 as well as v3.10 are marked **** NEW
+; and start at hwi_ram_over. There two imstructions and a label.
+
+; You will also note a slight change at hwinit
+
+
 ; SMSQ Q40 Hardware Initialisation V3
 ; Called with A7 a valid, safe stack
 ; The caches are invalidated
@@ -16,6 +24,8 @@
 * 2003-09-27	v. 2.00 (?)	added OSPS config item
 * 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
 * 2005-11-12	V. 2.02 	better cache handling (TG)
+
+
 	section hwinit
 
 	xdef	sms_wbase
@@ -35,6 +45,7 @@
 	include 'dev8_mac_config02'
 	include 'dev8_mac_assert'
 	include 'dev8_mac_creg'
+	include 'dev8_mac_switch'
 
 header_base
 	dc.l	hwinit_base-header_base  ; length of header
@@ -53,21 +64,24 @@ hwinit_name
 
 
 qcf_cx
-qcf_mmu 	dc.b	 -1	 ; 00
-qcf_par 	dc.b	 0	 ;
-qcf_ser1	dc.b	 0	 ; 02
-qcf_ser2	dc.b	 0	 ;
-qcf_bflp	dc.b	 1	 ; 04
-qcf_bwin	dc.b	 1	 ;
-qcf_lang	dc.w	 44	 ; 06
-qcf_targ	dc.b	 0	 ; 08
-qcf_part	dc.b	 0	 ;
-qcf_issize	dc.b	 0	 ; 0a
-qcf_ismode	dc.b	 1	 ;
-qcf_fill	ds.b	 14	 ; 0c ... 19
-qcf_mlan	dc.w	 44	 ; 1a
-qcf_kstuf	dc.b	250	 ; 1c
-qcf_curs	dc.b	1	 ; 1d
+qcf_mmu 	dc.b	 -1	; 00
+qcf_par 	dc.b	 0	;
+qcf_ser1	dc.b	 0	; 02
+qcf_ser2	dc.b	 0	;
+qcf_bflp	dc.b	 1	; 04
+qcf_bwin	dc.b	 1	;
+qcf_lang	dc.w	 44	; 06
+qcf_targ	dc.b	 0	; 08
+qcf_part	dc.b	 0	;
+qcf_issize	dc.b	 0	; 0a
+qcf_ismode	dc.b	 1	;
+qcf_fill	ds.b	 14	; 0c ... 19
+qcf_mlan	dc.w	 44	; 1a
+qcf_kstuf	dc.b	250	; 1c
+qcf_curs	dc.b	1	; 1d
+qcf_ctrc	dc.b	0	; 1e
+qcf_bgio	dc.b	0	; 1f
+
 
 	xref.l	smsq_vers
 	mkcfhead {SMSQ},{smsq_vers}
@@ -89,9 +103,18 @@ qcf_curs	dc.b	1	 ; 1d
 	mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
        {Stuffer buffer key for edit line calls},0,$ff
 
-	mkcfitem 'OSPC',code,'C',qcf_curs,,,\
+noyes  mkcfitem 'OSPC',code,'C',qcf_curs,,,\
        {Use sprite for cursor?} \
 	0,N,{No},1,Y,{Yes}
+
+
+	mkcfitem 'OSPB',code,'B',qcf_bgio,,,\
+       {Enable CON background I/O},.noyes
+
+
+	mkcfitem 'OSPD',code,'S',qcf_ctrc,,,\
+       {Use new CTRL+C switch behaviour},.noyes
+
 
 	mkcfend
 	ds.w	0
@@ -125,11 +148,14 @@ hwinit_hreset				; special hard reset entry
 
 hwinit					; soft reset
 	moveq	#0,d0			; disable caches
+	pcreg	vbr			; a better way than the "official"!!
 	pcreg	cacr
+
+	genif	.ass_type = 0
 	cpusha				; then push and invalidate
 ;
-	move.l	d0,a0
-	dc.w	$4E7B,$8801		; movec a0,vbr : re-init VBR to 0
+;	 move.l  d0,a0
+;	 dc.w	 $4E7B,$8801		 ; movec a0,vbr : re-init VBR to 0
 ;
 	tst.l	d7			; RAM set?
 	bne.s	hwi_peri		; ... yes, do not do TTRs
@@ -141,6 +167,22 @@ hwinit					; soft reset
 ;	dtt1	#$00ffe000		; set DTT1 for all cached write through
 
 ; NB the tranparent translation is changed is the MMU is set
+
+	endgen
+
+	genif	.ass_type = 1
+	cpusha	bc			; then push and invalidate
+
+	tst.l	d7
+	bne	hwi_peri
+
+ screg	      itt0,#$00ffe000		; set ITT0 for all cached write through
+ screg	      itt1,#$00000000		; disable ITT1
+ screg	      dtt0,#$ff00e040		; set DTT0 for top 16M serialised
+ screg	      dtt1,#$00ffe020		; set DTT1 for all cached copyback
+
+	endgen
+
 
 hwi_peri
 	st	q40_ebr 		; reset extension bus
@@ -214,6 +256,9 @@ hwi_ram_check
 
 hwi_ram_over
 	jsr	q40_prtype		; determine processor type (d6)
+	btst	#25,d6			; Q40? . .  **** NEW
+	beq	hwi_q40 		; . . yes   **** NEW
+
 
 ; 2.02
 	move.w	sr,d2			; save current state (supervisor/user mode)
@@ -233,6 +278,7 @@ not_buggy
 	moveq	#0,d0
 
 ; end 2.02
+hwi_q40 				; **** NEW
 
 	move.b	qcf_mmu,d0		; set up MMU?
 	beq.s	hwi_setRAM
@@ -286,7 +332,7 @@ mmu.cpmode equ	%11+%11000+%0100000	; resident + used and modified + copyback
 
 hwi_mmuset
 	lea	mmu.ptr(a4),a1
-	move.l	#$04000000+mmu.cpmode,a0; 64 Mbyte limit
+	move.l	#$04000000+mmu.cpmode,a0 ; 64 Mbyte limit
 	move.w	#$04000000/$2000-1,d0	; 8k pages (8k entries)
 hwim_pgloop
 	sub.w	#$2000,a0
@@ -307,7 +353,9 @@ hwim_rtloop
 	move.l	a0,-(a4)
 	dbra	d0,hwim_rtloop
 
-	dc.w	$F518 ;pflusha		; invalid ATC
+	genif	.ass_type = 0
+
+	dc.w	$F518			; pflusha ; invalid ATC
 	screg	urp,a4
 	screg	srp,a4
 	screg	tc,#$c000		; enable MMU
@@ -316,6 +364,22 @@ hwim_rtloop
 	itt1   #$00000000		; set ITT1 for none
 	dtt0   #$ff00e040		; set DTT0 for top 16M serialised
 	dtt1   #$fe00e020		; set DTT0 for screen cached copyback
+
+	endgen
+
+	genif	.ass_type = 1
+
+	pflusha
+	screg	urp,a4
+	screg	srp,a4
+	screg	tc,#$c000		; enable MMU
+
+	screg  itt0,#$fe00e000		; set ITT0
+	screg  itt1,#$00000000		; set ITT1
+	screg  dtt0,#$ff00e040		; set DTT0
+	screg  dtt1,#$fe00e020		; set DTT0
+
+	endgen
 
 	rts
 

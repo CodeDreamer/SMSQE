@@ -32,7 +32,7 @@ section utils     ; SuperBASIC extension utilities
 
 input   dev8_smsq_qxl_driver_most_rel
 library dev8_smsq_kbd_initi_rel
-library dev8_smsq_kbd_poll_rel
+library dev8_smsq_qxl_kbd_poll_rel
 library dev8_smsq_kbd_ibm_tables_rel
 library dev8_smsq_smsq_reset_rel
 library dev8_smsq_smsq_lang_kbd_sett_rel
@@ -43,6 +43,14 @@ library dev8_smsq_qxl_spp_par_rel
 library dev8_smsq_qxl_spp_ser_rel
 library dev8_smsq_qxl_spp_smess_rel
 library dev8_smsq_qxl_comm_messadd_rel
+
+library dev8_smsq_qxl_comm_messpr_rel
+library dev8_iod_con2_qxl_disp_clear_rel
+library dev8_iod_con2_qxl_xmode_rel
+library dev8_smsq_kbd_ibm_pc84x_rel
+library dev8_smsq_qxl_comm_blat_rel
+library dev8_smsq_qxl_spp_rxser_rel
+
 library dev8_smsq_spp_lib
 library dev8_smsq_hwt_lib
 library dev8_smsq_qxl_mouse_rel

@@ -9,11 +9,79 @@ Version   changed			of file   changes made
 	smsq_sbas_ictrl_asm		1.01	One-line SELect no longer crashes on multiple expressions (MK)
 	smsq_home_current_asm		1.03	correct length set if simple device name (wl)
 	smsq_sbas_iexpr_asm		1.01	function()(x)	(!!!!) no longer gives wrong char if x = last char index (MK)
+	sbsext_ut_gtnam_asm		0.60	Fixed return value for sliced strings (MK)
+	sbsext_ext_print_asm		2.01	If necessary, INPUT returns buffer overlow for compiled programs (MK)
+	smsq_kbd_ibm_german_asm 	1.01	Fixed swapped CTRL+SHIFT+Y and CTRL+SHIFT+Z (MK)
+	dev8_smsq_kbd_ibm_pc84x_asm	1.01	Enable numlock. Provide entry to set numlock for QPC  (MK)
+	iod_con2_aur8_shad_asm		1.02	Shadow drawing bug (introduced in 1.01) fixed (MK)
 
-    ADDITIONS FOR QDOS PE
-	iod_con2_ptr_bgio_asm		1.01	Additional checks for QDOS PE variant (MK)
-	iod_con2_ptr_wremv_asm		1.05	Restore dddb before pt_fillsv. JS rom could smash a3 (MK)
 
+    FASTER PROGRAM EXECUTION BY SMALLER BUILT-IN EXECUTION DELAY (MK)
+	util_gut_exdelay_asm		1.00	Get system specific execution delay   V1.00
+	util_gut_cctx			-	amended to suit
+	keys_sys			-	added sys_xdly	:  suspend delay after executing another job (3.13)
+	ee_hot_exep_asm 		2.03	Use system specific execution delay
+	ee_hxt_doex_asm 		2.01	(same)
+	sbsext_ext_exsbas_asm		2.05	(same)
+
+
+    NEW CTRL+C BEHAVIOUR (MK)
+	keys_con			-	added pt_swwin (pt_swwin: $158 - current window no in pile during CTRL+C switch)
+	iod_con2_ptr_init_asm		2.05	Enable background I/O according to SMSQ/E configuration, enable new or old CTRL+C behaviour according to config (MK)
+	iod_con2_ptr_sched_asm		1.13	New CTRL+C behaviour
+	iod_con2_ptr_version_asm	-	amended to suit
+	smsq_smsq_config_keys		-	added keys for background IO & new CTRL + C behaviour
+	smsq_q40_hwinit_asm		2.03	added new config items for BGIO & CTRL + C
+
+
+    ADDITIONS FOR QDOS PE (MK)
+	iod_con2_ptr_bgio_asm		1.01	Additional checks for QDOS PE variant
+	iod_con2_ptr_wremv_asm		1.05	Restore dddb before pt_fillsv. JS rom could smash a3
+
+
+    QXL: BUGFIXES AND WORKING KEYBOARD LEDs - needs at least a 386 (BC)
+	qxl_blod.asm			1.02	data segment moved to data.asm file
+	qxl_qxl2.asm			1.03	needs at least a 386 (BC), new sources added, LED working
+	qxl.inc 			-	amended to suit
+	qxl_main.asm			1.01	update LED
+	qxl_rest.asm			1.01	uses 32 bits transfer
+	qxl_comm.asm			1.01	uses 32 bits transfer
+	qxl_rtc.asm			1.01	uses 32 bits transfer
+	qxl_mse.asm			1.02	bugfix
+	qxl_flow.asm			1.01	uses 32 bits transfer
+	qxl_comp.asm			1.01	various bugfixes
+	qxl_phys.asm			1.01	uses 32 bits transfer
+	qxl_vmod.asm			1.02	uses 32 bits transfer
+	qxl_KBD.asm			1.02	uses 32 bits transfer,"turn off typematic" function suppressed , optimised
+	qxl_buff.asm			1.01	buffer test added
+	qxl_data.asm			1.01	uses standard segmentation directives, kbd_lick added,	BOOTLOADED data added,uninitialized data moved to qxl_bss.asm
+	qxl_bss.asm			1.00	new
+	qxl_led_asm			1.00	new
+
+	smsq_qxl_comm_scrcopy_asm	1.01	bugfix for correct copy loop
+	smsq_qxl_comm_messpr_asm	1.02	added led updates, creates qmp_kbd_llck & uses it
+	smsq_qxl_kbd_poll_asm		1.02	this is split off the general smsq_kbd_poll_asm, to allow QXL to use keyboard leds
+	smsq_qxl_driver_most_link	-	updated to suit
+
+
+
+
+
+    ADDITIONAL SBASIC KEYWORDS FOR DATE CALCULAIONS (MK)
+	sbsext_ext_date_asm		2.01	added YEAR%, MONTH%, DAY% and WEEKDAY%
+	smsq_sbas_procs_procs_asm	2.04	added keyword names for above
+
+    MISC
+	smsq_gold_driver_ql_link	-	added kbd section (mk)
+	smsq_qa_op_asm			2.02	Fixed load/store for addresses below $80 (MK)
+
+	sbsext_ext_q60_colr_asm 	-	deleted, use as normal colr_asm
+	sbsext_ext_q60_cct		-	deleted
+	sbsext_ext_q60_CACHEMODES_asm	-	deleted (wasn't used since 3.09)
+	smsq_sbas_procs_procs_q60_asm	-	deleted
+	smsq_sbas_procs_procs_q60_linl	-	deleted
+
+	SMSQEMAKE			-	adds home target to aurora, remodels Qx0 targets
 -----------------------------------------------------------------------------
 3.12
 

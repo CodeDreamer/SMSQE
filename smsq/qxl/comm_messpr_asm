@@ -1,11 +1,13 @@
 ; SMS (QXL) Message Processing		  1998 Tony Tebby
 ; 2005.01.10	1.01	added QXL restart (BC)
-
+; 2006.10.01	1.02	added led updates, creates qmp_kbd_llck & uses it (BC)
 
 	section comm
 
 	xdef	qxl_mess_pr
 	xdef	qxl_mess_prnext
+
+	xdef	qmp_updt_led
 
 	xref	spp_rxser
 	xref	cv_dtmrt
@@ -21,6 +23,8 @@
 	include 'dev8_keys_sys'
 	include 'dev8_keys_con'
 	include 'dev8_mac_assert'
+
+qmp.reg reg d0/d1/a1-a3
 
  xref	blatt
 blat macro blv
@@ -44,6 +48,7 @@ blatl macro blv
 ;---
 qxl_mess_pr
 	move.l	qxl_pcqx_mess,a4	 ; messages received
+
 qxl_mess_prnext
 qmp_loop
 	moveq	#0,d0
@@ -154,11 +159,42 @@ qmp_vmack
 	move.l	sys_clnk(a6),a3 		; console linkage
 	move.b	pt_dmode(a3),d1
 	jsr	pt_xmode
+	lea	qmp_kbd_llck(pc),a2
+	st	(a2)				; force led update at restart
+	bsr.s	qmp_updt_led
 	sf	(a5)				; QXL restart finished
 	bra	qmp_loop
 
+;+++
+; This routine sends the qxm.flowqx message when a led update is needed
+;
+;	a6 c  p system variable base
+;
+;---
+qmp_updt_led
+	movem.l qmp.reg,-(sp)
+	move.w	sys_caps(a6),d0 		; read sys_caps...
+	move.b	sys_dfrz(a6),d0 		; ...and sys_dfrz
+	rol.w	#1,d0
+	and.b	#$03,d0
+	lea	qmp_kbd_llck(pc),a2
+	cmp.b	(a2),d0 			; status change?
+	beq.s	qmp_updt_led_exit		; no
+	move.b	d0,(a2) 			; save current status
+	move.l	qxl_message,a3
+	lea	qxl_ms_flow+qxl_ms_len(a3),a1
+	move.l	#qxm.flowlen<<16+qxm.flowqx<<8,(a1)	; ... msg length and key
+	move.b	d0,qxm_fkbd-qxl_ms_len(a1)
+
+qmp_updt_led_exit
+	movem.l (sp)+,qmp.reg
+	rts
+
+qmp_kbd_llck
+	dc.b	$00				; last kbd lock status
+
 qmp_qrt_flg
-	dc.w	$0000
+	dc.b	$00
 
 qmp_rstrt
 	addq.l	#4,a4				; next message

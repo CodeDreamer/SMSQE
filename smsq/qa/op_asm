@@ -1,4 +1,6 @@
-; QL Arithmetic (Rel A6) Operations    V2.01   1990  Tony Tebby  QJUMP
+; QL Arithmetic (Rel A6) Operations    V2.02   1990  Tony Tebby  QJUMP
+;
+; 2006-10-04  2.02  Fixed load/store for addresses below $80 (MK)
 
 	section qa
 
@@ -81,21 +83,22 @@ qr_op
 ;	status return standard
 ;---
 qa_op
-	ext.w	d0
-	cmp.w	#qa.maxop,d0		 ; operation?
+	cmpi.b	#qa.maxop,d0		 ; operation?
 	bhi.s	qao_ldst		 ; ... no
+	ext.w	d0
 	add.w	d0,d0
 	add.w	qao_tab(pc,d0.w),d0
 	jmp	qao_tab(pc,d0.w)	 ; ... do it
 
 qao_ldst
+	ori.w	#$ff00,d0		 ; always negative
 	bclr	#0,d0			 ; load or store
 	beq.s	qao_load
 	move.w	(a1)+,(a4,d0.w)
 	move.l	(a1)+,2(a4,d0.w)	 ; store
 	bra.s	qao_ok
 qao_load
-	move.l	2(a4,d0.w),-(a1)	  ; load
+	move.l	2(a4,d0.w),-(a1)	 ; load
 	move.w	(a4,d0.w),-(a1)
 qao_ok
 	moveq	#0,d0

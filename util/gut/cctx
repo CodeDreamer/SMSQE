@@ -62,3 +62,4 @@ dev8_util_gut_sbyte_rel
 dev8_util_gut_iowp_rel
 dev8_util_gut_trap3_rel
 dev8_util_gut_iow_rel
+dev8_util_gut_exdelay_rel

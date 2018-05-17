@@ -1,7 +1,8 @@
 ; IOD_CON2_AUR8_SHAD_ASM - Mode 16 shadow routine V1.01  2002	Marcel Kilgus
-; Base on original QL mode routine by Tony Tebby.
+; Based on original QL mode routine by Tony Tebby.
 ;
 ; 2005-04-07  1.01  Does not put shadow twice at the intersection (MK)
+; 2006-04-22  1.02  Bug introduced in 1.01 fixed (MK)
 ;
 ;	Routine to put a shadow "behind" a window.
 ;
@@ -58,7 +59,7 @@ shade
 	swap	d2
 	swap	d3
 	move.l	(sp)+,d0		; x,y shadow size
-	sub.w	d1,d2			; subtract overlapping area
+	sub.w	d0,d2			; subtract overlapping area
 	bsr.s	block_sh
 	moveq	#0,d0			; no error
 	movem.l (sp)+,reglist
