@@ -82,6 +82,7 @@ dev8_iod_con2_ptr_csvec_rel
 
 dev8_iod_con2_8_mblock_rel
 dev8_iod_con2_8_block_rel
+dev8_iod_con2_aur8_ablock_rel
 dev8_iod_con2_aur8_colrm_rel
 dev8_iod_con2_aur8_palette_rel
 dev8_iod_con2_aur8_cmbblk_rel

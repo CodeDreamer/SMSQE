@@ -319,7 +319,7 @@
 3190   DATA 'smsq_java_driver_dv3e_link'
 3200   DATA 'smsq_java_ip_link'
 3210   DATA 'smsq_gold_kbd_lang_link'
-3220   DATA 'smsq_gold_sysspr_link',''
+3220   DATA 'smsq_qpc_sysspr_link',''
 3230 END DEFine java_data
 3240 :
 3250 DEFine PROCedure qpc_data
@@ -573,7 +573,7 @@
 5730   ex3w$=rep$&'smsq_smsq_wman'
 5740   ex4$=rep$&'smsq_java_driver_dv3e'
 5750   ex7$=rep$&'smsq_smsq_hotkey'
-5760   ex8$=rep$&'smsq_gold_sysspr'
+5760   ex8$=rep$&'smsq_qpc_sysspr'
 5770   ex9$=rep$&'smsq_home_home'
 5780   ex10$ = rep$&'smsq_java_ip_x'
 5790   ex11$=rep$&'smsq_recent_recent'

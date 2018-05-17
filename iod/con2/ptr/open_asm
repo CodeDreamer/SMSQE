@@ -1,6 +1,7 @@
 * Open routine for pointer routines    1991  Tony Tebby
 *
-* 2004-03-19	1.01	reseves sd.spcur more bytes (screen save area) for cdb (wl)
+* 2004-03-19  1.01  Reserves sd.spcur more bytes (screen save area) for cdb (wl)
+* 2016-04-16  1.02  Initialise alpha blending weight to 255 (opaque) (MK)
 *
 	section driver
 *
@@ -36,7 +37,6 @@
 	include 'dev8_smsq_smsq_base_keys'
 	include 'dev8_smsq_smsq_config_keys'
 	include 'dev8_keys_sysspr'
-
 
 opreg	reg	d1-d7/a1-a5
 opfr	equ	$0c
@@ -178,6 +178,8 @@ pto_ssiz
 	move.l	pt_sfnt2(a3),sd_font+4(a0)
 
 	move.l	#$08076400,sd_scal(a0)	 ; graphics scaling
+
+	move.b	#$ff,sd_alpha(a0)	 ; default is opaque drawing
 
 	move.l	#$0006000a,d2		 ; this is cursor size
 	cmp.b	#ptm.ql8,pt_dmode(a3)	 ; which mode are we in?

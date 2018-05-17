@@ -1,5 +1,7 @@
-;	Console IO routine table	V2.00   1998 Tony Tebby
+;	Console IO routine table	V2.01   1998 Tony Tebby
 ;
+; 2016-04-16  2.01  Added iow.salp (MK)
+
 	section con
 
 	include 'dev8_keys_iod'
@@ -69,6 +71,7 @@
 	xref	cn_blkn
 	xref	cn_palq
 	xref	cn_palt
+	xref	cn_salp
 
 	xdef	cn_iotab
 	xdef	cn.iotab
@@ -177,8 +180,9 @@ cn_iotab
 	dc.w	cn_unimp-cn_iotab
 	dc.w	cn_palq-cn_iotab		 ; d0=$60
 	dc.w	cn_palt-cn_iotab
+	dc.w	cn_salp-cn_iotab
 
-cn.iotab equ	$61
+cn.iotab equ	$62
 
 cn_unimp
 	moveq	#err.ipar,d0

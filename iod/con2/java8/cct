@@ -82,6 +82,7 @@ dev8_iod_con2_ptr_csvec_rel
 
 dev8_iod_con2_java8_mblock_rel
 dev8_iod_con2_java8_block_rel
+dev8_iod_con2_aur8_ablock_rel
 dev8_iod_con2_aur8_colrm_rel
 dev8_iod_con2_aur8_palette_rel
 dev8_iod_con2_java8_cmbblk_rel
@@ -93,7 +94,7 @@ dev8_iod_con2_8_drop_rel
 dev8_iod_con2_aur8_shad_rel
 dev8_iod_con2_8_smove_rel
 dev8_iod_con2_ptr_spcch_rel
-dev8_iod_con2_aur8_spcch_rel
+dev8_iod_con2_java8_spcch_rel
 dev8_iod_con2_java16_rle_rel
 dev8_iod_con2_aur8_palsprite_rel
 dev8_iod_con2_aur8_sppref_rel

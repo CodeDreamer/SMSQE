@@ -758,11 +758,15 @@
 ;	When jobs are created, the size of the job, and the data space, are made even (wl).
 ;	Recent thing implemented (wl).
 ;	JVA_SCRUPDT & JVA_MBAR_STATUS for SMSQmulator (wl).
-;	cosmetic changes for smsqeweb (pjw)
+;	Cosmetic changes for smsqeweb (pjw).
 ;
 ; 3.25	Fixed crash for slightly overlapping windows (MK).
+;
+; 3.26	Implemented RENAME support for the DOS device (MK).
+;	Added alpha blending support for general graphics functions (MK/WL).
+;	New trap iow.salp to set the alpha blending weight (MK).
+;	New SBasic keyword ALPHA_BLEND to set the alpha blending weight (MK).
 
-smsq_vers equ	 '3.25'
-
+smsq_vers equ	 '3.26'
 
 	end

@@ -1,4 +1,4 @@
-As of versions 3.00, this file contains a brief overview of what is new in
+yAs of versions 3.00, this file contains a brief overview of what is new in
 each version of SMSQ/E.
 
 
@@ -19,7 +19,16 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
-	
+
+=====
+3.26
+=====
+
+All channel operations can use alpha blending. See the "display_txt" file in
+the new or doc directory, section IX.
+Rename for QPC Dos devices.
+
+
 =====
 3.25
 =====

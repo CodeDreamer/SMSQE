@@ -1,0 +1,57 @@
+These are some notes I took from time to time to explain to myself how some
+thinks in SMSQ/E work.
+
+Perhaps they are of use to others.
+
+A - Booting from winx_boot or flpx_boot
+B - How scheduler loop routines are invoked
+
+
+
+A - Booting from winx_boot or flpx_boot
+=======================================
+
+Notes on automatic loading of xxxy_boot by smsq/e
+When booting, the following happens :
+
+1 - smsq_base_asm
+
+ calls all "extensions" (modules which haven't been called earlier)
+
+2 - "extension" sbasic
+ puts the address of sb_job into sms.sbjob
+ sb_job is in smsq_sbas_job_asm
+
+3 - back to smsq_base_asm
+
+ put the content of sms_bwin+sms.conf and dsms_bflp+sms.conf into d7  (upper/
+ lower word respectively)
+ (i.e. config info over whether to boot from floppy or which win drive to boot from)
+ put the content of sms.sbjob into a0
+ jumps to (a0)
+
+4 -  smsq_sbas_job_asm
+ at label sb_job, test whether a0 is 0, which it isn't at boot time (see 3 above)
+ jsr to sb_initc (opens channels 0 to 2, screen channels)
+ jmp to sb_main with d7 intact
+
+5 - smsq_sbas_main_asm
+ checks the config info passed to it in D7 and acts on it (tries to open
+ flpx_boot or winx_boot)
+
+
+
+B - How scheduler loop routines are invoked
+===========================================
+
+Routines linked into sys_poll (a6) are called on every frame interrupt.
+
+with
+	A3 pointing to the base of the linkage
+	A4 pointing to iod_plad(a3)
+	D3 containing sys_pict
+
+
+as last routine, the one linked into sms.hpoll is called.
+This has no particular registers on entry.
+see : smsq_shd_poll_asm

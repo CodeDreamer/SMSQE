@@ -7,7 +7,7 @@ lnk   equ -$24      save frame
 sav   reg A0/A3/A5  required save register list
 chnp  equ lnk-3*4 l saved A0 = pointer to channel definition block
 
-sdx   equ lnk+$00 w square move x increment = -1..1 (*2 if 256 mode) 
+sdx   equ lnk+$00 w square move x increment = -1..1 (*2 if 256 mode)
 sdy   equ lnk+$02 w square move y increment = -1..1
 ddx   equ lnk+$04 w diagonal move x increment
 ddy   equ lnk+$06 w diagonal move y increment
@@ -22,7 +22,7 @@ ysize equ lnk+$16 w window height
 linem equ lnk+$18 w negated bytes between row addresses (-SD_LINEL)
 linel equ lnk+$1A w bytes between row addresses (SD_LINEL)
 xinc  equ lnk+$1C w 1 (512 mode) or 2 (256 mode) for shifts
-*     equ lnk+$1E b spare                           
+alphw equ lnk+$1E b alpha blending weight
 type  equ lnk+$1F b $EC:line, $DC:arc, $3D:ellipse
 octs  equ lnk+$20 b maximum number of octant changes permitted
 octch equ lnk+$21 b expected octant change, 0=square, $FF=diagonal

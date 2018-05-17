@@ -133,6 +133,8 @@ iow.blkn equ	$5e   ; draw block (native)
 iow.palq equ	$60   ; define QL colour palette
 iow.palt equ	$61   ; define 8 bit palette
 
+iow.salp equ	$62   ; set alpha blending weight
+
 ;	Pointer I/O trap keys
 
 iop.wpap equ	$6b   ; define wallpaper

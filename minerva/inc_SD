@@ -43,8 +43,8 @@ sd_linel equ $64 W   line length in bytes
 
 sd_flags equ $66 B   cleared by 1st time entry to driver (EDLIN needs this)
 
-*spare   equ $67 B
-sd_end   equ $68
+sd_alpha equ $67 B   alpha blending value (0 = transparent, $ff = opaque)
+sd_end	 equ $68
 
 * character attribute flag bits for SD_CATTR
 
@@ -66,9 +66,9 @@ sd.bordr equ $0C define window border
 sd.wdef  equ $0D define window
 sd.cure  equ $0E enable cursor
 sd.curs  equ $0F suppress cursor
-sd.pos   equ $10 absolute position
-sd.tab   equ $11 tab (horizontal position)
-sd.nl    equ $12 newline
+sd.pos	 equ $10 absolute position
+sd.tab	 equ $11 tab (horizontal position)
+sd.nl	 equ $12 newline
 sd.pcol  equ $13 previous column
 sd.ncol  equ $14 next column
 sd.prow  equ $15 previous row
@@ -77,9 +77,9 @@ sd.pixp  equ $17 set pixel position
 sd.scrol equ $18 scroll whole window
 sd.scrtp equ $19 scroll top of window
 sd.scrbt equ $1A scroll bottom of window
-sd.pan   equ $1B pan window
-* ?      equ $1C
-* ?      equ $1D
+sd.pan	 equ $1B pan window
+* ?	 equ $1C
+* ?	 equ $1D
 sd.panln equ $1E pan cursor line
 sd.panrt equ $1F pan RHS of cursor line
 sd.clear equ $20 clear whole window
@@ -100,7 +100,7 @@ sd.fill  equ $2E fill block
 sd.donl  equ $2F do pending newline
 sd.point equ $30 set point in window
 sd.line  equ $31 draw line
-sd.arc   equ $32 draw arc
+sd.arc	 equ $32 draw arc
 sd.elips equ $33 draw ellipse
 sd.scale equ $34 set graphics scale
 sd.flood equ $35 set fill mode/vectors

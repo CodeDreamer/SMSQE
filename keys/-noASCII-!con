@@ -292,6 +292,7 @@ sd_fbuf  equ	$5c  long   pointer to ALCHP'ed fill buffer, 0 if none
 sd_linel equ	$64  word   line length in bytes
 sd_sflag equ	$66  byte   size flag, set by defbd, csize if wind too small
 sd.sfout equ	  1	    or lsb set if graphic cursor is outside window
+sd_alpha equ	$67  byte   alpha blending value (0 = transparent, $ff = opqaue)
 sd_end	 equ	$68 $$$$$ but not always!
 sd_keyq  equ	$68
 *sd.stdln equ	   $130 ...  standard length including queue

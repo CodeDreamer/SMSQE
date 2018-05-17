@@ -1,7 +1,8 @@
-; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.04	 1992	Tony Tebby
+; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.05	 1992	Tony Tebby
 ;
 ; 2005-12-10  2.03  Added POKE_F, PEEK_F (MK)
 ; 2006-06-28  2.04  Added YEAR%, MONTH%, DAY%, WEEKDAY%
+; 2016-04-16  2.05  Added ALPHA_BLEND (MK)
 
 	section procs
 
@@ -47,6 +48,7 @@ sb_procs
 	proc_def OVER
 	proc_def CURSOR
 	proc_def AT
+	proc_def ALPHA_BLEND
 
 	proc_def SCALE
 	proc_def POINT

@@ -3,6 +3,7 @@
 *
 * 2003-03-04  1.01  Made screen aspect ratio variable. Parts have been
 *		    converted to SMSQ syntax to be able to include keys_con (MK)
+* 2016-04-16  1.02  Copy alpha blending weight to data block (MK)
 
 	xdef	GW_FIG,GW_PSORG,GW_PSCAL,GW_ASP
 
@@ -160,6 +161,7 @@ pre_p
 	btst	#SD..XOR,SD_CATTR(A0)
 	sne	OVER(A6)	flag $FF = "OVER -1"
 	move.b	SD_FMOD(A0),FMOD(A6) flag <>0 = "FILL 1"
+	move.b	SD_ALPHA(a0),ALPHW(a6)	Alpha blending weight
 
 	assert	SD_XMIN,SD_YMIN-2,SD_XSIZE-4,SD_YSIZE-6
 	assert	XMIN,YMIN-2,XSIZE-4,YSIZE-6

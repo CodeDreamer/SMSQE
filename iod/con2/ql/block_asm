@@ -1,5 +1,7 @@
 ;	Draw a rectangular block	v2.00   1998  Tony Tebby
 ;
+;	2016 Apr 21  2.01   cn_ablock label added
+;
 ;	The block size and origin are assumed to have been adjusted for
 ;	correct position within the area to be set.
 ;
@@ -20,6 +22,7 @@
 
 	xdef	cn_fblock
 	xdef	cn_xblock
+	xdef	cn_ablock
 
 	xdef	bm_block
 	xdef	bm_xblok
@@ -164,6 +167,7 @@ bm_block
 	blt.s	cnb_nlws		; special case for small blocks
 	bra.s	cnb_blke
 
+cn_ablock
 cn_fblock
 	bsr	cnb_setuc		; set up the colours and masks
 	blt.s	cnb_nlws		; small block, special case

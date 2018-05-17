@@ -1,5 +1,6 @@
 ;      Draw a rectangular block        v0.00   1987  J.R.Oakley  Qjump
 ;
+;      2016-04-22    1.00    added ...ablock labels
 ;      The block size and origin are assumed to have been adjusted for
 ;      correct position within the area to be set.
 ;
@@ -20,9 +21,11 @@
 
 	xdef	cn_fblock
 	xdef	cn_xblock
+	xdef	cn_ablock
 
 	xdef	bm_block
 	xdef	bm_xblok
+	xdef	bm_ablok
 
 	xdef	cn_maskl
 	xdef	cn_maskr
@@ -90,11 +93,13 @@ cnb_exit
 
 ;      XOR a block in
 
+bm_ablok
 bm_xblok
 	bsr	cnb_setup		; set up the masks
 	blt.s	cnx_nlws		; special case for small blocks
 	bra.s	cnx_blke
 
+cn_ablock
 cn_xblock
 	bsr	cnb_setuc		; set up the colours and the masks
 	blt.s	cnx_nlws		; special case for small blocks

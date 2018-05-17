@@ -2,11 +2,52 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
+
+-----------------------------------------------------------------------------
+
+3.26
+
+    ALPHA BLENDING SUPPORT FOR GENERAL WINDOW OPERATIONS (MK)
+	smsq_sbas_procs_procs_asm	2.05	added ALPHA_BLEND
+	sbsext_ext_iod1_asm		2.01	  "       "
+	iod_con2_schrm_asm		2.01	added iow.salp
+	iod_con2_iotab_asm		2.01	added iow.salp
+	iod_con2_ql_block_asm		2.01	cn_ablock label added
+	iod_con2_ptr_open_asm		1.02	initialise alpha blending weight to 255 (opaque)
+	iod_con2_q4016_ablock_asm	1.00	draw a rectangular block mode 33 with alpha blending
+	iod_con2_pc16_ablock_asm	1.00	draw a rectangular block mode 32 with alpha blending
+	iod_con2_aur8_ablock_asm	1.00	draw a rectangular block mode 16 with alpha blending
+
+	iod_con2_16_smulc_asm		2.01	added alpha blending
+	iod_con2_8_smulc_asm		2.01	added alpha blending
+	iod_con2_gw_fig_asm		1.02	copy alpha blending weight to data block
+	iod_con2_blok_asm		2.01	added alpha blending support
+	iod_con2_16_gw_pixel_asm	1.01	added alpha blending support
+	iod_con2_8_gw_pixel_asm 	1.01	added alpha blending support
+
+	minerva_inc_SD			.	adjusted to suit
+	minerva_inc_GU			.	adjusted to suit
+	iod_con2_gold8_cct		.	adjusted to suit
+	iod_con2_qpc8_cct		.	adjusted to suit
+	iod_con2_qpc16_cct		.	adjusted to suit
+	iod_con2_q4016_cct		.	adjusted to suit
+	keys_qdos_io			.	added iow.salp
+	keys_con			.	added sq_alpha ($67)
+
+    RENAME SUPPORT FOR QPC DOS DEVICE (MK)
+	smsq_qpc_dos_io_asm		1.01	Added rename support (MK)
+	smsq_qpc_dos_link		.	adjusted to suit
+
+    SMSQMULATOR BUGFIX (wl)
+	iod_con2_java8_spcch_asm	2.16	do not clr.l odd address
+
+    MISC
+	Integrated some files in	.	iod_con2_pc16
 -----------------------------------------------------------------------------
 
 3.25
 
-    BACKGROUND IO BUGFIX (mk)
+    BACKGROUND IO BUGFIX (MK)
 	iod_con2_ptr_bgio_asm		1.02	Fixed crash for slightly overlapping windows (MK)
 
     MISC

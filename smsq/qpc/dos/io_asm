@@ -1,4 +1,6 @@
-; DOS IO routines     V1.00     2000	Marcel Kilgus
+; DOS IO routines     V1.01     2000	Marcel Kilgus
+;
+; 2016-04-08  1.01  Added rename support (MK)
 
 	section dos
 
@@ -6,6 +8,7 @@
 
 	xref	iou_achb
 	xref	iou_rchb
+	xref	iou_ckch
 
 	include 'dev8_keys_err'
 	include 'dev8_keys_sys'
@@ -258,20 +261,51 @@ dos_send
 ; Rename file
 ;---
 dos_rnam
-;	 move.l  chn_hand(a0),d1
-;	 dc.w	 qpc.dclse	 ; close old file
+	movem.l a0/a4,-(sp)		; save name comparison regs
+	move.w	(a1)+,d4		; name length
+	lea	iod_dnus(a3),a4 	; drive name
+	move.w	(a4)+,d0		; ... length
+	sub.w	d0,d4			; name is shorter
+	move.l	a1,a0
+	bsr.l	iou_ckch		; check the characters
+	move.l	a0,a1
+	movem.l (sp)+,a0/a4		; and restore name comparison regs
+	bne.s	dos_inam		; ... oops, wrong device
+	moveq	#-'0',d0
+	add.b	(a1)+,d0		; drive number
+	move.w	chn_drnr(a0),d6 	; drive number
+	cmp.b	d6,d0			; correct?
+	bne.s	dos_inam		; ... no
+	cmp.b	#'_',(a1)+		; correct separator?
+	bne.s	dos_inam		; ... no
+	subq.w	#2,d4			; length of remaining bit
+	move.w	d4,d2
+	cmp.w	#chn.nmln,d2		; too long?
+	bhi.s	dos_inam		; ... yes
 
-;	 move.w  chn_drnr(a0),d2 ; drive number
-;	 lea	 chn_name(a0),a2
-;	 dc.w	 qpc.drnam	 ; rename file
-;	 bmi.s	 dos_rnend
+	move.l	chn_hand(a0),d1
+	move.w	-(a1),-(sp)		; save 2 bytes before filename
+	move.w	d4,(a1) 		; overwrite with length information
+	move.w	chn_drnr(a0),d2 	; drive number
+	dc.w	qpc.drnam+1		; try renaming file
+	move.w	(sp)+,(a1)+		; restore 2 bytes before filename
+	tst.l	d0
+	bne.s	dos_rend
 
-;	 lea	 chn_name(a0),a1
-;	 dc.w	 qpc.dodir+1	 ; now open file again
-;	 move.l  d1,chn_hand(a0)
-dos_rnend
-;	 tst.l	 d0
-	moveq	#err.rdo,d0
+	move.l	a2,-(sp)
+	lea	chn_name(a0),a2 	; copy new name into channel block
+	move.w	d4,(a2)+		; ... length
+	bra.s	dos_rnlend
+dos_rnloop
+	move.b	(a1)+,(a2)+
+dos_rnlend
+	dbra	d4,dos_rnloop
+	move.l	(sp)+,a2
+	moveq	#0,d0
+dos_rend
+	rts
+dos_inam
+	moveq	#err.inam,d0
 	rts
 
 ;+++

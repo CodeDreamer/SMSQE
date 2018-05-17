@@ -1,4 +1,7 @@
-; CON2 16 bit  Send characters to CONSOLE  V2.00     1999 Tony Tebby
+; CON2 16 bit  Send characters to CONSOLE  V2.01     1999 Tony Tebby
+;						      2016 Marcel Kilgus
+;
+; 2016-04-16  2.01  Added alpha blending (MK)
 
 	section con
 
@@ -7,6 +10,7 @@
 
 	xref	cn_cksize_p
 	xref	cn_donl
+	xref	bm_apixel
 
 	include 'dev8_keys_con'
 	include 'dev8_keys_k'
@@ -86,8 +90,12 @@ cnsm_do
 	move.w	sd_linel(a0),a2 	 ; will be modified for print mode
 	sub.w	#12,a2			 ; standard print mode
 
-	moveq	#$ff-1<<sd..gmod,d0	 ; print mode (ignoring graphics mode)
+	moveq	#$ff-1<<sd..gmod-1<<sd..flsh,d0 ; ignore graphics and flash bit
 	and.b	sd_cattr(a0),d0
+	cmp.b	#$ff,sd_alpha(a0)
+	beq.s	cnsm_noalpha
+	ori.b	#1<<sd..flsh,d0 	 ; we abuse the flash bit for alpha here
+cnsm_noalpha
 	add.w	d0,d0
 	lea	cnsm_optab,a5		 ; operation table
 	add.w	(a5,d0.w),a5		 ; ... operation
@@ -369,43 +377,43 @@ cnsm_orng
 
 cnsm_optab
 .
-	dc.w	cc_stdch-.,cc_stdul-.,cc_stdch-.,cc_stdul-.
-	dc.w	cc_ovrch-.,cc_ovrul-.,cc_ovrch-.,cc_ovrul-.
+	dc.w	cc_stdch-.,cc_stdul-.,cc_alpch-.,cc_alpul-.
+	dc.w	cc_ovrch-.,cc_ovrul-.,cc_alpch-.,cc_alpul-.
 	dc.w	cc_xorch-.,cc_xorul-.,cc_xorch-.,cc_xorul-.
 	dc.w	cc_xorch-.,cc_xorul-.,cc_xorch-.,cc_xorul-.
 
-	dc.w	ch_stdch-.,ch_stdul-.,ch_stdch-.,ch_stdul-.
-	dc.w	ch_ovrch-.,ch_ovrul-.,ch_ovrch-.,ch_ovrul-.
+	dc.w	ch_stdch-.,ch_stdul-.,ch_alpch-.,ch_alpul-.
+	dc.w	ch_ovrch-.,ch_ovrul-.,ch_alpch-.,ch_alpul-.
 	dc.w	ch_xorch-.,ch_xorul-.,ch_xorch-.,ch_xorul-.
 	dc.w	ch_xorch-.,ch_xorul-.,ch_xorch-.,ch_xorul-.
 
-	dc.w	cc_stdcx-.,cc_stdux-.,cc_stdcx-.,cc_stdux-.
-	dc.w	cc_ovrcx-.,cc_ovrux-.,cc_ovrcx-.,cc_ovrux-.
+	dc.w	cc_stdcx-.,cc_stdux-.,cc_alpcx-.,cc_alpux-.
+	dc.w	cc_ovrcx-.,cc_ovrux-.,cc_alpcx-.,cc_alpux-.
 	dc.w	cc_xorcx-.,cc_xorux-.,cc_xorcx-.,cc_xorux-.
 	dc.w	cc_xorcx-.,cc_xorux-.,cc_xorcx-.,cc_xorux-.
 
-	dc.w	ch_stdcx-.,ch_stdux-.,ch_stdcx-.,ch_stdux-.
-	dc.w	ch_ovrcx-.,ch_ovrux-.,ch_ovrcx-.,ch_ovrux-.
+	dc.w	ch_stdcx-.,ch_stdux-.,ch_alpcx-.,ch_alpux-.
+	dc.w	ch_ovrcx-.,ch_ovrux-.,ch_alpcx-.,ch_alpux-.
 	dc.w	ch_xorcx-.,ch_xorux-.,ch_xorcx-.,ch_xorux-.
 	dc.w	ch_xorcx-.,ch_xorux-.,ch_xorcx-.,ch_xorux-.
 
-	dc.w	cw_stdch-.,cw_stdul-.,cw_stdch-.,cw_stdul-.
-	dc.w	cw_ovrch-.,cw_ovrul-.,cw_ovrch-.,cw_ovrul-.
+	dc.w	cw_stdch-.,cw_stdul-.,cw_alpch-.,cw_alpul-.
+	dc.w	cw_ovrch-.,cw_ovrul-.,cw_alpch-.,cw_alpul-.
 	dc.w	cw_xorch-.,cw_xorul-.,cw_xorch-.,cw_xorul-.
 	dc.w	cw_xorch-.,cw_xorul-.,cw_xorch-.,cw_xorul-.
 
-	dc.w	cz_stdch-.,cz_stdul-.,cz_stdch-.,cz_stdul-.
-	dc.w	cz_ovrch-.,cz_ovrul-.,cz_ovrch-.,cz_ovrul-.
+	dc.w	cz_stdch-.,cz_stdul-.,cz_alpch-.,cz_alpul-.
+	dc.w	cz_ovrch-.,cz_ovrul-.,cz_alpch-.,cz_alpul-.
 	dc.w	cz_xorch-.,cz_xorul-.,cz_xorch-.,cz_xorul-.
 	dc.w	cz_xorch-.,cz_xorul-.,cz_xorch-.,cz_xorul-.
 
-	dc.w	cw_stdcx-.,cw_stdux-.,cw_stdcx-.,cw_stdux-.
-	dc.w	cw_ovrcx-.,cw_ovrux-.,cw_ovrcx-.,cw_ovrux-.
+	dc.w	cw_stdcx-.,cw_stdux-.,cw_alpcx-.,cw_alpux-.
+	dc.w	cw_ovrcx-.,cw_ovrux-.,cw_alpcx-.,cw_alpux-.
 	dc.w	cw_xorcx-.,cw_xorux-.,cw_xorcx-.,cw_xorux-.
 	dc.w	cw_xorcx-.,cw_xorux-.,cw_xorcx-.,cw_xorux-.
 
-	dc.w	cz_stdcx-.,cz_stdux-.,cz_stdcx-.,cz_stdux-.
-	dc.w	cz_ovrcx-.,cz_ovrux-.,cz_ovrcx-.,cz_ovrux-.
+	dc.w	cz_stdcx-.,cz_stdux-.,cz_alpcx-.,cz_alpux-.
+	dc.w	cz_ovrcx-.,cz_ovrux-.,cz_alpcx-.,cz_alpux-.
 	dc.w	cz_xorcx-.,cz_xorux-.,cz_xorcx-.,cz_xorux-.
 	dc.w	cz_xorcx-.,cz_xorux-.,cz_xorcx-.,cz_xorux-.
 
@@ -1772,5 +1780,500 @@ cz_xorle
 	addq.l	#1,a3			 ; skip font line
 	moveq	#1,d1
 	bra.s	cz_xorll
+
+pp.reg	reg	d0-d7/a1
+pp.d4	equ	16
+pp.d5	equ	20
+pp.d6	equ	24
+pp.d7	equ	28
+
+; Put background colour d4
+put_pixel_d4
+	btst	#sd..over,sd_cattr(a0)
+	bne.s	pp_rts			 ; OVER mode, don't draw background
+	movem.l pp.reg,-(sp)
+pp_all
+	move.b	sd_alpha(a0),d5
+	move.l	a4,a1
+	jsr	bm_apixel
+	movem.l (sp)+,pp.reg
+pp_rts
+	addq.w	#2,a4
+	rts
+
+; Put background colour d5
+put_pixel_d5
+	btst	#sd..over,sd_cattr(a0)
+	bne.s	pp_rts			 ; OVER mode, don't draw background
+	movem.l pp.reg,-(sp)
+	move.w	d5,d4
+	bra.s	pp_all
+
+; Put ink colour d6
+put_pixel_d6
+	movem.l pp.reg,-(sp)
+	move.w	d6,d4
+	bra.s	pp_all
+
+; Put ink colour d7
+put_pixel_d7
+	movem.l pp.reg,-(sp)
+	move.w	d7,d4
+	bra.s	pp_all
+
+;+++
+; Standard size (over) underline alpha character drawing code
+;---
+cc_alpul
+	move.l	#$ffff0006,d1		 ; one + seven + two rows
+	bra.s	cc_alpc1
+
+;+++
+; Standard size / attribute (over) alpha character drawing code
+;---
+cc_alpch
+	moveq	#8,d1			 ; nine rows
+
+cc_alpc1
+	bsr.s	put_pixel_d4		 ; paper ink
+	bsr.s	put_pixel_d5
+	bsr.s	put_pixel_d4
+	bsr.s	put_pixel_d5
+	bsr.s	put_pixel_d4
+	bsr.s	put_pixel_d5
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+cc_alpll
+	add.l	a2,a4
+	move.b	(a3)+,d2
+	moveq	#2,d3
+cc_alppxl
+	add.b	d2,d2
+	bcc.s	cc_alppap0
+	bsr	put_pixel_d6		 ; ink point
+	bra.s	cc_alppx1
+cc_alppap0
+	bsr	put_pixel_d4		 ; paper point
+cc_alppx1
+	add.b	d2,d2
+	bcc.s	cc_alppap1
+	bsr	put_pixel_d7		 ; ink point
+	bra.s	cc_alppx2
+cc_alppap1
+	bsr	put_pixel_d5		 ; paper point
+cc_alppx2
+	dbf	d3,cc_alppxl
+
+cc_alpls
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	dbra	d1,cc_alpll
+
+	tst.l	d1			 ; underscore?
+	bpl	cnsm_next		 ; ... no
+
+	add.l	a2,a4
+	bsr.s	put_pixel_d6		 ; the underscore
+	bsr.s	put_pixel_d7
+	bsr.s	put_pixel_d6
+	bsr.s	put_pixel_d7
+	bsr.s	put_pixel_d6
+	bsr.s	put_pixel_d7
+
+	moveq	#1,d1
+	addq.l	#1,a3			 ; skip font line
+	bra.s	cc_alpls
+
+;+++
+; Standard size (over) underline extended alpha character drawing code
+;---
+cc_alpux
+	subq.l	#4,a2			 ; reduce increment
+	addq.l	#4,a5			 ; and move entry
+	move.l	#$ffff0006,d1		 ; one + seven + two rows
+	bra.s	cc_alpx
+
+;+++
+; Standard size (over) extended alpha character drawing code
+;---
+cc_alpcx
+	subq.l	#4,a2			 ; reduce increment
+	addq.l	#4,a5			 ; and move entry
+
+	moveq	#8,d1			 ; one + nine rows
+cc_alpx
+	moveq	#3,d0
+cc_alpxbl
+	bsr	put_pixel_d4		 ; the blank line
+	bsr	put_pixel_d5
+	dbra	d0,cc_alpxbl
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+cc_alpxll
+	add.l	a2,a4
+	move.b	(a3)+,d2
+
+	moveq	#3,d0
+cc_alpxpl
+	add.b	d2,d2
+	bcs.s	cc_alpxink0
+	bsr	put_pixel_d4		 ; paper point
+	add.b	d2,d2
+	bcs.s	cc_alpxink1
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,cc_alpxpl
+	bra.s	cc_alpxls
+
+cc_alpxink0
+	bsr	put_pixel_d6		 ; ink point
+	add.b	d2,d2
+	bcs.s	cc_alpxink1
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,cc_alpxpl
+	bra.s	cc_alpxls
+
+cc_alpxink1
+	bsr	put_pixel_d7		 ; ink point
+	dbra	d0,cc_alpxpl
+
+cc_alpxls
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	dbra	d1,cc_alpxll
+
+	tst.l	d1			 ; underscore?
+	bpl	cnsm_next		 ; ... no
+
+	add.l	a2,a4
+	moveq	#3,d0
+cc_alpxull
+	bsr	put_pixel_d6		 ; the underscore
+	bsr	put_pixel_d7
+	dbra	d0,cc_alpxull
+
+	moveq	#1,d1
+	addq.l	#1,a3			 ; skip font line
+	bra.s	cc_alpxls
+
+;+++
+; Double width (over) underline character drawing code
+;---
+cw_alpul
+	sub.w	#12,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	move.l	#$ffff0006,d1		 ; one + seven + two rows
+	move.w	#5,d3
+	bra.s	cw_alp
+
+;+++
+; Double width (over) character drawing code
+;---
+cw_alpch
+	sub.w	#12,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	moveq	#8,d1			 ; one + nine rows
+	move.w	#5,d3
+	bra.s	cw_alp
+
+;+++
+; Double width (over) underline extended character drawing code
+;---
+cw_alpux
+	sub.w	#20,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	move.l	#$ffff0006,d1		 ; one + seven + two rows
+	move.w	#7,d3
+	bra.s	cw_alp
+
+;+++
+; Double width (over) extended character drawing code
+;---
+cw_alpcx
+	sub.w	#20,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	moveq	#8,d1			 ; one + nine rows
+	move.w	#7,d3
+
+cw_alp
+	move.w	d3,d0
+cw_alpbl
+	bsr	put_pixel_d4		 ; the blank line
+	bsr	put_pixel_d5
+	dbra	d0,cw_alpbl
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+cw_alpll
+	add.l	a2,a4
+	move.b	(a3)+,d2
+
+	move.w	d3,d0
+cw_alppl
+	add.b	d2,d2
+	bcc.s	cw_alppap
+	bsr	put_pixel_d6		 ; ink point
+	bsr	put_pixel_d7		 ; ink point
+	dbra	d0,cw_alppl
+	bra.s	cw_alpls
+
+cw_alppap
+	bsr	put_pixel_d4		 ; paper point
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,cw_alppl
+
+cw_alpls
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	dbra	d1,cw_alpll
+
+	tst.l	d1			 ; underscore?
+	bpl	cnsm_next		 ; ... no
+
+	add.l	a2,a4
+	move.w	d3,d0
+cw_alpull
+	bsr	put_pixel_d6		 ; the underscore
+	bsr	put_pixel_d7
+	dbra	d0,cw_alpull
+
+	moveq	#1,d1
+	addq.l	#1,a3			 ; skip font line
+	bra.s	cw_alpls
+
+;+++
+; Double height underline character drawing code
+;---
+ch_alpul
+	move.l	#$fffd000d,d1		 ; two + fourteen + four rows
+	move.w	#2,d3
+	bra.s	ch_alp
+
+;+++
+; Double height (over) character drawing code
+;---
+ch_alpch
+	moveq	#$11,d1 		 ; eighteen rows
+	move.w	#2,d3
+	bra.s	ch_alp
+
+;+++
+; Double height (over) underline extended character drawing code
+;---
+ch_alpux
+	subq.l	#4,a2			 ; reduce increment
+	addq.l	#4,a5			 ; and move entry
+
+	move.l	#$fffd000d,d1		 ; two + fourteen + four rows
+	move.w	#3,d3
+	bra.s	ch_alp
+
+;+++
+; Double height (over) extended character drawing code
+;---
+ch_alpcx
+	subq.l	#4,a2			 ; reduce increment
+	addq.l	#4,a5			 ; and move entry
+
+	moveq	#$11,d1 		 ; eighteen rows
+	move.w	#3,d3
+
+ch_alp
+	move.w	d3,d0
+ch_alpbl
+	bsr	put_pixel_d4		 ; the blank line
+	bsr	put_pixel_d5
+	dbra	d0,ch_alpbl
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	add.l	a2,a4
+	move.w	d3,d0
+ch_alpbl1
+	bsr	put_pixel_d4		 ; the second blank line
+	bsr	put_pixel_d5
+	dbra	d0,ch_alpbl1
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+ch_alpll
+	move.b	(a3)+,d2
+ch_alpllu
+	add.l	a2,a4
+
+	move.w	d3,d0
+ch_alppl
+	add.b	d2,d2
+	bcs.s	ch_alpink0
+	bsr	put_pixel_d4		 ; paper point
+	add.b	d2,d2
+	bcs.s	ch_alpink1
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,ch_alppl
+	bra.s	ch_alpls
+
+ch_alpink0
+	bsr	put_pixel_d6		 ; ink point
+	add.b	d2,d2
+	bcs.s	ch_alpink1
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,ch_alppl
+	bra.s	ch_alpls
+
+ch_alpink1
+	bsr	put_pixel_d7		 ; ink point
+	dbra	d0,ch_alppl
+
+ch_alpls
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	btst	#0,d1			 ; first line of pair?
+	beq.s	ch_alple		 ; ... no
+	subq.l	#1,a3			 ; yes backspace
+ch_alple
+	dbra	d1,ch_alpll
+
+	tst.l	d1			 ; underscore?
+	bpl	cnsm_next		 ; ... no
+
+	moveq	#-1,d2
+	addq.l	#1,d1			 ; ... yes
+	bne.s	ch_alpllu		 ; genuine
+	addq.l	#1,a3			 ; skip font line
+	moveq	#1,d1
+	bra.s	ch_alpll
+
+;+++
+; Double size (over) underline character drawing code
+;---
+cz_alpul
+	sub.w	#12,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	move.l	#$fffd000d,d1		 ; two + fourteen + four rows
+	move.w	#5,d3
+	bra.s	cz_alp
+
+;+++
+; Double size (over) character drawing code
+;---
+cz_alpch
+	sub.w	#12,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	moveq	#$11,d1 		 ; eighteen rows
+	move.w	#5,d3
+	bra.s	cz_alp
+
+;+++
+; Double size (over) underline extended character drawing code
+;---
+cz_alpux
+	sub.w	#20,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	move.l	#$fffd000d,d1		 ; two + fourteen + four rows
+	move.w	#7,d3
+	bra.s	cz_alp
+
+;+++
+; Double size (over) extended character drawing code
+;---
+cz_alpcx
+	sub.w	#20,a2			 ; reduce increment
+	addq.l	#6,a5			 ; and move entry
+	moveq	#$11,d1 		 ; eighteen rows
+	move.w	#7,d3
+
+cz_alp
+	move.w	d3,d0
+cz_alpbl
+	bsr	put_pixel_d4		 ; the blank line
+	bsr	put_pixel_d5
+	dbra	d0,cz_alpbl
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	add.l	a2,a4
+	move.w	d3,d0
+cz_alpbl1
+	bsr	put_pixel_d4		 ; the blank line
+	bsr	put_pixel_d5
+	dbra	d0,cz_alpbl1
+
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+
+cz_alpll
+	move.b	(a3)+,d2
+cz_alpllu
+	add.l	a2,a4
+
+	move.w	d3,d0
+cz_alppl
+	add.b	d2,d2
+	bcc.s	cz_alppap
+	bsr	put_pixel_d6		 ; ink point
+	bsr	put_pixel_d7		 ; ink point
+	dbra	d0,cz_alppl
+	bra.s	cz_alpls
+
+cz_alppap
+	bsr	put_pixel_d4		 ; paper point
+	bsr	put_pixel_d5		 ; paper point
+	dbra	d0,cz_alppl
+
+cz_alpls
+	swap	d4
+	swap	d5
+	swap	d6
+	swap	d7
+
+	btst	#0,d1			 ; first line of pair?
+	beq.s	cz_alple		 ; ... no
+	subq.l	#1,a3			 ; yes backspace
+cz_alple
+	dbra	d1,cz_alpll
+
+	tst.l	d1			 ; underscore?
+	bpl	cnsm_next		 ; ... no
+
+	moveq	#-1,d2
+	addq.l	#1,d1			 ; ... yes
+	bne.s	cz_alpllu		 ; ... genuine
+	addq.l	#1,a3			 ; skip font line
+	moveq	#1,d1
+	bra.s	cz_alpll
 
 	end

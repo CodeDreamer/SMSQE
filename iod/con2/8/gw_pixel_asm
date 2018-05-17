@@ -1,8 +1,11 @@
+; 2016-04-16  1.01  Added alpha blending support (MK)
+
 	section gw
 * draw in a pixel, filling a line if need be
 	xdef	GW_PIXEL
 
 	xref	bm_block,bm_xblok   CS_FILL,CS_OVER
+	xref	bm_apixel,bm_ablock
 
 	include 'dev8_Minerva_INC_GW'
 	include 'dev8_Minerva_INC_SD'
@@ -69,7 +72,17 @@ rts0
 	rts
 
 setit
+	cmp.b	#$ff,ALPHW(a6)
+	bne.s	setalpha
 	move.b	D4,(A5)
+	rts
+
+setalpha
+	movem.l d0-d7/a1,-(sp)
+	move.b	ALPHW(a6),d5
+	move.l	a5,a1
+	jsr	bm_apixel
+	movem.l (sp)+,d0-d7/a1
 	rts
 
 first
@@ -152,7 +165,14 @@ right
 	bra.s	CHECK
 
 fill_it
+	cmp.b	#$FF,ALPHW(A6)
+	bne.s	alpha_it
 	jsr	bm_block   CS_FILL(PC)
+	bra.s	DONE
+
+alpha_it
+	move.b	ALPHW(A6),d5
+	jsr	bm_ablock
 	bra.s	DONE
 
 	end

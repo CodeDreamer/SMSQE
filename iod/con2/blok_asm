@@ -1,4 +1,6 @@
-;	Write a block			V2.00   1998 Tony Tebby
+;	Write a block			V2.01   1998 Tony Tebby
+;
+; 2016-04-16  2.01  Added alpha blending support (MK)
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -29,6 +31,7 @@
 	xref	cn_chken
 	xref	cn_xblock
 	xref	cn_fblock
+	xref	cn_ablock
 
 cn_blok
 	move.w	d1,d3			; colour
@@ -76,6 +79,9 @@ cnb_draw
 	move.w	sd_linel(a0),a2 	; ...and row increment
 	btst	#sd..xor,sd_cattr(a0)	; xor?
 	bne.l	cn_xblock
+	move.b	sd_alpha(a0),d5
+	cmp.b	#$ff,d5
+	bne.l	cn_ablock
 	bra.l	cn_fblock
 
 cnb_exit

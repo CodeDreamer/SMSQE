@@ -1,10 +1,13 @@
-;	Set character attributes	V2.00	  1990 Tony Tebby
+;	Set character attributes	V2.01	  1990 Tony Tebby
+;
+; 2016-04-16  2.01  Added iow.salp (MK)
 
 	section con
 
 	xdef	cn_sulat
 	xdef	cn_sovat
 	xdef	cn_scsiz
+	xdef	cn_salp
 
 	xref	cn_cksize_s
 	xref	cn_dopnl
@@ -102,4 +105,17 @@ cns_inc dc.w	6,10
 	dc.w   12,20
 	dc.w   16,10
 	dc.w   16,20
+
+;+++
+;	Set alpha blending weight
+;
+;	Registers:
+;		Entry				Exit
+;	D1	weight				preserved
+;	A0	pointer to cdb
+;---
+cn_salp
+	move.b	d1,sd_alpha(a0) 	 ; set value
+	bra.s	cns_ok
+
 	end
