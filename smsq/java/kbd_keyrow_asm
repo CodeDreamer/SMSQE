@@ -1,7 +1,7 @@
 
 ; Java keyrow emulation.
 ; SMSQ KEYROW emulation    1988  Tony Tebby
-
+; 1.01 calling with d1>7 no longer calls keyrow 0
 	section kbd
 
 	xdef	kbd_keyrow
@@ -36,7 +36,7 @@ hdop_keyr
 	move.b	(a3)+,d1		 ; row number
 	
 kbkr_do
-	cmp.w	#7,d1
+	cmp.b	#7,d1
 	bgt.s	no_read 		; I can't read more than that!
 	move.l	sys_klnk(a6),d0
 	beq.s	kbkr_bp 		; ooops
@@ -55,5 +55,5 @@ kbkr_bp
 	bra.s	kbkr_exit
 no_read
 	moveq	#0,d1
-	bra.s	kbkr_do
+	bra.s	kbkr_ok
 	end

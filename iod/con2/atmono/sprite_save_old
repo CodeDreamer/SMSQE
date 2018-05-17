@@ -1,8 +1,5 @@
 * Update the save area for a sprite  V1.00     1985  Tony Tebby  QJUMP
-
-* 2015 Jul 31  1.01  corrected sp_remove
 * 2015 Jul 25  1.01  use pt_spsav wherever needed
-*
 *
 *	d0 c s	old-new horizontal long word pointer
 *	d1 c s	old-new row pointer
@@ -26,12 +23,17 @@
 	xdef	sp_save
 	xdef	sp_new
 	xdef	sp_remove
+	xdef	spm_save
+
 
 	include dev8_keys_con
 
+spm_save
+*
+
 sp_save
-	cmp.w	pt_spszy(a1),d6 save area height different from sprite height?
-	bne	do_all		yes, do it all new
+;	 cmp.w	 pt_spszy(a1),d6 save area height different from sprite height?
+;	 bne	 do_all 	 yes, do it all new
 
 	ext.l	d6		  set normal direction
 	cmp.l	a2,a3	  find out which direction to move
@@ -342,8 +344,9 @@ new_rword
 * entry to remove sprite from screen
 *
 sp_remove
-	move.l	a1,-(sp)
+	move.w	d6,d3
 	move.w	pt_spszy(a1),d3 height of save area
+	move.l	a1,-(sp)
 	move.l	pt_spsav(a1),a1 save area pointer		*****
 rem_row
 	move.l	d5,d4
@@ -355,11 +358,10 @@ rem_rword
 	dbra	d3,rem_row
 *
 	move.l	(sp)+,a1
-	rts
 *
 exit
-	move.l	pt_spsav(a1),a1 save area pointer		*****
 	rts
+		
 
 	end
 

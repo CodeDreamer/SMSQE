@@ -81,7 +81,7 @@ start
 	jsr	sfa_init
 	jsr	nfa_init
 	jsr	mem_init
-	jsr	win_init
+	jsr	win_init		; keep as last device driver
 	jsr	ssss_init
 	jsr	scrap_init
 	jsr	snd_init
@@ -119,7 +119,6 @@ cpu_rtc
 	move.l	a0,(a1)+
 	lea	sms_srtc,a0		; srtc and artc are not implemented
 	move.l	a0,(a1)+
-;	 lea	 sms_artc,a0
 	move.l	a0,(a1)
 
 cpu_idl tst.b	sms.conf+sms_nqimi	; use less cpu if idle?
@@ -208,7 +207,7 @@ qpc_patchlp
 	move.w	(a1)+,d1		: original SMSQ/E code
 	move.w	(a1)+,d2		; patched code
 	cmp.w	(a0,d0.w),d2		; patched code ok?
-	bne.s	qpc_end 	    ; no, just quit patching
+	bne.s	qpc_end 		; no, just quit patching
 	move.w	d1,(a0,d0.w)		; patch original code back in
 	bra.s	qpc_patchlp
 

@@ -3,8 +3,16 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
 
+----------------------------------------------------------------------------
+
+3.23
+
+    BUGFIXES
+	sbsext_ext_dminfo_asm		1.00	neg values returned OK, ...DRIVE$ return correct name
 
 
+    BUGFIXES FOR SMSQMULATOR
+	smsq_java_kbd_keyrow_asm	1.01	calling with d1>7 no longer calls keyrow 0
 -----------------------------------------------------------------------------
 
 3.22
@@ -12,11 +20,11 @@ Version   changed			of file   changes made
     BUGFIXES
 	ee_wman_move_asm		1.21	better edge detection  (wl)
 
-    Bugfixes for Atari
+    BUGFIXES FOR ATARI
 	iod_con2_atmono_sprite_drop_asm 1.02	correctly handle sprites with 0 mask (wl)
-	iod_con2_atmono_sprite_save_asm 1.01	refer to correct sprite save area (pt_spsav) (wl)
+	iod_con2_atmono_sprite_save_asm 1.02	refer to correct sprite save area (pt_spsav) (wl)
 
-    Bugfixes for Smqmulator
+    BUGFIXES FOR SMQMULATOR
 	dv3_java_fd_drive_asm		0.01	set sb_arthp after java call (wl)
 	smsq_java_driver_nfa_useq_asm	0.02	  "       "	 "   "
 	smsq_java_hwinit_asm		2.01	added config item for ieee floats (wl)
@@ -24,7 +32,7 @@ Version   changed			of file   changes made
 	smsq_java_smsq_base_asm 	2.04	removed debug code (blats etc) (wl)
 	smsq_java_driver_most_asm	1.03	integrated the rtc routines  & removed <rtc module (wl)
 
-    New keyword  FEX_M
+    NEW KEYWORD FEX_M
 	sbsext_ext_exsbas_asm		2.06	added FEX_M routine  (pjw)
 	smsq_sbas_procs_tk2procs_asm	2.08	FEX_M linked in  (wl)
 
@@ -42,15 +50,12 @@ Version   changed			of file   changes made
 
     SMSQmulator
 	smsq_java_hdop_asm		1.01	actually links in keyboard linkage (wl)
-
 -----------------------------------------------------------------------------
 
 3.20
 
     BUGFIX
 	dv3_dv3_buff_asm		3.01	Added read-only check in dv3_sbyt (MK)
-
-
 -----------------------------------------------------------------------------
 
 3.19
@@ -67,7 +72,6 @@ Version   changed			of file   changes made
 
     BUGFIX
 	ee_wman_swdef_asm		1.04	Fixed pending new-line bug in wm_csize (MK)
-
 -----------------------------------------------------------------------------
 
 3.18
@@ -78,15 +82,12 @@ Version   changed			of file   changes made
 	ee_wman_setup_asm		1.05	 check for and possibly set appsub wdw csizes (wl)
 	keys_wdef			.	 amended to suit
 	keys_wman			.	 amended to suit
-
 -----------------------------------------------------------------------------
 
 3.17
 
     BUGFIXES
 	ee_wman_move_asm		1.20	Window move with transparency fixed for pulled-down wdws L
-
-
 -----------------------------------------------------------------------------
 
 3.16
@@ -109,7 +110,6 @@ Version   changed			of file   changes made
 	ee_wman_data_asm		1.02	added config item for alpha blending when moving
 	ee_wman_procs_procs_asm 	1.03	added WM_MOVEALPHA (wl)
 	ee_wman_procs_base_asm		1.02	added WM_MOVEALPHA (wl)
-
 -----------------------------------------------------------------------------
 
 3.15
@@ -162,9 +162,6 @@ Version   changed			of file   changes made
 	keys_java				added file contains keys for SMSQmulator (wl)
 
 	smsq_java				added this subdir contains all the SMSQ/E files specific to SMSQmulator (wl)
-
-
-
 -----------------------------------------------------------------------------
 
 3.13
@@ -242,7 +239,7 @@ Version   changed			of file   changes made
 	smsq_sbas_procs_procs_q60_asm	-	deleted
 	smsq_sbas_procs_procs_q60_linl	-	deleted
 
-	SMSQEMAKE			-	adds home target to aurora, remodels Qx0 targets
+	SMSQEmake			-	adds home target to aurora, remodels Qx0 targets
 -----------------------------------------------------------------------------
 
 3.12
@@ -336,8 +333,6 @@ Version   changed			of file   changes made
 	smsq_spp_open_asm		2.02	various bugfixes
 	the uti_lib and util_menus_lib	-	libraries are no longer used
 	as Jochen Merz donated the	-	source code for the files
-
-
 -----------------------------------------------------------------------------
 
 3.11
@@ -353,18 +348,17 @@ Version   changed			of file   changes made
 	ee_wman_procs_link		-	uses sbsext_utq_lib (for qdos compatibility)
 
 
-   SUPPORT FOR HOME THING (MK)
+    SUPPORT FOR HOME THING (MK)
 	util_gut_shome_asm		1.01	call to home thing (mk+wl)
 	util_gut_fexec_asm		0.01	Added call to gu_shome (mk)
 	util_gut_fexnm_asm		0.01	Added call to gu_shome (mk)
 	util_gut_cctx			-	amended to suit
 	sbsext_ext_exsbas_asm		2.03	added call to gu_shome (mk)
-
 -----------------------------------------------------------------------------
 
 3.10
 
-   SPRITE CLIPPING (MK)
+    SPRITE CLIPPING (MK)
 	iod_con2_ptr_sadd_asm		2.03	many changes for pointer sprite clipping
 	iod_con2_ptr_limit_asm		1.01	same
 	iod_con2_ql_sprite_save_asm	1.01	same
@@ -375,33 +369,32 @@ Version   changed			of file   changes made
 	keys_con			-	changed to suit
 	key_qdos_pt			.	changed to suit
 
-   SPRITES WITH NO (=SOLID) MASK (MK)
+    SPRITES WITH NO (=SOLID) MASK (MK)
 	iod_con2_atmono_sprite_drop_asm 1.01	extension for sprites with solid mask
 	iod_con2_q40ql_sprite_drop_asm	1.01	same
 	iod_con2_q4016_sprite_drop_asm	1.01	same
 	iod_con2_ql_sprite_drop_asm	1.01	same
 	iod_con2_ptr_version_asm	-	amended to suit
 
-   NEW COPY SPRITE VECTOR ADDED (MK)
+    NEW COPY SPRITE VECTOR ADDED (MK)
 	ee_wman_cpspr_asm		1.00	added
 	ee_wman_version_asm		.	amended to suit
 	ee_wman_cct			.	amended to suit
 
-   BUGFIXES
+    BUGFIXES
 	iod_con2_16_shad_asm		1.01	no double shadow at intersection (MK)
 	iod_con2_ql_spcch_asm		2.01	return error sprite if error (wl)
 	ee_wman_3db_asm 		1.03	Double border type fixed (MK)
 	ee_wman_syspal_asm		1.01	Fixed error return of wm.jbpal (MK)
 	smsq_sbas_lang_asm		2.01	some german text corrected (wl)
 
-   MISC
-	smsqemake			.	Some bugfixes (wl - thanks to Duncan Neithercut)
+    MISC
+	SMSQEmake			.	Some bugfixes (wl - thanks to Duncan Neithercut)
 -----------------------------------------------------------------------------
 
 3.09
 
-
-   HOT_GETSTUFF$  EXTENSION (MK)
+    HOT_GETSTUFF$  EXTENSION (MK)
 
 	ee_hot_gstuff_asm		1.00	adds GET_HOTSTUFF$ (0 | -1)
 	ee_hot_init_asm 		2.05	changed to suit
@@ -409,7 +402,7 @@ Version   changed			of file   changes made
 	ee_hot_cct			  .	changed to suit
 
 
-   BUGFIXES (WL)
+    BUGFIXES (WL)
 
 	smsq_ioa_ffsd_asm		2.02	check that drive number <=8 for directory device drivers (one could use "ram9_"!!!)
 	smsq_q40_hwinit_asm		2.01	caches are off by default, else
@@ -421,7 +414,7 @@ Version   changed			of file   changes made
 
 	ee_wman_move_asm		2.04	Fixed spurious outline when using outline move, on mouse button release
 
-   QXL - RETURN TO SMSQE FROM DOS BY TYPING "SMSQE /" (BC) AND BUGFIXES
+    QXL - RETURN TO SMSQE FROM DOS BY TYPING "SMSQE /" (BC) AND BUGFIXES
 
 	iod_con2_qxl_disp_clear_asm	1.01	completely revamped version (BC)
 						(faster code)
@@ -441,16 +434,15 @@ Version   changed			of file   changes made
 
     MISC
 	smsqemake			.	internal changes, use the new
-						outptr_bin for it
 -----------------------------------------------------------------------------
 
 3.08
-    QPC internal version only
-   
 
+    QPC internal version only
 -----------------------------------------------------------------------------
 
 3.07
+
     QXL - CONFIGURABLE DRIVES FOR WIN1 TO 8.
 	.				. THE FILENAME REMAINS "QXL.WIN" BUT
 	.				. DRIVE LETTERS CAN BE ANY DOS DRIVE YOU CARE (BC)
@@ -471,6 +463,7 @@ Version   changed			of file   changes made
 	.				.	(see 3.06) damn, a 1 byte change
 	.				.	 and I still got it wrong!
 -----------------------------------------------------------------------------
+
 3.06
 
     USE SPRITE AS CURSOR (wl)
@@ -509,21 +502,23 @@ Version   changed			of file   changes made
 	dv3_q40_fd_init_asm		3.01	Q40 floppy density is preset to 2 (wl)
 	smsq_gold_init_roms_asm 	1.00	attempt to get miracle hard disk working again (TT)
 ------------------------------------------------------------------------------
+
 3.05
+
     BUGFIXES
 	iod_con2_16_spcch_asm		2.15	Correct QL mode 8 routine (jg)
 	ee_wman_rptr_asm		1.10	Even better check to distinguish between loose menu & appsub items (wl)
 	ee_wman_3db_asm 		1.02	bugfix in horizontal line drawing (mk)
 	iod_con2_16_rpixl_asm		0.01	cosmetic change set the "end" right after the first rts (wl)
 	smsq_spp_open_asm		2.11	clear count of CD inactive (mk)
-
 ------------------------------------------------------------------------------
+
 3.04
+
     BUGFIXES
 	ee_wman_move_asm		1.16	fixed pointer save on new move operation (wl)
-
-
 ------------------------------------------------------------------------------
+
 3.03
 
     BUGFIXES
@@ -568,6 +563,7 @@ Version   changed			of file   changes made
 ------------------------------------------------------------------------------
 
 3.02
+
     GOLD CARD CHANGES (MK)
 
 	iod_con2_gold_disp_size_asm	1.10	Completely revamped version for mode 16 (MK)
@@ -576,10 +572,11 @@ Version   changed			of file   changes made
 
     BUGFIXES
 	smsq_mem_rchp_asm		2.01	Doesn't break free space list if block was already free (MK)
-
 ----------------------------------------------------------------------------
 3.01
-   BUGFIXES (MK)
+
+
+    BUGFIXES (MK)
 	ee_hk_xfil_asm			2.01	added hk_xfilid
 	ee_hk_xthg_asm			2.01	(same)
 	ee_hot_exep_asm 		2.02	fixed file launching
@@ -590,7 +587,7 @@ Version   changed			of file   changes made
 	iod_con2_ptr_wpap_asm		1.02	Returns last used colour in D1. Fixes mode change issue
 	util_gut_mkchl_asm		0.03	reestablished Qdos compatibility
 
-   WMAN : SEPARATE CONFIGURATION BLOCK AND DATA HANDLING (MK)
+    WMAN : SEPARATE CONFIGURATION BLOCK AND DATA HANDLING (MK)
 	ee_wman_data_asm		1.01	(new) config block
 	keys_wman_data				keys file for above
 	ee_wman_syspal_asm			amended to suit
@@ -600,12 +597,12 @@ Version   changed			of file   changes made
 	keys_con				   "     "    "
 	keys_qdos_pt				   "     "    "
 
-   WMAN : NEW MOVE MODES (WL)
+    WMAN : NEW MOVE MODES (WL)
 	ee_wman_move_asm		1.15	(new) move modes (WL+MK)
 	ee_wman_chwin_asm		1.02	amended to call this
 	iod_con2_ptr_vec_asm		1.01	new vectors pt_size & pt_mblock added
-   MISC
 
+    MISC
 	iod_con2_sprite_cursor_asm	1.00	added (cct files changed to suit)
 	new compiler program
 	ee_wman_erstr_asm		1.00	label no longer xref'd. This file
@@ -619,9 +616,9 @@ Version   changed			of file   changes made
 
 3.00
 
-  CHANGES FOR BETTER HANDLING OF BACKGROUND COLOURS - THEY NO LONGER TAKE UP
-  MEMORY IF BACKGROUND COLOUR IS USED AND FILL BACKGROUND WITH COLOUR GIVEN
-  (MK)
+    CHANGES FOR BETTER HANDLING OF BACKGROUND COLOURS - THEY NO LONGER TAKE UP
+    MEMORY IF BACKGROUND COLOUR IS USED AND FILL BACKGROUND WITH COLOUR GIVEN
+    (MK)
 	iod_con2_ptr_fillsv_asm 	2.11	added capability to draw directly to screen
 	iod_con2_ptr_wpap_asm		1.01	doesn't create background window if colour is given
 	iod_con2_ptr_mode_asm		1.12	fills the screen with bgcolour instead of just black
@@ -633,8 +630,8 @@ Version   changed			of file   changes made
 	smsq_q40_driver_16_link 		added kbd section
 	iod_con2_16_Q40_shad_asm		(new adapted)
 
-  NEW WINDOW MANAGER INCLUDING SYSTEM PALETTE
-  THIS NEEDED CHANGES IN FOLLOWING FILES (MK)
+    NEW WINDOW MANAGER INCLUDING SYSTEM PALETTE
+    THIS NEEDED CHANGES IN FOLLOWING FILES (MK)
 	ee_wman_drarr_asm		1.01	allocated more space for pattern on stack
 	ee_wman_drbar_asm		1.11	numerous changes for high colour + bar background
 	ee_wman_drbdr_asm		1.05	adapted for high colours
@@ -648,7 +645,7 @@ Version   changed			of file   changes made
 	ee_wman_wman_asm		1.01	Untested, not used for SMSQE!
 	ee_wman_docu_txt		documentation of new facilities
 	smsq_smsq_wman_asm		1.01	Initialises system palette
-  AND THE ADDITION OF THE FOLLOWING FILES (MK) :
+    AND THE ADDITION OF THE FOLLOWING FILES (MK) :
 	ee_wman_trap3_asm		1.00	New colour trap dispatcher
 	ee_wman_syspal_asm		1.00	WMAN system palette handling
 	ee_wman_3db_asm 		1.00	Draw 3d border
@@ -661,8 +658,8 @@ Version   changed			of file   changes made
 	ee_wman_procs_procs_asm 	1.00	new sbasic procdures for system palette and use of syspal colours under Basic
 	ee_wman_procs_link
 
-  SUPPORT FOR 24 BIT (AND OTHER NATIVE MOES!) SPRITES, RLE COMPRESSION
-  ALPHA BENDING (JG + MK)
+    SUPPORT FOR 24 BIT (AND OTHER NATIVE MOES!) SPRITES, RLE COMPRESSION
+    ALPHA BLENDING (JG + MK)
 	iod_con2_16_spcch_asm		2.12	increased sprite mode support + bug fixes
 					2.13	Moved sprite list scan to pt_fsprd
 					2.14	Added RLE Compression
@@ -692,8 +689,7 @@ Version   changed			of file   changes made
 	iod_con2_16_sprite_0_asm
 	and all other unnecessary sprite_0 files I could find
 
-  CHANGES FOR INCLUSION OF NEW KEYWORDS FEX etc (PW)
-
+    CHANGES FOR INCLUSION OF NEW KEYWORDS FEX etc (PW)
 	ee_hot_init_asm 		2.04	added FEP fn definition
 	ee_hot_exep_asm 		2.01	added FEP function
 	ee_hot_xthid_asm		1.00	support routine
@@ -702,9 +698,8 @@ Version   changed			of file   changes made
 	sbsext_ext_exsbas_asm		2.01	added functions FET,FEX,FEW (+wl:EXF)
 
 
-  CHANGES TO ENABLE THE DEFAULT CONFIGURED KEYBOARD LANGUAGE TO BE SEPARATE FROM
-  THE DEFAULT CONFIGURED MESSAGES LANGUAGE  (wl)
-
+    CHANGES TO ENABLE THE DEFAULT CONFIGURED KEYBOARD LANGUAGE TO BE SEPARATE FROM
+    THE DEFAULT CONFIGURED MESSAGES LANGUAGE  (wl)
 	smsq_smsq_config_keys
 	smsq_smsq_base_asm		2.03	copies language from config block
 	smsq_q40_hwinit_asm		1.00	new config item for this
@@ -712,21 +707,18 @@ Version   changed			of file   changes made
 	smsq_gold_hwinit_asm		3.01	same
 	smsq_qxl_hwinit_asm		3.01	same
 
-  CHANGES FOR SPRITE DRAWING DEPENDING ON ITEM STATUS (wl)
-
+    CHANGES FOR SPRITE DRAWING DEPENDING ON ITEM STATUS (wl)
 	ee_rptr_asm			1.07	calls draw routine even when item becomes current item
 	ee_drobj_asm			1.03	draws sprites accoring to item status
 						+ use iop.fspr (MK)
-  BUGFIXES    (MK+wl)
-
+    BUGFIXES	(MK+wl)
 	iod_con2_ql_smove_asm
 	iod_con2_16_smove_asm		2.01	bugfix when screen was the destination
 	smsq_sbas_cmpstt_asm		2.01	basic procs ok even with great nbr of procedures
 	iod_con2_ptr_outln_asm		1.06	keep a1, as per documentation (wl)
 	iod_con2_ptr_wspbl_asm		2.01	preserve regs as per documentation (wl)
 
-
-  CHANGES FOR SYSTEM SPRITES (MK)
+    CHANGES FOR SYSTEM SPRITES (MK)
 	keys_sysspr				new
 	iod_con2_ptr_chkbp_asm		2.02	Added check to handle system sprites
 	iod_con2_ptr_fsprd_asm		1.01	(new) high colour version find sprite defn
@@ -738,21 +730,16 @@ Version   changed			of file   changes made
 	iod_con2_ptr_rle_asm		1.00	added
 	iod_con2_ptr_sadd_asm		2.01	return changed
 	iod_con2_sprite_xxx_asm 		all added
-
-
 	all system sprites put into a separate module (mk + wl)
 	smsq_smsq_sysspr_asm		1.00	module header
 	smsq_q40_sysspr_link			new link file for this
 	the make & flp progs are amended correspondingly
 
-
-  ADDITIONS FOR CON/PTR VECTORS (MK)
-
+    ADDITIONS FOR CON/PTR VECTORS (MK)
 	iod_con2_ptr_vec_asm		1.00	added
 	iod_con2_ptr_install_asm	2.02	aded table ptr for vectored routines
 
-  CHANGES TO KEY FILES
-
+    CHANGES TO KEY FILES
 	changes in these files are too numerous to list, some examples below
 	keys_colour
 	keys_qdos_io
@@ -762,40 +749,34 @@ Version   changed			of file   changes made
 	keys_wman				added wm.setsp, wm.getsp, wm.trap3 and wmc.xxx
 	keys_sysspr				new
 
-  MISCELANEOUS CHANGES
-
+    MISCELANEOUS CHANGES
 	Created the "New" subdirectory
-
 	dv3_q40_hd_fpart_asm		3.01	Fixed the ICD extension (8 additional partitions in table) (JG)
-
 	many changes tpo various cct files, to make sure that all other changes
 	are taken into account
 
 	ee_hk_smsq_asm			2.01	added configutation block (mk)
-
 	removal of the "iod_con2_pc16" subdirectory, the relevant files are
 	moved into the QXL16 subdirectory
-
 	sbsext_utq_xxx_asm			all addded
 -----------------------------------------------------------------------------
 
 2z99
 
-  QX0 BUGFIXES
+    QX0 BUGFIXES
 	dev8_iod_con2_q40_blob_drop_asm 	bugfix for movep
 	DEV8_smsq_kbd_ibm_base_asm		1.00	also links in italian kbd
+-----------------------------------------------------------------------------
 
 2y99
 
-  CHANGES FOR SHADOW   (MK)
-
+    CHANGES FOR SHADOW	 (MK)
 	iod_con2_16_Q40_shad_asm	1.00	added (MK)
 	iod_con2_q4016_cct			adapted to take that file into
 						account (wl)
 	iod_con2_qxl16_cct			same (wl)
 
-  CHANGES FOR MOVEP -- REMOVED FROM Q40/Q60 CODE (FD)
-
+    CHANGES FOR MOVEP -- REMOVED FROM Q40/Q60 CODE (FD)
 	iod_con2_q40_blob_drop_asm	2.01	replaced refs to movep (FD)
 	iod_con2_q40_sprite_move_asm	1.01	replaced refs to movep (FD)
 	iod_con2_q40ql_mblock_asm	2.01	replaced refs to movep (FD)
@@ -805,12 +786,11 @@ Version   changed			of file   changes made
 	iod_con2_q40ql_cct			modified for this change (FD+WL)
 	smsq_q40_driver_ql_link 		modified for this change (FD+WL)
 	smsq_sbas_procs_q60_link		modified for this change (FD+WL)
----						(wl only changed refs to win1)
-  CHANGES FOR ITALIAN LANGUAGE SUPPORT (BY FD)
+						(wl only changed refs to win1)
+    CHANGES FOR ITALIAN LANGUAGE SUPPORT (BY FD)
 	ee_hk_conf_italian_asm		1.00	added by FD
 	ee_hk_italian_asm		1.00	added by FD
 	ee_hk_cct				modified for this change (FD+WL)
-
 	lang_italian_cctx
 	lang_italian_cont_asm
 	lang_italian_date_asm
@@ -835,8 +815,7 @@ Version   changed			of file   changes made
 	lang_italian_system_asm
 	lang_italian_udev_asm
 	lang_italian_wver_asm
-	lang_italian_ynaq_asm	       1.00 for all, all added by FD, win1_
-						changed to dev8_ by WL
+	lang_italian_ynaq_asm	       1.00 for all, all added by FD, win1_ changed to dev8_ by WL
 
 	smsq_kbd_IBM_Italian_asm
 	smsq_smsq_lang_msg_asm
@@ -844,8 +823,7 @@ Version   changed			of file   changes made
 	smsq_smsq_lang_msgc_asm
 	smsq_smsq_lang_pref_asm
 	smsq_sbas_lang_asm
-	smsq_smsq_lang_tra_asm			modified by FD for italian language
-						and WL (win1 -> dev8)
+	smsq_smsq_lang_tra_asm			modified by FD for italian language and WL (win1 -> dev8)
 	smsq_kbd_ibm_cct			changed to suit
 	smsq_q40_hwinit_asm			(FD) added possibility to configure
 						for it. language
@@ -853,19 +831,14 @@ Version   changed			of file   changes made
 	smsq_gold_hwinit_asm			same (wl)
 	smsq_qxl_hwinit_asm			same (wl)
 
-----
-	OTHER CHANGES
+    OTHER CHANGES
 	iod_con2_16_blob_drop_asm	   removed TRAP#15 (WL)
----
-
 -------------------------------------------------------------------------------
 
 2x99
 
---- sundry changes
-
-	iod_con2_ptr_mouse_asm		1.00	removed reference to useless
-						key file (wl)
+    SUNDRY CHANGES
+	iod_con2_ptr_mouse_asm		1.00	removed reference to useless key file (wl)
 	iod_con2_gold_PROCV_asm 	1.00	same (wl)
 	iod_con2_gold_DISP_SIZE_asm	1.00	same (wl)
 
@@ -878,8 +851,7 @@ Version   changed			of file   changes made
 	old files to _old (this concerns STAT for big drives - thanks JH)
 								
 
- ----------- CHANGES FOR FAST MEMORY
-
+    CHANGES FOR FAST MEMORY
 	dd_rd_fm_occi_asm		3.00	fast memory (mk)
 	dd_rd_fm_cct			(new)	fast memory (mk)
 	sbsext_ext_heap_asm		0.13	fast memory (mk)

@@ -747,10 +747,13 @@
 ;
 ; 3.22	Added FEX_M keyword (PJW).
 ;	Better edge detection when moving window (wl).
-;	Atari mono mode works again (wl)
-;	SMSQmulator ieee float ops adde   (wl)
-;		    removed debug code during initialisation (wl)
+;	Atari mono mode works again (wl).
+;	SMSQmulator ieee float ops added  (wl).
+;	SMSQmulator removed debug code during initialisation (wl).
+;
+; 3.23	DMEDIUM_DENSITY returns -1 if ramdisk, ...NAME$ returns correct name (wl).
+;	SMSQmulator keyrow >8 doesn't read keyrow 0
 
-smsq_vers equ	 '3.22'
+smsq_vers equ	 '3.23'
 
 	end

@@ -22,6 +22,13 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 
+=====
+3.23
+=====
+
+Bugfixes : DMEDIUM_TYPE, ...DENSITY, ... FORMATüwork OK with -bnrs, ...NAME$ returns correct name.
+SMSQmulator keyrow bugfix.
+
 
 =====
 3.22
