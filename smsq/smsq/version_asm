@@ -763,10 +763,12 @@
 ; 3.25	Fixed crash for slightly overlapping windows (MK).
 ;
 ; 3.26	Implemented RENAME support for the DOS device (MK).
-;	Added alpha blending support for general graphics functions (MK/WL).
+;	Added alpha blending support for general graphics functions (MK/wl).
 ;	New trap iow.salp to set the alpha blending weight (MK).
 ;	New SBasic keyword ALPHA_BLEND to set the alpha blending weight (MK).
+;
+; 3.27	Max string array size is 32766, not 32767 (wl).
 
-smsq_vers equ	 '3.26'
+smsq_vers equ	 '3.27'
 
 	end

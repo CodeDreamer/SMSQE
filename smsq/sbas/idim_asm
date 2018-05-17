@@ -1,5 +1,5 @@
 ; SBAS_IDIM - Interpreter Dimension Array		 1994 Tony Tebby
-
+; 11.09.2016  1.01 max string array size is 32766, not 32767 (wl)
 	section sbas
 
 	xdef	bo_dim		    ; dimension array
@@ -31,7 +31,7 @@
 ;	A5 address of next token loop
 ;	A6 is pointer to system variables
 ;---
-
+	
 bdm_bdim
 	moveq	#ern4.bdim,d0		 ; cannot do dimension
 	bra.s	bdm_error
@@ -113,6 +113,9 @@ bdm_move
 	moveq	#1,d5			 ; size for string is char
 	moveq	#1,d7			 ; round up
 	add.w	-(a2),d7
+;!!					 ; v.1.01
+	bmi.s	bdm_dmov		 ; $7fff is not a valid string array dim
+;!!
 	bclr	#0,d7			 ; and make even
 	move.w	d7,(a2)
 	addq.w	#2,d7			 ; allow for string length
