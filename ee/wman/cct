@@ -1,5 +1,6 @@
 dev8_ee_wman_entry_rel
 dev8_ee_wman_version_rel
+dev8_ee_wman_data_rel
 dev8_ee_wman_setup_rel
 dev8_ee_wman_chwin_rel
 dev8_ee_wman_wset_rel
@@ -38,5 +39,6 @@ dev8_ee_wman_sprite_rel
 dev8_ee_wman_3db_rel
 dev8_ee_wman_syspal_rel
 dev8_ee_wman_opwin_rel
+dev8_ee_wman_move_rel
 dev8_ee_wman_procs_base_rel
 dev8_ee_wman_procs_procs_rel

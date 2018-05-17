@@ -5,21 +5,113 @@ each version of SMSQ/E.
 A more detailed description of the changes made to the source code itself
 is contained in changes_txt.
 
-Moreover, there is a directory called "New".
+Moreover, there is a directory called "New" in the "extras" subdirectory.
 
 This contains documentation on the new features that are introduced with this
 new version of SMSQ/E,to the extent that such documentation exists.
 Please note that, for the sake of completeness, the same documentation also
-exists in the "doc" directory. At each new version of SMSQ/E the content of the
-"new" directory is erased and only the documentation/description of new
-features are kept in that "new" directory.
+exists in the "extras_doc" directory. At each new version of SMSQ/E the content
+of the "extras_new" directory is erased and only the documentation/description
+of new features are kept in that "extras_new" directory.
 
 
-This file only contains a short description of the new features.
-
+This here file only contains a short description of the new features.
 
 
 What is new in versions :
+
+======
+ 3.04
+======
+
+Display bug fix
+The smsqemake_exe program takes new parameters (see the doc in the
+_extras_help dir)
+
+
+
+======
+ 3.03
+======
+1 - Many bugfixes
+
+2 - A new cachecontrol module for the Q60, based on Code kindly supplied by
+Mark Swift.
+This introduces three new keywords which were contained in Mark Swift's
+Cachemodes toolkit that comes with the Qx0:
+
+SERIALIZED
+This turns the Caches OFF
+
+WRITETHROUGH
+This command turns the "writethrough" cache mode of 68040 &
+68060 processors ON. Writing to a memory address writes both to the
+cache and to memory, so cache and memory are always in sync.
+
+
+COPYBACK
+This command turns the copyback cache mode of 68040 & 68060
+processors ON. Enabling the COPYBACK cache can give substantial
+speed increases. Writing to a memory address will write to the
+cache, but not to memory until absolutely necessary. Thus cache
+and memory are rarely in sync.
+This can lead to some incompatibilities.
+With these three keywords, you can use the cache mode you want.
+You can configure in what state your machine should boot.
+
+3 -Left and right shift keys are handled separately:
+Up to now, if you pressed both shift keys at once and then released only one,
+the system also considered that you had released the other.
+
+ 
+4 - INPUT uses F10 (or any other configured keystroke) to put the content of
+the "console" channel into the stuffer buffer in a READ/EDIT line trap (only!).
+You can configure the keystroke with the usual configuration program.
+You must input a number between 0 and 255. This corresponds to the keycode
+of the key in question.
+If you are unsure about what key produces what code, you could do the following:
+Type in:    PRINT CODE ( INKEY$ (-1) )
+followed by Enter into any Sbasic.
+Now hit the key you want to use. The corresponding number will be printed
+on the screen.
+This is 250 for the suggested F10 key.
+     
+
+======
+ 3.02
+======
+
+Bugfixes
+
+
+======
+ 3.01
+======
+
+Apart from some small bugfixes , in this version there is a new routine to
+move the windows about the screen.
+
+There are now three ways this can be done:
+
+0 - the old way - the pointer changes to the "move window" sprite which is
+moved about the screen.
+
+1 - "Outline": the outline of the window is moved with the mouse
+
+2 - Full window : the entire indow is moved with the mouse
+
+Please read the "move_txt' documentation for more details.
+
+
+
+On a more anecdotical scale, the doc, exe, help, new subdirectories
+have all been moved into the extras subdirectory.
+
+
+There is also a new program that will (or is supposed to) make compilation
+of the sources a bit easier. This is  extras_exe_smsqemake. The documentation
+is in extras_help_smsqemake_doc or _txt
+
 
 ----
 3.00

@@ -1,25 +1,43 @@
 ; keys for Nasta's external graphics card (Aurora)
 ;
-vram_base       equ     $4c0000         ; aurora and LCD card vram base
-vram_size       equ     $3c000          ; aurora ram size
-vram_lcd        equ     $20000          ; lcd card ram size
-vram_llen       equ     $100            ; line length
-vram.test       equ     $1234           ; test pattern
+vram_base	equ	$4c0000 	; aurora and LCD card vram base
+vram_size	equ	$3c000		; aurora ram size
+vram_lcd	equ	$20000		; lcd card ram size
+vram_llen	equ	$100		; line length
+vramhc_llen	equ	$200		; high colour line length
+vram.test	equ	$1234		; test pattern
 
+emcr	equ	$18043			; extended mode control register
 
-emcr    equ     $18043                  ; extended mode control register
+em..hr0 equ	0			; horizontal resolution
+em..hr1 equ	1
+em..hr2 equ	2
+em..m0	equ	3			; mode
+em..m1	equ	4
+em..ar	equ	7			; aspect ratio
 
-em..hr0 equ     0                       ; horizontal resolution
-em..hr1 equ     1
-em..hr2 equ     2
-em..m0  equ     3                       ; mode
-em..m1  equ     4
-em..ar  equ     7                       ; aspect ratio
+em.lcd	equ	%10000001		; 640x480
 
-em.lcd  equ     %10000001               ; 640x480
+mpr	equ	$18043			; monitor preset register
 
-mpr     equ     $18043                  ; monitor (p)? register
+mp..ie	equ	0			; interlace enabled
+mp..mt0 equ	2			; monitor type
+mp..mt1 equ	4
 
-mp..ie  equ     0                       ; interlace enabled
-mp..mt0 equ     2                       ; monitor type
-mp..mt1 equ     4
+; Mode definiton macro. nr = internal mode number, xr/yr = resolution,
+; xo/yo = offset in VRAM, llen = VRAM llen, hw = hardware mode bits
+dwmode	macro	nr,xr,yr,hw,xo,yo,llen
+	dc.w	[xr],[yr]
+	dc.b	[nr],[hw],0,0
+	dc.l	vram_base+[yo]*[llen]+[xo]
+	dc.w	[llen]
+	endm
+
+; Offsets within mode definiton
+aum.xres  equ	0
+aum.yres  equ	2
+aum.nr	  equ	4
+aum.hw	  equ	5
+aum.base  equ	8
+aum.llen  equ	12
+aum.size  equ	14

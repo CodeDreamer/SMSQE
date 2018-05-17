@@ -1,0 +1,52 @@
+
+As of version 3.01 of SMSQ/E, new ways of moving a window about the screen
+have been added.
+
+
+There are now three ways a window be moved:
+
+
+0 - the old way - the pointer changes to the "move window" sprite which is
+moved about the screen.
+
+1 - "Outline": click on the move icon with the MOUSE - KEEP HOLDING THE BUTTON
+DOWN, an outline of the window appears which you can move around and position
+where you want it. Release the mouse button and the window positions itself
+correctly.
+
+Please note that you cannot use this move mode with anything but the mouse - the
+keyboard (cursor keys) will not work.
+
+
+3 - "Full window". This is the same as 1 above, but instead of an outline, the
+entire window is moved. For Q40/Q60 users, switching onthe Cache is advisable...
+
+Please note that you cannot use this move mode with anything but the mouse - the
+keyboard (cursor keys) will not work.
+
+
+The move modes are configured on a system-wide basis - you cannot have one
+job moving in mode 0 and the other in mode 1.
+
+Thus, all jobs are affected by the move mode, even those written a long time
+ago (unless, such as Qlib, the job doesn't use the WMAN move routine).
+
+The move mode can be changed in two ways:
+
+1 - Configure SMSQ/E  (WMAN) to a mode of your liking.
+
+2 - Use the new WM_MOVEMODE keyword
+
+This takes one parameter, an integer from 0 to 2:
+
+WM_MOVEMODE 0 : the old way
+
+WM_MOVEMODE 1 : the "outline" move
+
+WM_MOVEMODE 2 : the "full window" move
+
+
+Enjoy
+
+
+W. Lenerz

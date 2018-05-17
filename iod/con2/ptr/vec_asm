@@ -7,7 +7,7 @@
 	xref	pt_fspr
 	xref	pt_sspr
 	xref.l	pt.vers
-
+	xref	pt_mblock
 	xref.s	pt.spxlw
 	xref.s	pt.rpxlw
 
@@ -21,7 +21,9 @@ pv_table
 	nop
 	jmp	pt_sspr 		; $0c
 	nop
-	jmp	pt_size 		; $10
+	jmp	pt_size 		; $12
+	nop
+	jmp	pt_mblock
 	nop
 ;+++
 ;  PV_PINF	 $00

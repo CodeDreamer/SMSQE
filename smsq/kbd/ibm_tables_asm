@@ -1,4 +1,6 @@
 ; SMSQ IBM internal key tables	 2000 Tony Tebby
+;
+; 2000-06-24  1.01  Handles left and right shift key separately.
 
 	section kbd
 
@@ -43,7 +45,9 @@ kbd_krtab
 
 .	equ	kba.norm	normal key
 s	equ	kba.shift	shift action
+h	equ	kba.shftr
 c	equ	kba.ctrl	control action
+r	equ	kba.ctrlr
 a	equ	kba.alt 	alt action
 g	equ	kba.altgr	alt gr action
 k	equ	kba.caps	caps
@@ -58,9 +62,9 @@ kbd_atab
 	dc.b	.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,T
 	dc.b	.,.,.,.,.,.,.,.,.,.,.,.,.,C,.,.
 	dc.b	.,.,.,.,.,.,.,.,.,.,S,.,.,.,.,.
-	dc.b	.,.,.,.,.,.,S,.,A,.,K,.,.,.,.,.
+	dc.b	.,.,.,.,.,.,H,.,A,.,K,.,.,.,.,.
 	dc.b	.,.,.,.,.,.,L,.,.,.,.,.,.,.,.,.
-	dc.b	.,.,.,.,Y,.,.,.,G,.,.,.,.,C,.,.
+	dc.b	.,.,.,.,Y,.,.,.,G,.,.,.,.,R,.,.
 	dc.b	.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.
 	dc.b	.,.,.,.,.,B,.,.,.,.,.,.,.,.,.,.
 

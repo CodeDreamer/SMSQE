@@ -1,4 +1,6 @@
-; Draw 3d border	V1.00				2002 Marcel Kilgus
+; Draw 3d border	V1.01				2002 Marcel Kilgus
+;
+; 2003-05-02  1.01  Implemented the err.orng error handling I forgot (MK)
 
 	section wman
 
@@ -14,6 +16,7 @@
 	include 'dev8_keys_qdos_io'
 	include 'dev8_keys_syspal'
 	include 'dev8_keys_wman'
+	include 'dev8_keys_err'
 
 ; Reset macro counter
 s.cnt  setnum  0
@@ -74,6 +77,15 @@ w3d_raised
 	tst.l	d0
 	bne.s	w3d_exit
 
+	move.w	s.bcol(a1),d1
+	move.w	s.bwidth(a1),d2
+	bsr	wm_bordersize
+	move.l	s.xws(a1),d1
+	cmp.l	d1,d2
+	bgt.s	w3d_orng	; does x border size fit in window?
+	cmp.w	d1,d2
+	bgt.s	w3d_orng	; and y?
+
 	move.w	s.bcol(a1),d0
 	move.w	s.bwidth(a1),d1
 	andi.w	#%1110,d0
@@ -90,6 +102,10 @@ w3d_exit
 	movem.l (sp)+,d1-d5/a0-a3/a6
 w3d_rts
 	rts
+
+w3d_orng
+	moveq	#err.orng,d0
+	bra.s	w3d_exit
 
 ;+++
 ; Border draw routines

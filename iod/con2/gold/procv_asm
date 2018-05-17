@@ -1,10 +1,13 @@
-; Gold Card initialise QL Mode Displays        1992  Tony Tebby  QJUMP
+; Gold Card initialise QL Mode Displays 	1.01   1992  Tony Tebby  QJUMP
+;							2003  Marcel Kilgus
+;
+; 2003-03-05  1.01  Extended for mode 16 (MK)
 
 	section init
 
 	xdef	cn_procv
 
-	xref	au_sizes
+	xref	au_modes
 
 	xref	gu_tpadd
 	xref	gu_thini
@@ -14,7 +17,6 @@
 	include 'dev8_keys_con'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_qdos_sms'
-;	 include 'dev8_iod_bim_dddb_keys'  (exclusion - wl)
 	include 'dev8_keys_chn'
 	include 'dev8_keys_iod'
 	include 'dev8_keys_err'
@@ -111,19 +113,29 @@ glv_invr thg_extn INVR,glv_type,glv_uwrd
 	bra.s	disp_do
 
 ;+++
-; find display type = 0
+; find display type = 0 (QL), 3 (LCD), 5 (Aurora QL) or 16 (Aurora 256)
 ;     4(a1)	pointer to value
 ;---
 glv_type thg_extn TYPE,glv_colr,glv_rword
-	moveq	#sms.xtop,d0
+	moveq	#sms.dmod,d0	; get mode
+	moveq	#-1,d1
+	moveq	#-1,d2
+	trap	#do.smsq
+	and.w	#$00ff,d1
+	move.w	d1,d0
+	cmp.w	#ptm.aur8,d0	; is it GD2 mode?
+	beq.s	glvt_ret	; yes, return it
+
+	moveq	#sms.xtop,d0	; no, use traditional code
 	trap	#do.smsq
 	moveq	#0,d0
 	move.b	sys_mtyp(a6),d0 ; display type in most sig 3 bits
 	lsr.b	#5,d0
 	move.b	glv_ttab(pc,d0.w),d0
+glvt_ret
 	move.l	a1,-(sp)
 	move.l	4(a1),a1
-	move.w	d0,(a1)	; return it
+	move.w	d0,(a1) 	; return it
 	move.l	(sp)+,a1
 	moveq	#0,d0
 	rts
@@ -143,9 +155,9 @@ glv.reg reg	d1/d2/d3/d4/d6/a0/a1/a2/a3/a4
 
 	move.l	(a1)+,d3		; colour depth
 	move.w	d3,d0
-	beq.s	glvs_size 	; QL
+	beq.s	glvs_size		; QL
 	subq.w	#ptd.08,d0		; or 8 bit
-;;;;	    beq.s   glvs_size
+	beq.s	glvs_size
 	bra.s	glvs_scolr
 
 ;+++
@@ -174,33 +186,66 @@ glvs_rts
 glvs_do
 	moveq	#sms.xtop,d0
 	trap	#1
+	move.l	sys_clnk(a6),a3
 
 	moveq	#$ffffffe0,d0		 ; display type in most sig 3 bits
 	and.b	sys_mtyp(a6),d0
 	cmp.b	#sys.maur,d0		 ; Aurora?
-	bne	glv_rtsok 	 ; ... no
+	bne	glv_rtsok		 ; ... no
 
 	move.l	d3,d7			 ; colour depth mode required
+	bpl.s	glvs_chkxy
+	moveq	#0,d7
+	move.b	pt_cdpth(a3),d7 	 ; current colour depth
+glvs_chkxy
+	move.l	d1,d0			 ; either x or y given
+	or.l	d2,d0
+	bne.s	glvs_xysize		 ; ... yes
+	move.w	pt_xscrs(a3),d1 	 ; ... current x
+	move.w	pt_yscrs(a3),d2 	 ; ... current y
+glvs_xysize
 
-	lea	au_sizes,a2		 ; Aurora sizes
-	movem.l (a1),d1/d2		 ; size required
-	moveq	#-1,d6
-	moveq	#3,d0
-glvs_look
-	addq.l	#1,d6
-	cmp.w	(a2)+,d1		 ; next size
-	dble	d0,glvs_look
+	lea	au_modes,a2		 ; Aurora modes
+	assert	0,ptd.ql,ptd.08-2
+	adda.w	d7,a2
+	adda.w	(a2),a2 		 ; table for this mode
+	move.l	a2,-(sp)
 
-	add.l	d2,d2			 ; twice height
-	cmp.l	d1,d2			 ; is Y more than 1/2 x?
-	shi	d0			 ; ... yes
-	lsl.b	#7,d0
-	or.b	d0,d6			 ; set square pixel flag
-	moveq	#$ffffff87,d0
-	and.b	sys_hstt(a6),d0	 ; old mode
-	cmp.b	d6,d0			 ; new size?
-	beq	glv_rtsok 	 ; ... no
+glvs_xloop
+	adda.l	#aum.size,a2
+	cmp.l	#-1,(a2)		 ; last in list?
+	beq.s	glvs_xeol		 ; yes, exit
+	cmp.w	aum.xres(a2),d1 	 ; mode still fits?
+	bls.s	glvs_xloop		 ; yes, check next
 
+glvs_xeol
+	move.w	aum.xres-aum.size(a2),d1 ; best fitting X res
+	move.l	(sp)+,a2
+glvs_look4x
+	cmp.w	aum.xres(a2),d1 	 ; look for start of list with this X
+	beq.s	glvs_yloop
+	adda.l	#aum.size,a2
+	bra.s	glvs_look4x
+
+glvs_yloop
+	adda.l	#aum.size,a2
+	cmp.l	#-1,(a2)
+	beq.s	glvs_found
+	cmp.w	aum.xres(a2),d1 	 ; still same X?
+	bne.s	glvs_found		 ; no, exit
+	cmp.w	aum.yres(a2),d2 	 ; mode still fits?
+	bls.s	glvs_yloop		 ; yes, check next
+
+glvs_found
+	suba.l	#aum.size,a2
+	move.b	aum.nr(a2),d6		 ; internal mode number
+	move.l	aum.xres(a2),d0 	 ; resolution
+	cmp.l	pt_xscrs(a3),d0 	 ; new size?
+	bne.s	glv_dochange		 ; ... yes, change it
+
+	cmp.b	pt_cdpth(a3),d7 	 ; new colour depth?
+	beq	glv_rtsok		 ; no, no change
+glv_dochange
 	move.l	pt_change(a3),a1
 	jmp	(a1)
 

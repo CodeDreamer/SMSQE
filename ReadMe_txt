@@ -1,3 +1,5 @@
+(document last amended for version 3.01)
+
 Please look to the file whats_new_txt to see what's new in this version
 of SMSQ/E!
 
@@ -11,7 +13,7 @@ of SMSQ/E!
 1 - Compiling the source code
 
 
-There is a document called "HowTo" in the subdirectory "help".
+There is a document called "HowTo" in the subdirectory "extras_help".
 
 It exists either as a simple text file (HowTo_txt) or as a Quill Doc file
 (HowTo_doc).
@@ -22,24 +24,38 @@ assembling and linking is presumed.
 
 2 - Additional programs
 
-I have created three new subdirectories as compared to the original source
-code that came from Tony Tebby:
+I have created several new subdirectories as compared to the original source
+code that came from Tony Tebby and put them all into one subdirectory called
 
- - help
- - exe
+
  - extras
- - doc
 
-The help directory will contain the help files, as and when they are made.
+   this has several new subdirectories itself:
 
-The exe directory contains additional programs that are useful or essential
+   _exe
+   _help
+   _new
+   _doc
+
+
+The help subdirectory will contain the help files, as and when they are made.
+
+The exe subdirectory contains additional programs that are useful or essential
 for compiling the source code.
 
-The extras directory contains additional programs, mostly those used by myself
-in an attempt to make compilation easier. Any program put into that directory
-should have a corresponding help file in the help directory.
-
 The doc directory contains documentation on new features.
+
+The new subdirectory contain documentation on features that are new to
+THIS version of SMSQ/E.
+
+In the next version, this documentation is moved to either the _doc or the
+_help subdirecotories.
+
+
+The extras directory itself contains additional programs, mostly those used by
+myself in an attempt to make compilation easier. Any program put into that
+directory should have a corresponding help file in the help directory.
+
 
 3 - Changes to the source code.
 

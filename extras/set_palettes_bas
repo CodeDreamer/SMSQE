@@ -20,7 +20,7 @@
 290   avbg%=0
 300   self%=-1
 310   RESTORE 1140
-320   set_pal 1
+320   set_pal 0
 330 END DEFine set_copper_palette
 340 :
 350 DEFine PROCedure set_pal (syspal)
@@ -142,12 +142,12 @@
 1510   DATA bord%: REMark Button border
 1520   DATA mco% : REMark Button background
 1530   DATA $0   : REMark Button foreground
-1540   DATA $0   : REMark Hint border
-1550   DATA $0   : REMark Hint background
-1560   DATA $0   : REMark Hint foreground
+1540   DATA hi%  : REMark Hint border
+1550   DATA mco% : REMark Hint background
+1560   DATA avfg%: REMark Hint foreground
 1570   DATA $0   : REMark Hint middleground
-1580   DATA $0   : REMark Error background
-1590   DATA $0   : REMark Error foreground
+1580   DATA sel% : REMark Error background
+1590   DATA self%: REMark Error foreground
 1600   DATA $0   : REMark Error middleground
 1610   DATA dar% : REMark Shaded area
 1620   DATA bord%: REMark Dark 3D border shade

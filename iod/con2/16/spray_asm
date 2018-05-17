@@ -1,4 +1,5 @@
-; Spray pixels in blob			V2.00   1992  Tony Tebby
+; Spray pixels in blob	       V2.00   1992  Tony Tebby
+; 2003-10-22			2.01	set "end" before the real non functional code
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -29,10 +30,13 @@ pts_exit
 	movem.l (sp)+,spryreg		; only come here on error
 	move.l	(sp)+,a0
 	rts
-;
+
 pt_spray
- moveq	#err.ipar,d0
- rts
+	moveq  #err.ipar,d0
+	rts
+
+	end
+
  dc.l $4afbedeb  ; dragon
  moveq	#0,d0
  rts

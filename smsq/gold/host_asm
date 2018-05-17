@@ -1,4 +1,6 @@
-; SMSQ GOLD Card Host module
+; SMSQ GOLD Card Host module	v1.01
+;
+; 2003-10-05  1.01  Fixed copy problem that could hang SMSQ/E later (MK)
 
 	section host
 
@@ -51,6 +53,7 @@ glh_copy
 	move.l	(a2)+,(a1)+
 	cmp.l	a5,a2
 	blt.s	glh_copy
+	clr.l	(a1)			 ; signal "end of modules"
 
 glh_jump
 	pea	base			 ; set base address for debug

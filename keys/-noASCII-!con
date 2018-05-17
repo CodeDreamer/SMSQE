@@ -124,6 +124,7 @@ pt_cwbsy equ	$ad  b	current window busy count
 pt.cwbsy equ	  10	  number of scheduler loops before true busy
 pt_supcr equ	$ae  b	suppress cursor key stuffing
 pt_bpoll equ	$af  b	buttons set on poll
+pt_kypol equ	$af  b	same for ptr_gen- buttons set on poll
 pt_svers equ	$b0  b	dynamic Sprite VERSion
 pt_mvers equ	$b1  b	Max count for this sprite VERSion
 pt_randi equ	$b2  w	RANDom number Initial value (for spray)
@@ -181,14 +182,14 @@ pt_palql equ	$114   ; long  pointer to QL palette
 pt_pal256 equ	$118   ; long  pointer to 256 colour palette
 pt_pspck equ	$11c   ; long  pointer to pointer sprite for checking
 pt_bgcld equ	$120   ; long  background colour definition
-pt_wmpal equ	$124   ; long  WMAN system palette
+pt_wdata equ	$124   ; long  pointer to WMAN data area
 
 pt_ident equ	$128   ; long  identifier
 pt.ident equ	  'PTR2'
 pt_drtab equ	$12c   ; 5*long driver installation routine addresses
 pt_cdpth equ	$140   ; byte	current colour depth
 pt_cdtab equ	$141   ; 5*byte modes for each resolution
-pt_sstb  equ	$146   ; long  pointer to system sprites table
+pt_sstb  equ	$146   ; long  pointer to system sprite table
 pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
 pt_vecs  equ	$150   ; long  pointer to block with vectored routines
 pt_end	 equ	$154   ; length of pointer linkage block
@@ -199,8 +200,8 @@ pt_end	 equ	$154   ; length of pointer linkage block
 pv_pinf  equ	$00    ; Get pointer information (IOP.PINF equivalent)
 pv_fspr  equ	$06    ; find fitting sprite definition
 pv_sspr  equ	$0c    ; set system sprite/get system sprite address
-pv_size  equ	$10    ; get pixel rounding sizes
-
+pv_size  equ	$12    ; get pixel rounding sizes
+pv_mblk  equ	$18    ; move blocks
 *
 * Channel definition block
 *
@@ -290,4 +291,17 @@ sd.stdln equ	  $130 ... standard length including queue
 sd.dq1l  equ	12
 sd.dq2	 equ	sd_keyq+8	(beware ... used in qtyp)
 *
+
+* some keys for ptr_gen
+
+; pt.spsln equ	  $3c0	  mem needed for sprite
+
+pt_clink equ	$54	OK	link through
+pt_mtest equ	$58   ******	change linkage
+bm_scren equ	$5c   ******	screen parameters
+
+pt_liodm equ	$70	OK
+pt_aiodm equ	$74	OK	dummy linkage (io)
+pt_aopdm equ	$78	OK	dummy linkage (open)
+pt_acldm equ	$7c	OK	dummy linkage (close)
 	list

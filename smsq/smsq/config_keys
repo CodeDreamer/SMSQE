@@ -20,3 +20,4 @@ sms_nqimi  equ	$16	   ; byte	ignore qimi (Gold card)
 sms_clock  equ	$17	   ; byte	clock speed (QXL)
 sms_128k   equ	$18	   ; byte	set if reset for small memory
 sms_dlan   equ	$1a	   ; word	default messages language
+sms_kstuf  equ	$1c	   ; byte	key used to stuff into buffer in cn_edlin

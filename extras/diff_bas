@@ -1,165 +1,204 @@
 100 REMark MAKE SURE YOU LRESPR THE OUTPTR_BIN EXTENSIONS
-110 REMark BEFORE USING THIS PROGRAM (in dev8_exe_source)
+110 REMark BEFORE USING THIS PROGRAM (in dev8_extras_exe_source)
 120 :
 130 DEFine PROCedure p
 140   read_data_to_exclude
 150   do_diffs 'win2_','dev8_'
-160   zip_it "dev8_"
+160 REMark  zip_it "dev8_"
 170 END DEFine p
 180 :
 190 DEFine PROCedure do_diffs(old_device$,new_version$)
 200 LOCal o%
 210   o%=FOP_OVER('ram1_diffs_result_txt')
 220   d%=FOP_OVER('ram1_diffs_result_deleted_files')
-230   extract_diff old_device$,new_version$,"",1,o%,d%,0
-240   extract_diff new_version$,old_device$,"",1,o%,d%,1
-250   PRINT#o%
-260   CLOSE#o%
-270   PRINT#d%
-280   CLOSE#d%
-290 END DEFine do_diffs
-300 :
-310 DEFine PROCedure extract_diff(dev1$,dev2$,mdirs$,ddown%,o%,d%,existfl%)
-320 REMark extract differences: fins out which file has been changed in
-330 REMark dev2$ with respect to dev1$
-340 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
-350 REMark by calling itself recursively
-360 REMark the filenames found are sent into channel o% passed as parameter
-370 REMark if existfl%=1 then we only care if the file also exists in dev2$
-380 REMark this presumes that the global var exclusions$ has been validly set
-390 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new
-400   FOR lp%=1 TO 50
-410     myfile$="ram1_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
-420     chan%=FOP_NEW (myfile$)             : REMark try to open unique file
-430     IF chan%>0:EXIT lp%
-440   END FOR lp%
-450   PRINT mdirs$
-460   IF chan%<0:RETurn                     : REMark ooops!!!!
-470   WDIR#chan%,dev1$&mdirs$               : REMark dir of this rep in file
-480   GET#chan%\0                           : REMark reset file pointer to start
-490   REPeat lp%
-500     IF EOF(#chan%):EXIT lp%
-510     INPUT#chan%,a$                      : REMark get filename
-520     IF a$="":NEXT lp%
-530     t%= ' ->' INSTR a$                  : REMark is it a subdir?
-540     IF t%
-550       extract_diff dev1$,dev2$,a$(1 TO t%-1),ddown%,o%,d%,existfl%
-560       NEXT lp%
-570     END IF
-580     tc%=LEN(a$)
-590     IF is_excluded% (a$,tc%):NEXT lp%   : REMark don't treat all files
-600     tc%=FOP_IN(dev1$&a$)                : REMark open "old" file
-610     IF tc%<0:NEXT lp%
-620     date_old=FUPDT(#tc%)                : REMark file date of "old" file
-630     len_old=FLEN(#tc%)                  : REMark length of "old" file
-640     CLOSE#tc%
-650     tc%=FOP_IN(dev2$&a$)                : REMark try to open same "new" file
-660     IF tc%<0
-670       PRINT#d%,a$;"  ==>  doesn't exist": REMark potential file problem!
-680       PRINT#o%,a$;"  ==>  doesn't exist": REMark potential file problem!
-690       REPORT#d%,tc%                     : REMark or reminder that file was deleted!
-700       NEXT lp%
-710     END IF
-720     IF existfl%:CLOSE#tc%:NEXT lp%
-730     date_new=FUPDT(#tc%)
-740     len_new=FLEN(#tc%)
-750     CLOSE#tc%
-760     IF date_old<date_new
-770       PRINT#o%,a$;"  ==>   File was updated ",len_new
-780       NEXT lp%
-790     END IF
-800     IF date_old>date_new
-810       PRINT#o%,a$,"  ==>   File was DOWNdated !!! !!! !! ",len_new
-820       NEXT lp%
-830     END IF
-840     IF len_old<>len_new
-850       PRINT#o%,a$,"  ==>   Same date, but file length change ",len_new
-860       NEXT lp%
-870     END IF
-880   END REPeat lp%
-890   CLOSE#chan%
-900   DELETE myfile$
-910 END DEFine extract_diff
-920 :
-930 DEFine PROCedure sa
-940   SAVE_O DEV8_extras_diff_bas
-950 END DEFine sa
-960 :
-970 DEFine PROCedure zip_it (dev1$)
-980 LOCal o%,z$,lp%,t%
-990   o%=FOP_IN('ram1_diffs_result_txt')
-1000   IF o%<0:RETurn
-1010   REPeat lp%
-1020     IF EOF(#o%):EXIT lp%
-1030     INPUT#o%,a$
-1040     IF a$="":NEXT lp%
-1050     t%="  ==>" INSTR a$
-1060     a$=a$(1 TO t%-1)
-1070     z$=z$&dev1$&a$&" "
-1080   END REPeat lp%
-1090   CLOSE#o%
-1100   EW dev1_progs_zip;" -r9 ram1_changes.zip "&z$
-1110 END DEFine zip_it
-1120 :
-1130 DEFine FuNction is_excluded%(a$,tc%)
-1140 REMark this excludes files from being considered as new or upgrades files
-1150 REMark returns 1 if fime is to be excluded, 0 if not
-1160 REMark needs asearch from outptr_bin, used the global var exclusion$
-1170 LOCal extn$
-1180   IF ASEARCH(exclusions$,a$,0,0) > 0:RETurn 1
-1190   extn$= a$(tc%-3 TO)
-1200   IF extn$=="_rel":RETurn 1    : REMark don't treat rel files!
-1210   IF extn$=="_map":RETurn 1    : REMark etc
-1220   IF extn$=="_err":RETurn 1    : REMark
-1230   IF extn$=="_log":RETurn 1    : REMark
-1240   IF extn$=="_lib":RETurn 1    : REMark
-1250   IF extn$=="_rom":RETurn 1    : REMark
-1260   RETurn 0
-1270 END DEFine is_excluded%
-1280 :
-1290 DEFine PROCedure read_data_to_exclude
-1300 LOCal lp%,a$,num%
-1310   RESTORE
-1320   FOR lp%=1 TO 1000
-1330     READ a$
-1340     IF a$="":EXIT lp%
-1350   END FOR lp%
-1360   num%=lp%-1
-1370   DIM exclusions$(num%,50)
-1380   RESTORE
-1390   FOR lp%=1 TO num%:READ exclusions$(lp%)
-1400 END DEFine read_data_to_exclude
-1410 :
-1420 REMark generic_targets
-1430   DATA "dd_qlnd_new" ,"dd_nd_new","dv3_test",'smsq_sbas_lang','smsq_sbas_control'
-1440   DATA "smsq_sbas_procs_x","smsq_smsq_cache","smsq_smsq_cache40c","smsq_smsq_fh_os"
-1450   DATA "smsq_smsq_hotkey","smsq_smsq_lang","smsq_smsq_loader"
-1460   DATA "smsq_smsq_os","smsq_smsq_1mb_os","smsq_smsq_vers","smsq_smsq_wman"
-1470   DATA "util_thg_thing","ee_wman_wman"
-1480 REMark atari_targets
-1490   DATA "smsq_atari_driver_dv3","smsq_atari_driver_ser","smsq_atari_driver_ql"
-1500   DATA "smsq_atari_driver_mono","smsq_atari_hwinit","smsq_atari_nasty"
-1510   DATA "smsq_atari_kbd_lang","smsq_atari_SMSQ.PRG"
-1520   DATA "sys_boot_st_host","smsq_atari_sysspr"
-1530 REMark gold targets
-1540   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd"
-1550   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
-1560   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
-1570   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
-1580   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot","smsq_gold_gold"
-1590   DATA "smsq_gold_sysspr"
-1600 REMark q40_targets
-1610   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
-1620   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
-1630   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_rom"
-1640   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"
-1650   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
-1660   DATA "smsq_q40_sysspr"
-1670 REMark qxl_targets
-1680   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
-1690   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
-1700   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x","smsq_qxl_smsqe.exe"
-1710   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e","smsq_qxl_sysspr"
-1720   DATA "smsq_help_help_index"
-1730   DATA ""
-1740 :
+230   e%=FOP_OVER('ram1_diffs_errors')
+240   extract_diff old_device$,new_version$,"",1,o%,e%
+250   extract_deletes old_device$,new_version$,"",1,d%
+260   PRINT#o%
+270   CLOSE#o%
+280   PRINT#d%
+290   CLOSE#d%
+300   PRINT#e%
+310   CLOSE#e%
+320 END DEFine do_diffs
+330 :
+340 DEFine PROCedure extract_diff(old_dev$,new_dev$,mdirs$,ddown%,o%,e%)
+350 REMark extract differences: finds out which files have been changed in
+360 REMark the device new_dev$ with respect to the device old_dev$
+370 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
+380 REMark by calling itself recursively
+390 REMark mdir$ is the directory we start at in each device
+400 REMark the filenames found are sent into channel o% passed as parameter
+410 REMark this presumes that the global var exclusions$ has been validly set
+420 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new
+430   FOR lp%=1 TO 50
+440     myfile$="ram1_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+450     chan%=FOP_NEW (myfile$)             : REMark try to open unique file
+460     IF chan%>0:EXIT lp%
+470   END FOR lp%
+480   PRINT mdirs$
+490   IF chan%<0:RETurn                     : REMark ooops!!!!
+500   WDIR#chan%,new_dev$&mdirs$            : REMark dir in file
+510   GET#chan%\0                           : REMark reset file pointer to start
+520   REPeat lp%
+530     IF EOF(#chan%):EXIT lp%
+540     INPUT#chan%,a$                      : REMark get filename
+550     IF a$="":NEXT lp%
+560     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+570     IF t%
+580       IF ddown%:extract_diff old_dev$,new_dev$,a$(1 TO t%-1),ddown%,o%,e%
+590       NEXT lp%
+600     END IF
+610     IF is_excluded% (a$):NEXT lp%   : REMark don't treat all files
+620     tc%=FOP_IN(old_dev$&a$)             : REMark try to open "old" file
+630     IF tc%<0
+640       PRINT#o%,a$;"  ==>  new addition" : REMark potential file problem!
+650       NEXT lp%                          : REMark can't open it
+660     END IF
+670     date_old=FUPDT(#tc%)                : REMark file date of "old" file
+680     len_old=FLEN(#tc%)                  : REMark length of "old" file
+690     CLOSE#tc%
+700     tc%=FOP_IN(new_dev$&a$)             : REMark try to open same "new" file
+710     IF NOT tc%
+720         REPORT#e%;                      : REMark what?????
+730         PRINT#e%, "    ";a$
+740         NEXT lp%
+750     END IF
+760     date_new=FUPDT(#tc%)                : REMark date of new file
+770     len_new=FLEN(#tc%)                  : REMark length of new file
+780     CLOSE#tc%
+790     IF date_old<date_new
+800       PRINT#o%,a$;"  ==>   File was updated ",len_new
+810       NEXT lp%
+820     END IF
+830     IF date_old>date_new
+840       PRINT#e%,a$,"  ==>   File was DOWNdated !!! !!! !! ",len_new: REMark WHAT???
+850       NEXT lp%
+860     END IF
+870     IF len_old<>len_new
+880       PRINT#o%,a$,"  ==>   Same date, but file length change ",len_new
+890       NEXT lp%
+900     END IF
+910   END REPeat lp%
+920   CLOSE#chan%
+930   DELETE myfile$
+940 END DEFine extract_diff
+950 :
+960 DEFine PROCedure extract_deletes(old_dev$,new_dev$,mdirs$,ddown%,d%)
+970 REMark finds out which files have been deleted on new_device with respect
+980 REMark to old device
+990 REMark this presumes that the global var exclusions$ has been validly set
+1000 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new
+1010   FOR lp%=1 TO 50
+1020     myfile$="ram1_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+1030     chan%=FOP_NEW (myfile$)             : REMark try to open unique file
+1040     IF chan%>0:EXIT lp%
+1050   END FOR lp%
+1060   PRINT mdirs$
+1070   IF chan%<0:RETurn                     : REMark ooops!!!!
+1080   WDIR#chan%,old_dev$&mdirs$            : REMark dir in file
+1090   GET#chan%\0                           : REMark reset file pointer to start
+1100   REPeat lp%
+1110     IF EOF(#chan%):EXIT lp%
+1120     INPUT#chan%,a$                      : REMark get filename
+1130     IF a$="":NEXT lp%
+1140     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+1150     IF t%
+1160       IF ddown%:extract_deletes old_dev$,new_dev$,a$(1 TO t%-1),ddown%,d%
+1170       NEXT lp%
+1180     END IF
+1190     IF is_excluded% (a$):NEXT lp%   : REMark don't treat all files
+1200     tc%=FOP_IN(new_dev$&a$)             : REMark try to open new file
+1210     IF tc%<0
+1220       PRINT#d%,a$;"  ==>  was deleted in new version" : REMark
+1230     ELSE
+1240       CLOSE#tc%
+1245     END IF
+1250   END REPeat lp%
+1260   CLOSE#chan%
+1270   DELETE myfile$
+1280 END DEFine extract_diff
+1290 :
+1300 DEFine PROCedure sa
+1310   SAVE_O DEV8_extras_diff_bas
+1320 END DEFine sa
+1330 :
+1340 DEFine PROCedure zip_it (my_dev$)
+1350 LOCal o%,z$,lp%,t%
+1360   o%=FOP_IN('ram1_diffs_result_txt')
+1370   IF o%<0:RETurn
+1380   REPeat lp%
+1390     IF EOF(#o%):EXIT lp%
+1400     INPUT#o%,a$
+1410     IF a$="":NEXT lp%
+1420     t%="  ==>" INSTR a$
+1430     a$=a$(1 TO t%-1)
+1440     z$=z$&my_dev$&a$&" "
+1450   END REPeat lp%
+1460   CLOSE#o%
+1470   EW dev1_progs_zip;" -r9 ram1_changes.zip "&z$
+1480 END DEFine zip_it
+1490 :
+1500 DEFine FuNction is_excluded%(a$)
+1510 REMark this excludes files from being considered as new or upgrades files
+1520 REMark returns 1 if file is to be excluded, 0 if not
+1530 REMark needs asearch from outptr_bin, used the global var exclusion$
+1540 LOCal extn$,tc%
+1550   IF ASEARCH(exclusions$,a$,0,0) > 0:RETurn 1
+1560   tc%=LEN(a$): IF tc%<5:RETurn 0
+1570   extn$= a$(tc%-3 TO)
+1580   IF extn$=="_rel":RETurn 1    : REMark don't treat rel files!
+1590   IF extn$=="_map":RETurn 1    : REMark etc
+1600   IF extn$=="_err":RETurn 1    : REMark
+1610   IF extn$=="_log":RETurn 1    : REMark
+1620   IF extn$=="_lib":RETurn 1    : REMark
+1630   IF extn$=="_rom":RETurn 1    : REMark
+1640   RETurn 0
+1650 END DEFine is_excluded%
+1660 :
+1670 DEFine PROCedure read_data_to_exclude
+1680 LOCal lp%,a$,num%
+1690   RESTORE  1800
+1700   FOR lp%=1 TO 1000
+1710     READ a$
+1720     IF a$="":EXIT lp%
+1730   END FOR lp%
+1740   num%=lp%-1
+1750   DIM exclusions$(num%,50)
+1760   RESTORE 1800
+1770   FOR lp%=1 TO num%:READ exclusions$(lp%)
+1780 END DEFine read_data_to_exclude
+1790 :
+1800 REMark generic_targets
+1810   DATA "dd_qlnd_new" ,"dd_nd_new","dv3_test",'smsq_sbas_lang','smsq_sbas_control'
+1820   DATA "smsq_sbas_procs_x","smsq_smsq_cache","smsq_smsq_cache40c","smsq_smsq_fh_os"
+1830   DATA "smsq_smsq_hotkey","smsq_smsq_lang","smsq_smsq_loader"
+1840   DATA "smsq_smsq_os","smsq_smsq_1mb_os","smsq_smsq_vers","smsq_smsq_wman"
+1850   DATA "util_thg_thing","ee_wman_wman"
+1860 REMark atari_targets
+1870   DATA "smsq_atari_driver_dv3","smsq_atari_driver_ser","smsq_atari_driver_ql"
+1880   DATA "smsq_atari_driver_mono","smsq_atari_hwinit","smsq_atari_nasty"
+1890   DATA "smsq_atari_kbd_lang","smsq_atari_SMSQ.PRG"
+1900   DATA "sys_boot_st_host","smsq_atari_sysspr"
+1910 REMark gold targets
+1920   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd"
+1930   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
+1940   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
+1950   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
+1960   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot","smsq_gold_gold"
+1970   DATA "smsq_gold_sysspr"
+1980 REMark q40_targets
+1990   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
+2000   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
+2010   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_rom"
+2020   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"
+2030   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
+2040   DATA "smsq_q40_sysspr"
+2050 REMark qxl_targets
+2060   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
+2070   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
+2080   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x","smsq_qxl_smsqe.exe"
+2090   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e","smsq_qxl_sysspr"
+2100   DATA "smsq_help_help_index"
+2110   DATA ""
+2120 :

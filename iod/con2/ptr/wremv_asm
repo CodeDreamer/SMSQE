@@ -2,6 +2,7 @@
 *						 2002  Marcel Kilgus
 *
 * 2002-03-09  1.03  Changed for new on-the-fly wallpaper (MK)
+* 2003-06-19  1.04  removed useless xref for cn_io (wl)
 *
 *	Remove a window.  To do this we must put the window at the bottom of
 *	the pile, then go through the pile from bottom to top "restoring"
@@ -28,7 +29,6 @@
 	xref	pt_fillsv
 	xref.s	pt.spxlw ; shift pixel to long word
 	xref.s	pt.rpxlw ; round up pixel to long word (2^spxlw-1)
-	xref	cn_io
 *
 	xdef	pt_alcsv
 	xdef	pt_wremv

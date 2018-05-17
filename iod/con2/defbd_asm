@@ -1,4 +1,6 @@
-;	Define a border 		V2.00   1998 Tony Tebby
+;	Define a border 		V2.01   1998 Tony Tebby
+;
+; 2003-10-06  2.01  Fixed extended colour calls with width=0. (MK)
 ;
 ;	A border is put around the inside edge of the hit area, and the active
 ;	area shrunk appropriately.
@@ -81,7 +83,7 @@ cnb_ext_contrast
 
 cnb_setx
 	tst.w	d2			; for extended colour calls
-	bgt.s	cnb_set
+	bpl.s	cnb_set
 	move.b	d6,sd_bcolr(a0) 	; set colour
 	move.w	d7,sd_bcolw(a0)
 	moveq	#0,d0

@@ -7,10 +7,9 @@
 	xdef	wm_jbpal
 
 	xref	wmc_error
-	xref	wm_getspvec
-	xref	wm_setspvec
 	xref	gu_achpp
 
+	include 'dev8_ee_wman_data'
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_con'
@@ -110,6 +109,7 @@ wsp_subtitfg	dc.w	$00
 wsp_mindexbg	dc.w	$07		; Menu window index (e.g. A B C D ...)
 wsp_mindexfg	dc.w	$00
 wsp_separator	dc.w	$04		; Seperator line. Must fit to InfWin
+
 
 ; Red/black
 wsp_table2
@@ -498,6 +498,23 @@ wm_getspaddress
 	rts
 
 ;+++
+; Get pointer to system palette block
+;
+;	d1  r	current job ID
+;	a0  r	pointer to palette
+;---
+wm_getspvec
+	movem.l d2,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a0 	; console linkage
+	move.l	pt_wdata(a0),a0 	; WMAN data
+	move.l	wd_syspal(a0),a0	; system palette
+	movem.l (sp)+,d2
+	tst.l	d0
+	rts
+
+;+++
 ; Get system palette address for this job
 ;
 ;	a0  r	palette address
@@ -620,7 +637,7 @@ wmjp_ijob
 ;	status return standard
 ;---
 wm_initsp
-	movem.l d1-d3/a0-a1,-(sp)
+	movem.l d1-d3/a1,-(sp)
 	moveq	#sms.info,d0
 	trap	#1
 	move.l	sys_jbtt(a0),d0
@@ -647,11 +664,9 @@ wmi_loop
 	dbf	d0,wmi_loop
 
 	move.l	(sp)+,a0
-	bsr	wm_setspvec
-
 	moveq	#0,d0
 wmi_rts
-	movem.l (sp)+,d1-d3/a0-a1
+	movem.l (sp)+,d1-d3/a1
 	rts
 
 	end

@@ -1,10 +1,9 @@
 ; Window manager point to error string	 V0.00	  1986   Tony Tebby   QJUMP
-
+; 2003 Jun 24				1.00	met_ebad no longer xref'd (wl)
 	section wman
 
 	xdef	wm_erstr
 
-	xref	met_ebad
 
 	include 'dev8_keys_qdos_sms'
 
@@ -72,4 +71,10 @@ wme_exit
 	movem.l (sp)+,reglist
 	tst.l	d0
 	rts
+
+met_ebad
+	dc.w	met2-*-2
+	dc.b	'an unknown eror occurred'
+met2
+	dc.w	0
 	end

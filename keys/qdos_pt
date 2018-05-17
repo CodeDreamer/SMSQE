@@ -48,7 +48,7 @@ pp_xpos  equ	$06	x position or -1
 pp_ypos  equ	$08	y position or -1
 pp_kstrk equ	$0a	keystroke
 pp_kpres equ	$0b	key depressed
-pp_event equ	$0c	event vector  
+pp_event equ	$0c	event vector
 pp_jevnt equ	$0c	job event
 pp_wevnt equ	$0d	window byte of event vector
 pp_sevnt equ	$0e	sub-window byte of event vector
@@ -63,13 +63,15 @@ pto_vers equ	$02	byte	dynamic sprite VERSion number
 pto_ctrl equ	$03	byte	sprite control bits
 pto.cver equ	%00000011	cache version number bits
 pto.fupd equ	%00000011	pto.cver value for "force cache update"
+pto.blk  equ	%00000100	bit set if sprite block present
+pto..blk equ	2
+pto.opt  equ	%00001000	bit set if options (pointer) present
+pto..opt equ	4
 pto.alph equ	%00100000	sprite uses alpha channel
 pto..alph equ	5
 pto.pcmp equ	%01000000	pattern compressed bit
 pto.mcmp equ	%10000000	mask compressed bit
 pto.cmp  equ	%11000000	sprite compressed bit
-pto..blk equ	2		bit set if sprite block present
-pto..opt equ	4		bit set if options (pointer) present
 pto_size equ	$04		x and y SIZE of object
 pto_xsiz equ	$04	word	X SIZe of object
 pto_ysiz equ	$06	word	Y SIZe of object
@@ -91,7 +93,7 @@ pto.xshl equ	$20		eXtended Sprite Header Length
 ptp_link equ	$00	long	user defined LINK longword
 ptp_flag equ	$04	word	FLAG word
 ptp.flag equ	$4afc		what you expect to find there
-ptp_xsiz equ	$06	word	total X SIZe 
+ptp_xsiz equ	$06	word	total X SIZe
 ptp_ysiz equ	$08	word	total Y SIZe
 ptp_rinc equ	$0a	word	Row INCrement
 ptp_mode equ	$0c	word	MODE of saved data

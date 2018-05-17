@@ -41,42 +41,42 @@ reglist reg d1-d7/a1-a4
 	movem.l reglist,-(sp)
 	sub.l	#frame,sp
 	move.l	sp,a1
-	move.l	d0,d6			 ; keep section info
+	move.l	d0,d6			; keep section info
 	swap	d6
-	tst.w	d6			 ; do any section?
-	blt.s	wub_doy 		 ; ... no
-	move.l	wwa_part(a3),d0 	 ; any x control?
-	beq.s	wub_doy 		 ; ... no
+	tst.w	d6			; do any section?
+	blt.s	wub_doy 		; ... no
+	move.l	wwa_part(a3),d0 	; any x control?
+	beq.s	wub_doy 		; ... no
 	move.l	d0,a2
-	tst.w	(a2)			 ; any sections?
+	tst.w	(a2)			; any sections?
 	beq.s	wub_doy
 
-	moveq	#0,d7			 ; item border
+	moveq	#0,d7			; item border
 	moveq	#0,d5
 
-	move.l	wwa_psbc(a3),d4 	 ; colours
-	beq.s	wub_doy 		 ; ... none
+	move.l	wwa_psbc(a3),d4 	; colours
+	beq.s	wub_doy 		; ... none
 	swap	d4
 
-	move.w	wwa_xsiz(a3),d0 	 ; pan bar window size
+	move.w	wwa_xsiz(a3),d0 	; pan bar window size
 	move.w	wwa_xorg(a3),d2
 	moveq	#ww.pnbar,d1
 	move.w	wwa_yorg(a3),d3
 	add.w	wwa_ysiz(a3),d3
 	add.w	wwa_watt+wwa_borw(a3),d3
-	movem.w d0-d3,s.bs(a1)		 ; save bar def
+	movem.w d0-d3,s.bs(a1)		; save bar def
 	movem.w d5/d7,s.bw(a1)
 
 	move.w	d6,d3
 	move.w	(a2)+,d6
-	sub.w	d3,d6			 ; number of sections after our section
+	sub.w	d3,d6			; number of sections after our section
 	mulu	#wss.ssln,d3
-	add.l	d3,a2			 ; our section control
+	add.l	d3,a2			; our section control
 	sne	d3
 	ext.w	d3
 	neg.w	d3
 
-	move.w	wwa_ncol(a3),d5 	 ; number of columns
+	move.w	wwa_ncol(a3),d5 	; number of columns
 	bsr.l	wdb_oner
 
 wub_doy
@@ -183,10 +183,9 @@ wdb_doy
 	move.w	wwa_watt+wwa_borw(a3),d7 ; item border
 	move.w	d7,d5
 	add.w	d5,d5			 ; doubled
-
-	move.l	wwa_psbc+wwa.clen(a3),d4 ; colours
+	move.l	wwa_psbc+wwa.clen(a3),d4 ; scroll bar | scroll bar section colours
 	beq.s	wdb_ok			 ; ... none
-	swap	d4
+	swap	d4			 ; bar section | bar colours
 
 	move.w	wwa_ysiz(a3),d1 	 ; pan bar window size
 	move.w	wwa_yorg(a3),d3

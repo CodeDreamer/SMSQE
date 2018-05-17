@@ -320,13 +320,26 @@
 *	wallpaper colour is now drawn on the fly (MK)
 *	16 bit shadow routine added (MK)
 *
-*	V2.00
+*	V1.74
 *	added mode 64 (true colour in 32bit) for sprites (MK)
 *	added even more modes (JG & MK)
 *	fixed crashes and weird behaviour in low memory situations (MK)
 *	added support for large sprites (MK)
+*	no more MOVEP for Qx0 (FD)
 *
-pt.vers equ	'2.00'
+*	V2.00
+*	Bugfixes for some EE traps, keep A1 as per documentation (WL)
+*	Added support for alpha blending and RLE compression of sprites (MK)
+*	New con/ptr vectors concept introduced (MK)
+*	Better handlng of system sprites, many more system sprites introduced (MK)
+*	8 bit Aurora GD2 driver, also introduced in QPC (MK)
+*
+*	V2.01
+*	Fixed wallpaper on mode change (MK)
+*	More con vectors (WL)
+*	More system sprites (MK)
+
+pt.vers equ	'2.01'
 pt_vers equ	pt.vers
 	dc.l	pt.vers
 

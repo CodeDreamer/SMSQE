@@ -30,7 +30,7 @@
 390 DEFine PROCedure make_it
 400 REMark compile only the Q40 specific parts
 410   CLS:PRINT 'compiling Q40 specific parts...'
-420   my_errors=0
+420   my_error=0
 430   compile_and_check 'dev8_smsq_q40_hwinit_link'
 440   compile_and_check 'dev8_smsq_q40_nasty_link'
 450   compile_and_check 'dev8_smsq_q40_cache_link'
@@ -42,6 +42,7 @@
 510   compile_and_check 'dev8_smsq_q40_kbd_lang_link'
 520   compile_and_check 'dev8_smsq_sbas_procs_q60_link'
 530   compile_and_check 'dev8_smsq_q40_sysspr_link'
+535   compile_and_check 'dev8_smsq_q40_cachemode_link'
 540   PRINT "Q40 specific parts finished."
 550   IF my_error
 560      PRINT "There were ";my_error;" errors !!! "

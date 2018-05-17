@@ -1,4 +1,6 @@
-; SMSQ general KBD polling routine    1988 / 1993 / 2000 Tony Tebby
+; SMSQ general KBD polling routine v1.01   1988 / 1993 / 2000 Tony Tebby
+;							  2003 Marcel Kilgus
+; 2000-06-24  1.01  Handles left and right shift key separately.
 
 ; This takes a stream of keyboard codes from the internal keyboard queue.
 ; These codes have bit 7 set for key up and special escape codes.
@@ -99,8 +101,10 @@ kbp_action
 
 kbp_act
 	dc.w	kbp_norm-*
-	dc.w	kbp_shift-*
-	dc.w	kbp_ctrl-*
+	dc.w	kbp_shiftl-*
+	dc.w	kbp_shiftr-*
+	dc.w	kbp_ctrll-*
+	dc.w	kbp_ctrlr-*
 	dc.w	kbp_alt-*
 	dc.w	kbp_altgr-*
 	dc.w	kbp_caps-*
@@ -114,13 +118,37 @@ kbp_act
 ;---------------------------------------------------------------------
 ; shift keys
 
+kbp_shiftl
+	moveq	#kb..shfl,d2		 ; left shift key
+	bra.s	kbp_shift
+kbp_shiftr
+	moveq	#kb..shfr,d2		 ; right shift key
 kbp_shift
-	moveq	#kb..shft,d3		 ; shift key
+	moveq	#kb..shft,d3		 ; combined status
+	moveq	#kb.shftb,d0
 	clr.b	sys_dfrz(a6)		 ; unfreeze display
-	bra.s	kbp_spec
+	bra.s	kbp_twokeys
+
+kbp_ctrll
+	moveq	#kb..ctll,d2		 ; left ctrl key
+	bra.s	kbp_ctrl
+kbp_ctrlr
+	moveq	#kb..ctlr,d2		 ; right ctrl key
 kbp_ctrl
-	moveq	#kb..ctrl,d3		 ; control key
-	bra.s	kbp_spec
+	moveq	#kb..ctrl,d3		 ; combined status
+	moveq	#kb.ctrlb,d0
+kbp_twokeys				 ; handler for SHIFT and CTRL
+	assert	kb..up,7
+	tst.b	d1			 ; key up?
+	bmi.s	kbp_twokeyup		 ; ... yes
+	bset	d2,kb_stat(a3)
+	bra.s	kbp_sspec		 ; key pressed -> set combined status
+kbp_twokeyup
+	bclr	d2,kb_stat(a3)
+	and.b	kb_stat(a3),d0		 ; both keys up?
+	beq.s	kbp_cspec		 ; ... yes, clear combined status
+	bra	kbp_again
+
 kbp_alt
 	moveq	#kb..alt,d3		 ; alt key
 	bra.s	kbp_spec
@@ -130,6 +158,7 @@ kbp_spec
 	assert	kb..up,7
 	tst.b	d1			 ; key up?
 	bmi.s	kbp_cspec		 ; ... yes
+kbp_sspec
 	bset	d3,kb_stat(a3)
 	bra.s	kbp_stab
 kbp_cspec
@@ -189,7 +218,9 @@ kbp_sys
 kbp_undo
 kbp_break
 	bsr.l	kbp_keystroke		 ; check for keystroke
-	cmp.b	#%111,kb_stat(a3)	 ; CTRL ALT SHIFT?
+	moveq	#kb.acs,d0
+	and.b	kb_stat(a3),d0
+	cmp.b	#kb.acs,d0		 ; CTRL ALT SHIFT?
 	beq.s	kbp_hreset		 ; ... yes, do hard reset
 	btst	#kb..ctrl,kb_stat(a3)	 ; CTRL?
 	beq.l	kbp_dokey		 ; ... no, do normal key
@@ -210,7 +241,9 @@ kbp_hreset
 
 kbp_tab
 	bsr.s	kbp_keystroke		 ; check for keystroke
-	cmp.b	#%111,kb_stat(a3)	 ; CTRL ALT SHIFT?
+	moveq	#kb.acs,d0
+	and.b	kb_stat(a3),d0
+	cmp.b	#kb.acs,d0		 ; CTRL ALT SHIFT?
 	bne.l	kbp_dokey		 ; ... no, normal key
 
 kbp_sreset

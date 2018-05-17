@@ -1,0 +1,10 @@
+; Data definition for WMAN
+	nolist
+
+
+wd_syspal equ	$00	; long	ptr to system palette
+wd_movemd equ	$04	; byte	window move mode
+
+wd_end	  equ	$06	; length of data block
+
+	list

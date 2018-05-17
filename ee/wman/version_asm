@@ -133,10 +133,23 @@
 ;
 ;	V1.54	       high colour definition introduced (early test version)
 ;
-;	V2.00	       high colour changes finished (MK)
+;	V1.55	       high colour changes finished (MK)
 ;		       introduced system palette (MK)
-;		       wm.setsp, wm.getsp, wm.trap3 added
+;		       wm.setsp, wm.getsp, wm.trap3 added (MK)
 ;		       rewrote most of the scroll/pan bar draw routines (MK)
-wm_vers equ	'2.00'
-wm.pver equ	'2.00'
+;
+;	V2.00	       wm.opw, wm.ssclr, wm.jbpal added (MK)
+;		       Sprites may be drawn differently depending on the item
+;			   status (WL + MK)
+;
+;	V2.01	       New window move routines & Config Block (WL + MK)
+;		       Bugfix for object drawing & wman rptr routines (WL & MK)
+;		       Fixed bug for stippled borders in WMAN (WL)
+;
+;	V2.02	       Fixed WM_BLOCK (GG + MK)
+;	v2.03	       fixed pointer save on new move operation (wl)
+
+wm_vers equ	'2.03'
+wm.pver equ	'2.01'
+
 	end

@@ -56,7 +56,7 @@
 650   compile_and_check 'dev8_smsq_gold_roms_link'
 660   compile_and_check 'dev8_smsq_gold_qimi_link'
 670   compile_and_check 'dev8_smsq_gold_sysspr_link'
-680   print "GoldCard specific parts finished"
+680   PRINT "GoldCard specific parts finished"
 690   IF my_error
 700     PRINT "There were ";my_error;" errors !!! "
 710   ELSE

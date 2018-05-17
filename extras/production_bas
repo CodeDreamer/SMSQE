@@ -1,0 +1,80 @@
+100 REMark I use this program to make all of the sources
+110 REMark copy them and delete the lib files etc...
+120 :
+130 p
+140 :
+150 DEFine PROCedure sa
+160   SAVE_O dev8_extras_production_bas
+170 END DEFine sa
+180 :
+190 DEFine PROCedure p
+200   start 4,0
+210 END DEFine p
+220 :
+230 DEFine PROCedure start (nbr%,do_del%)
+240 LOCal source$(nbr%,50),dest$(nbr%,50),lp%,compile_options$,zip$
+250 LOCal rep$,s$,version$
+260   CLS
+270   rep$="dev8_":s$="ram3_":zip$=""
+280   PRINT "Reading data ..."
+290   RESTORE 530
+300   FOR lp%=1 TO 4
+310     READ source$(lp%),dest$(lp%)
+320   END FOR lp%
+330   PRINT "Setting Make options ..."
+340   compile_options$="-g -t -l -q -x -m"       : REMark set all target items to selected + make
+350   compile_options$=compile_options$&"-a -b -o" : REMark select All targets, Bye if compilation OK and autostart On
+360   PRINT "Making ... "
+370   EW dev8_extras_exe_smsqemake;compile_options$  : REMark do it now
+380   version$=extract_version$
+390   PRINT "version = ";version$
+400   zip$="-j9 -r ram1_SMSQE"&version$(1)&version$(3 TO 4)&".ZIP"
+410   PRINT "Copying to ";s$; " ..."
+420   FOR lp%=1 TO 4
+430     COPY_O rep$&source$(lp%);s$&dest$(lp%)
+440     zip$=zip$&" "&s$&dest$(lp%)
+450   END FOR lp%
+460   PRINT "Zipping with : ";zip$; " ..."
+470   EW "dev1_progs_zip";zip$
+480   IF do_del%
+490     PRINT "Deleting compiled files ..."
+500     EW dev8_extras_del_all_bas
+510   END IF
+520   PRINT "--- finished"
+530   DATA "smsq_atari_SMSQ.PRG","atari_SMSQ.PRG"
+540   DATA "smsq_gold_gold","Gold_bin"
+550   DATA "smsq_q40_rom","Q40_rom"
+560   DATA "smsq_qxl_smsqe.exe","Qxl_SMSQE.EXE"
+570 END DEFine p
+580 :
+590 DEFine FuNction extract_version$
+600 REMark tries to extract the current version of smsq from the file
+610 REMark <dir>_smsq_smsq_version_asm
+620 REMark this returns the version number (x.yy) or the string "x.xx" if not
+630 REMark successful
+640 LOCal lp%,chan%,my_version$,place%,ok%
+650   chan%=FTEST(rep$&"smsq_smsq_version_asm")
+660   IF chan%:RETurn "x.xx"                : REMark problem with file
+670   chan%=FOP_IN(rep$&"smsq_smsq_version_asm")
+680   IF chan%<0:RETurn "x.xx"
+690   ok%=0
+700   REPeat lp%
+710     IF EOF(#chan%):EXIT lp%
+720     INPUT#chan%,my_version$
+730     IF "smsq_vers" INSTR my_version$
+740       IF "equ" INSTR my_version$
+750          place%="'" INSTR my_version$
+760          my_version$ = my_version$(place%+1 TO place%+4)
+770          ok%=1
+780          EXIT lp%
+790       END IF
+800     END IF
+810   END REPeat lp%
+820   CLOSE#chan%
+830   IF ok%
+840     RETurn my_version$
+850   ELSE
+860     RETurn "x.xx"
+870   END IF
+880 END DEFine extract_version$
+890 :

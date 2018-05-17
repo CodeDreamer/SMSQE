@@ -82,5 +82,9 @@
 ;
 ;	2.29	More generous allowances for string parameters
 ;
-hk_vers equ    '2.29'
+;	2.30	New keywords Fex etc... (PW & MK)
+;		SMSQ/E version now configurable again (MK)
+
+hk_vers equ    '2.30'
+
 	end

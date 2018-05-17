@@ -1,4 +1,3 @@
-100 OPEN #1,'con_300x12a40x30': CLS: BORDER 1,4
 110 IF cmd$='':INPUT 'SMSQ/E Q40 options: Qmon Copy Version> ';cmd$
 120 IF 'v' INSTR cmd$
 130   INPUT 'Version (2x9x) ';v$
@@ -26,10 +25,11 @@
 350 ex4b$='dev8_smsq_q40_driver_16'
 360 ex4w$='dev8_smsq_smsq_wman'
 370 ex5$='dev8_smsq_q40_sysspr'
+375 ex6$=rep$&'smsq_q40_cachemode'
 380 ex9$='dev8_smsq_smsq_hotkey'
 390 IF 'c' INSTR cmd$ = 0
 400   IF 'q' INSTR cmd$ = 0: qm$ = nl$
-410   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex5$,ex9$,ns2$, 'dev8_smsq_q40_rom'; p$
+410   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,qm$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex5$,ex6$,ex9$,ns2$, 'dev8_smsq_q40_rom'; p$
 420 ELSE
 430   rc 'dev8_smsq_q40_flp_bas'
 440   rc nl$

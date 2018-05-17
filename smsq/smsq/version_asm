@@ -569,27 +569,77 @@
 ;	Push unnormalised FP corrected.
 ;	Revised init - soft RESET / hard keyboard RESET for all versions.
 ;
-; 2.99	RND no longer returns invalid floating point for RND=0
+; 2.99	RND no longer returns invalid floating point for RND=0.
 ;	A3 addressing problems in pointer open routine fixed.
 ;
-;    d	Fixed free/total sector info of STAT and DIR for large drives (MK)
-;	Re-implemented sms.frtp the way it was supposed to be (MK)
-;	Changed FREE_MEM SBASIC function to use sms.frtp (MK)
-;	Background colour now drawn on-the-fly instead of consuming memory (MK)
-;	Changed RAM disc for fast memory use (MK)
+;    d	Fixed free/total sector info of STAT and DIR for large drives (MK).
+;	Re-implemented sms.frtp the way it was supposed to be (MK).
+;	Changed FREE_MEM SBASIC function to use sms.frtp (MK).
+;	Background colour now drawn on-the-fly instead of consuming memory (MK).
+;	Changed RAM disc for fast memory use (MK).
 ;
-;    e	QPC implemented "fast" memory (MK)
+;    e	QPC implemented "fast" memory (MK).
 ;
 ;    f	EXTRAS command changed to show all SBASIC commands no matter where
-;	    their code is located (MK)
+;	  their code is located (MK).
+;
+;    x,y,z better handling of shadows in high colour mode (MK).
+;	"Fast memory" also on Qx0  (MK).
+;	Italian language support (FD).
+;	No more MOVEP for Qx0 (FD).
+;
 ;
 ; 3.00	Fixed bug in screen driver that could crash the machine in low memory
-;	    situations (MK)
-;	Added many sprite modes (mode 64, mode 32/33 etc.) (MK & JG)
-;	Added support for large sprites (MK)
-;	New high colour WMAN with lots of new features (MK & WL)
-;	New sprite format
-;	Better handling of hard disks for Q40 (JG)
-smsq_vers equ	 '3.00'
+;	    situations (MK).
+;	Added many sprite modes (mode 64, mode 32/33 etc.) (MK & JG).
+;	Added support for large sprites (MK).
+;	New high colour WMAN with lots of new features (MK & WL).
+;	New sprite formats with alpha blending & RLE compression (MK).
+;	Better handling of hard disks for Q40 (JG).
+;	Better handling of system sprites, many more system sprites introduced (MK).
+;	WMAN colour palettes introduced & config block for them (MK).
+;	New keywords FEX etc... (PW & MK).
+;	Default keyboard may be different from default message languages (WL).
+;	Sprites may be drawn differently depending on item status (WL + MK).
+;	New con/ptr vectors concept introduced	(MK).
+;	Better handling of background colours (MK).
+;	Basic procs OK even if a LARGE number of parameters are passed to them (MK).
+;	Bugfixes for some EE traps, keep A1 as per documentation (WL).
+;	Qx0 caches on at startup (FD).
+;	8 bit Aurora GD2 screen driver, also introduced in QPC (MK).
+;	Screen aspect ratio for graphics functions now a CON variable (MK).
+;	Hotkey system configurable again like standalone version (MK).
+;
+;  3.01 More system sprites (MK).
+;	New window move routines & Config block (WL + MK).
+;	Fixed bug for stippled borders in WMAN (WL).
+;	More con vectors (WL).
+;	Bugfix for object drawing & wman rptr routines (WL & MK).
+;	Fixed wallpaper on display change, broken in 2d99 (MK).
+;	Bugfix for move routine in mode 4 (WL).
+;
+;  3.02 Extended revamp for mode 16 (Gold Card/ Aurora). (MK)
+;	Bugfix for rchp : Doesn't break free space list if block was already
+;	  free (MK).
+;
+;  3.03 WM_BLOCK prodecure fixed (GG & MK).
+;	Some bugfixes for SER PAR PRT ports (MK)
+;	PRT_USE$ used wrong offset - fixed (wl).
+;	Cursor move if one-line wdw fixed (delete still a problem) and added...
+;	...configurable key to enter line into stuffer buffer (wl).
+;	PARNAM$ and PARSTR$ fixed (wl)
+;	EXTRAS lists all keywords, not only those it thinks are not in ROM (MK)
+;	new Cachemode module for the Qx0 (FD, based on code donated by Mark Swift)
+;	Extended colour border call with 0 border bug fixed (MK)
+;	(Super) Goldcard initilisation problem fixed (MK)
+;	Left & right shift keys are handled separately (MK)
+;	Mode screen aspect ratio is variable (MK)
+;
+; 3.04	fixed pointer save on new move operation (wl)
+
+
+smsq_vers equ	 '3.04'
+
+
 
 	end

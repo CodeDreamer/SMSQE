@@ -1,7 +1,7 @@
 ; Pointer mode routine	V1.12				 1991	Tony Tebby
 ;							  2002	Marcel Kilgus
 ; 2002-02-13  1.12  Clear background with wallpaper colour (MK)
-
+; 2003-10-14  1.13  cn_fblock is no longer xref.l'd (wl - how did it get here in the first place?)
 	section driver
 ;
 	xdef	pt_modex
@@ -11,7 +11,7 @@
 	xref	pt_wchka
 	xref	pt_mrall
 	xref	pt_mrstj
-	xref.l	cn_fblock
+	xref	cn_fblock
 
 	include 'dev8_keys_sys'
 	include 'dev8_keys_con'

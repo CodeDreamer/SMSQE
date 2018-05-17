@@ -1,6 +1,7 @@
-* Pointer version of console initialisation code  V2.01    1991   Tony Tebby
+* Pointer version of console initialisation code  V2.02    1991   Tony Tebby
 *
 * 2003-03-01  2.01  Added call to system sprite initialisation (MK)
+* 2003-03-04  2.02  Initialises pixel aspect ratio (MK)
 
 	xdef	pt_init
 *
@@ -114,6 +115,9 @@ pti_alloc
 	move.l	a4,(a2) 		; and link to dummy 1
 
 	jsr	pt_isspr		; set up system sprite table
+
+	move.l	#$80156B9,pt_asprt(a3); 2/( (4/3) * (575/512) * (51.2/51.95) )
+	clr.w	pt_asprt+4(a3)
 pti_setinstall
 	lea	pt_cdtab(a3),a4
 	move.b	d5,(a4,d7.w)		; set mode for this colour depth

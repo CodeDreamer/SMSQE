@@ -1,17 +1,9 @@
 100 p
 110 :
 120 DEFine PROCedure p
-130 LOCal dat$,prg$,destt$
+130 LOCal zip$
 140   d
-150   dat$=DATAD$
-160   prg$=PROGD$
-170   destt$=DESTD$
-180   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-190   REMark EW dev1_progs_zip;" -r9  win4_smsqe.zip changes_txt readme_txt styleguide_txt uti_lib dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*"
-200   EW dev1_progs_zip;" -r9  win4_smsqe.zip dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt"
-210   DATA_USE dat$
-220   PROG_USE prg$
-230   DEST_USE destt$
+200    do_zip " -r9  win4_smsqe.zip dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt"
 240 END DEFine p
 250 :
 260 DEFine PROCedure sa
@@ -33,7 +25,7 @@
 420   f$ ='ram3_SMSQE.ZIP'
 430   CLS
 440   zip$ =' -j9 '&f$&' '
-450   RESTORE
+450   RESTORE 600
 460   READ nbr%
 470   FOR lp% =1 TO nbr%
 480     READ source$,dest$
@@ -42,10 +34,8 @@
 510     zip$=zip$&dest$ & ' '
 520   END FOR lp%
 530   DELETE f$
-540   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-550   EW dev1_progs_zip;zip$
-560   s
-570   RESTORE
+540   do_zip
+570   RESTORE  600
 580   READ nbr%
 590   FOR lp%=1 TO nbr%:READ dest$,dest$:DELETE dest$
 600   DATA 8
@@ -58,3 +48,25 @@
 670   DATA "dev8_new_set_palettes_bas","ram3_set_palettes_bas"
 680   DATA "dev8_new_FEX_txt",         "ram3_FEX_txt"
 690 END DEFine t
+700 :
+710 DEFine PROCedure z
+720   LOCal lp%,zip$
+730   RESTORE 890
+740   zip$=' -j9 '&'ram1_m.zip '
+750   REPeat lp%
+760     READ a$
+770     IF a$="":EXIT lp%
+780     zip$=zip$&a$&" "
+790   END REPeat lp%
+800   do_zip zip$
+810 END DEFine z
+820 :
+830 DEFine PROCedure do_zip (zip$)
+840   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+850   EW dev1_progs_zip;zip$
+860   s
+870 END DEFine do_zip
+880 :
+890 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+900 DATA "dev8_iod_con2_ptr_wremv_asm"
+910 DATA ""

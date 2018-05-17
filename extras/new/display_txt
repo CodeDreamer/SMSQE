@@ -1,4 +1,4 @@
-Preliminary documentation to most of the enhancements to SMSQ/E v3.00,
+Preliminary documentation to most of the enhancements to SMSQ/E v3.00 and 3.01,
 mostly directed at programmers. "Preliminary" means that here is at least
 some text to see what's new and how to use it. This documentation certainly
 needs to be enhanced and improved. "Preliminary" does not mean that facts
@@ -17,8 +17,8 @@ Contents:
 	III - New Sprite definition
 	IV - New WMAN colour format
 	V - System palette entries
-
-
+	VI - New Basic commands
+	VII - New Move modes
 
 I - New CON driver vectors
 =-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -697,7 +697,7 @@ V - System palette entries
 
 The keys for this are defined in the file dev8_keys_syspal.
 
-
+Please note that you can configure SMSQ/E to set the palette(s) to your taste.
 
 Name		Number	 Meaning
 ------------------------------------------------------------------------------
@@ -761,3 +761,147 @@ sp.separator	$0238	 Seperator lines etc.
 
 Some sort of design guide to help deciding what colour to use (or what some
 colour is supposed to mean anyway) will hopefully be written at a later stage.
+
+
+
+VI - New Basic Keywords
+=-=-=-=-=-=-=-=-=-=-=-=
+
+The Basic programmer has not been forgotten and there are a number of
+keywords for palette and colour handling:
+
+1 - Colours
+-----------
+
+
+The first of these are useful for colour handling. Their parameters are
+excactly the same as for the "normal" commands. The same is true with their
+names, except for the 'WM_" prefix:
+
+
+WM_PAPER [#channel],colour
+
+Sets the colour which is a word as described above. It also sets the strip
+as is the case with the normal PAPER command. But there is also the
+WM_STRIP [#channel],colour command to set the strip only.
+
+Further commands are:
+
+
+WM_INK [#channel],colour
+WM_BORDER[#channel],width,colour
+WM_BLOCK [#channel],xs,ys,xo,yo,colour
+
+
+2 - Palette handling
+--------------------
+
+There are commands to set/get the system palette and commands to set/get
+the per job palettes.
+
+
+a - System palette keywords:
+
+
+SP_RESET [#channel] [,number]
+
+This resets the colour palette given in number to the original values (as
+configured). Default is number 0.
+
+
+result% = SP_GETCOUNT
+
+Gets the number of elements contained in a system palette. Each system
+palette, of course, has the same number of elements.
+
+
+SP_GET [#channel,] [number,] address, first, count
+
+This gets the colours from a system palette and puts them somewhere. The
+optional "number" parameter tells us which system palette we want (0 to 3,
+default = 0). "address" is the address of the space for the information,
+"first" is the number of the first systemm palette colour to get (starting
+from 0) and "count" is the number of colours to get.
+
+The space pointed to by "address" MUST have enough space for the number of
+colours! This is NOT checked by the keyword and it is the programmer's
+responsibility to make sure that this is so.
+
+As an example, you could use the following code to get ALL of the colours
+of a system palette:
+
+totcol%= SP_GETCOUNT	     : rem get nbr of colours in system palette
+address= ALCHP(totcol%*2)+4  : rem enough space for colours + security
+first=0
+SP_GET #1,0,address,first,totcol%
+
+
+SP_SET [#channel,] [number,] address, first, count
+
+Sets the system palette entries, the addres pointing to a space contianing
+the colours. The parameters are similar to those for SP_GET.
+
+
+
+b - Job palette keywords
+
+SP_JOBPAL [#channel], jobID/Job_name, number
+
+Set the system palette for the job given to the number. The jobis given
+either as a string (e.g. "FiFi") or as a standard Job ID number.
+
+
+SP_JOBOWNPAL [#channel],jobID/Job_name, pal_pointer
+
+Set the job palette to the palette given in pal_pointer. Of course, the
+palette must have the format of a standard system palette.
+
+
+VII - New Move modes
+
+
+As of version 3.01 of SMSQ/E, new ways of moving a window about the screen
+have been added.
+
+
+There are now three ways for a window be moved:
+
+
+0 - the old way: the pointer changes to the "move window" sprite which is
+moved about the screen.
+
+1 - "Outline": click on the move icon with the MOUSE - KEEP HOLDING THE BUTTON
+DOWN, an outline of the window appears which you can move around and position
+where you want it. Release the mouse button and the window positions itself
+correctly.
+
+Please note that you cannot use this move mode with anything but the mouse - the
+keyboard (cursor keys) will not work.
+
+
+3 - "Full window". This is the same as 1 above, but instead of an outline, the
+entire window is moved. For Q40/Q60 users, switching onthe Cache is advisable...
+
+Please note that you cannot use this move mode with anything but the mouse - the
+keyboard (cursor keys) will not work.
+
+
+The move modes are configured on a system-wide basis - you cannot have one
+job moving in mode 0 and the other in mode 1.
+
+Thus, all jobs are affected by the move mode, even those written a long time
+ago (unless, such as Qlib, the job doesn't use the WMAN move routine).
+
+The move mode can be changed in two ways:
+
+1 - Configure SMSQ/E  (WMAN) to a mode of your liking.
+
+2 - Use the new WM_MOVEMODE keyword
+
+This takes one parameter, an integer from 0 to 2:
+
+WM_MOVEMODE 0 : the old way
+
+WM_MOVEMODE 1 : the "outline" move
+
+WM_MOVEMODE 2 : the "full window" move

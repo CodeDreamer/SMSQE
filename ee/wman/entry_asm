@@ -1,6 +1,7 @@
-; Window manager entry point	V1.01	  1986  Tony Tebby  QJUMP
+; Window manager entry point	V1.02	  1986  Tony Tebby  QJUMP
 ;
 ; 2002-11-13  1.01  Added wm_setpal, wm_getpal and wm_trap3 entries (MK)
+; 2003-01-28  1.02  Added wm_opw and wm_ssclr
 
 	section wman
 
@@ -40,7 +41,7 @@
 	xref	wm_rptrt
 	xref	wm_setsp
 	xref	wm_getsp
-	xref	wm_trap3
+	xref	wmc_trap3
 	xref	wm_opw
 	xref	wm_ssclr
 	xref	wm_jbpal
@@ -84,10 +85,12 @@ wm_entry
 	bra.l	wm_rptrt		$78
 	bra.l	wm_setsp		$7c
 	bra.l	wm_getsp		$80
-	bra.l	wm_trap3		$84
+	bra.l	wmc_trap3		$84
 	bra.l	wm_opw			$88
-	bra.l	wm_ssclr		$8C
+	bra.l	wm_ssclr		$8c
 	bra.l	wm_jbpal		$90
 we_rts
 	rts
+
+
 	end

@@ -1,4 +1,8 @@
-; SER PAR PRT Thing  V2.10     1999  Tony Tebby
+; SER PAR PRT Thing  V2.12     1999  Tony Tebby
+;
+; 2003-09-24  2.11  prt_use$ bug fixed (wl)
+; 2003-10-06  2.12  Some fixes for non-QPC I had sent TT 2 years ago (MK)
+
 
 	section exten
 
@@ -50,7 +54,7 @@ paru.reg reg	a1/a4
 
 seru_do
 	movem.l paru.reg,-(sp)
-	move.l	spth_spd-spth_link(a2),a3 ; linkage
+	move.l	spth_spd-spth_link(a2),a4 ; linkage
 	add.l	d0,a4
 
 	tst.w	spd_npar(a4)		 ; any PAR?
@@ -182,7 +186,7 @@ serp.reg reg	d1/a1/a3
 	movem.l serp.reg,-(sp)
 	bsr	ser_port
 	blt.s	serp_exit
-	move.l	4(sp),a1
+	move.l	(sp),a1
 	moveq	#$ffffffdf,d0
 	and.l	4(a1),d0
 	sub.b	#'I',d0 		 ; ignore = 0?
@@ -245,7 +249,7 @@ prt_use$ thg_extn PRT$,prt_buff,thp_rstr
 
 	move.l	a0,-(sp)
 	move.l	4(a1),a1
-	move.l	spth_spd(a2),a0
+	move.l	spth_spd-spth_link(a2),a0  *** modified in 2.11 - use correct offset ***
 	move.l	spd_pprt(a0),a0
 	assert	spd_pname,0
 	move.w	(a0)+,d0		 ; length of name
@@ -339,7 +343,7 @@ ser_eof thg_extn SERE,ser_clear,ptp_2olw
 	beq.s	serb_ok
 	move.l	(a1),d0
 	move.w	d0,spd_cdef(a3) 	 ; set eof timer
-	move.w	d0,spd_cdct(a3)
+;	 move.w  d0,spd_cdct(a3)
 	bra.s	serb_ok
 
 	page

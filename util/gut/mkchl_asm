@@ -1,5 +1,8 @@
-; Make a channel list			V0.02   Apr 1988  J.R.Oakley  QJUMP
+; Make a channel list			V0.03   Apr 1988  J.R.Oakley  QJUMP
 ;						Tony Tebby QJUMP
+;
+; 2003-06-23  0.03  Re-established compatibility with QDOS (MK)
+
 	section gen_util
 
 	xdef	gu_mkchl
@@ -110,12 +113,13 @@ mkc_fill
 	move.w	d1,d0			 ; ...and the channel number
 	move.l	d0,chl_chid(a1) 	 ; fill in channel ID
 
+	move.l	a1,-(sp)
 	move.l	d0,a0			 ; channel
 	addq.l	#chl_name,a1		 ; pointer to name
 	moveq	#chl.name,d2
 	moveq	#ioa.cnam,d0
-	trap	#2
-	subq.l	#chl_name,a1		 ; restore pointer to entry
+	trap	#2			 ; BEWARE: might smash A1 on QDOS machines
+	move.l	(sp)+,a1		 ; restore pointer to entry
 	tst.l	d0
 	beq.l	mck_ok
 

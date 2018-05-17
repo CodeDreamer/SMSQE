@@ -29,10 +29,7 @@ smsq_name
 	xref	pt_setup
 
 gl_con
-	move.b	sms.conf+sms_issqr,d1	 ; config square pixel
-	ror.b	#1,d1			 ; in msb
-	add.b	sms.conf+sms_issize,d1	 ; config size (aurora size - 1)
-	addq.b	#1,d1
+	move.b	sms.conf+sms_issize,d1	 ; config size
 	moveq	#ptd.ql,d2		 ; ql colour depth
 	moveq	#ptm.ql4,d3		 ; ql mode 4(8) driver
 	move.b	sms.conf+sms_ismode,d4	 ; mode ql or 8 bit

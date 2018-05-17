@@ -1,6 +1,106 @@
+
 SMSQ/E	file(s) 			version
-Version changed 			of file changes made
+Version   changed			of file   changes made
 ------------------------------------------------------------------------------
+3.04
+    BUGFIX
+	 ee_wman_move_asm		1.16	fixed pointer save on new move operation (wl)
+
+
+3.03
+
+    BUGFIXES
+
+	ee_wman_procs_procs_asm 	1.02	WM_BLOCK procedure fixed (GG/MK)
+	smsq_spp_thing_asm		2.12	Some fixes for non QPC_use (MK)
+	sbsext_ext_pars_asm		1.01	fixed parnam$ (& parstr$) bugs (wl)
+	iod_con2_defbd_asm		2.01	Fixed extended colour calls with width=0 (MK)
+	smsq_gold_host_asm		1.01	Fixed copy problem that could hang SMSQ/E later (MK)
+	iod_con2_ptr_mode_asm		1.13	xref.L removed for cn_fblock
+	link files no longer reference _utq_ but _ut_ subdir
+
+	smsq_kbd_ibm_tables_asm 	1.01	left & right shift keys are trapped separately
+	smsq_kbd_poll_asm		1.01	(so if you press both, and then release one
+	smsq_kbd_keys				shift is still on) (MK)
+
+    CONFIGURABLE KEYSTROKE TO PUT CONTENT OF READ/EDIT LINE TRAP INTO HOTKEY BUFFER (wl)
+
+	iod_con2_input_asm		2.01	cursor move if one-line wdw fixed
+						(delete still poses problems) &
+						read string/edit line console trap
+						can put chars into stuffer buffer
+	smsq_xxx_hwinit_asm		2.00	all modified to suit (new config item)
+
+
+    EXTENDED EXTRA KEYWORD
+
+	sbsext_ext_extras_asm		1.00	Removed TK2 limitation of not showing commands in ROM space (MK)
+
+
+    NEW CACHEMODE module FOR Qx0
+
+	smsq_q40_CACHEMODE_asm		1.01	adapted from Mark Swift's work (FD)
+	smsq_q40_cachemode_init_asm	1.00	module initilisation & configuration (wl)
+	smsq_q40_cachemode_link 		created to suit
+    --> update your flp_bas and make_bas programs!
+
+    MISC
+
+	iod_con2_gw_fig_asm		1.01	mode screen aspect ration variable (MK)
+	iod_con2_ptr_init_asm		2.02	Initialises pixel aspect ratio (MK)
+	iod_con2_16_spray_asm		2.01	most of the useless code ended out (MK)
+------------------------------------------------------------------------------
+
+3.02
+    GOLD CARD CHANGES (MK)
+
+	iod_con2_gold_disp_size_asm	1.10	Completely revamped version for mode 16 (MK)
+	iod_con2_gold_procv_asm 	1.01	Extended for mode 16 (MK)
+	keys_aurora				changed to suit (MK)
+
+    BUGFIXES
+	smsq_mem_rchp_asm		2.01	Doesn't break free space list if block was already free (MK)
+
+----------------------------------------------------------------------------
+3.01
+   BUGFIXES (MK)
+	ee_hk_xfil_asm			2.01	added hk_xfilid
+	ee_hk_xthg_asm			2.01	(same)
+	ee_hot_exep_asm 		2.02	fixed file launching
+	ee_hot_cct				amended to suit
+	ee_wman_rptr_asm		1.09	uses pc_fspr BEFORE sprite data check
+	ee_wman_drobj_asm		1.05	(same) + bugfixes
+	ee_wman_trap3_asm		1.02	stippled border OK
+	iod_con2_ptr_wpap_asm		1.02	Returns last used colour in D1. Fixes mode change issue
+	util_gut_mkchl_asm		0.03	reestablished Qdos compatibility
+
+   WMAN : SEPARATE CONFIGURATION BLOCK AND DATA HANDLING (MK)
+	ee_wman_data_asm		1.01	(new) config block
+	keys_wman_data				keys file for above
+	ee_wman_syspal_asm			amended to suit
+	ee_wman_cct				amended to suit
+	(ee_wman_wman_asm)		1.03	 "       "    "
+	smsq_smsq_wman_asm		1.03	uses separate data handling
+	keys_con				   "     "    "
+	keys_qdos_pt				   "     "    "
+
+   WMAN : NEW MOVE MODES (WL)
+	ee_wman_move_asm		1.15	(new) move modes (WL+MK)
+	ee_wman_chwin_asm		1.02	amended to call this
+	iod_con2_ptr_vec_asm		1.01	new vectors pt_size & pt_mblock added
+   MISC
+
+	iod_con2_sprite_cursor_asm	1.00	added (cct files changed to suit)
+	new compiler program
+	ee_wman_erstr_asm		1.00	label no longer xref'd. This file
+						is not used in smsq, but in a
+						standalone wman (wl)
+	ee_wman_trap3_qdos_asm		1.01	(new) used for standalone Wman (mk)
+	iod_con2_ptr_wremv_asm		1.04	removed reference to cn_io (wl)
+	various key files updated. You should recompile all files.
+
+------------------------------------------------------------------------------
+
 3.00
 
   CHANGES FOR BETTER HANDLING OF BACKGROUND COLOURS - THEY NO LONGER TAKE UP
@@ -19,7 +119,7 @@ Version changed 			of file changes made
 
   NEW WINDOW MANAGER INCLUDING SYSTEM PALETTE
   THIS NEEDED CHANGES IN FOLLOWING FILES (MK)
-	ee_wman_drarr_asm		1.01	allocate dmore space for pattern on stack
+	ee_wman_drarr_asm		1.01	allocated more space for pattern on stack
 	ee_wman_drbar_asm		1.11	numerous changes for high colour + bar background
 	ee_wman_drbdr_asm		1.05	adapted for high colours
 	ee_wman_swdef_asm		1.02	same
@@ -150,7 +250,7 @@ Version changed 			of file changes made
 
 	Created the "New" subdirectory
 
-	dv3_q40_hd_fpart_asm		3.01	Fixed the ICD extension (8 additional partitions in table) (jg)
+	dv3_q40_hd_fpart_asm		3.01	Fixed the ICD extension (8 additional partitions in table) (JG)
 
 	many changes tpo various cct files, to make sure that all other changes
 	are taken into account
@@ -307,9 +407,11 @@ keys:
 
 FD = Fabrizio Diversi
 PD = Phoebus Dokos
+GG = George Gwilt
 JG = Jƒr˜me Grimbert
 JH = John Hall
 MK = Marcel Kilgus
+MS = Mark Swift
 TT = Tony Tebby
 PW = Per Witte
 WL = Wolfgang Lenerz

@@ -1,3 +1,115 @@
+Preliminary documentation to most of the enhancements to SMSQ/E v3.00,
+mostly directed at programmers. "Preliminary" means that here is at least
+some text to see what's new and how to use it. This documentation certainly
+needs to be enhanced and improved. "Preliminary" does not mean that facts
+stated herein are going to get changed, due to the release of SMSQ/E v3.00
+they are now fixed.
+
+All the best, Marcel Kilgus
+
+
+New CON driver vectors
+=-=-=-=-=-=-=-=-=-=-=-
+
+A new vector block has been introduced to provide direct access to new
+screen driver functions. To call one of those functions, one first needs
+a pointer to the CON linkage block. This can either be obtained the traditional
+way or by reading the sys_clnk ($c4) system variable. It is planned that future
+PTR_GEN/WMANs for non-SMSQ/E version will also support this system variable.
+On current non-SMSQ/E systems its value should be 0.
+
+The pointer to the vector table itself is located in the new pt_vecs variable
+within the linkage block. A typical call sequence can thus look like this:
+
+        moveq   #sms.info,d0
+        trap    #1                      ; get ptr to system variables in a0
+        move.l  sys_clnk(a0),a3         ; ptr to CON linkage
+        move.l  pt_vecs(a3),a0          ; vector table
+        jsr     pv_fspr(a0)             ; actual call
+
+All vectors so far expect a3 to be the pointer to the CON linkage block on
+entering the call.
+
+|                                                                             |
+|  Vector $00                                                   pv_info       |
+|                                                                             |
+|       Like iop.pinf, but one doesn't need a channel to call this routine.   |
+|                                                                             |
+|  Call parameters                                                            |
+|  D1                                   D1   pointer version number           |
+|  D2                                   D2   preserved                        |
+|  D3                                   D3   preserved                        |
+|                                                                             |
+|  A0                                   A0   preserved                        |
+|  A1                                   A1   pointer to WMAN                  |
+|  A2                                   A2   preserved                        |
+|  A3   pointer to CON linkage block    A3   preserved                        |
+|                                                                             |
+
+
+|                                                                             |
+|  Vector $06                                                   pv_fspr       |
+|                                                                             |
+|       Look in linked sprite list for the definition that would actually     |
+|       be used in the current display mode.                                  |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|  D1                                   D1   preserved                        |
+|  D2                                   D2   preserved                        |
+|  D3                                   D3   preserved                        |
+|                                                                             |
+|  A1   ptr to 1st sprite               A1   ptr to fitting sprite            |
+|  A2                                   A2   preserved                        |
+|  A3   ptr to CON linkage block        A3   preserved                        |
+|                                                                             |
+
+If a routine wants to process the data of a given sprite, this vector should
+be called beforehand. It will return the actual sprite definition that a
+following sprite call would use, i.e. it traverses the sprite chain, solves
+system sprite references etc.
+
+
+|                                                                             |
+|  Vector $0C                                                   pv_sspr       |
+|                                                                             |
+|       Set system sprites/Get system sprite address                          |
+|                                                                             |
+|  Call parameters                      Return parameters                     |
+|                                                                             |
+|  D1.w sprite number / -ve             D1   pres./ Max allowed | max current |
+|  D2                                   D2   preserved                        |
+|  D3                                   D3   preserved                        |
+|                                                                             |
+|  A0                                   A0   preserved                        |
+|  A1   pointer to sprite / 0           A1   preserved / pointer to sprite    |
+|  A2                                   A2   preserved                        |
+|  A3   pointer to CON linkage block    A3   preserved                        |
+|                                                                             |
+|  Error returns:                                                             |
+|       IPAR    Illegal sprite number (set/get)                               |
+|       ITNF    there are no system sprites !                                 |
+|                                                                             |
+
+This gets or sets a system sprite or returns the max nbr of system sprites
+  * if d1 is a negative nbr (-1 is suggested), then on return d1 contains:
+     max nbr of space in table for sys sprites | highest nbr of current system sprite
+  else:
+    * if a1 = 0, then one gets the address of the system sprite the number
+       of which is passed in D1. The address is returned in a1.
+       This address MAY be 0, in which case the system sprite requested does
+       not exist. This will only happen if somebody fiddled with the table
+       contrary to recommendations
+    * if a1 <> then it contains the address of a sprite that will be a system
+       sprite, d1 contains the number of that sprite. This sprite is not
+       " copied to a safe place", it is the responsibility of the calling
+       job to make sure that the sprite doesn't just disappear
+
+For a list of the system sprites defined thus far see keys_sysspr.
+
+
+New WMAN vectors
+=-=-=-=-=-=-=-=-
+
 |                                                                             |
 |  Vector $7C                                                   WM.SETSP      |
 |                                                                             |
@@ -182,8 +294,9 @@ and must remain there as long as the job uses this palette!
 If A1 is supplied as 0 the palette pointer will not be touched.
 
 
----
-Sprite definition
+
+New sprite definition
+=-=-=-=-=-=-=-=-=-=-=
 
 pto_form $00  byte  sprite mode
          $01  byte  colour mode / system sprite number
@@ -225,13 +338,18 @@ GD2 colour sprite:
         64      32 bit $RRGGBB00 format
 
 Sprite control:
-        %mpa000cc
+        %mpa00bcc
 
         cc stands for a chache version number. Programs can increment this
         value to signal the cache that the sprite has changed. A special
-        value is pto_fupd (force update, %11), which causes the system to
+        value is pto.fupd (force update, %11), which causes the system to
         never use the cached version.
         key: pto.cver
+
+        b flags whether a sprite block with additional, status dependant
+        sprite pointers is present. See the "new sprite block definition"
+        chapter for reference.
+        key: pto.blk
 
         a flags whether the sprite uses an alpha channel instead of a mask
         (also see below)
@@ -351,8 +469,98 @@ independant, in this case one could have left the alpha channel alone and only
 compress the pattern. If the 8 bytes are worth it...
 
 
----
-New colour format:
+New sprite block definition (by Wolfgang Lenerz)
+=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+The object drawing routines have been amended so as to allow different sprites
+to be drawn in a loose items, depending on the status of that item.
+
+In such a case, it behooves the application to supply the different sprites.
+
+To keep things compatible with older versions of WMAN, this has been handled
+by extending the sprite definition of the first sprite.
+
+Normally, a sprite consists of
+- form,
+- sprite control byte,
+- size,
+- origin,
+- (long) pointer to blob
+- (long) pointer to pattern,
+- (long) pointer to the next sprite (different format, different time).
+
+This has been extended, as follows:
+
+As usual, a sprite is supplied as an object for the loose item in question.
+
+However, if the pto.blk flag in the sprite control byte (see above) is set,
+a relativ pointer 4 bytes away from the end of the sprite is expected, the
+"sprite control block". Example
+
+        dc.w    $0210,pto.blk           ; 8 bit mode, sprite control block
+        dc.w    5,5,0,0                 ; size 5x5 pixels with origin at 0x0
+        dc.l    s8p_circle-*            ; Pattern
+        dc.l    s8m_circle-*            ; Mask
+        dc.l    0                       ; Next sprite
+        dc.l    0                       ; Options - currently unused, set to 0
+        dc.l    scb_circle-*            ; Sprite control block
+
+The sprite pointer block is just a block of 5 longword pointers:
+
+pointer to sprite if item is available
+pointer to sprite if item is available AND is the current item
+pointer to sprite if item is selected
+pointer to sprite if item is selected AND is the current item
+pointer to sprite if item is unavailable
+
+In all cases, these are longword relative pointers.
+
+All but the first pointer may be 0. The first pointer (item available) MUST
+exist and point to a real sprite.
+
+
+0 pointers are handled as follows
+
+- For available items:
+  * The pointer to the available item sprite MUST exist.
+
+  * If no pointer to an available AND current item sprite exists, then the
+    available item sprite is taken instead
+     
+- For selected items:
+  * If no pointer to a selected item exists, then the pointer to the selected
+    item AND current item is ALSO ignored. The avilable item sprite is taken
+    instead for both.
+
+  * If no pointer to a selected AND current item sprite exists, then the
+    selected item sprite is taken instead.
+
+- For unavailavle items, the available item sprite is used.
+
+
+It is allowed, but not necessary, for any of these pointers including the first
+pointer (available item) to point back to the original sprite, which will then
+be drawn as a normal sprite.
+
+This allows three cases:
+
+1 - The original sprite can be an ordinary QL mode sprite, which will be
+drawn normally by older versions of WMAN. The newer versions of WMAN will
+use the extended format.
+
+2 - The original sprite could be a simple empty shell, with just the relevant
+data (pto.blk flag and pointer to sprite pointer block) set.
+
+3 - The original sprite could be a normal QL or 24 bit mode sprite which
+will be used by as an item in any of its statusses.
+
+
+Alternative 1 above will ensure that your software remains compatible with
+older versions of WMAN.
+
+
+New WMAN colour format
+=-=-=-=-=-=-=-=-=-=-=-
 
         %00000000cccccccc       exactly as before
         %00000001pppppppp       palette
@@ -394,8 +602,9 @@ The colours to paint the border are defined in the system palette (sp.3ddark
 and sp.3dlight). Future versions may shade the paper colour, therefore
 it's again a good idea to set the paper colour before the border call.
 
----
+
 System palette entries
+=-=-=-=-=-=-=-=-=-=-=-
 
 Name            Number   Meaning
 ------------------------------------------------------------------------------
@@ -456,3 +665,6 @@ sp.subtitfg     $0235    Subtitle foreground
 sp.mindexbg     $0236    Menu index background
 sp.mindexfg     $0237    Menu index foreground
 sp.separator    $0238    Seperator lines etc.
+
+Some sort of design guide to help deciding on what colour to use (or what some
+colour is supposed to mean anyway) will hopefully be written at a later stage.

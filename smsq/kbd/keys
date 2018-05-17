@@ -1,78 +1,87 @@
 * KBD interface definitions
-        nolist
+	nolist
 
-kb..up   equ      7                 keyb-up bit
+kb..up	 equ	  7		    keyb-up bit
 
-kb.kesc  equ     $e0                keyboard escape character
+kb.kesc  equ	 $e0		    keyboard escape character
 
-kb_ID    equ       $00
-kb.Atari equ       'ASTK'
-kb.Gold  equ       'ASTK'
-kb.IBM   equ       'ASTK'           ; to fool pointer interface
+kb_ID	 equ	   $00
+kb.Atari equ	   'ASTK'
+kb.Gold  equ	   'ASTK'
+kb.IBM	 equ	   'ASTK'	    ; to fool pointer interface
 
-kb_veci  equ      $10               keyboard vectored linkage (Atari)
-kb_extlk equ      $10               extended linkage (QXL)
+kb_veci  equ	  $10		    keyboard vectored linkage (Atari)
+kb_extlk equ	  $10		    extended linkage (QXL)
 
-kb_err   equ      $1f      byte     error flag
-kb.errw  equ        3                  wait 3 polls to clear error
-kb_b3    equ      kb_err   byte     set if button 3 is pressed
+kb_err	 equ	  $1f	   byte     error flag
+kb.errw  equ	    3		       wait 3 polls to clear error
+kb_b3	 equ	  kb_err   byte     set if button 3 is pressed
 
-kb_kesc  equ      $20      msbit    set if processing keyboard escape
-kb_stat  equ      $21      byte     state of shift keys
-kb..shft equ        0                  SHIFT
-kb..ctrl equ        1                  CTRL
-kb..alt  equ        2                  ALT
-kb..agr  equ        7                  ALT GR key
-kb.cs    equ        %00000011          SHIFT and CTRL
-kb.gcs   equ        %10000011          ALT GR, SHIFT and CTRL
-kb..tabs equ        7                  table selection shift
-kb_krwem equ      $22   16 bytes    KEYROW emulation
-kb_tab   equ      $32   word        table offset
-kb_lcod  equ      $34   word        last code
-kb_arep  equ      $36   byte        true if last char in queue was autorepeat
-kb_joyst equ      $37   byte        joystick status
-kb_queue equ      $38               pointer to keyboard interrupt queue
-kb_intop equ      $3c   word        offset of next operation
-kb_qu    equ      $40               interrupt queue is normally here
-kb.qu    equ        $28             40 bytes per poll - should be enough
+kb_kesc  equ	  $20	   msbit    set if processing keyboard escape
+kb_stat  equ	  $21	   byte     state of shift keys
+kb..shft equ	    0		       combined SHIFT status
+kb..ctrl equ	    1		       combined CTRL status
+kb..alt  equ	    2		       ALT
+kb..shfl equ	    3		       left SHIFT
+kb..shfr equ	    4		       right SHIFT
+kb..ctll equ	    5		       left CTRL
+kb..ctlr equ	    6		       right CTRL
+kb..agr  equ	    7		       ALT GR key
+kb.cs	 equ	    %00000011	       SHIFT and CTRL
+kb.acs	 equ	    %00000111	       ALT, SHIFT and CTRL
+kb.gcs	 equ	    %10000011	       ALT GR, SHIFT and CTRL
+kb.shftb equ	    %00011000	       both SHIFT keys
+kb.ctrlb equ	    %01100000	       both CTRL keys
+kb..tabs equ	    7		       table selection shift
+kb_krwem equ	  $22	16 bytes    KEYROW emulation
+kb_tab	 equ	  $32	word	    table offset
+kb_lcod  equ	  $34	word	    last code
+kb_arep  equ	  $36	byte	    true if last char in queue was autorepeat
+kb_joyst equ	  $37	byte	    joystick status
+kb_queue equ	  $38		    pointer to keyboard interrupt queue
+kb_intop equ	  $3c	word	    offset of next operation
+kb_qu	 equ	  $40		    interrupt queue is normally here
+kb.qu	 equ	    $28 	    40 bytes per poll - should be enough
 
-kb_ktab  equ      $78   long        pointer to keyboard table
-kb_nstab equ      $7c   long        pointer to non spacing ident table
+kb_ktab  equ	  $78	long	    pointer to keyboard table
+kb_nstab equ	  $7c	long	    pointer to non spacing ident table
 
-kb_mint  equ      $80   word        count of mouse interrupts
-kb_diffx equ      $82   word        x movement
-kb_diffy equ      $84   word        y movement
-kb_hit   equ      $86   byte        hit button
-kb_do    equ      $87   byte        do button
+kb_mint  equ	  $80	word	    count of mouse interrupts
+kb_diffx equ	  $82	word	    x movement
+kb_diffy equ	  $84	word	    y movement
+kb_hit	 equ	  $86	byte	    hit button
+kb_do	 equ	  $87	byte	    do button
 
-kb_nsid  equ      $8c   word        non-spacing ident offset  (0, 10, 20 ...)
-kb_numl  equ      $8e   word        table offset for (not) numlock
+kb_nsid  equ	  $8c	word	    non-spacing ident offset  (0, 10, 20 ...)
+kb_numl  equ	  $8e	word	    table offset for (not) numlock
 
-kb_padd  equ      $90   long        packet address
-kb_pcnt  equ      $94   byte        packet count
-kb_phead equ      $95   byte        packet header
-kb_pbuf  equ      $96               packet buffer
+kb_padd  equ	  $90	long	    packet address
+kb_pcnt  equ	  $94	byte	    packet count
+kb_phead equ	  $95	byte	    packet header
+kb_pbuf  equ	  $96		    packet buffer
 
-kbd_midb equ      $a7   byte        midi byte received
-kbd_midl equ      $a8   long        midi linkage
-kbd_midi equ      $ac   long        midi interrupt address
+kbd_midb equ	  $a7	byte	    midi byte received
+kbd_midl equ	  $a8	long	    midi linkage
+kbd_midi equ	  $ac	long	    midi interrupt address
 
-kb_thgh  equ      $b0               thing linkage header
-kb_thgl  equ      $c0               thing linkage
+kb_thgh  equ	  $b0		    thing linkage header
+kb_thgl  equ	  $c0		    thing linkage
 
-kb_end   equ      $100              enough room for everything
+kb_end	 equ	  $100		    enough room for everything
 
-; keybaord action table keys
+; keyboard action table keys
 
-kba.norm  equ       $00             normal key
-kba.shift equ       $02             shift
-kba.ctrl  equ       $04             control
-kba.alt   equ       $06             alt
-kba.altgr equ       $08             alt gr
-kba.caps  equ       $0a             caps
-kba.slock equ       $0c             scroll lock
+kba.norm  equ	    $00 	    normal key
+kba.shift equ	    $02 	    left shift
+kba.shftr equ	    $04 	    right shift
+kba.ctrl  equ	    $06 	    left control
+kba.ctrlr equ	    $08 	    right control
+kba.alt   equ	    $0a 	    alt
+kba.altgr equ	    $0c 	    alt gr
+kba.caps  equ	    $0e 	    caps
+kba.slock equ	    $10 	    scroll lock
 
-kba.sys   equ       $10             system request
-kba.undo  equ       $12             undo (and soft reset)
-kba.break equ       $14             pause / break action (and soft reset)
-kba.tab   equ       $16             tab (and hard reset)
+kba.sys   equ	    $14 	    system request
+kba.undo  equ	    $16 	    undo (and soft reset)
+kba.break equ	    $18 	    pause / break action (and soft reset)
+kba.tab   equ	    $1a 	    tab (and hard reset)

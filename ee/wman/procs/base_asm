@@ -1,10 +1,14 @@
-; WMAN colours basic procedures base  V1.00	       2002 Marcel Kilgus
+; WMAN colours basic procedures base  V1.01	       2002 Marcel Kilgus
+;
+; 2002-05-27  1.01  Added WM_MOVEMODE (WL)
 
-	section wman
+	section wm_ext
+
+	xdef	wm_initp
 
 	include 'dev8_keys_qlv'
 	include 'dev8_mac_proc'
-	xdef	wm_initp
+
 ;+++
 ; Initialise SBASIC procedures
 ;---
@@ -20,6 +24,7 @@ wm_procs
 	proc_def WM_STRIP
 	proc_def WM_BLOCK
 	proc_def WM_BORDER
+	proc_def WM_MOVEMODE
 	proc_def SP_RESET
 	proc_def SP_GET
 	proc_def SP_SET

@@ -1,5 +1,5 @@
 ; SMSQ Q40 Hardware Initialisation V3
-; 2003-05-18			3.00	config item for massage language (wl)
+
 ; Called with a7 a valid, safe stack
 ;	      d4 the host (QDOS) version number
 ; The hardware is initialised.
@@ -13,6 +13,9 @@
 ;			    zero in d5
 ;			    zero in d6
 ;			    top of RAM in d7
+;
+* 2003-09-27	      v.2.00 (?)	added OSPS config item (wl)
+
 
 	section hwinit
 
@@ -47,48 +50,52 @@ hwinit_name
 	dc.w	34,'Gold Card Initialisation for SMSQ '
 	dc.l	'    '
 
-glc_cx
-	 dc.b	0
+glc_cx	 dc.b	0
 glcxcpar dc.b	0
 glc_sqr  dc.b	0
 glcxser2 dc.b	0
 glcxbflp dc.b	1
 glcxbwin dc.b	1
-glc_lang dc.w	44			; 6
-glcxbtarg dc.b	0			; 8
+glc_lang dc.w	44
+glcxbtarg dc.b	0
 glcxbpart dc.b	0
-glc_scr  dc.b	0			; a
+glc_scr  dc.b	0
 glc_mode dc.b	0
-glcxidisp dc.b	0,0,0,0,0,0,0,0,0,0	; c
-glc_nqimi dc.b	0			; 16
+glcxidisp dc.b	0,0,0,0,0,0,0,0,0,0
+glc_nqimi dc.b	0
 glc_clock dc.b	0
-glcxxxx   dc.b	0,0			; 18
+glcxxxx   dc.b	0,0
 qcf_mlan  dc.w	44
+qcf_kstuf dc.b	250			; 1c
 glc.conf  equ	*-glc_cx
 
 	mkcfhead {SMSQ},{smsq_vers}
 
+
 	mkcfitem 'OSPL',word,0,glc_lang,,,\
-       {Default Keyboard language (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
+       {Default Keyboard Language (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
 
 	mkcfitem 'OSPM',word,'L',qcf_mlan,,,\
        {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
-
+			
 	mkcfitem 'OSPi',code,0,glc_nqimi,,,\
        {Do you wish to ignore the QIMI interface},0,N,{No},$ff,Y,{Yes}
 
-;	 mkcfitem 'OSPb',code,0,glc_mode,,,\
-;	{Initial colour depth},0,0,{QL},1,0,{16},2,0,{256}
+	mkcfitem 'OSPb',code,0,glc_mode,,,\
+       {Initial colour depth},0,0,{QL},2,0,{256}
 
-	mkcfitem 'OSPs',code,0,glc_scr,,,\
-       {Initial display width},$ff,0,{512},0,0,{640},1,0,{768},2,0,{1024}
-
-	mkcfitem 'OSPr',code,0,glc_sqr,,,\
-       {Initial pixel ratio},0,Q,{QL: 2:1},1,S,{Square: 4:3}
+	mkcfitem 'OSPt',code,0,glc_scr,,,\
+       {Initial display resolution},0,0,{512x256},1,0,{512x320}\
+	2,0,{512x384},3,0,{512x480},4,0,{640x320},5,0,{640x480}\
+	6,0,{768x384},7,0,{768x480},8,0,{768x576},9,0,{1024x480}\
+	10,0,{1024x512},11,0,{1024x768}
 
 	mkcfitem 'OSPk',code,0,glc_abck,,,\
        {ABC keyboard},1,M,{Maybe},0,N,{No},$ff,Y,{Yes}
-
+							    
+	mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
+       {Stuffer buffer key for edit line calls},0,$ff
+				
 	mkcfend
 
 glc_abck dc.b	1
@@ -291,7 +298,7 @@ hwi_comms
 	clr.l	-(sp)			 ; facilities
 	clr.l	-(sp)			 ; language
 	move.l	d6,-(sp)		 ; processor, mmu/fpu, std disp
-	move.l	#'GOLD',-(sp)		 ; Q40
+	move.l	#'GOLD',-(sp)		 ; GOLD card
 
 	move.l	a4,d7			 ; ram top
 	moveq	#0,d6			 ; no special RAM

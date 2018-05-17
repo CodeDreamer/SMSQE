@@ -1,5 +1,5 @@
-; Console input 	V2.00	   1994  Tony Tebby
-
+; Console input 	V2.00	 1994	Tony Tebby
+; 2003-09-28		 2.01	bugfix for cursor move if one-line wdw (wl)
 	section con
 
 	xdef	cn_test 	; test input
@@ -20,7 +20,9 @@
 	xref	cn_cksize_p
 
 	xref	cv_cttab
-
+	xref	gu_thjmp
+	include 'dev8_smsq_smsq_base_keys'
+	include 'dev8_smsq_smsq_config_keys'
 	include 'dev8_keys_con'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_err'
@@ -139,6 +141,7 @@ cne_bufln
 
 ;	d1	msw  cursor position / lsw number of chars in buffer
 ;	d2	>=0  buffer length   <0 fill one line of window only
+;	d3	0 for first call, else -1
 ;	a1	pointer after last char in buffer
 
 volreg0 reg	d0/d1/d2/d7/a1/a2/a3/a4/a5
@@ -159,7 +162,7 @@ cn_flin
 cn_fled
 	moveq	#0,d4			; buffer full flag
 	bsr.l	cni_squ 		; set queue and test
-	bne.s	cni_rts1
+	bne.s	cni_rts1		; (this sets a2 to keyboard queue)
 	move.b	sd_curf(a0),d7		; set cursor status
 	tst.b	sd_nlsta(a0)		; newline required?
 	beq.s	cn_first		; ... no, check first entry
@@ -167,26 +170,44 @@ cn_fled
 	bsr.s	cne_remc		; remove cursor
 	jsr	cn_dopnl		; do pending newline
 
+
+;	d1	msw  cursor position / lsw number of chars in buffer
+;	d2	>=0  buffer length   <0 fill one line of window only
+;	d3	0 for first call, else -1
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	pointer to keyboard queue
+
 cn_first
 	tst.w	d3			; first entry?
-	bne.s	cne_setp
+	bne.s	cne_setp		; ... no
 
-	tst.b	sd_sflag(a0)		; size OK ?
+	tst.b	sd_sflag(a0)		; wdw size OK ?
 	beq.s	cne_buff		; ... yes
 	bgt.s	cne_orng		; ... cursor out of window
 	jsr	cn_cksize_p		; re-check size
 	blo.s	cne_orng		; ... no
 cne_buff
 	tst.w	d2			; any buffer at all?
-	beq.l	cne_bffl		; ... no
-	bgt.s	cne_wichar
-	bsr	cne_bufln		; calculate length
+	beq.l	cne_bffl		; ... no, leave with error
+	bgt.s	cne_wichar		; ... yes, normal buffer
+	bsr	cne_bufln		; ... no but calculate length
+
+
+;	d1	msw  cursor position / lsw number of chars in buffer
+;	d2	buffer length
+;	d3	0 for first call, else -1
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	pointer to keyboard queue
 
 cne_wichar
 	tst.l	d1			; any characters at all?
-	beq.s	cne_setp
+	beq.s	cne_setp		; ... no
 	cmp.w	d2,d1			; too many?
-	bhs.l	cne_bffl
+	bhs.l	cne_bffl		; ... yes, leave with error
 
 	bsr.s	cne_remc		; remove cursor
 
@@ -213,33 +234,45 @@ cne_sisln
 
 cne_setp
 	move.l	d1,d3			; save buffer position
-	bsr	cne_fbyt		; get the first character
-	bne.l	cne_exd3
+	bsr	cne_fbyt		; get the first character into D1
+	bne.l	cne_exd3		; ooops!
 	tst.w	d2			; buffer length set?
-	bgt.s	cne_setb
+	bgt.s	cne_setb		; this shouldn't be necessary here anymore!
 	bsr	cne_bufln
 cne_setb
-	move.l	a1,a4			; set start of buffer
-	sub.w	d3,a4
+	move.l	a1,a4			; set start of buffer...
+	sub.w	d3,a4			; ...now
+
 
 	swap	d3
 	lea	(a4,d3.w),a2		; set cursor position
 	lea	(a4,d2.w),a5		; set end of buffer
+
+
+;	d1	msw  cursor position / lsw char got
+;	d2	buffer length
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	cursor position
+;	a4	start of buffer
+;	a5	end of buffer
 
 	bsr	cne_remc		; remove cursor
 
 ; throw away if at start of line and first char printable
 
 	tst.l	d7			; throwaway flag set?
-	bpl.s	cne_tbyte		; ... no
+	bpl.s	cne_tbyte		; ... no, so treat char
 
 	bclr	#31,d7			; clear throwaway flag
 
 	cmp.b	#k.enter,d1		; enter?
-	beq.l	cne_done		; ... yes
+	beq.l	cne_done		; ... yes, so we're done!
 
 cne_eprint
-	cmp.b	#' ',d1 	       ;  printable? (There is a table of these!!
+	cmp.b	#' ',d1 		;  printable? (There is a table of these!!
 	blo.s	cne_tbyte		; not printable, do normal edit
 	cmp.b	#k.maxch,d1
 	bhi.s	cne_tbyte		; ... ditto
@@ -251,7 +284,7 @@ cne_eprint
 	bsr.l	cn_clrbt		; and bottom
 	movem.l (sp)+,volreg		; restore character
 	move.l	a4,a1			; no line
-	move.l	a4,a2
+	move.l	a4,a2			; cursor position
 	bra.s	cne_char		; insert character
 
 
@@ -262,11 +295,21 @@ cne_loop
 	bsr.l	cne_fbyt		; get next character
 	bne.l	cne_exit
 
+; here we have:
+;	d1	msw  cursor position / lsw char got
+;	d2	buffer length
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	cursor position
+;	a4	start of buffer
+;	a5	end of buffer
 cne_tbyte
 	move.l	a2,d2			; save current cursor position
 	move.b	d1,d0
 	subq.b	#k.bspce,d0		; is it backspace?
-	beq.l	cne_dleft		 ; ... yes, delete character
+	beq.l	cne_dleft		; ... yes, delete character
 	subq.b	#k.tab-k.bspce,d0	; is it TAB
 	beq.l	cne_tright		; ... yes, tab right
 	subq.b	#k.enter-k.tab,d0	; is it enter?
@@ -278,14 +321,14 @@ cne_tbyte
 	cmp.b	#k.maxch,d1		; is it special?
 	bhi.s	cne_cursor		; ... yes, check for cursor keys
 cne_char
-	move.l	a1,d0	       ;  how many characters to the right of the cursor
+	move.l	a1,d0			;  how many characters to the right of the cursor
 	sub.l	a2,d0
 	move.l	a1,a2			; move characters up
 	addq.l	#1,a1			; ... no, one more character
 	cmp.l	a5,a1			; buffer full?
 	blt.s	cne_mupe		; ... no
 	tst.l	d4			; fill line?
-	bpl.s	cne_bffl		; ... no
+	bpl	cne_bffl		; ... no
 	subq.l	#1,a1			; ... yes, ignore character
 	sub.l	d0,a2
 	bra.s	cne_loop
@@ -312,6 +355,9 @@ cne_cursor
 	beq.l	cne_dline
 	addq.b	#-k.stab,d1		; is it shift tab?
 	beq.l	cne_tleft
+	subq.b	#3,d1
+	cmp.b	sms.conf+sms_kstuf,d1
+	beq	stuffhk
 	bra.s	cne_loop		; ... no, not recog
 
 cne_dned
@@ -409,11 +455,23 @@ cne_toleft
 	move.l	a4,a2
 	bra.l	cne_setc
 
+
+
+; here we have :
+;	d1	msw  cursor position / lsw char got
+;	d2	cursor position
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	cursor position
+;	a4	start of buffer
+;	a5	end of buffer
 cne_cleft
 	cmp.l	a4,a2			; is it at lhs?
-	ble.l	cne_loop
+	ble.l	cne_loop		; yes, do nothing
 	subq.l	#1,a2			; move left
-	bra.l	cne_setc
+	bra.l	cne_setc		; new cursor position
 
 cne_wright
 	bsr.l	cne_lwfwd
@@ -469,8 +527,19 @@ cne_dwright
 	bra.s	cne_drdo
 
 cne_dleft
+; here we have :
+;	d1	msw  cursor position / lsw char got
+;	d2	cursor position
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	cursor position
+;	a4	start of buffer
+;	a5	end of buffer
+
 	cmp.l	a4,a2			; is it at lhs?
-	ble.l	cne_loop
+	ble.l	cne_loop		; yes, so do nothing
 	subq.l	#1,a2			; move left, then delete
 	bsr.s	cne_movc
 
@@ -511,6 +580,16 @@ cne_wend
 
 	move.l	a1,d2			; set current cursor position
 	add.l	d0,d2			; including spaces at end
+
+;	d1	msw  cursor position / lsw char got
+;	d2	(old) cursor position
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	new cursor position
+;	a4	start of buffer
+;	a5	end of buffer
 cne_setc
 	pea	cne_loop(pc)		; set jump address
 
@@ -556,7 +635,47 @@ cne_nxrdn
 	blt.s	cne_crok		; no
 	bra.s	cne_crdn
 
+; here the cursor must move 'up'
 cne_crup
+	move.w	sd_ysize(a0),d0 	; window y size
+	move.w	sd_yinc(a0),d1		; cursor y size
+	add.w	d1,d1			; for cursor to be able to move up...
+	sub.w	d1,d0			; ... wdw must be at least twice cur y size
+	bge.s	cne_crupok		: - .... it is
+
+; now we must clear all of the window and print that part of the buffer
+; that fits in the wdw
+; we must thus know how many chars fit in the wdw, to calculate the
+; start of the buffer we must print from
+; calculate where in the buffer the new line starts
+; here we have:
+;	d1	msw  cursor position / lsw char got
+;	d2	distance to move
+;	d3	msw  cursor position / lsw number of chars in buffer
+;	d4	sd_xinc = cursor xsize
+;	d5	nbr of chars that fit in wdw
+;	d6	new cursor pos in wdw (in chars!)
+;	d7	some kind of flag (fetch line, edit line)
+;	a0	channel defn block
+;	a1	pointer after last char in buffer
+;	a2	new cursor position (in buffer)
+;	a4	start of buffer
+;	a5	end of buffer
+
+	move.l	a2,d0			; where cursor is right now
+	sub.w	d5,d0			; where it should be
+	bge.s	cne_cup
+	move.l	a4,d0			; point to start of string
+cne_cup
+	movem.l volreg0,-(sp)
+	move.l	d0,a1
+	move.w	d5,d2
+	moveq	#0,d1
+	bsr.l	cn_smulc		; send all of these!
+	movem.l (sp)+,volreg0
+	move.w	d5,d6
+	bra.s	cne_crok
+cne_crupok
 	clr.w	sd_xpos(a0)
 	bsr.l	cn_scprw		; move up
 	add.w	d5,d6
@@ -619,5 +738,36 @@ cne_lbnld     ; look for non-letter / digit
 
 	addq.l	#1,a2			; start of word
 	bra.s	cne_lwend
+
+
+; stuff current line into hk buffer
+hk.stbuf equ	 $002c			; long	  hotkey stuff buffer
+vreg0	reg	d0-d7/a0-a6
+stuffhk movem.l vreg0,-(sp)		; keep some regs
+	move.l	d3,d2
+	swap	d2			; number of chars to stuff
+	tst.w	d2			; are there any?
+	beq.s	stufout 		; .... no!
+	lea	hkn,a0			; name of hotkey thing
+	moveq	#$28,d0 		; use thing
+	moveq	#-1,d1			; for myself
+	moveq	#-1,d3			; i've got all the time in the world
+	jsr	gu_thjmp		; do it
+	tst.l	d0
+	bne.s	stufout 		; oops...
+	move.l	hk.stbuf(a1),a2 	; vector to use
+	move.l	a1,a3			; needs ptr to linkage block in a3
+	move.l	a4,a1			; point to string
+	jsr	(a2)			; stuff string pointed to by a1
+un_use	lea	hkn,a0			; and free thing again
+	moveq	#$29,d0
+	moveq	#-1,d1
+	moveq	#-1,d3
+	jsr	gu_thjmp
+stufout movem.l (sp)+,vreg0
+	bra	cne_loop
+
+hkn	DC.W	6,'HOTKEY'
+
 
 	end

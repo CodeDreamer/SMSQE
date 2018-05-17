@@ -1,13 +1,14 @@
-* Draw menu object or loose menu item  V1.01	 1986	Tony Tebby   QJUMP
+* Draw menu object or loose menu item  V1.05	 1986	Tony Tebby   QJUMP
 * 2003-01-24	1.02	draws sprites according to item status (wl)
-* 2003-05-06	1.03	uses pto..blk to check for sprite block
-
-
+* 2003-05-06	1.03	uses pto..blk to check for sprite block (wl)
+* 2003-05-20	1.04	calls pv_fsprt before checking on object data (mk)
+* 2003-06-15	1.05	yet more bugfixes for statuts items (wl)
 	section wman
 *
 	xdef	wm_drmit
 	xdef	wm_drmob
 	xdef	wm_drlit
+	xdef	wm_getrealobject
 *
 	xref	wm_trap3
 *
@@ -264,7 +265,7 @@ wdo_sstrg
 	move.l	a2,a1			pointer to string
 	moveq	#iob.smul,d0		write text
 	bsr.l	wm_trap3
-	bra.s	wdo_rts
+	bra	wdo_rts
 *
 * do sprite, blob or pattern
 *
@@ -277,6 +278,7 @@ wdo_sstrg
 
 wdo_obj
 	move.l	wwm_pobj(a2),a1 	set object pointer
+	bsr	wm_getrealobject
 	subq.b	#4,d7			is it sprite?
 	beq.s	wdo_blob		... no, blob
 ; new wl
@@ -299,25 +301,29 @@ wdo_new
 	beq.s	wdo_old 		; ... but there is none!
 	add.l	#pto_blk,d0		; absolute pointer
 	add.l	d0,a1			; point to that block now
-	move.l	(a1),d0 		; available item
+	move.l	(a1),d0 		; available item pointer
 	tst.b	d6			; item status
 	bgt.s	unav			; ... item is unavailable
 	beq.s	avail			; ... item is available
-sel	move.l	8(a1),d0		; pointer to sprite, selected
-	beq.s	avail			; ... there is none!, use available
+sel	tst.l	8(a1)			; is there a selected pointer?
+	beq.s	wdo_spt 		; ... no, use available
+	move.l	8(a1),d0		; pointer to sprite, selected
 	addq.l	#8,a1			; offset
+
 avail	tst.l	d6			; current item?
 	bge.s	wdo_spt 		; ... no, normal
 	tst.l	4(a1)			; ... yes is there a ptr to curr item sprite
-	beq.s	wdo_spt 		; ... no , use normal
+	beq.s	wdo_spt 		;    ... no , use normal
 	addq.l	#4,a1			; point to it
 	move.l	(a1),d0 		; offset
 	bra.s	wdo_spt
 
-unav	move.l	16(a1),d0		pointer to this sprite
-	beq.s	wdo_old 		... but there is none
-	add.l	#16,d0
-wdo_spt add.l	d0,a1			point to correct sprite now
+unav	tst.l	16(a1)			; is there a pointer to unavailable?
+	beq.s	wdo_spt 		; no
+	move.l	16(a1),d0		; yes get it
+	add.l	#16,d0			; and make more absolute
+wdo_spt add.l	d0,a1			; point to correct sprite now
+	bsr	wm_getrealobject
 
 wdo_old
 	bsr.s	wdo_ojst		justify arbitrary object
@@ -358,14 +364,6 @@ wdo_rts
 *	a2 c u	pointer to justification
 *
 wdo_ojst
-	movem.l d1-d2/a0/a3,-(sp)
-	moveq	#sms.info,d0
-	trap	#1
-	move.l	sys_clnk(a0),a3 	CON linkage
-	move.l	pt_vecs(a3),a0		CON vectors
-	jsr	pv_fspr(a0)		get actually used sprite definition
-	movem.l (sp)+,d1-d2/a0/a3
-
 	move.l	pto_org(a1),d1		set object origin
 	move.l	pto_size(a1),d2 	set object size
 *
@@ -386,6 +384,22 @@ wdo_asize
 	add.w	d4,d1			add size difference
 wdo_ajust
 	add.w	d0,d1			add justification
+	rts
+
+*
+* Get actually used sprite/blob/pattern definition
+*
+*	d0   s
+*	a1 cr	ptr to original / used sprite definition
+*
+wm_getrealobject
+	movem.l d1-d2/a0/a3,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a3 	CON linkage
+	move.l	pt_vecs(a3),a0		CON vectors
+	jsr	pv_fspr(a0)		get actually used sprite definition
+	movem.l (sp)+,d1-d2/a0/a3
 	rts
 
 	end

@@ -1,6 +1,13 @@
 program dev8_ee_wman_wman
-section base
-section version
-input   dev8_ee_wman_wman_rel
+
+section header
+section base	  ; base area for any extension or program
+section version   ; version messages
+
+input dev8_ee_wman_wman_rel
+input dev8_ee_wman_trap3_qdos_rel
 library dev8_ee_wman_lib
-library dev8_lang_english_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_sbsext_ut_lib
+library dev8_util_dummy_lib

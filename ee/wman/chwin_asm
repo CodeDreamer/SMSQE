@@ -1,5 +1,5 @@
 * Process change window event  V1.01   1986  Tony Tebby   QJUMP
-
+* 2003-05-27			v1.02 call upon new move routine (WL)
 	section wman
 *
 	xdef	wm_chwin
@@ -8,6 +8,7 @@
 	xref	sp_wsize
 	xref	wm_clrci
 	xref	wm_wpos
+	xref	changewin
 *
 	include dev8_keys_qdos_io
 	include dev8_keys_qdos_pt
@@ -60,6 +61,8 @@ wm_chwin
 	bra.s	wcw_exit
 *
 wcw_move
+	jsr	changewin		try new move routines
+	beq.s	wcw_exit		... were OK
 	moveq	#$ffffff00+pt.wmove,d2	window move sprite
 	bsr.s	wcw_rptr		read new position
 	bne.s	wcw_exit

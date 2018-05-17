@@ -1,4 +1,8 @@
-; WMAN colours basic procedures  V1.00		       2002  Marcel Kilgus
+; WMAN colours basic procedures  V1.02		       2002  Marcel Kilgus
+;
+; 2003-05-27  1.01  Changed routines to always use sys_clnk to get WMAN vec (MK)
+;		    Added WM_MOVEMODE (WL/MK)
+; 2003-09-05  1.02  Fixed WM_BLOCK (GG/MK)
 
 	section wm_ext
 
@@ -7,6 +11,7 @@
 	xdef	wm_strip
 	xdef	wm_block
 	xdef	wm_border
+	xdef	wm_movemode
 	xdef	sp_reset
 	xdef	sp_set
 	xdef	sp_get
@@ -24,8 +29,12 @@
 	xref	ut_gtnm1
 	xref	ut_fjob
 
+	include 'dev8_ee_wman_data'
+	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_con'
 	include 'dev8_keys_wman'
+	include 'dev8_keys_sys'
 	include 'dev8_keys_err'
 	include 'dev8_keys_sbasic'
 
@@ -34,6 +43,7 @@
 ;---
 wm_paper
 	bsr	wm_getwman
+	jsr	ut_chan1		; get a channel id
 	bne.s	wm_rts
 	jsr	ut_gxli1
 	bne.s	wm_rts
@@ -62,6 +72,7 @@ wm_strip
 	moveq	#iow.sstr,d7
 wm_setcolour
 	bsr	wm_getwman
+	jsr	ut_chan1		; get a channel id
 	bne.s	wm_rts
 	jsr	ut_gxli1
 	bne.s	wm_rts
@@ -78,20 +89,23 @@ wm_rts
 ;---
 wm_block
 	bsr	wm_getwman
+	jsr	ut_chan1		; get a channel id
 	bne.s	wm_rts
-	suba.l	#8,a5
+	subq.l	#8,a5
 	cmpa.l	a3,a5
-	bge.s	wm_ipar
+	ble	wm_ipar
 	jsr	ut_gtint
 	cmp.w	#4,d3
-	bne.s	wm_ipar
-	adda.l	#8,a5
+	bne	wm_ipar
+	lea	4*8(a3),a3
+	addq.l	#8,a5
 	jsr	ut_gxli1
+	bne.s	wm_rts
 
 	moveq	#iow.blok,d0
-	move.l	2*4(a6,a1.l),d1
+	move.l	(a6,a1.l),d1
 	moveq	#-1,d3
-	lea	(a6,a1.l),a1
+	lea	4(a6,a1.l),a1
 	jsr	wm.trap3(a2)
 	rts
 
@@ -100,8 +114,10 @@ wm_block
 ;---
 wm_border
 	bsr	wm_getwman
+	jsr	ut_chan1		; get a channel id
 	bne.s	wm_rts
 	jsr	ut_gxli2
+	bne.s	wm_rts
 
 	moveq	#iow.defb,d0
 	move.l	4(a6,a1.l),d1
@@ -111,7 +127,22 @@ wm_border
 	rts
 
 ;+++
-; SP_RESET (#ch,) (no)
+; WM_MOVEMODE move_type% (0..2)
+;---
+wm_movemode
+	bsr	wm_getwdata
+	jsr	ut_gtin1		; get one int
+	bne.s	wm_rts
+	move.w	(a6,a1.l),d0
+	blt.s	wm_ipar 		; and it must be between 0...
+	cmp.w	#2,d0			; ... and 2
+	bgt.s	wm_ipar
+	move.b	d0,wd_movemd(a2)
+	clr.l	d0
+	rts
+
+;+++
+; SP_RESET (no)
 ;---
 sp_reset
 	bsr	wm_getwman		; get WMAN vector
@@ -141,7 +172,6 @@ wm_ipar
 ;---
 sp_getcount
 	bsr	wm_getwman
-	bne.s	sp_rts
 	cmpa.l	a3,a5
 	bne.s	wm_ipar
 
@@ -151,11 +181,10 @@ sp_getcount
 	jmp	ut_rtint
 
 ;+++
-; SP_GET (#ch,) (no,) adr, first, count
+; SP_GET (no,) adr, first, count
 ;---
 sp_get
-	bsr	wm_getwman
-	bne.s	sp_rts
+	bsr.s	wm_getwman
 	moveq	#0,d4			; default to palette 0
 	jsr	ut_gtlin
 	cmp.w	#3,d3
@@ -173,11 +202,10 @@ spg_nonum
 	rts
 
 ;+++
-; SP_SET (#ch,) (no,) adr, first, count
+; SP_SET (no,) adr, first, count
 ;---
 sp_set
 	bsr.s	wm_getwman
-	bne.s	sp_rts
 	moveq	#0,d4			; default to palette 0
 	jsr	ut_gtlin
 	cmp.w	#3,d3
@@ -195,11 +223,10 @@ sps_nonum
 	rts
 
 ;+++
-; SP_JOBPAL (#ch,) job id / job name, no
+; SP_JOBPAL job id / job name, no
 ;---
 sp_jobpal
 	bsr.s	wm_getwman
-	bne	sp_rts
 	bsr.s	job_proc
 	bne	sp_rts
 
@@ -209,11 +236,10 @@ sp_jobpal
 	rts
 
 ;+++
-; SP_JOBOWNPAL (#ch,) job id / job name, ptr to palette
+; SP_JOBOWNPAL job id / job name, ptr to palette
 ;---
 sp_jobownpal
 	bsr.s	wm_getwman
-	bne	sp_rts
 	bsr.s	job_proc
 	bne	sp_rts
 
@@ -222,19 +248,33 @@ sp_jobownpal
 	jsr	wm.jbpal(a2)
 	rts
 
+;+++
 ; Get WMAN vector in a2
+;---
 wm_getwman
-	jsr	ut_chan1		; get a channel id
-	bne.s	wmgw_rts
-
-	moveq	#iop.pinf,d0
-	moveq	#-1,d3
-	trap	#3
-	movea.l a1,a2			; save wman vector
-wmgw_rts
-	tst.l	d0
+	movem.l d1-d3/a0,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a2
+	move.l	pt_wman(a2),a2
+	movem.l (sp)+,d1-d3/a0
 	rts
 
+;+++
+; Get WMAN data ptr in a2
+;---
+wm_getwdata
+	movem.l d1-d3/a0,-(sp)
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_clnk(a0),a2
+	move.l	pt_wdata(a2),a2
+	movem.l (sp)+,d1-d3/a0
+	rts
+
+;+++
+; Get job ID from supplied parameter(s)
+;---
 job_proc
 	moveq	#8,d5			get 2 parameters (8 bytes)
 *
