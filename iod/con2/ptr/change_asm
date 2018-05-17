@@ -1,4 +1,6 @@
-;	Change size / colour resolution       V2.00   2000 Tony Tebby
+;	Change size / colour resolution       V2.01   2000 Tony Tebby
+;
+; 2005-11-15  2.01  First kills jobs before wchka messes with outside wins (MK)
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -65,10 +67,10 @@ pch_size
 	jsr	cn_disp_size
 	jsr	pt_scansize
 
+	jsr	pt_scancrop		 ; remove jobs outside new screen
 	moveq	#0,d3			 ; reset locks
 	jsr	pt_wchka
 	jsr	pt_mrall
-	jsr	pt_scancrop		 ; remove jobs outside new screen
 
 pch_exitwp
 	move.l	(sp),d1 		 ; old wallpaper

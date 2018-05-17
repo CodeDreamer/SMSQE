@@ -74,8 +74,7 @@ sppo_scr
 
 	tst.b	d5			 ; input buffer required?
 	blt.s	sppo_obuf		 ; ... no
-	clr.w	spd_cdct(a3)
-
+	clr.w	spd_cdct(a3)		 ; clear cd eof count
 	lea	spc_ibuf(a0),a2
 	lea	spd_ibuf(a3),a1
 	tst.l	(a1)			 ; input buffer already there?
@@ -93,7 +92,6 @@ sppo_obuf
 	jsr	iob_allc		 ; and allocate
 	exg	a0,a5
 	bne.s	sppo_rchb		 ; ... no can do
-	bsr.s	sppo_att		 ; set attributes
 sppo_sop
 	move.l	spd_iopr(a3),spc_iopr(a0) ; set input
 	move.l	spd_oopr(a3),spc_oopr(a0) ;    ... and output operations
@@ -110,6 +108,8 @@ sppo_sop
 	exg	a5,a0
 	jsr	iob_lnew		 ; link buffer in
 	move.l	a5,a0
+	bsr.s	sppo_att		 ; set attributes
+	moveq	#0,d0
 
 sppo_exit
 	add.w	#frame,sp

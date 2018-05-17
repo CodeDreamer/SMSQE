@@ -2,16 +2,121 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
+
+3.13
+
+    BUGFIXES
+	smsq_sbas_ictrl_asm		1.01	One-line SELect no longer crashes on multiple expressions (MK)
+	smsq_home_current_asm		1.03	correct length set if simple device name (wl)
+	smsq_sbas_iexpr_asm		1.01	function()(x)	(!!!!) no longer gives wrong char if x = last char index (MK)
+
+    ADDITIONS FOR QDOS PE
+	iod_con2_ptr_bgio_asm		1.01	Additional checks for QDOS PE variant (MK)
+	iod_con2_ptr_wremv_asm		1.05	Restore dddb before pt_fillsv. JS rom could smash a3 (MK)
+
+-----------------------------------------------------------------------------
+3.12
+
+    SCREEN BACKGROUND WRITING EVEN IF WINDOW IS PARTLY BURIED (MK)
+	iod_con2_16_sprite_ptr_asm	0.02	Sets up pointers for CDB if a CDB is given
+	iod_con2_ptr_bgio_asm		1.00	initial release
+	iod_con2_ptr_init_asm		2.04	Call background I/O initialisation
+	iod_con2_ptr_io_asm		1.09	calls new background I/O handler
+	iod_con2_ptr_psvrs_asm		2.01	Screen increment based on CDB
+	iod_con2_ptr_sadd_asm		2.04	Flags a0 with 0 for pt_sadd and pt_saddp
+	iod_con2_ptr_sched_asm		1.12	Free a0 for use in pt_sadd, call bg-refresh
+	iod_con2_ptr_vec_asm		1.03	added pt_bgctl
+	iod_con2_ptr_wsave_asm		2.01	Uses line increment from CDB
+	iod_con2_ql_sprite_ptr_asm	0.02	Sets up pointers for CDB if a CDB is given
+	iod_con2_curspr_asm		1.01	Gets screen data out of CDB for background windows
+	iod_con2_ptr_wdef_asm		1.01	Correctly restores screen for unbehaved windows
+	iod_con2_goldql_cct		-	amended to suit
+	iod_con2_q40ql_cct		-	amended to suit
+	iod_con2_q4016_cct		-	amended to suit
+	iod_con2_qxlql_cct		-	amended to suit
+	iod_con2_atmono_cct		-	amended to suit
+	iod_con2_atql_cct		-	amended to suit
+	iod_con2_qxl16_cct		-	amended to suit
+	iod_con2_ptr_version_asm	-	amended to suit
+
+    MORE HOME THING SUPPORT
+	util_gut_home_asm		1.00	new (mk)
+	util_gut_cctx			-	amended to suit
+	util_gut_fexec_asm		0.01	Adapted for home directory (MK)
+	util_gut_fexnm_asm		0.02	Fixed race condition (MK)
+	sbsext_ext_basic_asm		0.03	set current dir on load (mk+wl)
+	smsq_home_basic_asm		0.01	new (mk)
+	smsq_home_procs_asm		0.01	new (wl+mk)
+	smsq_home_things_asm		1.02	new (mk+wl)
+	smsq_home_current_asm		1.02	new (wl)
+	smsq_home_default_asm		1.02	new (wl+mk)
+	smsq_home_fndjob_asm		0.01	new (wl+mk)
+	smsq_home_init_asm		1.02	new (wl)
+	smsq_home_jobid_asm		1.00	new (wl)
+	smsq_home_linkl_asm		1.01	new (wl+mk)
+	smsq_home_mem2_asm		1.02	new (wl+mk)
+	smsq_home_data			-	new (wl)
+	sbsext_ext_exsbas_asm		2.04	if A1 is absolute, use supervisor mode in call to home thing (mk)
+	keys_con			-	amended to suit
+
+    Qx0 IMPROVEMENTS (TG)
+	smsq_smsq_cache40c_asm		2.01	bugfix (TG)
+	smsq_smsq_cache40c_link 	-	adapted to suit (TG)
+	smsq_q40_hwinit_asm		2.02	better Qx0 cache initialization
+
+    BETTER SCREEN HANDLING (MK)
+	iod_con2_ptr_change_asm 	2.01	Kills jobs before wchka messes with outside wins (MK).
+	iod_con2_ptr_scan_asm		2.01	Tries to move main SBasic WDW if it's outside of redefined screen (MK).
+
+    HISTORY DEVICE IMPROVEMENTS (MK)
+	iod_history_data		-	hid_cnt added
+	iod_history_io_asm		2.02	many improvements
+	iod_history_version_asm 	-	amended to suit
+	smsq_sbas_main_asm		1.02	Sets boot-filename as current file name, registers boot in HOME directory if possible  and New command line history (up/down arrows) (MK)
+	keys_sbasic			-	amended to suit
+
+    POKE_F (MK)
+	sbext_ext_peek_asm		2.02	adds the code
+	smsq_sbas_procs_procs_asm	2.03	Adds POKE_F,PEEK_F
+	smsq_sbas_procs_procs_q60_asm	2.03	same
+	smsq_sbas_procs_xtprocs_asm	2.04	same for PEEKS
+
+    JOBID (PW)
+	sbsext_ext_jobf_asm		0.07	added code for JOBID
+	smsq_sbas_procs_tk2procs_asm	2.07	added JOBID keyword
+
+    AURORA 8 BIT COLOUR DRIVER (MK)
+	marcel Kilgus put the Aurora	-	-
+	colour drivers into the 	-	-
+	official source tree		-	-
+	iod_con2_8_			-	All files in this subdir are new
+	iod_con2_aur8_			-	All files in this subdir are new
+	smsq_aurora_			-	All files in this subdir are new
+
+    MISC
+	smsq_ioa_ffsd_asm		2.03	try to release DDB if table is full (MK)
+	sbsext_ext_peek_asm		2.02	Ensures that PEEK_F only returns valid floats (MK)
+	smsq_sbas_qd5_asm		1.01	Sets file name from QD as home file name (MK)
+	iod_con2_q40_procv_asm		-	small bugfix
+	smsq_init_ext_asm		2.02	Removed debug code (MK)
+	sys_sdp_init_asm		2.01	Removed driver check, uses new keys and PAR as default (MK)
+	extras_del_all_bas		-	extended for aurora
+	extras_exe_smsqemake		-	extended for aurora
+	iod_con2_8_sprite_save_asm	1.01	Changes for mouse pointer clipping (MK)
+	smsq_spp_open_asm		2.02	various bugfixes
+	the uti_lib and util_menus_lib	-	libraries are no longer used
+	as Jochen Merz donated the	-	source code for the files
+
+
+-----------------------------------------------------------------------------
 3.11
+
     BUGFIXES (thanks to MK for pointing these out, the errors he corrected were all mine)
-
-	DEV8_ee_wman_entry_asm		1.03	added wm_cpspr (finally!)
-	dev8_ee_wman_rptr_asm		1.11	Removed some redundant code at wc_ldraw (mk)
+	ee_wman_entry_asm		1.03	added wm_cpspr (finally!)
+	ee_wman_rptr_asm		1.11	Removed some redundant code at wc_ldraw (mk)
 	smsq_spp_poll_asm		2.11	direct suppression if not still counting (mk)
-
 	keys_wman			-	set all keys, including wm.cpspr
 	keys_qdos_io			-	removed redundant iop.fspr & iop.sspr
-
 	ee_hot_link			-	uses sbsext_utq_lib (for qdos compatibility)
 	ee_wman_link			-	uses sbsext_utq_lib (for qdos compatibility)
 	ee_wman_procs_link		-	uses sbsext_utq_lib (for qdos compatibility)
@@ -24,9 +129,8 @@ Version   changed			of file   changes made
 	util_gut_cctx			-	amended to suit
 	sbsext_ext_exsbas_asm		2.03	added call to gu_shome (mk)
 
+-----------------------------------------------------------------------------
 3.10
-
-
    SPRITE CLIPPING (MK)
 	iod_con2_ptr_sadd_asm		2.03	many changes for pointer sprite clipping
 	iod_con2_ptr_limit_asm		1.01	same
@@ -161,7 +265,7 @@ Version   changed			of file   changes made
 	iod_con2_qxl16_cct		.	all modified to suit
 
     MISC
-	smsq_sbas_procs_job_asm 	2.01	quit takes optional long parameter (pjw)
+	smsq_sbas_procs_job_asm 	2.01	quit takes optional long parameter (pw)
 	iod_con2_ptr_fsprd_asm		1.01	returns sp_error sprite if no fitting sprite can be found (wl)
 	iod_con2_ptr_sysspr_asm 	1.01	xdef'd sp_error for this
 
@@ -589,6 +693,7 @@ JG = Jƒr˜me Grimbert
 JH = John Hall
 MK = Marcel Kilgus
 MS = Mark Swift
+TG = Thierry Godefroy
 TT = Tony Tebby
 PW = Per Witte
 WL = Wolfgang Lenerz

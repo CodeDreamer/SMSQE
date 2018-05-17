@@ -194,7 +194,8 @@ pt_asprt equ	$14a   ; 6 bytes float pixel aspect ratio
 pt_vecs  equ	$150   ; long  pointer to block with vectored routines
 pt_cjob  equ	$154   ; long  pointer to cursor sprite job table
 pt_spszy equ	$15a   ; word  pointer sprite save area y size
-pt_end	 equ	$15c   ; length of pointer linkage block
+pt_bgdat equ	$15c   ; long  pointer to memory for background I/O data
+pt_end	 equ	$160   ; length of pointer linkage block
 
 *
 * Pointer interface vectors
@@ -205,6 +206,7 @@ pv_sspr  equ	$0c    ; set system sprite/get system sprite address
 pv_size  equ	$12    ; get pixel rounding sizes
 pv_mblk  equ	$18    ; move blocks
 pv_cursp equ	$1e    ; set/unset sprite cursor
+pv_bgctl equ	$24    ; control background updating
 
 *
 * Channel definition block

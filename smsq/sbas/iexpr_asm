@@ -1,4 +1,6 @@
 ; SBAS_IEXPR - Interpreter Expression Evaluation     1992 Tony Tebby
+;
+; 2006-04-01  1.01  Fixed return of 'date$()(20)', i.e. index of last char (MK)
 
 	section sbas
 
@@ -1309,9 +1311,10 @@ bo_index
 	subq.w	#1,d4			 ; index from zero
 	cmp.b	d2,d4			 ; in range?
 	bhs.s	bos_inor		 ; ... no
-	clr.b	-(a1)
-	move.b	(a2,d4.w),-(a1)
-	move.l	#ar.strng<<16+1,-(a1)
+	move.b	(a2,d4.w),d0		 ; get indexed character now... ** 1.01 **
+	clr.b	-(a1)			 ; ... because this might overwrite it
+	move.b	d0,-(a1)
+	move.l	#ar.strng<<16+1,-(a1)	 ; string with 1 character
 	jmp	(a5)
 
 bo_indvt

@@ -1,4 +1,6 @@
-; Partial save / restore  V2.0	  1998  Tony Tebby
+; Partial save / restore  V2.01 			    1998  Tony Tebby
+;
+; 2005-11-09  2.01  Screen increment based on CDB (MK)
 
 	section driver
 
@@ -203,9 +205,9 @@ ptc_all
 
 ptc_gadr
 	lea	ptp_bits(a2),a5 	save area base
+	move.w	sd_linel(a4),a3 	screen increment
 	move.l	sd_scrb(a4),a4		screen base
 	move.w	ptp_rinc(a2),a2 	save area row increment
-	move.w	pt_bytel(a3),a3 	screen increment
 	exg	a2,a3
 
 	moveq	#0,d0

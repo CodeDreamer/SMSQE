@@ -1,4 +1,6 @@
 ; SBAS_ICTRL - General Control Structure Interpretation    1994 Tony Tebby
+;
+; 2006-03-25  1.01  Fixed crashes in SELect statements with several ranges (MK)
 
 	section sbas
 
@@ -341,7 +343,7 @@ bsp_onxpr
 	move.l	(a4)+,-(sp)		 ; next ON
 	move.l	a4,a0			 ; pointer to ranges
 	add.w	(a4)+,a0		 ; this selection
-	move.l	a0,-(sp)
+	move.l	a0,-(sp)						    ü
 	move.w	(a4)+,-(sp)		 ; number of ranges
 bsp_ckx
 	jsr	(a5)			 ; evaluate expression
@@ -393,9 +395,9 @@ bsp_ckxh
 bsp_ckh
 	move.w	(a1)+,d2		 ; exponent to check
 	move.l	(a1)+,d1		 ; and mantissa
-	blt.s	bsp_ckxo		 ; negative, must be out of range
+	blt.s	bsp_ckxe		 ; negative, must be out of range ** 1.01
 	cmp.w	(a1),d2 		 ; exponent above range?
-	blt.s	bsp_ckxo		 ; ... yes
+	blt.s	bsp_ckxe		 ; ... yes  ** 1.01
 	bgt.s	bsf_xend		 ; ... in range
 	cmp.l	2(a1),d1		 ; mantissa in range?
 	blt.s	bsp_ckxe		 ; ... no
@@ -517,7 +519,7 @@ bsn_ckh
 	move.l	(a1)+,d1		 ; and mantissa
 	bge.l	bsf_xend		 ; positive, must be in range
 	cmp.w	(a1),d2 		 ; exponent above range?
-	bgt.s	bsn_ckxo		 ; ... yes
+	bgt.s	bsn_ckxe		 ; ... yes **1.01
 	blt.l	bsf_xend		 ; ... in range
 	cmp.l	2(a1),d1		 ; mantissa in range?
 	blt.s	bsn_ckxe		 ; ... no

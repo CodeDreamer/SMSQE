@@ -1,4 +1,8 @@
-; SBAS_MAIN - Main SuperBASIC control routine
+; SBAS_MAIN - Main SuperBASIC control routine v1.02
+;
+; 2005-11-15  1.01  Sets the boot-filename as the current file name (MK)
+; 2005-12-08  1.02  Also registers boot in HOME directory if possible (MK)
+;		    New command line history (up/down arrows) (MK)
 
 	section sbas
 
@@ -11,6 +15,7 @@
 	xdef	sb_panic
 	xdef	sb_wermess
 	xdef	sb_chan0
+	xdef	gu_shome
 
 	xref	sb_vers
 	xref	sb_qload
@@ -50,6 +55,8 @@
 
 	xref	sb_ermess
 
+	xref	gu_thjmp
+
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_qdos_io'
 	include 'dev8_keys_qdos_ioa'
@@ -58,6 +65,8 @@
 	include 'dev8_keys_err'
 	include 'dev8_keys_err4'
 	include 'dev8_keys_k'
+	include 'dev8_keys_thg'
+	include 'dev8_keys_con'
 	include 'dev8_mac_assert'
 
 sb_bf	dc.w	9,'flp0_boot'
@@ -134,8 +143,65 @@ sbm_obfl
 	add.b	d7,5(a0)		 ; ... xxx1 or 2
 	moveq	#ioa.kshr,d3
 	jsr	gu_fopen
+	bne.s	sbm_obfl_rts
+	lea	sb_fname(a6),a1 	 ; copy filename to "current name"
+	move.l	(sp),(a1)+
+	move.l	4(sp),(a1)+
+	move.l	8(sp),(a1)+
+	sf	sb_fnbas(a6)
+	lea	sb_fname(a6),a1 	 ; now use it for setting the home dir
+	moveq	#-1,d1
+	bsr.s	gu_shome
+	moveq	#0,d0
+sbm_obfl_rts
 	add.w	#12,sp
 	rts
+
+homereg reg	a0-a4/d1-d3
+d1stak	equ	0			; where D1 is on stack
+d2stak	equ	4			; same for D2
+
+;+++
+; Set home directory for the given job in the home thing.
+;
+; Registers:
+;		Entry			Exit
+;	D0				error code
+;	D1	Job-ID			preserved
+;	A1	Pointer to file name	preserved
+;---
+gu_shome
+	movem.l homereg,-(sp)		; keep my regs
+	move.l	#'SETH',d2		; extension in thing to use
+	move.l	a1,a4			; save filename
+	lea	home_name,a0		; point to name of thing
+	moveq	#-1,d3			; wait forever
+	moveq	#-1,d1			; I will use the thing
+	moveq	#sms.uthg,d0		; use thing
+	jsr	gu_thjmp		; on return A2= ptr thg header, a1 to thg
+	tst.l	d0			; ok?
+	bne.s	sh_exit 		; no!
+	move.l	a1,a0			; pointer to thing (!!!)
+	move.l	d1stak(sp),d1		; get job ID back
+	sub.l	#12,sp			; get some space
+	move.l	sp,a1			; and point to it
+	move.l	d1,(a1) 		; insert ID of job
+	move.l	#$c1000000,4(a1)	; thp.call+thp.str
+	move.l	a4,8(a1)		; set pointer to this string
+	jsr	thh_code(a0)		; call extn thing
+	add.l	#12,sp			; reset stack
+	move.l	d0,-(sp)		; remember error
+	lea	home_name,a0		; free thing
+	moveq	#sms.fthg,d0
+	moveq	#-1,d1
+	jsr	gu_thjmp
+	move.l	(sp)+,d0		; restore error
+sh_exit
+	movem.l (sp)+,homereg
+	rts
+
+home_name
+	dc.w  4,'HOME'
 
 ; Channel handling
 
@@ -280,6 +346,15 @@ sbm_done
 ;---
 sb_start
 sbm_start
+	tst.l	sb_hichn(a6)		 ; history already set up?
+	bne.s	sbm_hisok		 ; ... yes
+	moveq	#ioa.open,d0
+	moveq	#-1,d1
+	moveq	#ioa.kexc,d3
+	lea	history_name,a0
+	trap	#2			 ; open private history
+	move.l	a0,sb_hichn(a6)
+sbm_hisok
 	move.l	sb_cmdch(a6),d0 	 ; command channel
 	beq.s	sbm_loop		 ; ... none
 	move.l	d0,a0
@@ -312,6 +387,9 @@ sbm_spos0
 	tst.l	d0
 	rts
 
+history_name
+	dc.w	12
+	dc.b	'HISTORY_2048'
 
 ; Main SBASIC Loop
 
@@ -356,7 +434,8 @@ sbm_wline
 	trap	#3
 sbm_eline
 	tst.l	d6			 ; console?
-	bne.s	sbm_fline
+	bne	sbm_fline
+
 	swap	d1			 ; cursor in top
 	move.l	sb_buffp(a6),a1
 	move.w	a1,d1			 ; current line length
@@ -366,19 +445,128 @@ sbm_eline
 	moveq	#iob.elin,d0
 	trap	#4
 	trap	#3
+
 	moveq	#0,d6			 ; no line number
 	lea	sbm_perrl,a2		 ; print error if not complete
 	tst.l	d0
-	bne.s	sbm_ercmd
+	bne	sbm_ercmd
 	cmp.b	#k.esc,-1(a6,a1.l)	 ; ends with esc?
-	beq.s	sbm_scrub		 ; ... yes
+	beq	sbm_scrub		 ; ... yes
+
+; +++ code for command line history
+hst_reg reg	d0-d4/a0-a2
+	movem.l hst_reg,-(sp)
+	cmp.b	#k.up,-1(a6,a1.l)	 ; ends with up?
+	beq	sbm_histup
+	cmp.b	#k.down,-1(a6,a1.l)	 ; down maybe?
+	beq.s	sbm_histdown
+
+; None of those, so enter string into our history
+	move.w	d1,d2			 ; length of string
+	beq.s	sbm_no_add
+	move.l	sb_buffb(a6),a1
+	cmp.b	#k.nl,(a6,a1.l) 	 ; only new line?
+	beq.s	sbm_no_add
+	moveq	#iob.smul,d0
+	moveq	#-1,d3
+	move.l	sb_hichn(a6),a0
+	trap	#4			 ; enter new line for history
+	trap	#3
+sbm_no_add
+	movem.l (sp)+,hst_reg
+
 	move.b	#k.nl,-1(a6,a1.l)	 ; set end of line
-	bra.s	sbm_pline
+	bra	sbm_pline
+
+; Clear old string from screen and set cur pos to start of empty space
+; d1 = string length as given from iob.elin
+; a0 = CON channel ID
+sbm_clearstr
+	move.l	d1,-(sp)
+	moveq	#iow.xtop,d0
+	moveq	#-1,d3
+	lea	sbm_getcurpos,a2	 ; re-construct cursor pos of line start
+	trap	#3
+	move.l	d1,d4
+
+	moveq	#iow.spix,d0
+	move.w	d1,d2
+	swap	d1
+	moveq	#-1,d3
+	trap	#3			 ; set cursor pos to string position
+	move.l	(sp)+,d1
+
+	move.w	d1,d2			 ; length of string
+	moveq	#' ',d0
+	move.l	sb_buffb(a6),a1 	 ; buffer base
+	bra.s	sbm_hcloops
+sbm_hcloop
+	move.b	d0,(a6,a1.l)		 ; clear string
+	addq.l	#1,a1
+sbm_hcloops
+	dbf	d1,sbm_hcloop
+	moveq	#iob.smul,d0
+	move.l	sb_buffb(a6),a1 	 ; buffer base
+	trap	#4
+	trap	#3			 ; overwrite old string with blanks
+	moveq	#iow.spix,d0
+	move.l	d4,d1
+	swap	d1
+	move.w	d4,d2
+	moveq	#-1,d3
+	trap	#3			 ; set cursor pos to string position
+	rts
+
+; Down key was pressed
+sbm_histdown
+	bsr.s	sbm_clearstr		 ; clear old string from screen
+	moveq	#iof.posr,d0
+	moveq	#-2,d1			 ; back down by 2
+	moveq	#-1,d3
+	move.l	sb_hichn(a6),a0 	 ; history channel ID
+	trap	#3
+	cmp.l	#err.eof,d0		 ; out of bonds?
+	bne.s	sbm_gethist		 ; no, go ahead
+	move.l	sb_buffb(a6),sb_buffp(a6) ; yes, return with empty string
+	bra.s	sbm_endhist
+
+; Up key was pressed
+sbm_histup
+	bsr.s	sbm_clearstr		 ; clear old string from screen
+	moveq	#-1,d1
+	moveq	#0,d2			 ; just read FPOS for now
+sbm_huagain
+	tst.l	d1
+	beq.s	sbm_gethist		 ; at end of history, exit loop
+	moveq	#iof.posr,d0
+	move.l	d2,d1
+	moveq	#-1,d3
+	move.l	sb_hichn(a6),a0 	 ; history channel ID
+	trap	#3
+	moveq	#-1,d2			 ; Backtrack in case of EOF
+	cmp.l	#err.eof,d0
+	beq.s	sbm_huagain		 ; if EOF, try to hit last line
+
+sbm_gethist
+	moveq	#iob.flin,d0
+	move.l	sb_buffb+8(a6),d2	 ; top of buffer
+	sub.l	sb_buffb(a6),d2 	 ; buffer size
+	moveq	#-1,d3
+	move.l	sb_buffb(a6),a1 	 ; buffer base
+	trap	#4
+	trap	#3			 ; get line out of history
+	subq.l	#1,a1
+	move.l	a1,sb_buffp(a6) 	 ; set cursor pos to end of line
+sbm_endhist
+	movem.l (sp)+,hst_reg
+	moveq	#0,d1
+	bra	sbm_eline
+;--- code for command line history
 
 sbm_scrub
 	move.l	sb_buffb(a6),sb_buffp(a6) ; ... no, scrub it
 	moveq	#0,d1
-	bra.s	sbm_eline		 ; and try again
+	bra	sbm_eline		 ; and try again
 
 sbm_fline
 	move.l	sb_buffb(a6),sb_buffp(a6); base of buffer
@@ -428,6 +616,7 @@ sbm_close
 	tst.w	sb_nline(a6)		 ; run?
 	bpl.l	sbm_execute
 	bra	sbm_nextl
+
 
 sbm_pline
 	subq.w	#1,d1			 ; any line at all
@@ -623,5 +812,50 @@ sb_panic
 	move.l	(sp)+,d0
 	clr.l	(sp)+				 ; mark not failed
 	bra	sbm_perr
+
+;+++
+; Re-construct cursor position of start of string after an iob.elin call.
+; Needs to be called through iow.xtop
+;
+;	entry				exit
+; d1	curpos as given from iob.edlin	X/Y pixel cursor position in window
+; a0	CDB				CDB
+;---
+sbm_getcurpos
+	subq.w	#1,d1
+	andi.l	#$ffff,d1
+	moveq	#0,d2
+	move.w	sd_xpos(a0),d2		; X cursor position
+	divu	sd_xinc(a0),d2		; now in cursor increments
+	swap	d2
+	move.w	d2,d5			; remember offset
+	swap	d5
+	clr.w	d2
+	swap	d2			; d2 = X cur pos in cur increment
+	moveq	#0,d3
+	move.w	sd_ypos(a0),d3		; Y cursor position
+	divu	sd_yinc(a0),d3		; now in cursor increments
+	swap	d3
+	move.w	d3,d5			; remember offset
+	clr.w	d3
+	swap	d3			; d3 = Y cur pos in cur increment
+	moveq	#0,d4
+	move.w	sd_xsize(a0),d4
+	divu	sd_xinc(a0),d4		; calculate window width in cursor inc
+	mulu	d4,d3
+	add.w	d2,d3			; now a stream position
+	sub.l	d1,d3			; subtract string length
+	bcc.s	sgc_1
+	moveq	#0,d3
+	bra.s	sgc_2
+sgc_1	divu	d4,d3			; again X/Y position in cur increment
+sgc_2	move.l	d3,d1
+	swap	d1
+	mulu	sd_xinc(a0),d1		; now in pixel coordinates
+	mulu	sd_yinc(a0),d3
+	swap	d1
+	move.w	d3,d1
+	add.l	d5,d1			; add remaining pixel offset
+	rts
 
 	end

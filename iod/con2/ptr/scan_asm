@@ -1,4 +1,6 @@
-;	Scan channel blocks	     V2.00   2000 Tony Tebby
+;	Scan channel blocks	     V2.01   2000 Tony Tebby
+;
+; 2005-11-15  2.01  Tries to move main SBasic if it's outside of screen (MK)
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -22,6 +24,7 @@
 	xdef	pt_scansize
 	xdef	pt_scancrop
 
+	xref	pt_outln
 	xref	cn_sink
 	xref	cn_spap
 	xref	cn_sstr
@@ -134,12 +137,27 @@ psc_crop
 	ble.s	pscc_rts
 
 pscc_rjob
-pscc.reg reg	d1-d3/a0-a3
+pscc.reg reg	d1-d7/a0-a6
 	movem.l pscc.reg,-(sp)
 	move.l	chn_ownr-sd.extnl(a0),d1
+	beq.s	pscc_basic		 ; Main SBASIC? Cannot kill!
 	moveq	#sms.frjb,d0
 	moveq	#err.orng,d3
 	trap	#do.sms2
+	bra.s	pscc_ret
+
+; This is a rather quick&dirty solution to the problem. It simply moves all the
+; SBASIC windows to the first 512x256 pixels of the screen. At least SBASIC will
+; live on!
+pscc_basic
+	moveq	#0,d1			 ; no shadow
+	moveq	#0,d2
+	clr.l	-(sp)			 ; origin 0x0
+	move.l	#$02000100,-(sp)	 ; size 512x256
+	move.l	sp,a1
+	jsr	pt_outln
+	adda.w	#8,sp
+pscc_ret
 	movem.l (sp)+,pscc.reg
 pscc_rts
 	rts

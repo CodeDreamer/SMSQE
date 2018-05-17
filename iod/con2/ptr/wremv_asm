@@ -1,8 +1,9 @@
-* Window remove 			v1.03   1986  J.R.Oakley  QJUMP
+* Window remove 			v1.05   1986  J.R.Oakley  QJUMP
 *						 2002  Marcel Kilgus
 *
 * 2002-03-09  1.03  Changed for new on-the-fly wallpaper (MK)
 * 2003-06-19  1.04  removed useless xref for cn_io (wl)
+* 2006-03-22  1.05  Restore dddb before pt_fillsv. JS rom could smash a3 (MK)
 *
 *	Remove a window.  To do this we must put the window at the bottom of
 *	the pile, then go through the pile from bottom to top "restoring"
@@ -113,6 +114,7 @@ ptw_clrw
 	sub.l	a0,a0			; there's no save area
 *
 ssave
+	move.l	stk.a3(sp),a3		; restore dddb
 	move.l	a0,sd_wsave(a4) 	; point to save area
 	st	sd_mysav(a4)		; it's all mine!
 *
@@ -120,7 +122,6 @@ ssave
 	moveq	#-1,d2
 	jsr	pt_fillsv		; fill area with background
 
-	move.l	stk.a3(sp),a3		; restore dddb
 	lea	pt_tail(a3),a4		; point to window at bottom of pile
 	movem.l sd_xouts(a0),d1/d2
 	add.l	d2,d1			; get edge co-ordinates

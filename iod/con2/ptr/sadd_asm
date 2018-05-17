@@ -1,9 +1,10 @@
-; Set up pointer area addresses 		V2.03   1991  Tony Tebby
+; Set up pointer area addresses 		V2.04   1991  Tony Tebby
 ;							 2005  Marcel Kilgus
 ;
 ; 2003-02-24  2.01  Now also returns sprite width in MSW of d5 (MK)
 ; 2003-04-30  2.02  Returns -1 in MSW of d5 instead of width if no alpha channel
 ; 2005-01-25  2.03  Changes for mouse pointer clipping (MK)
+; 2005-11-08  2.04  Flags a0 with 0 for pt_sadd and pt_saddp (MK)
 ;
 	section driver
 ;
@@ -92,7 +93,7 @@ err_or
 ;	d6  r	row counter
 ;	d7   s
 ;
-;	a0   p
+;	a0	0
 ;	a1  r	pointer to linkage block
 ;	a2  r	address of pointer sprite on screen
 ;	a3 cr	linkage block address / new address of object
@@ -103,6 +104,7 @@ err_or
 pt_sadd
 	move.l	pt_psprt(a3),a5 	... definition
 pt_saddp
+	suba.l	a0,a0			signal "no CDB, put onto screen"
 	move.l	a3,a1			put it into a save place
 ;
 	moveq	#-1,d5			default to "no alpha channel"

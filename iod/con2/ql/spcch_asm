@@ -1,8 +1,9 @@
-; QL mode sprite cache		V2.01		      1998  Tony Tebby
+; QL mode sprite cache		V2.02		      1998  Tony Tebby
 ;						       2003  Marcel Kilgus
 ;
 ; 2003-02-17  2.01  Extracted code for pt_fsprd
-; 2005-02-13  2.01  return sp_error and not arrow if sprite not recognized (wl)
+; 2004-04-02  2.02  Returns sp_error sprite if no fitting sprite can be found
+
 	section driver
 
 	xdef	pt_fspr
@@ -14,8 +15,9 @@
 	xdef	pt.rpxsw
 	xdef	pt.spsln
 	xdef	pt.spcln
-	xref	sp_error
+
 	xref	pt_ssref
+	xref	sp_error
 
 	include 'dev8_keys_con'
 	include 'dev8_keys_sys'
@@ -117,7 +119,7 @@ ptf_nosprite
 	bra.s	ptf_srstrt
 
 ptf_default
-	lea	sp_error,a1
+	lea	sp_error,a1		 ; oops, error, return error sprite
 	bra.s	ptf_sysspr
 
 ptf_setp

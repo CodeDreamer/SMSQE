@@ -1,0 +1,16 @@
+; HOTKEY vectors
+	nolist
+hk.fitem equ	$0014	;long	 find item 
+hk.crjob equ	$0018	;long	 hotkey create job 
+hk.kjob  equ	$001c	;long	 hotkey kill job 
+hk.set	 equ	$0020	;long	 hotkey set 
+hks.off    equ	   -1		   turn off
+hks.on	   equ	    0		   turn on
+hks.rset   equ	    1		   reset
+hks.set    equ	    2		   set
+hk.remov equ	$0024	;long	 hotkey remove 
+hk.do	 equ	$0028	;long	 hotkey do 
+hk.stbuf equ	$002c	;long	 hotkey stuff buffer 
+hk.gtbuf equ	$0030	;long	 hotkey get buffer (d0=0 current -1 prev)
+hk.guard equ	$0034	;long	 hotkey guardian / grabber (2.04 onwards)
+	list

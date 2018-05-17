@@ -18,7 +18,41 @@ of new features are kept in that "extras_new" directory.
 This here file only contains a short description of the new features.
 
 
+
+
 What is new in versions :
+======
+ 3.12
+======
+
+
+Background drawing: Even when a window is partially covered, printing into
+this window continues. This goes with two new BAsic commands: PE_BGON to
+turn this feature on, PE_BGOFF to turn this feature off.  By default, this
+feature is TURNED OFF, so use the PE_BGON command in your boot file
+if you want to keep it on.
+
+
+Better support for the Home thing.
+
+Improved Qx0 cache handling.
+
+Improved History device.
+
+Basic has a new command line history: if you press the up/down arrows, you get
+the latest commands entered.
+
+New Basic command JOBID:
+result = JOBID [({nr, tag} | <name> )] named job id or my id (no parameters)
+
+
+Jochen Merz donated the source code for the "uti" and "util_menus" libraries
+to the SMSQE source code. Hence, the libraries are no longer used, we use
+the direct files instead.
+
+New commands POKE_F, POKES_F,PEEK_F, PEEKS_F for flaoting point poking/peeking
+
+
 ======
  3.11
 ======

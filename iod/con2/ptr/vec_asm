@@ -1,7 +1,8 @@
-; CON driver vectored routines table  V1.02		2003  Marcel Kilgus
+; CON driver vectored routines table  V1.03		2003  Marcel Kilgus
 ;
 ; 2003-05-13  1.01  added pt_size   (wl)
 ; 2004-04-01  1.02  added pt_cursp  (wl)
+; 2006-01-04  1.03  added pt_bgctl  (MK)
 
 	section driver
 
@@ -14,22 +15,25 @@
 	xref.s	pt.spxlw
 	xref.s	pt.rpxlw
 	xref	pt_cursp
+	xref	pt_bgctl
 
 	include 'dev8_keys_con'
 
 ; Table entries are 6 bytes long. This way we can also handle really large jumps
 pv_table
-	jmp	pt_pinf 		; $00
+	jmp	pt_pinf 		; $00 - pv_pinf
 	nop
-	jmp	pt_fspr 		; $06
+	jmp	pt_fspr 		; $06 - pv_fspr
 	nop
-	jmp	pt_sspr 		; $0c
+	jmp	pt_sspr 		; $0c - pv_sspr
 	nop
-	jmp	pt_size 		; $12
+	jmp	pt_size 		; $12 - pv_size
 	nop
-	jmp	pt_mblock		; $18
+	jmp	pt_mblock		; $18 - pv_mblk
 	nop
-	jmp	pt_cursp		; $1e
+	jmp	pt_cursp		; $1e - pv_cursp
+	nop
+	jmp	pt_bgctl		; $24 - pv_bgctl
 	nop
 
 ;+++

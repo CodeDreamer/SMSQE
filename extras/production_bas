@@ -8,7 +8,7 @@
 170 END DEFine sa
 180 :
 190 DEFine PROCedure p
-200   start 4,0
+200   start 5,0
 210 END DEFine p
 220 :
 230 DEFine PROCedure start (nbr%,do_del%)
@@ -17,8 +17,8 @@
 260   CLS
 270   rep$="dev8_":s$="ram3_":zip$=""
 280   PRINT "Reading data ..."
-290   RESTORE 530
-300   FOR lp%=1 TO 4
+290   RESTORE 290
+300   FOR lp%=1 TO nbr%
 310     READ source$(lp%),dest$(lp%)
 320   END FOR lp%
 330   PRINT "Setting Make options ..."
@@ -30,7 +30,7 @@
 390   PRINT "version = ";version$
 400   zip$="-j9 -r ram1_SMSQE"&version$(1)&version$(3 TO 4)&".ZIP"
 410   PRINT "Copying to ";s$; " ..."
-420   FOR lp%=1 TO 4
+420   FOR lp%=1 TO nbr%
 430     COPY_O rep$&source$(lp%);s$&dest$(lp%)
 440     zip$=zip$&" "&s$&dest$(lp%)
 450   END FOR lp%
@@ -45,36 +45,37 @@
 540   DATA "smsq_gold_gold","Gold_bin"
 550   DATA "smsq_q40_rom","Q40_rom"
 560   DATA "smsq_qxl_smsqe.exe","Qxl_SMSQE.EXE"
-570 END DEFine p
-580 :
-590 DEFine FuNction extract_version$
-600 REMark tries to extract the current version of smsq from the file
-610 REMark <dir>_smsq_smsq_version_asm
-620 REMark this returns the version number (x.yy) or the string "x.xx" if not
-630 REMark successful
-640 LOCal lp%,chan%,my_version$,place%,ok%
-650   chan%=FTEST(rep$&"smsq_smsq_version_asm")
-660   IF chan%:RETurn "x.xx"                : REMark problem with file
-670   chan%=FOP_IN(rep$&"smsq_smsq_version_asm")
-680   IF chan%<0:RETurn "x.xx"
-690   ok%=0
-700   REPeat lp%
-710     IF EOF(#chan%):EXIT lp%
-720     INPUT#chan%,my_version$
-730     IF "smsq_vers" INSTR my_version$
-740       IF "equ" INSTR my_version$
-750          place%="'" INSTR my_version$
-760          my_version$ = my_version$(place%+1 TO place%+4)
-770          ok%=1
-780          EXIT lp%
-790       END IF
-800     END IF
-810   END REPeat lp%
-820   CLOSE#chan%
-830   IF ok%
-840     RETurn my_version$
-850   ELSE
-860     RETurn "x.xx"
-870   END IF
-880 END DEFine extract_version$
-890 :
+570   DATA "smsq_aurora_SMSQE","Aurora_bin"
+580 END DEFine p
+590 :
+600 DEFine FuNction extract_version$
+610 REMark tries to extract the current version of smsq from the file
+620 REMark <dir>_smsq_smsq_version_asm
+630 REMark this returns the version number (x.yy) or the string "x.xx" if not
+640 REMark successful
+650 LOCal lp%,chan%,my_version$,place%,ok%
+660   chan%=FTEST(rep$&"smsq_smsq_version_asm")
+670   IF chan%:RETurn "x.xx"                : REMark problem with file
+680   chan%=FOP_IN(rep$&"smsq_smsq_version_asm")
+690   IF chan%<0:RETurn "x.xx"
+700   ok%=0
+710   REPeat lp%
+720     IF EOF(#chan%):EXIT lp%
+730     INPUT#chan%,my_version$
+740     IF "smsq_vers" INSTR my_version$
+750       IF "equ" INSTR my_version$
+760          place%="'" INSTR my_version$
+770          my_version$ = my_version$(place%+1 TO place%+4)
+780          ok%=1
+790          EXIT lp%
+800       END IF
+810     END IF
+820   END REPeat lp%
+830   CLOSE#chan%
+840   IF ok%
+850     RETurn my_version$
+860   ELSE
+870     RETurn "x.xx"
+880   END IF
+890 END DEFine extract_version$
+900 :

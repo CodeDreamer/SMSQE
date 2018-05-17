@@ -1,4 +1,6 @@
-; Window save / restore  V 2.00    1999  Tony Tebby
+; Window save / restore  V 2.01    1999  Tony Tebby
+;
+; 2005-11-11  2.01  Uses line increment from CDB (MK)
 ;
 	section driver
 ;
@@ -252,8 +254,9 @@ pts_cprm
 	move.l	sd_xhito(a4,d5.w),d2	set origin
 	move.l	d7,d3			and origin in...
 	and.l	#pt.samsk,d3		...save area
-	move.l	chn_drvr-sd.extnl(a4),a2
-	move.w	pt_bytel-iod_iolk(a2),a2   screen increment
+;;;	   move.l  chn_drvr-sd.extnl(a4),a2
+;;;	   move.w  pt_bytel-iod_iolk(a2),a2   screen increment
+	move.w	sd_linel(a4),a2 	screen increment
 ;
 ;
 	move.l	a0,a5			destination base address

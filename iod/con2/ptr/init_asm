@@ -1,11 +1,14 @@
-* Pointer version of console initialisation code  V2.02    1991   Tony Tebby
+* Pointer version of console initialisation code  V2.04    1991   Tony Tebby
 *
 * 2003-03-01  2.01  Added call to system sprite initialisation (MK)
 * 2003-03-04  2.02  Initialises pixel aspect ratio (MK)
 * 2004-03-29  2.03  Call sprite cursor job table initialisation (wl)
+* 2005-11-16  2.04  Call background I/O initialisation (MK)
 
 	xdef	pt_init
 *
+	xref	pt_bginit
+	xref	pt_bgprocs
 	xref	pt_installv
 	xref	pt_isspr
 	xref	curs_init
@@ -48,6 +51,9 @@ reglist reg	d1/d2/d3/d4/d5/d6/d7/a0/a1/a2/a4/a5
 	tst.l	d0
 	bgt.s	pti_rts
 	lea	proc_tab,a1		 new procedures
+	move.w	sb.inipr,a2
+	jsr	(a2)
+	lea	pt_bgprocs,a1
 	move.w	sb.inipr,a2
 	jsr	(a2)
 pt_ok
@@ -116,11 +122,13 @@ pti_alloc
 	jsr	(a5)			; set up queue
 	move.l	a4,(a2) 		; and link to dummy 1
 
+	jsr	pt_bginit		; init background I/O data
+
 	jsr	pt_isspr		; set up system sprite table
 
 	jsr	curs_init		; init sprite cursor job table
 
-	move.l	#$80156B9,pt_asprt(a3); 2/( (4/3) * (575/512) * (51.2/51.95) )
+	move.l	#$80156B9,pt_asprt(a3)	; 2/( (4/3) * (575/512) * (51.2/51.95) )
 	clr.w	pt_asprt+4(a3)
 pti_setinstall
 	lea	pt_cdtab(a3),a4

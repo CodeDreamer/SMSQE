@@ -1,0 +1,17 @@
+        nolist
+; keys for UTI_GCOPY
+
+cpy..sa6 equ    5
+cpy..sa5 equ    4
+cpy..da6 equ    1
+cpy..da5 equ    0
+cpy.sa6  equ    1<<cpy..sa6
+cpy.sa5  equ    1<<cpy..sa5
+cpy.da6  equ    1<<cpy..da6
+cpy.da5  equ    1<<cpy..da5
+
+cpy.strg equ    -1
+cpy.byte equ    1
+cpy.word equ    2
+cpy.long equ    4
+        list

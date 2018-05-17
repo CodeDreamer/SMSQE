@@ -1,4 +1,6 @@
-; SMSQ_SBAS_QD5      QD5 Interface
+; SMSQ_SBAS_QD5      QD5 Interface  v1.01
+;
+; 2006-01-10  1.01  Sets file name from QD as home file name (MK)
 
 	section sbas
 
@@ -17,6 +19,7 @@
 
 	xref	sb_name
 	xref	gu_thexn
+	xref	gu_shome
 
 	xref	sb_palin
 	xref	sb_ledit
@@ -183,6 +186,17 @@ sb_qd5
 	clr.w	-(sp)		; initialise line count
 	movem.l stk.qda4(sp),a4-a6
 
+	moveq	#qd_info,d0
+	bsr.s	call_qd5	; get table in a1
+	move.w	qv_filnm(a1),d0 ; offset of file name in QD variables
+	lea	(a6,d0.w),a1	; file name
+	tst.w	(a1)
+	beq.s	sb_firstline
+
+	moveq	#-1,d1
+	jsr	gu_shome	; set file name for home thing
+
+sb_firstline
 	moveq	#qd_1stln,d0
 	bsr.s	call_qd5	; get ptr to first line
 

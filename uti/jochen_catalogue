@@ -1,0 +1,52 @@
+uti_stdaction_asm       MENU
+uti_butacc_asm          MENU
+uti_button_asm          MENU
+uti_cpdate_asm          GENERAL
+uti_cccol_asm           MENU
+uti_clc_chan_asm        BASIC
+uti_clc_chtb_asm        BASIC
+uti_clwsp_asm           GENERAL
+uti_copystr_asm         GENERAL
+uti_crjob_asm           GENERAL
+uti_CUTNAME_asm         FILE
+uti_doclose_asm         FILE
+uti_DOIO_asm            FILE
+uti_doopen_asm          FILE
+uti_extinit_asm         BASIC           -> UT_PROCDEF (SBEXT)
+uti_GETCHAN_asm         BASIC
+uti_getname_asm         BASIC
+uti_gpwjb_asm           GENERAL
+uti_gwszs_asm           GENERAL
+uti_hotstuff_asm        GENERAL
+uti_kill_asm            GENERAL         -> GU_DIE
+uti_mode4_asm           GENERAL         -> UT_HIMOD
+uti_opencon_asm         GENERAL/FILE
+uti_opendata_asm        FILE
+uti_opendest_asm        FILE
+uti_openprog_asm        FILE
+uti_prior_asm           GENERAL         -> GU_SPJOB
+uti_rdwci_asm           MENU
+uti_gcinf_asm           GENERAL/FILE
+uti_relheap_asm         GENERAL
+uti_res_arith_asm       BASIC
+uti_ret_int_asm         BASIC
+uti_RET_LINT_asm        BASIC
+uti_rqitm_asm           MENU            -> MU_SWEDS
+uti_rqitn_asm           MENU            -> MU_SWRDS
+uti_setup_asm           MENU
+uti_ssetup_asm          MENU
+uti_susjb_asm           GENERAL
+uti_thingjump_asm       GENERAL
+uti_thingvector_asm     GENERAL
+uti_unset_asm           MENU
+uti_usemenus_asm        GENERAL
+uti_himod_asm           GENERAL
+uti_adkst_asm           MENU
+uti_getwlim_asm         GENERAL/FILE
+uti_pulldown_asm        MENU
+uti_edit_asm
+uti_heap_asm            GENERAL
+uti_gsdat_asm           GENERAL
+uti_expdev_asm          GENERAL/FILE
+uti_posdraw_asm         MENU
+uti_mkl2st_asm          BASIC

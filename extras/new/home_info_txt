@@ -1,0 +1,471 @@
+
+	 
+    The HOME thing
+    =-=-=-=-=-=-=-
+    
+    The latest version	of  SMSQE  has	an  inbuilt  support  for  a  "Home
+    directory thing".  This may be of interest to  some users, so here is a
+    small description of it.
+    
+    
+    I - WHAT DOES IT DO?
+    ===================
+    
+    A - Home directory
+    The  HOME thing implements "home directories". A home directory in this
+    context is	defined as meaning  the directory from	which an executable
+    file was executed.	Thus, if  you have  a file  called "fred_exe"  in a
+    directory "win1_progs_exec_"  the home directory for  that file will be
+    "win1_progs_exec_".
+    
+    The  usefulness of this will vary  enormously, depending on whether YOU
+    make use of it in your programs.
+    
+    
+    B - Home Filename
+    The home thing also supplies what, for want of a better name, I'll call
+    the "home filename"  which is the  combination of the  filename and the
+    home directory, thus  making up the  complete SMSQ/E filename  - in the
+    example above this would be "win1_progs_exec_fred_exe".
+    
+    Both  home directory and home filename are set up once and for all when
+    the program  starts, and are deleted when  the program is removed. With
+    one exception,  they are immutable: once set,  they may not be changed.
+    They are just removed upon removal of the program itself.
+    
+    C- Current Directory
+    The Home Thing also implements a "current directory". This is inherited
+    from the  job that is setting up the  home directory (in most cases the
+    parent  job). If the calling  job does not have  a current directory, a
+    copy of the home directory is used instead.
+    
+    The  current directory can only point to a valid directory. Within that
+    limit it may be set/reset or otherwise manipulated by the job itself. 
+    
+    
+    D - Default Directory for named jobs
+    Finally, there is also a default  home  directory  for  jobs  that	are
+    executed  through other means, perhaps through file managers that don't
+    use the HOME  thing,  or,  especially,  through  hotkeys.  Due  to	the
+    enormous variations  that  can  exist  in  situations  where  jobs	are
+    executed from  hotkeys, and  while there  is no  problem when  jobs are
+    loaded from a file through a  hotkey, sometimes the job code is already
+    in memory, but no job with the name exists until the hotkey is actually
+    pressed ("executable  things"), sometimes the  job executes immediately
+    etc. In  those  circumstances,  it	will  not  always  be  possible  to
+    associate a job with a filename and directory.
+
+
+    It	is, however, possible to  set up a default  home directory for jobs
+    with a  given name. When a	job, for which a  default directory was set
+    up,  executes, for example froma  hotkey, and  tries to get at its home
+    directory, a home dir will be set up for it automatically. 
+    
+    Thus,  whenever a job tries to find its home/current directory/file and
+    they can't be found directly because they haven't been defined for that
+    job,  a check is also made in the default list. If the job's name is in
+    the default list, then  an	entry  for  that  job,	with  that  default
+    filename, is made in the home directory list.
+    
+    
+    
+    II - CAN IT WORK FOR YOU? - SMSQ/E and QDOS
+    ===========================================
+    
+    For the home directory scheme to work, the cooperation of the operating
+    system or  file  manager(s)  is  needed:  Indeed,  whenever  a  job  is
+    executed, whoever  is doing this  executing must explicitly  set up the
+    home  directory for the jobs  that is being executed.  Here, there is a
+    difference between SMSQE and QDOS.
+    
+    
+    SMSQE now  has the HOME  Thing built in,  and also support	for it (see
+    below for  QDOS). Typically, on an SMSQ/E  system, jobs will be started
+    up	through the EX(ec)  command variants, through  filemanagers such as
+    QPAC  II or   through FileInfo.  Finally, SBasic  programs may  also be
+    loaded:
+    
+    A  -  The EX(ec)  etc command. Support for the Home Thing is built into
+    the OS as of SMSQ/E version 3.11. Whenever you use the EX commands, the
+    home directory for the job to be EXecuted will be set up automatically.
+    This support does  not exist  on QDOS  machines, since,  obviously, thr
+    EXEC command itself had  to be  modified, which  is not  possible under
+    QDOS.
+    
+    
+    B - QPAC II and other file managers.  QPAC II has already be altered to
+    take the new home thing into account. All file managers will need to be
+    changed to support the home directory. If you are a programmer and have
+    programmed	a file manager, further information is given below, showing
+    you the code that needs to be implemented for this. If a filemanager is
+    in	compiled basic (e.g. DiskMate) no  further action will be necessary
+    under SMSQ/E since the EX commands	in  SMSQ/E  will  do  whathever  is
+    necessary.
+    
+    
+    C - FileInfo. Thierry Godefroy has modified FileInfo II to use the Home
+    Thing. For the record,  I have  modified my  own FileInfo  (the initial
+    FileInfo) to use the home thing, if present. 
+    
+    
+    D  - Basic. Under SMSQE, whenever you (q)load/(q)merge a basic program,
+    the  home directory  for that  basic program  is set  to the  file just
+    loaded. Thus basic is again an exception - it is the only job for which
+    the Home directopry may change.
+
+    
+    E - QDOS and the HOME Thing
+    
+    There  is a stand alone version of the HOME thing for QDOS users (which
+    can be downloaded at     http://www.scp-paulet-lenerz.com/14mljkl24/wo-
+    lf/download/).
+    
+    Thus, QDOS systems can  also profit  the home  directories set  up from
+    QPAC II and FileInfo, but support for the HOME thing through the EX and
+    LOAD  commands  will be non-existent,  since that requires	a change in
+    these commands. The  same is  true for  filemanagers that  are compiled
+    basic.
+    
+    
+    
+    III - HOW TO LOAD THE HOME THING
+    ================================
+    
+    The  HOME thing is already present in SMSQE v. 3.11 onwards and doesn't
+    need to be loaded.
+    
+    On Qdos, use : 
+    
+    a=RESPR (file_length)
+    LBYTES <device>_home_bin,a
+    CALL a
+    
+    or the LRESPR variants if your system has them.
+    
+    
+    
+    IV - USING THE HOME THING
+    =========================
+    
+    
+    A - From SBasic
+    ---------------
+    
+    There are several new SBASIC keywords for this.
+    
+    
+    1 - Get the home directory
+    
+    result$ = <b>HOME_DIR$(job_id)</b>
+    
+    This function  returns the home directory for  the job given as job_id.
+    To avoid programs stopping with  an  error	if  for  some  unimaginable
+    reason  the home  directory cannot	be found  this function  returns an
+    empty string if that error happens. 
+    
+    The  job ID is optional, in that case -1, meaning the current job, will
+    be assumed.
+    
+    Eg: 
+    
+
+    ...
+    100 define procedure init
+    110   mydir$ = HOME_DIR$
+    ....
+    
+    
+    2 - Get the home filename
+    
+    result$ = <b>HOME_FILE$(job_id)</b>
+    
+    Same as for the home directory, but for the home filename.
+    
+    
+    
+    3 - Get the current directory
+    
+    result$ = <b>HOME_CURR$(job_id)</b>
+    
+    Same as for the home directory, but for the current directory.
+    
+    
+    
+    4 - Default names
+    
+    <b>HOME_DEF</b> job_name$, file_name$
+    
+    
+    This sets  a default filename  for a job  with the name  given as first
+    parameter. This is useful for "executable things", where no filename is
+    readily available,	or for file managers  that haven't integrated calls
+    to	the home  thing. Please  refer to  the section	I-D above  for more
+    information on this.
+    
+    With this keyword, you set up the default job name and filename that is
+    to be used for the home/current file/dir.
+    
+    Please note  that the file_name$  parameter must indeed  be a FILENAME,
+    not a directory name.
+    
+    Example:
+    
+    HOME_DEF "Sbasic", "dev1_sbasic_test_bas"
+    
+    
+    5 - Get the version of the HOME thing.
+    
+    result$ = <b>HOME_VER$</b>
+    
+
+    6 - Set the cirrent directory
+
+    <b> HOME_CSET [job_ID], directory$</b>
+
+    Set the current directory for the job. The directory must the a valid directory
+
+
+
+    B - From machine code
+    ---------------------
+    
+    
+    The thing can of course also be called from machine code. It implements
+    various extensions - it is an extension thing.
+    
+    There is some  ready to  use wrapper  code in  the SMSQ/E  source tree,
+    namely in the file	"util_gut_home_asm". If  you still  want to  go the
+    manual route, here is the documentation for the different extensions:
+    
+    To use  them, in short, first you USE the  thing (A0 = thing name, D2 =
+    extension). You might want to make sure you use a call that returns the
+    pointer  to the thing linkage base in A2  and a pointer to the thing in
+    A1	as these will  be expected when  calling the call  routine. (If you
+    have  access to the SMSQE sources, a good vector for this is gu_thjmp).
+    The  name of the thing is, imaginatively,  "HOME", and the names of the
+    individual extensions will be given below.
+    
+    After  you used the  thing, you then  call the thh_code  routine of the
+    thing with A2 pointing to the linkage and A1 to a parameter list.
+    
+    Each  extension thus  has its  own parameter  list. They  are explained
+    below for  each extension. An example for  using the thing from machine
+    code  could be as follows,	to SET the default  name/dir (this uses the
+    gu_thjmp routine from the SMSQE  sources,  which  returns  the  correct
+    values in A1 and A2).
+    
+    It	is presumed for this example that, on entry, D1 contains the job ID
+    of the job for  which the  directory/file is  to be  set, that  the job
+    name,  for which a default is to be set up can be found at label called
+    'jobname' and  that the filename for  this job can be  found at a label
+    called 'filename'.
+    
+    homereg	reg	a0-a4/d0-d3
+    d1stak	equ  4			; where D1 is on stack	     
+    
+    setdflt
+	movem.l homereg,-(sp)		; keep my regs
+	lea	home_name,a0		; point to name of thing
+	moveq	#-1,d3			; wait forever
+	moveq	#-1,d1			; I will use the thing
+	move.l	#'SETD',d2		; extension in thing to use
+	moveq	#sms.uthg,d0		; use thing
+	jsr	gu_thjmp		; on return A2= ptr thg header, a1 to thg
+	tst.l	d0			; ok?
+	bne.s	no_thg			; no, ignore
+	move.l	a1,a0			; pointer to thing (!!!)
+	sub.l	#16,sp			; get some space
+	move.l	sp,a1			; and point to it
+	move.l	#$c1000000,(a1) 	; thp.call+thp.str
+	lea	jobname,a4		; point to jobname to set
+	move.l	a4,4(a1)		; set pointer to this string
+	move.l	#$c1000000,8(a1)	; thp.call+thp.str
+	lea	filename,a4		; point to file/dirname to set
+	move.l	a4,12(a1)		; set pointer to this string
+	jsr	thh_code(a0)		; call extn thing
+	add.l	#16,sp			; reset stack
+	lea	home_name,a0		; now free thing, ignore error on call
+	moveq	#sms.fthg,d0
+	moveq	#-1,d1
+	jsr	gu_thjmp		; free thing
+
+    no_thg  
+	movem.l (sp)+,homereg		; ignore error
+	(...)
+    
+    home_name
+	dc.w	   4,'HOME'
+    
+    
+    The extensions are as follows:
+    
+    
+    GETH
+    GETF
+    GETC
+    ----
+    
+    Respectively   get	the  home  directory,  home  filename  and  current
+    directory.
+    
+    entry				    exit
+    
+    D0					    0 or error
+    D2					    buffer size needed (err.orng)
+    A1 pointer to parameter list	    preserved
+    A2 pointer to thing linkage 	    preserved
+    
+    The parameter list is as follows:
+    
+    0(a1)   long word	     job id of job for which info is to be gotten
+    4(a1)   word	     $A100 (corresponding to thp.str+thp.ret)
+    6(a1)   word	     length of buffer for return string
+    8(a1)   long word	     pointer to buffer for return string 
+    
+    The  routine will return  0 if no  error occurred, err.itnf  if the job
+    with  the given ID	doesn't have a  home directory and  err.orng if the
+    buffer  is too small for the  entire directory/filename. In this latter
+    case,  the routine will not touch the  given buffer but just return the
+    needed size in D2.
+    
+    
+    SETD
+    ----
+    set the default directory for a given name.
+    entry				    exit
+    
+    D0					    0 or error
+    A1 pointer to parameter list	    preserved
+    A2 pointer to thing linkage 	    preserved
+    
+    The parameter list is as follows:
+    
+    0(a1)   long word	     $C1000000 (corresponding to thp.str+thp.call)
+    4(a1)   long word	     pointer to string for jobname
+    8(a1)   long word	     $C1000000 (corresponding to thp.str+thp.call)
+    12(a1)  long word	     pointer to string for filename
+    
+    
+    V - SETTING UP A HOME DIRECTORY
+    ===============================
+    
+    
+    Normally,  jobs  should  not  try  to  set	up  a  home  directory	for
+    themselves.  This should be left to  the system/filemanager. When a job
+    is	started with the SMSQ/E EX, EW or any of the similar commands, this
+    is	done automatically. However, filemanager  writers may be interested
+    in this info.
+    
+    
+    A - From Sbasic
+    
+    <b>HOME_SET</b> job_id, device_and_file_name$
+    
+    Set  the home directory, home filename  and current directory. You pass
+    the  thing the job ID of the job for which this is to be set up and the
+    entire filename, including the device and directory. The thing extracts
+    the home  directory from the filename.  If you want to  set up the home
+    directory for the current job, you may pass -1 as parameter.
+    
+    Since there can only be one home directory for a job and since that can
+    only be defined once, the keyword  will  give  an  error  if  the  home
+    directory is already set for this job. Otherwise, this keyword will set
+    the home directory, the home file and the current directory.
+    
+    This keyword exists mainly for testing purposes.
+    
+    
+    
+    B - From Machine Code.
+    
+    Please read the general rules on how to use the thing from machine code
+    (section IV, above). The extension to use here is SETH. to SET the home
+    name/dir  (this uses the gu_thjmp routine from the SMSQE sources, which
+    returns the correct values in A1 and A2).
+    
+    
+    It is presumed  here that, on entry  D1 contains the job  ID of the job
+    for  which the directory/file  is to be  set and that  the filename for
+    this job can be found at a label 'filename'.
+    
+    
+    SETH
+    ----
+    This sets the home directory.
+    
+    entry				    exit
+    
+    D0					    0 or error
+    A1 pointer to parameter list	    preserved
+    A2 pointer to thing linkage 	    preserved
+
+    
+    The parameter list is as follows:
+    
+    0(a1)   long word	     job id of the job for which this is set
+    4(a1)   long word	     $C1000000 (corresponding to thp.str+thp.call)
+    8(a1)   long word	     pointer to string for entire filename
+    
+    
+    The routine will return 0 if everything went OK else any error from the
+    memory allocation routine or err.fdiu if  the  job	with  this  job  ID
+    already has a home directory set up.
+    
+    
+    The  following is an example of a routine  that can use this to SET the
+    home  name/dir (this uses the gu_thjmp  routine from the SMSQE sources,
+    which returns the correct values in A1 and A2).
+    
+    It is presumed  here that, on entry  D1 contains the job  ID of the job
+    for  which the directory/file  is to be  set and that  the filename for
+    this job can be found at a label 'filename'.
+    
+    
+    
+homereg     reg     a0-a4/d0-d3
+    d1stak	equ  4			; where D1 is on stack	     
+    
+    sethome
+	movem.l homereg,-(sp)		; keep my regs
+	lea	home_name,a0		; point to name of thing
+	moveq	#-1,d3			; wait forever
+	moveq	#-1,d1			; I will use the thing
+	move.l	#'SETH',d2		; extension in thing to use
+	moveq	#sms.uthg,d0		; use thing
+	jsr	gu_thjmp		; on return A2= ptr thg header, a1 to thg
+	tst.l	d0			; ok?
+	bne.s	no_thg			; no, ignore
+	move.l	a1,a0			; pointer to thing (!!!)
+	move.l	d1stak(sp),d1		; get job ID back
+	sub.l	#12,sp			; get some space
+	move.l	sp,a1			; and point to it
+	move.l	d1,(a1) 		; insert ID of job
+	move.l	#$c1000000,4(a1)	; thp.call+thp.str
+	lea	filename,a4		; point to file/dirname to set
+	move.l	a4,8(a1)		; set pointer to this string
+	jsr	thh_code(a0)		; call extn thing
+	add.l	#12,sp			; reset stack
+	lea	home_name,a0		; now free thing, ignore error on call
+	moveq	#sms.fthg,d0
+	moveq	#-1,d1
+	jsr	gu_thjmp		; free thing
+    no_thg  
+	movem.l (sp)+,homereg		; ignore error
+	(...)
+    
+    home_name
+	dc.w	   4,'HOME'
+
+    
+    Finally,  I'd like to  point out that,  whilst I have  divised the home
+    thing  initially, Marcel Kilgus later recoded much of the code and also
+    implemented some better ideas of his.
+    
+    Have fun!
+    
+    
+    QL Forever.
+    
+    
+    W. Lenerz
+    

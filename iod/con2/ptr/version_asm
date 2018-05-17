@@ -342,8 +342,16 @@
 *	V2.02
 *	Support for sprites with no (=solid mask) (MK)
 *	Fixed high colour shadow at the overlapping part (MK)
+*
+*	V2.03
+*	Support for background update of covered windows (MK)
+*	New con vector pv_bgctl (MK)
+*	New SBASIC commands PE_BGOFF, PE_BGON (MK)
+*	SBasic cannot be killed by changing the screen size (MK)
+*	Screen is restored when an unbehaved window is changed/closed (MK)
+*
 
-pt.vers equ	'2.02'
+pt.vers equ	'2.03'
 pt_vers equ	pt.vers
 	dc.l	pt.vers
 

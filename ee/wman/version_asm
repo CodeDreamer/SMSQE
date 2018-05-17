@@ -157,6 +157,6 @@
 ;		       Double 3d border type fixed (MK)
 
 wm_vers equ	'2.05'
-wm.pver equ	'2.01'
+wm.pver equ	'2.02'
 
 	end

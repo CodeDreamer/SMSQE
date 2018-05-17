@@ -1,6 +1,6 @@
-* Execute code from a file		v0.00   Apr 1988  J.R.Oakley  QJUMP
+* Execute code from a file		v0.01   Apr 1988  J.R.Oakley  QJUMP
 *
-* 2005-10-25	0.01	Added call to gu_shome (mk)
+* 2005-11-15  0.01  Adapted for home directory (MK)
 *
 	section gen_util
 *
@@ -33,13 +33,12 @@
 *		CLOSE $00+GU_FCLOS
 *---
 gu_fexec
-ufereg	reg	a2
+ufereg	reg	a2/a5
 	movem.l ufereg,-(sp)
+	move.l	a0,a5			; keep file name for home directory
 	lea	ufe_ucod(pc),a2 	; point to user code
 	jsr	gu_exec(pc)		; and use it to execute a file
 	bne.s	gfex_exit
-	move.l	a0,a1			; file name
-	jsr	gu_shome(pc)		; set for home directory
 	moveq	#0,d0			; ignore error
 gfex_exit
 	movem.l (sp)+,ufereg
@@ -57,6 +56,9 @@ ufe_clos
 ufe_load
 uflreg	reg	d1/a1
 	movem.l uflreg,-(sp)
+	move.l	a5,a1
+	jsr	gu_shome(pc)		; set home dir (before job is run!)
+	movem.l (sp),uflreg		; restore a1
 	moveq	#iof.load,d0		; load a file
 	jsr	gu_trap3(pc)		; with an infinite timeout
 	movem.l (sp)+,uflreg

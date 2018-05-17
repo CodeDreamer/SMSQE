@@ -10,6 +10,7 @@ dev8_iod_con2_ptr_change_rel
 dev8_iod_con2_ptr_scan_rel
 
 dev8_iod_con2_ptr_io_rel
+dev8_iod_con2_ptr_bgio_rel
 dev8_iod_con2_ptr_open_rel
 dev8_iod_con2_ptr_close_rel
 dev8_iod_con2_ptr_mode_rel

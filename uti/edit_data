@@ -1,0 +1,20 @@
+edv_init equ    $00     l ptr to routine to fill up screen first time
+edv_exit equ    $04     l ptr to routine to save screen after exit
+edv_scrl equ    $08     l ptr to user-supplied scroll routine (0 = no scroll)
+edv_char equ    $0c     l ptr to user-supplied character treatment
+
+ed_buff  equ    $10     8 enquiry buffer
+ed_colms equ    $10     w number of columns per line
+ed_lines equ    $12     w number of lines in window
+ed_curcl equ    $14     w cursor column position
+ed_curln equ    $16     w cursor line position
+
+ed_inovr equ    $18     b if set, overwrite mode
+
+ed_text  equ    $20     text, organized in ed_lines, each of length ed_colms
+
+; keys for character handling returns
+edk..ign equ    0       do not treat character
+edk..cur equ    1       set cursor (explicitly)
+edk..rdl equ    6       redraw cursor line
+edk..rds equ    7       redraw whole screen

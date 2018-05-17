@@ -1,24 +1,31 @@
-; PEEK / POKE		 V2.00	    1990  Tony Tebby	QJUMP
+; PEEK / POKE		 V2.02	    1990  Tony Tebby	QJUMP
+;
+; 2005-12-10  2.01  Added PEEK_F, PEEKS_F, POKE_F, POKES_F (MK)
+; 2005-12-29  2.02  Ensures that PEEK_F only returns valid floats (MK)
 ;
 ;	PEEK$ (addr,length)
 ;	PEEK (addr)
 ;	PEEK_W (addr)
 ;	PEEK_L (addr)
+;	PEEK_F (addr)
 ;
 ;	POKE$ addr,values
 ;	POKE addr,values
 ;	POKE_W addr,values
 ;	POKE_L addr,values
+;	POKE_F addr,values
 ;
 ;	PEEKS$ (addr,length)
 ;	PEEKS (addr)
 ;	PEEKS_W (addr)
 ;	PEEKS_L (addr)
+;	PEEKS_F (addr)
 ;
 ;	POKES$ addr,values
 ;	POKES addr,values
 ;	POKES_W addr,values
 ;	POKES_L addr,values
+;	POKES_F addr,values
 ;
 	section exten
 
@@ -26,18 +33,22 @@
 	xdef	peek
 	xdef	peek_w
 	xdef	peek_l
+	xdef	peek_f
 	xdef	peeks$
 	xdef	peeks
 	xdef	peeks_w
 	xdef	peeks_l
+	xdef	peeks_f
 	xdef	poke$
 	xdef	poke
 	xdef	poke_w
 	xdef	poke_l
+	xdef	poke_f
 	xdef	pokes$
 	xdef	pokes
 	xdef	pokes_w
 	xdef	pokes_l
+	xdef	pokes_f
 
 	xref	ut_gtst1
 	xref	ut_gxin1
@@ -46,6 +57,9 @@
 	xref	ut_rtsst
 	xref	ut_retin
 	xref	ut_rtfd1
+	xref	ut_retfp
+	xref	ut_ckri6
+	xref	ut_gtfp
 
 	include 'dev8_keys_sbasic'
 	include 'dev8_keys_err'
@@ -106,6 +120,36 @@ peek_l
 peek_rtli
 	move.l	a1,sb_arthp(a6)
 	jmp	ut_rtfd1		 ; return float
+
+*********************************************
+peeks_f
+	trap	#0
+	pea	user
+peek_f
+	moveq	#1,d7			; odd address is pad
+	bsr.l	peek_add
+	move.l	a1,sb_arthp(a6)
+	bsr.l	ut_ckri6		; check room for 6 bytes
+	subq.l	#6,a1
+	move.w	(a0),d0 		; ensure value is valid
+	bne.s	peek_chkf
+	tst.l	2(a0)			; 0 exponent needs 0 mantissa
+	bne.s	peek_orng
+	bra.s	peek_okf
+peek_chkf
+	andi.w	#$f000,d0
+	bne.s	peek_orng
+peek_okf
+	move.w	(a0)+,(a6,a1.l)
+	move.l	(a0)+,2(a6,a1.l)
+	bra.s	peek_rtf
+	nop
+peek_rtf
+	jmp	ut_retfp
+
+peek_orng
+	moveq	#err.orng,d0
+	rts
 
 *********************************************
 pokes$
@@ -190,6 +234,28 @@ poke_lend
 	dbra	d3,poke_lloop
 	rts
 
+************************************************
+pokes_f
+	trap	#0
+	pea	user
+poke_f
+	moveq	#1,d7			 ; odd address is bad
+	bsr.s	peek_add
+
+	jsr	ut_gtfp
+	bne.s	poke_rts
+	bra.s	poke_fend
+poke_floop
+	move.w	(a6,a1.l),(a0)+
+	move.l	2(a6,a1.l),(a0)+
+	bra.s	poke_fnxt
+	nop
+poke_fnxt
+	addq.l	#6,a1
+poke_fend
+	dbra	d3,poke_floop
+	rts
+
 ;--------------------------------------------------
 peek_add
 	sub.l	a0,a0			 ; ... no offset
@@ -223,7 +289,7 @@ peek_indir
 	add.l	a4,a0			 ; base
 
 peek_offset
-	addq.l	#8,a3			 ... next param
+	addq.l	#8,a3			 ; ... next param
 peek_direct
 	jsr	ut_gtli1		 ; get address
 	bne.s	peek_rt4

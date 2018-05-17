@@ -1,0 +1,20 @@
+program dev8_smsq_home_home
+
+input dev8_smsq_home_init_rel
+input dev8_smsq_home_things_rel
+input dev8_smsq_home_version_rel
+input dev8_smsq_home_fndjob_rel
+input dev8_smsq_home_jobid_rel
+input dev8_smsq_home_linkl_rel
+input dev8_smsq_home_mem2_rel
+input dev8_smsq_home_default_rel
+input dev8_smsq_home_current_rel
+input dev8_smsq_home_basic_rel
+input dev8_smsq_home_procs_rel
+
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_sms_lib
+library dev8_smsq_smsq_end_rel

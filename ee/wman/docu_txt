@@ -340,7 +340,7 @@ GD2 colour sprite:
 Sprite control:
         %mpa00bcc
 
-        cc stands for a chache version number. Programs can increment this
+        cc stands for a cache version number. Programs can increment this
         value to signal the cache that the sprite has changed. A special
         value is pto.fupd (force update, %11), which causes the system to
         never use the cached version.

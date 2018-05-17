@@ -1,7 +1,8 @@
-* Execute code from a file with name	  v0.01   Apr 1988  J.R.Oakley  QJUMP
+* Execute code from a file with name	  v0.02   Apr 1988  J.R.Oakley  QJUMP
 *						  Jun 1988  Tony Tebby  QJUMP
 *
 * 2005-25-10  0.01  Added home directory thing compatibility (MK)
+* 2005-11-15  0.02  Fixed race condition (MK)
 *
 	section gen_util
 *
@@ -38,14 +39,13 @@
 *		CLOSE $00+GU_FCLOS
 *---
 gu_fexnm
-ufereg	reg	d4/a1/a2/a4
+ufereg	reg	d4/a1/a2/a4-a5
 	movem.l ufereg,-(sp)
 	move.l	a2,a4			; keep name
+	move.l	a0,a5			; keep file name for home dir
 	lea	ufe_ucod(pc),a2 	; point to user code
 	jsr	gu_exec(pc)		; and use it to execute a file
 	bne.s	gfex_exit
-	move.l	a0,a1			; file name
-	jsr	gu_shome(pc)		; set for home directory
 	moveq	#0,d0			; ignore error
 gfex_exit
 	movem.l (sp)+,ufereg
@@ -72,7 +72,8 @@ ufe_clos
 *	A0	"channel ID"			preserved
 *	A1	code space			preserved
 *	A4	program name to be added	preserved
-*	A5-A6	unused by this routine		used as required
+*	A5	file name set as home directory preserved
+*	A6	unused by this routine		used as required
 *
 *---
 gu_fexld
@@ -80,6 +81,10 @@ ufe_load
 uflreg	reg	d1/d2/a1/a2
 stk_a1	equ	$08
 	movem.l uflreg,-(sp)
+	move.l	a5,a1			; file name
+	jsr	gu_shome(pc)		; set for home directory
+	move.l	stk_a1(sp),a1
+
 	moveq	#iof.load,d0		; load a file
 	sub.l	d4,d2			; true length
 	add.l	d4,a1			; true position

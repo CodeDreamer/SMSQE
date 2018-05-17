@@ -3,7 +3,9 @@
 *
 ; 2003-11-10	2.01	Added functions FET, FEX, FEW  pjwitte 2oo3
 * 2004-05-15	2.02	Added ex_m (wl)
-* 2005-01-25	2.03	added call to Home thing (mk)
+* 2005-01-25	2.03	added call to Home thing (wl)
+* 2005-11-17	2.04	if A1 absolute, use supervisor mode when calling home thing
+
 	section exten
 *
 	xdef	etsb
@@ -222,8 +224,11 @@ prog_create
 * !!!
 * additions for "home" thing
 	move.l	file_nm(sp),a1		; filename to set
+	move	sr,d4
+	trap	#0			; supervisor mode for absolute a1
 	add.l	a6,a1			; now absolute
 	jsr	gu_shome		; job ID is already in d1
+	move	d4,sr
 ; !!!
 ; end additions
 

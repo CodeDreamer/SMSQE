@@ -1,4 +1,6 @@
-; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.02	 1992	Tony Tebby
+; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.03	 1992	Tony Tebby
+;
+; 2005-12-10  2.03  Added POKE_F, PEEK_F (MK)
 
 	section procs
 
@@ -92,6 +94,7 @@ sb_procs
 	proc_def POKE
 	proc_def POKE_W
 	proc_def POKE_L
+	proc_def POKE_F
 	proc_def BAUD
 	proc_def BEEP
 	proc_def CONTINUE
@@ -165,6 +168,7 @@ sb_procs
 	proc_def PEEK
 	proc_def PEEK_W
 	proc_def PEEK_L
+	proc_def PEEK_F
 
 	proc_def RESPR
 	proc_def EOF

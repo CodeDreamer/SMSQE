@@ -1,5 +1,8 @@
-* Pointer scheduler loop routine  V1.11    1985  Tony Tebby	   QJUMP
+* Pointer scheduler loop routine  V1.12    1985  Tony Tebby	   QJUMP
 *					   1986  Jonathan Oakley  QJUMP
+*
+* 2005-11-08  1.12  Free a0 for use in pt_sadd, call bg-refresh (MK)
+*
 	section driver
 *
 	xdef	pt_sched
@@ -15,6 +18,7 @@
 	xref	pt_markp
 	xref	pt_cptr
 	xref	kbd_keyrow
+	xref	pt_bgrefresh
 
 *
 	include dev8_mac_assert
@@ -30,6 +34,8 @@
 pt_sched
 	tst.l	pt_head(a3)		  ; any windows at all?
 	beq.l	pts_rts
+
+	jsr	pt_bgrefresh
 *
 *	Check to see if there has been a Ctrl-C recently: if there
 *	was, then we'll have SYS_CKYQ pointing to dummy queue 1
@@ -340,13 +346,15 @@ pts_ckspr
 	ble.s	pts_move		... yes
 	move.b	pt_relax(a3),pt_reltm(a3) ... no, keep it excited
 pts_move
-	movem.l a3/a5/a6,-(sp)		save vital regs
+move.reg reg	a3/a5/a6
+move.a3  equ	0
+	movem.l move.reg,-(sp)		save vital regs
 	move.l	pt_addr(a3),a2		set old screen address
-	move.l	a3,a0			save link block address
 	bsr.l	pt_sadd 		set addresses
+	move.l	move.a3(sp),a0		restore linkage block address
 	move.l	a3,pt_addr(a0)		and save new one
 	bsr.l	sp_move 		and move it
-	movem.l (sp)+,a3/a5/a6
+	movem.l (sp)+,move.reg
 	bra.l	pts_sky 		set keystroke, pick set queue
 *
 pts_recreate
@@ -607,11 +615,13 @@ pts_create
 pts_newsp
 	move.l	d2,pt_pspck(a3) 	; set check for current sprite
 	move.l	a1,pt_psprt(a3) 	; and current sprite
-	movem.l d6/d7/a3/a5/a6,-(sp)
-	move.l	a3,a0			; keep linkage address
+newsp.reg reg	d6/d7/a3/a5/a6
+newsp.a3  equ	8
+	movem.l newsp.reg,-(sp)
 	bsr.l	pt_sadd 		; set sprite addresses
+	move.l	newsp.a3(sp),a0 	; restore linkage block address
 	move.l	a3,pt_addr(a0)		; save new address
 	bsr.l	sp_draw 		; draw sprite
-	movem.l (sp)+,d6/d7/a3/a5/a6
+	movem.l (sp)+,newsp.reg
 	rts
 	end

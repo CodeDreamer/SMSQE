@@ -1,10 +1,16 @@
-* Pointer IO intercept	V1.07	 1985	Tony Tebby   QJUMP
-* 2003 Feb 16		1.08	bugfix
+* Pointer IO intercept	V1.09	 1985	Tony Tebby   QJUMP
+*
+* 2003-02-16  1.08  bugfix (WL)
+* 2005-11-16  1.09  calls new background I/O handler (MK)
+*
 	section driver
 *
 	xdef	pt_io
 	xdef	pt_hides
 	xdef	io_tstw
+	xdef	pt_do_con		; expose internal points to bgio
+	xdef	pti_do
+	xdef	pti_hide
 *
 	xref.l	pt.vers
 	xref	cn_io
@@ -27,6 +33,7 @@
 	xref	pt_wdef
 	xref	pt_wsave
 	xref	pt_wrest
+	xref	pt_bgio
 	xref	sp_remove
 *
 	include 'dev8_keys_err'
@@ -67,6 +74,7 @@ pt_io
 *
 	tst.b	sd_wlstt(a0)		is window locked?
 	bpl.s	pti_do			... no, do the operation
+
 *
 *	Some operations are feasible even if the window is locked
 *
@@ -74,6 +82,9 @@ pt_io
 	beq.s	pti_do			yes, ignore lock then
 	cmp.b	#iop.wpap,d0		wallpaper?
 	beq.s	pti_do			... yes, ignore lock then
+
+	bsr	pt_bgio 		try background I/O
+	bra	ptio_exit
 
 ptio_nc
 	moveq	#err.nc,d0

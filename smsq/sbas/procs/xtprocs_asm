@@ -1,4 +1,6 @@
-; SBAS_PROCS_XTPROCS - Extra SBASIC Procedures V2.03    1994  Tony Tebby
+; SBAS_PROCS_XTPROCS - Extra SBASIC Procedures V2.04    1994  Tony Tebby
+;
+; 2005-12-10  2.04  Added POKES_F, PEEKS_F (MK)
 
 	section procs
 
@@ -12,6 +14,7 @@ sb_xtprocs
 	proc_def POKES
 	proc_def POKES_W
 	proc_def POKES_L
+	proc_def POKES_F
 	proc_def WGET
 	proc_def LGET
 	proc_def HGET
@@ -33,6 +36,7 @@ sb_xtprocs
 	proc_def PEEKS
 	proc_def PEEKS_W
 	proc_def PEEKS_L
+	proc_def PEEKS_F
 
 	proc_def SCR_BASE
 	proc_def SCR_LLEN

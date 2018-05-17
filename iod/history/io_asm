@@ -1,4 +1,9 @@
-; Prototpe HISTORY driver  V2.01     Tony Tebby
+; Prototpe HISTORY driver  V2.02     Tony Tebby
+;
+; 2005-12-06  2.02  Now keeps track of number of messages in history (MK)
+;		    Returns number of messages as file length (MK)
+;		    File pointer is limited to the number of messages (MK)
+;		    Disallows empty strings (MK)
 
 	section history
 
@@ -68,10 +73,13 @@ hio_posn
 	subq.b	#iof.rhdr-iof.posr,d0
 	bne.s	hio_ipar
 
-	moveq	#-hid_hbuf,d0		 ; 'file length' adjust
-	bra.s	hdfm_sethd
+	moveq	#0,d0
+	move.w	hid_cnt(a2),d0		 ; set msgs in history as file length
+	move.l	d0,(a1)+
+	bra	hdfm_sethd		 ; fill rest of header entry
 
 hio_posr
+	moveq	#0,d0			 ; default to "no error"
 	neg.l	d1			 ; just enquire?
 	beq.s	hps_ret
 	tst.b	hic_msnv(a0)		 ; message number valid?
@@ -80,31 +88,48 @@ hio_posr
 	bra.s	hps_retcl		 ; clear message pointer and return
 
 hio_posa
+	moveq	#0,d0			 ; default to "no error"
 	neg.l	d1			 ; to start?
 	beq.s	hps_reset		 ; ... yes
 hps_posa
 	tas	hic_msnv(a0)		 ; message number valid
 
-	move.l	hid_msnr(a2),d0
-	move.l	d0,hic_msrf(a0) 	 ; new reference
-	add.l	d0,d1			 ; position relative to most recent
+	move.l	hid_msnr(a2),d3
+	move.l	d3,hic_msrf(a0) 	 ; new reference
+	add.l	d3,d1			 ; position relative to most recent
 
 hps_retcl
 	clr.l	hic_mspt(a0)		 ; kill the message pointer
 	move.l	d1,hic_msnr(a0)
-hps_ret
+hps_ret 				 ; restrict "file ptr" to valid range
+	move.l	hic_msnr(a0),d1
+	move.l	hid_msnr(a2),d2
+	cmp.l	d2,d1			 ; must be lower or equal to reference!
+	ble.s	hps_checklow
+	move.l	d2,hic_msnr(a0) 	 ; upper bond!
+	moveq	#err.eof,d0
+	bra.s	hps_bondok
+hps_checklow
+	moveq	#0,d3
+	move.w	hid_cnt(a2),d3		 ; messages in history
+	sub.l	d3,d2			 ; now lower bond
+	cmp.l	d2,d1
+	bgt.s	hps_bondok
+	move.l	d2,hic_msnr(a0) 	 ; restrict to lower bond!
+	moveq	#err.eof,d0
+hps_bondok
 	moveq	#0,d1
 	tst.b	hic_msnv(a0)		 ; at start?
-	beq.s	hps_rtsok
+	beq.s	hps_exit
 	move.l	hid_msnr(a2),d1
 	sub.l	hic_msnr(a0),d1
-hps_rtsok
-	moveq	#0,d0
+hps_exit
+	tst.l	d0
 	rts
 
 hps_reset
 	sf	hic_msnv(a0)		 ; reset to start
-	bra.s	hps_rtsok
+	bra.s	hps_exit
 
 hio_ipar
 	moveq	#err.ipar,d0
@@ -136,11 +161,10 @@ hdfm_look
 	bne.s	hdfm_look		 ; ... not there yet
 
 	moveq	#$40-hid_hbuf,d0	 ; 'file length' adjust
-
-hdfm_sethd
 	add.l	hid_htop(a2),d0
 	sub.l	a2,d0
 	move.l	d0,(a1)+
+hdfm_sethd
 	clr.w	(a1)+
 	clr.l	(a1)+
 	clr.l	(a1)+
@@ -380,10 +404,18 @@ hio_bffl
 	rts
 
 ; STUFF D2.L CHARS (A1)
-
+;
+; MK special: now keeps track of the number of messages in buffer. This is
+; a bit messy, because the original routine just overwrote as many messages
+; as necessary to insert the new one. The new routine checks /while/ overwriting
+; the messages for a new message start (empty space -> character flank) and
+; decrements the overall message counter in this case. This is solved by
+; having every copy loop 2 times and building some sort of state machine between
+; those loops
 hio_stuff
-	and.l	#$0000ffff,d2
 	clr.b	hic_msnv(a0)		 ; next time get first message
+	and.l	#$0000ffff,d2
+	beq.s	his_end 		 ; empty strings confuse us! Don't allow
 	move.l	hid_hptr(a2),a4 	 ; pointer (to 0)
 	addq.l	#1,a4			 ; start of next message
 	move.l	hid_htop(a2),d0 	 ; top
@@ -399,7 +431,22 @@ hio_stuff
 	moveq	#0,d0
 	sub.l	a4,d3			 ; amount to clear at end
 	blt.s	his_start
+
+; Loop for the case "currently in empty space"
+his_cltop_e
+	tst.b	(a4)
+	bne.s	his_clmsg		 ; start of a message
+his_cl_e
+	move.b	d0,(a4)+
+	dbra	d3,his_cltop_e
+	bra.s	his_start
+
+his_clmsg
+	subq.w	#1,hid_cnt(a2)		 ; start of a message, subtract counter
+; Loop for the case "currently in message"
 his_cltop
+	tst.b	(a4)
+	beq.s	his_cl_e		 ; in empty space again
 	move.b	d0,(a4)+
 	dbra	d3,his_cltop		 ; includes sentinal
 
@@ -407,21 +454,45 @@ his_start
 	move.l	a5,a4			 ; stuff it here
 	bra.s	his_stuff
 
-his_stufl
+; Loop for "within empty space"
+his_stufl_e
+	tst.b	(a4)
+	bne.s	his_msg 		 ; start of new message
+his_copy_e
 	move.b	(a1)+,(a4)+
 his_stuff
-	dbra	d2,his_stufl
+	dbra	d2,his_stufl_e
+	moveq	#0,d2			 ; flag "was in empty space"
+	bra.s	his_endstuff
 
+his_msg
+	subq.w	#1,hid_cnt(a2)		 ; start of a message, subtract counter
+; Loop for "within message"
+his_stufl
+	tst.b	(a4)
+	beq.s	his_copy_e
+	move.b	(a1)+,(a4)+
+	dbra	d2,his_stufl		 ; leave d2 as $FFFF!
+
+his_endstuff
 	move.l	a4,hid_hptr(a2)
 	addq.l	#1,hid_msnr(a2) 	 ; one more message
+	addq.w	#1,hid_cnt(a2)		 ; one more message in history
 
 	moveq	#0,d0
-his_clnxt
-	move.b	d0,(a4)+
-	tst.b	(a4)
-	bne.s	his_clnxt
+	tst.b	(a4)			 ; marker conveniently there?
+	beq.s	his_end 		 ; yes, exit
 
-	rts				 ; exit with d0 and CCR Z
+	tst.w	d2			 ; was in empty space?
+	bne.s	his_clnxt		 ; no, just delete rest of string
+	subq.w	#1,hid_cnt(a2)		 ; start of a message, subtract counter
+his_clnxt
+	move.b	d0,(a4)+		 ; set marker and delete rest of
+	tst.b	(a4)			 ;   string until next marker
+	bne.s	his_clnxt
+his_end
+	moveq	#0,d0
+	rts
 
 ; PICK OUT MESSAGE - (A4) length D1
 

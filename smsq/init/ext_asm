@@ -1,5 +1,7 @@
-; Initialise extensions   V2.01     1992 Tony Tebby
-
+; Initialise extensions   V2.02     1992 Tony Tebby
+;
+; 2005-08-29  2.02  Removed debug code (MK)
+;
 	section init
 
 	xdef	init_ext
@@ -11,18 +13,20 @@
 	include 'dev8_smsq_smsq_base_keys'
 
 init_ext
- move.l #$20600,-(sp)	#####
+; move.l #$20600,-(sp)	 #####
 	move.l	smsq_base-4,d0
 ixt_loop
- bsr.l	blat		#####
+; bsr.l  blat		 #####
 	move.l	d0,a0
 	move.l	(a0)+,-(sp)		 ; save link to next
 	jsr	(a0)			 ; call extension
 	move.l	(sp)+,d0		 ; link to next
 ixt_next
 	bne.s	ixt_loop		 ; ... there is one
- addq.l #4,sp		#####
+; addq.l #4,sp		 #####
 	rts
+
+	end
 
 blat
  tst.b	 ini_ouch

@@ -13,9 +13,9 @@
 ;			    zero in d5
 ;			    zero in d6
 ;			    top of RAM in d7
-* 2003-09-27	v.2.00 (?)	added OSPS config item
+* 2003-09-27	v. 2.00 (?)	added OSPS config item
 * 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
-
+* 2005-11-12	V. 2.02 	better cache handling (TG)
 	section hwinit
 
 	xdef	sms_wbase
@@ -214,6 +214,25 @@ hwi_ram_check
 
 hwi_ram_over
 	jsr	q40_prtype		; determine processor type (d6)
+
+; 2.02
+	move.w	sr,d2			; save current state (supervisor/user mode)
+	trap	#0			; go to supervisor mode if not already in it.
+
+	gcreg	pcr,d0			; get the configuration register value.
+	move.w	d0,d1
+	lsr.w	#8,d1			; the revision number is in the 2nd lsb.
+	subq.b	#6,d1			; anything below 6 is buggy.
+	bpl.s	not_buggy		;
+	bset	#5,d0			; set bit 5 to disable the buggy "store/load
+					; bypass" optimization (cures errata i14 & i15)
+not_buggy
+	bset	#0,d0			; make sure the superscalar mode is enabled.
+	pcreg	pcr,d0			    ; set the pcr.
+	move.w	d2,sr			; return to previous state.
+	moveq	#0,d0
+
+; end 2.02
 
 	move.b	qcf_mmu,d0		; set up MMU?
 	beq.s	hwi_setRAM

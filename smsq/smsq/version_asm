@@ -4,6 +4,9 @@
 
 	xdef	smsq_vers
 
+; #&# note all line starting with #&# are ignored by HTMLizer, so do not appear on website
+; #&# (note WL : for web site insertion: all lines must end with a full stop)
+
 ; 2.00	First test version.
 ;
 ; 2.01	Length returned by sms.achp unadjusted.
@@ -610,7 +613,7 @@
 ;	Screen aspect ratio for graphics functions now a CON variable (MK).
 ;	Hotkey system configurable again like standalone version (MK).
 ;
-;  3.01 More system sprites (MK).
+; 3.01	More system sprites (MK).
 ;	New window move routines & Config block (WL + MK).
 ;	Fixed bug for stippled borders in WMAN (WL).
 ;	More con vectors (WL).
@@ -618,11 +621,11 @@
 ;	Fixed wallpaper on display change, broken in 2d99 (MK).
 ;	Bugfix for move routine in mode 4 (WL).
 ;
-;  3.02 Extended revamp for mode 16 (Gold Card/ Aurora). (MK)
+; 3.02	Extended revamp for mode 16 (Gold Card/ Aurora). (MK)
 ;	Bugfix for rchp : Doesn't break free space list if block was already
 ;	  free (MK).
 ;
-;  3.03 WM_BLOCK prodecure fixed (GG & MK).
+; 3.03	WM_BLOCK prodecure fixed (GG & MK).
 ;	Some bugfixes for SER PAR PRT ports (MK)
 ;	PRT_USE$ used wrong offset - fixed (wl).
 ;	Cursor move if one-line wdw fixed (delete still a problem) and added...
@@ -667,19 +670,32 @@
 ;	Outline move spurious outline problem fixed (wl).
 ;
 ; 3.10	Bugfixes: lower right corner of high colour shadows fixed (MK).
-;	Wrong errror return of wm..jbpla fixed (MK)
+;	Wrong errror return of wm.jbpla fixed (MK)
 ;	Double 3D border type fixed (MK).
 ;	Wrong error sprite return fixed (wl).
 ;	Sprite clipping at window borders implemented (MK).
 ;	Implemented sprites with no (= solid) mask (MK).
 ;	New copy sprite vector added (MK).
 ;
-; 3.11	Bugfixes (thanks to MK)
-;	Call to HOME thing via EXxx commands added (wl)
+; 3.11	Bugfixes (thanks to MK).
+;	Call to HOME thing via EXxx commands added (wl).
 ;
+; 3.12	HOME thing bugfixed and integrated: it is a new module (MK + wl).
+;	Boot filename is set as current SBasic filename and Home filename (MK).
+;	Sbasic sets home dir upon (q)load (wl).
+;	File name from QD is set as home file name when using SBAS/QD (MK).
+;	Improved Qx0 cache handling (TG).
+;	Improved History device: Keeps track of number of message, disallows empty string (MK).
+;	History device returns number of messages as file length & file pointer is limited to nbr of message (MK).
+;	Basic has a new command line history (up/down arrows) (MK).
+;	When display size decreased, Basic windows will be reset to within screen (MK).
+;	Restore screen when unmanaged window is altered/closed (MK).
+;	Screen background drawing even if window is partly buried (default OFF) (MK).
+;	New commands PE_BGON and PE_BGOFF to enable/disable background drawing (MK).
+;	New commands PEEK_F, PEEKS_F, POKE_F, POKES_F (MK).
+;	Tries to release a Drive Definition Block if drive table is full (MK).
+;	JOBID added (PW).
 
-smsq_vers equ	 '3.11'
-
-
+smsq_vers equ	 '3.12'
 
 	end

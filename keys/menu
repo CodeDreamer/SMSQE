@@ -1,121 +1,173 @@
 ; keys for Menu Extension
  nolist
 ; keys for BUTN
-bt_type  equ    $00             ; type string or unsigned long
-bt_name  equ    $04             ; pointer to button name (or 0)
-bt_xpos  equ    $08             ; x position (or -1) of left hand side
-bt_ypos  equ    $0c             ; y position (or -1) of top
-bt_mainc equ    $10             ; main colourway (0-3, -1)
+bt_type  equ	$00		; type string or unsigned long
+bt_name  equ	$04		; pointer to button name (or 0)
+bt_xpos  equ	$08		; x position (or -1) of left hand side
+bt_ypos  equ	$0c		; y position (or -1) of top
+bt_mainc equ	$10		; main colourway (0-3, -1)
+; from here on keys for XBTN only
+bt_spr2  equ	$14		; second optional sprite
+bts2.wake equ	  1		;   use pre-defined WAKE sprite
+bts2.chg equ	  2		;   use pre-defined "Text changed" sprite
+bt_opts  equ	$18		; option control word
+bto..wak equ	  0		;   2nd sprite is separate item (keystroke WAKE)
+bto..flsh equ	  8		;   flash second sprite
+bto..hit equ	 16		;   return on HIT (button immoevable)
+bto..resc equ	 17		;   return on ESC
+bt_retp  equ	$20		; button selection keystroke
+btrt.esc equ	  0		;   ESCAPE (if possible)
+btrt.wake equ	  1		;   WAKE (if separate item defined or woken)
+btrt.hit equ	  2		;   HIT (if immoveable)
+btrt.do  equ	  3		;   DO
 
 ; keys for DSEL
-ds_mennm equ    $04             ; pointer to menu name (or 0)
-ds_lines equ    $08             ; number of lines (or 0)
-ds_xpos  equ    $0c             ; x position (or 0) of left hand side
-ds_ypos  equ    $10             ; y position (or 0) of top
-ds_mainc equ    $14             ; main colourway (0-3, -1)
-ds_ddirc equ    $18             ; default directories colourway (0-3, -1)
-ds_fname equ    $20             ; pointer to filename return
+ds_mennm equ	$04		; pointer to menu name (or 0)
+ds_lines equ	$08		; number of lines (or 0)
+ds_xpos  equ	$0c		; x position (or 0) of left hand side
+ds_ypos  equ	$10		; y position (or 0) of top
+ds_mainc equ	$14		; main colourway (0-3, -1)
+ds_ddirc equ	$18		; default directories colourway (0-3, -1)
+ds_fname equ	$20		; pointer to filename return
 
 ; keys for FSEL
-fs_mennm equ    $04             ; pointer to menu name (or 0)
-fs_defnm equ    $0c             ; pointer to default name (or 0)
-fs_dirtp equ    $10             ; directory type (if long must be 0, -1 or -2)
-fs_dirnm equ    $14             ; pointer to directory name or key, the pointer
-                                ;   itself could be 0, -1 or -2
-fs_exttp equ    $18             ; extension type
-fs_extnm equ    $1c             ; pointer to extension name (or 0)
-fs_lines equ    $20             ; number of lines (or 0)
-fs_xpos  equ    $24             ; x position (or 0) of left hand side
-fs_ypos  equ    $28             ; y position (or 0) of top
-fs_mainc equ    $2c             ; main colourway (0-3, -1)
-fs_filec equ    $30             ; file colourway (0-3, -1) (0 is same as fs_mainc)
-fs_fname equ    $38             ; pointer to filename return
+fs_mennm equ	$04		; pointer to menu name (or 0)
+fs_defnm equ	$0c		; pointer to default name (or 0)
+fs_dirtp equ	$10		; directory type (if long must be 0, -1 or -2)
+fs_dirnm equ	$14		; pointer to directory name or key, the pointer
+				;   itself could be 0, -1 or -2
+fs_exttp equ	$18		; extension type
+fs_extnm equ	$1c		; pointer to extension name (or 0)
+fs_lines equ	$20		; number of lines (or 0)
+fs_xpos  equ	$24		; x position (or 0) of left hand side
+fs_ypos  equ	$28		; y position (or 0) of top
+fs_mainc equ	$2c		; main colourway (0-3, -1)
+fs_filec equ	$30		; file colourway (0-3, -1) (0 is same as fs_mainc)
+fs_fname equ	$38		; pointer to filename return
 
 ; keys for ITSL
-is_mentp equ    $00             ; menu type (string or signed long error code)
-is_mennm equ    $04             ; pointer to menu name (or 0)
-is_prmtp equ    $08             ; prompt type (string or signed long error code)
-is_prmpt equ    $0c             ; pointer to prompt (or 0)
-is_item1 equ    $14             ; pointer to text of item 1
-is_item2 equ    $1c             ; pointer to text of item 2
-is_item3 equ    $24             ; pointer to text of item 3
-is_xpos  equ    $28             ; x position (or 0) of left hand side
-is_ypos  equ    $2c             ; y position (or 0) of top
-is_mainc equ    $30             ; main colourway (0-3, -1)
-is_itnum equ    $38             ; item number return
+is_mentp equ	$00		; menu type (string or signed long error code)
+is_mennm equ	$04		; pointer to menu name (or 0)
+is_prmtp equ	$08		; prompt type (string or signed long error code)
+is_prmpt equ	$0c		; pointer to prompt (or 0)
+is_item1 equ	$14		; pointer to text of item 1
+is_item2 equ	$1c		; pointer to text of item 2
+is_item3 equ	$24		; pointer to text of item 3
+is_xpos  equ	$28		; x position (or 0) of left hand side
+is_ypos  equ	$2c		; y position (or 0) of top
+is_mainc equ	$30		; main colourway (0-3, -1)
+is_itnum equ	$38		; item number return
 
 ; keys for RPER
-er_error equ    $00             ; error code
-er_xpos  equ    $04             ; x position (or -1) of left hand side
-er_ypos  equ    $08             ; y position (or -1) of top
-er_mainc equ    $0c             ; main colourway (0-3, -1)
+er_error equ	$00		; error code
+er_xpos  equ	$04		; x position (or -1) of left hand side
+er_ypos  equ	$08		; y position (or -1) of top
+er_mainc equ	$0c		; main colourway (0-3, -1)
 
 ; keys for FERR
-fe_error equ    $00             ; error code
-fe_optns equ    $04             ; options allowed
-fe_xpos  equ    $08             ; x position (or -1) of left hand side
-fe_ypos  equ    $0c             ; y position (or -1) of top
-fe_mainc equ    $10             ; main colourway (0-3, -1)
-fe_actn  equ    $18             ; pointer to action selected
+fe_error equ	$00		; error code
+fe_optns equ	$04		; options allowed
+fe_xpos  equ	$08		; x position (or -1) of left hand side
+fe_ypos  equ	$0c		; y position (or -1) of top
+fe_mainc equ	$10		; main colourway (0-3, -1)
+fe_actn  equ	$18		; pointer to action selected
 
 ; keys for RSTR
-rs_mennm equ    $04             ; pointer to menu name (or 0)
-rs_defnm equ    $0c             ; pointer to default name (or 0)
-rs_prmpt equ    $14             ; pointer to prompt (or 0)
-rs_chars equ    $18             ; number of characters (or 0 defaults to 34)
-rs_xpos  equ    $1c             ; x position (or 0) of left hand side
-rs_ypos  equ    $20             ; y position (or 0) of top
-rs_mainc equ    $24             ; main colourway (0-3, -1)
-rs_fname equ    $2c             ; pointer to filename return
+rs_mennm equ	$04		; pointer to menu name (or 0)
+rs_defnm equ	$0c		; pointer to default name (or 0)
+rs_prmpt equ	$14		; pointer to prompt (or 0)
+rs_chars equ	$18		; number of characters (or 0 defaults to 34)
+				; set msw if edit string instead of read string
+rs_xpos  equ	$1c		; x position (or 0) of left hand side
+rs_ypos  equ	$20		; y position (or 0) of top
+rs_mainc equ	$24		; main colourway (0-3, -1)
+rs_fname equ	$2c		; pointer to filename return
 
 ; keys for VIEW
-vw_filnm equ    $04             ; pointer to file name
-vw_start equ    $0c             ; pointer to start string (or 0)
-vw_end   equ    $14             ; pointer to end string (or 0)
-vw_chars equ    $18             ; number of characters (or 0 defaults to 80)
-vw_mainc equ    $1c             ; main colourway (0-3, -1)
-vw_listc equ    $20             ; list colourway
+vw_filnm equ	$04		; pointer to file name
+vw_start equ	$0c		; pointer to start string (or 0)
+vw_end	 equ	$14		; pointer to end string (or 0)
+vw_chars equ	$18		; number of characters (or 0 defaults to 80)
+vw_mainc equ	$1c		; main colourway (0-3, -1)
+vw_listc equ	$20		; list colourway
 
 ; keys for XSEL
-xs_xpos  equ    $00             ; x position (or 0) of left hand side
-xs_ypos  equ    $04             ; y position (or 0) of top
-xs_mainc equ    $08             ; main colourway (0-3, -1)
-xs_fname equ    $10             ; pointer to filename return
+xs_xpos  equ	$00		; x position (or 0) of left hand side
+xs_ypos  equ	$04		; y position (or 0) of top
+xs_mainc equ	$08		; main colourway (0-3, -1)
+xs_fname equ	$10		; pointer to filename return
 
 ; keys for LIST
-ls_mennm equ    $04             ; pointer to menu name (or 0)
-ls_itlty equ    $08             ; item list type
-ls_itlst equ    $0c             ; item list
-ls_stlty equ    $10             ; status list type
-ls_stlst equ    $14             ; item status list (or 0)
-ls_mictl equ    $18             ; menu-item-control
-ls_lines equ    $1c             ; max number of lines (or 0)
-ls_colms equ    $20             ; max number of columns (or 0)
-ls_xpos  equ    $24             ; x position (or 0) of left hand side
-ls_ypos  equ    $28             ; y position (or 0) of top
-ls_mainc equ    $2c             ; main colourway (0-3, -1)
-ls_listc equ    $30             ; list window colourways
-ls_item  equ    $38             ; pointer to return item number
+ls_mennm equ	$04		; pointer to menu name (or 0)
+ls_itlty equ	$08		; item list type
+ls_itlst equ	$0c		; item list
+ls_stlty equ	$10		; status list type
+ls_stlst equ	$14		; item status list (or 0)
+lss..chg equ	  0		;    item has been be edited
+lss..edt equ	  6		;    item is editable
+ls_mictl equ	$18		; menu-item-control
+lsc..usc equ	  0		;    set to underscore first character
+lsc..adk equ	  2		;    add unique selection keystrokes in front
+lsc..cnt equ	  4		;    centre items
+lcs..hid equ	  6		;    hit is do
+ls_lines equ	$1c		; max number of lines (or 0)
+ls_colms equ	$20		; max number of columns (or 0)
+ls_xpos  equ	$24		; x position (or 0) of left hand side
+ls_ypos  equ	$28		; y position (or 0) of top
+ls_mainc equ	$2c		; main colourway (0-3, -1)
+ls_listc equ	$30		; list window colourways
+ls_item  equ	$38		; pointer to return item number
 
 ; keys for DORP
-do_mennm equ    $04             ; pointer to menu name (or 0)
-do_actds equ    $0c             ; pointer to action description (or 0)
-do_chars equ    $10             ; number of characters for result (default is 40)
-do_xpos  equ    $14             ; x position (or -1) of left hand side
-do_ypos  equ    $18             ; y position (or -1) of top
-do_mainc equ    $1c             ; main colourway (0 to 3, -1)
-do_mictl equ    $20             ; menu item control
-do_pact  equ    $24             ; pointer to action routine
+do_mennm equ	$04		; pointer to menu name (or 0)
+do_actds equ	$0c		; pointer to action description (or 0)
+do_chars equ	$10		; number of characters for result (default is 40)
+do_xpos  equ	$14		; x position (or -1) of left hand side
+do_ypos  equ	$18		; y position (or -1) of top
+do_mainc equ	$1c		; main colourway (0 to 3, -1)
+do_mictl equ	$20		; menu item control
+do_pact  equ	$24		; pointer to action routine
 
 ; keys for CHSL
-ch_mennm equ    $04             ; pointer to menu name ( or 0 )
-ch_avbit equ    $08             ; availability type
-ch_avlbl equ    $10             ; availability table ( not inplemented )
-ch_font  equ    $14             ; font used for subwindow
-ch_xpos  equ    $18             ; x position ( or 0 ) of left hand side
-ch_ypos  equ    $1c             ; y position ( or 0 ) of top
-ch_mainc equ    $20             ; main colourway (0-3, -1)
-ch_listc equ    $24             ; list window colourways (0-3, -1)
-ch_retst equ    $2c             ; pointer to return string
+ch_mennm equ	$04		; pointer to menu name (or 0)
+ch_avbit equ	$08		; availability type
+cha..npr equ	  0		;    non-printable characters
+cha..dig equ	  1		;    digits
+cha..lc  equ	  2		;    lower-case characters
+cha..uc  equ	  3		;    upper-case characters
+cha..rmn equ	  4		;    remaining characters
+cha..cur equ	  6		;    cursor-control characters
+ch_avlbl equ	$10		; availability table (not implemented)
+ch_font  equ	$14		; font used for subwindow
+ch_xpos  equ	$18		; x position (or 0) of left hand side
+ch_ypos  equ	$1c		; y position (or 0) of top
+ch_mainc equ	$20		; main colourway (0-3, -1)
+ch_listc equ	$24		; list window colourways (0-3, -1)
+ch_retst equ	$2c		; pointer to return string
 
+; key for INFO
+inf_key  equ	$00		; inquiry key
+inf.ext1 equ	  1		;    Extension 1
+inf.ext2 equ	  2		;    Extension 2
+inf.ext3 equ	  3		;    Extension 3
+inf.ext4 equ	  4		;    Extension 4
+inf.ext5 equ	  5		;    Extension 5
+inf.ext6 equ	  6		;    Extension 6
+inf.ext7 equ	  7		;    Extension 7
+inf.ext8 equ	  8		;    Extension 8
+inf.dir1 equ	 32		;    Rirectory 1
+inf.dir2 equ	 33		;    Directory 2
+inf.dir3 equ	 34		;    Directory 3
+inf.dir4 equ	 35		;    Directory 4
+inf.dir5 equ	 36		;    Directory 5
+inf.dir6 equ	 37		;    Directory 6
+inf.dir7 equ	 38		;    Directory 7
+inf.dir8 equ	 39		;    Directory 8
+inf.colm equ	 64		; Main colourway
+inf.cols equ	 65		; Subwindow colourway
+inf.colb equ	 66		; Button colourway
+inf.ffui equ	 96		: Flash frequency update icon
+inf_ret  equ	$08		; pointer to return string
+inf.cole equ	$43
+inf.iexp equ	$61
  list

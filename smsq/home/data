@@ -1,0 +1,37 @@
+; keys for home thing
+
+; parameters passed to things
+;
+; home set extension
+set_id  equ     0                       ; unsigned long, jobid
+set_nam equ     set_id+8                ; name
+
+; home, file currget extensions
+get_id  equ     0                       ; unsigned long, job id
+get_len equ     get_id+6                ; length of string, unsigned word
+get_nam equ     get_len+2               ; ptr to string
+
+; heap list = job entries : contains commmon heap header,linked list, data
+hl_strt equ     0                       ; ( would be chp.len if mem reserved via vector)
+hl_next equ     hl_strt                 ; pointer to next entry  (0 = last)
+hl_prev equ     hl_next+4               ; pointer to previous entry (0 = first)
+hl_data equ     hl_prev+4               ; start of data (filename)
+hl.mem  equ     hl_data                 ; total mem needed for my header
+
+; Memory requirements for thing + header
+hmt_base equ    $2c+4                   ; end of name string
+hmt_frst equ    hmt_base+4              ; start of linked list for jobs
+hmt_free equ    hmt_frst+4              ; space for routine to free mem
+hmt_defs equ    hmt_free+4
+home_end equ    hmt_defs+4              ; mem needed for this
+
+
+; defaut list length
+
+deflen  equ     1000
+hdf_jnm equ     4                       ; pointer to job name
+hdf_fnm equ     12                      ; pointer to filename
+
+; max filename length
+
+hd_maxlen equ   41                      ; 36 for filename + 5 for drive

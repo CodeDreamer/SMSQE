@@ -1,7 +1,7 @@
 ;	Write sprite as cursor		@ W. Lenerz 2003-2004
 ;
-; 2004-03-27	1.00	first correct version
-;
+; 2004-03-27  1.00  first correct version
+; 2005-11-08  1.01  Gets screen data out of CDB for background windows (MK)
 ;
 ;	Registers:
 ;	entry				exit
@@ -52,7 +52,8 @@ cn_mkvis
 ;	d4    s scratch
 ;	d5    s scratch
 ;	d6/d7	preserved
-;	a0/a1	preserved
+;	a0    p cdb
+;	a1	preserved
 ;	a2 c	row increment of source area
 ;	a3 c	row increment of destination area
 ;	a4 c	base address of source area
@@ -66,8 +67,8 @@ cn_mkvis
 	add.l	sd_xpos(a0),d2		; + orig of curs in wdw = orig of block
 	clr.l	d3			; orig in save area = 0,0
 	move.l	d3,a2
-	move.w	pt_scinc(a3),a2 	; screen row increment
-	move.l	pt_scren(a3),a4 	; screen (source) base address
+	move.w	sd_linel(a0),a2 	 ; screen row increment
+	move.l	sd_scrb(a0),a4		; screen (source) base address
 	lea	sd_keyq(a0),a5		; point to keyboard queue
 	move.l	qu_endq(a5),d0		; point to end of queue, start of save area
 	beq.s	no_q
@@ -122,10 +123,10 @@ no_q2
 	lea	sd.croff(a4),a4
 	move.l	(a4)+,d0		; any sprite?
 	beq.s	cerr			; no, so use old routine
-	move.l	pt_scren(a3),a5 	; screen destination base address
+	move.l	sd_scrb(a0),a5		; screen destination base address
 	move.l	pt_vecs(a3),a1		; point to screen vectors
 	clr.l	d0
-	move.w	pt_scinc(a3),d0
+	move.w	sd_linel(a0),d0
 	move.l	d0,a3			; screen (destination) row increment
 	pea	cn_csok 		; we return to here
 	jmp	pv_mblk(a1)		; copy block now

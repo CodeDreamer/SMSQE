@@ -178,7 +178,7 @@ q40s_do
 
 q40s_chkxy
 	move.l	d1,d0			 ; either x or y given
-	or.l	d1,d0
+	or.l	d2,d0
 	bne.s	q40s_xysize		 ; ... yes
 	move.w	pt_xscrs(a3),d1 	 ; ... current x
 	move.w	pt_yscrs(a3),d2 	 ; ... current y
