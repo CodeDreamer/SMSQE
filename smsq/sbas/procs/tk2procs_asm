@@ -4,7 +4,8 @@
 ; 2003-02-11	2.04	Added function EXF (wl)
 ; 2004-04-02	2.05	Added keywords CURSPRON,CURSPROFF,CURSPRLOAD,SYSSPRLOAD (wl)
 ; 2004-05-15	2.06	Added keyword EX_M (wl)
-; 2006-01-10	2.07	Added JOBID (pjw)
+; 2006-01-10	2.07	Added function JOBID (pjw)
+; 2014-06-08	2.08	Added function FEX_M (pjw)
 
 	section procs
 
@@ -154,6 +155,7 @@ sb_tk2procs
 	proc_def FEX,fexsb		; program execution as functions
 	proc_def FEW,fewsb
 	proc_def FET,fetsb
+	proc_def FEX_M,femsb
 	proc_def EXF,fexsb
 	proc_end
 	end

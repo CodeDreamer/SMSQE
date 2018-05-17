@@ -14,6 +14,7 @@
 ; 2012-04-21	v. 1.18 	check for smsqmulator made when testing for ptr move (wl)
 ; 2013-04-28	v. 1.19 	added wdw move with alpha blending (wl)
 ; 2013-10-07	v. 1.20 	bugfix for alpha move of pulled down wdw (wl)
+; 2014-06-29	v. 1.21 	better handling of moving up to right screen edge (wl)
 ;
 ;---------------------------------------------------------------------------
 	section wman
@@ -231,7 +232,14 @@ no_qpc
 	move.l	4(a1),d7		; x,y origins of max wdw
 	add.l	(a1),d7 		; coords of end of wdw
 	sub.l	winoutl(a5),d7		; max possible x,y coords of wdw outline!
+;
+	addi.l	#xyposadd,d7		; v. 1.21 make sure right/lower bounds...
+	andi.l	#xyposmask,d7		; ...are on correct position for stipples
+; 1.21
 	move.l	limits+4(a5),d6 	; d6 = min x,y positions box can take
+	addi.l	#xyposadd,d6
+	andi.l	#xyposmask,d6
+;
 
 ; interlude:
 ; now find out whether we have enough memory left to save the entire screen
@@ -573,6 +581,7 @@ tm_test
 	beq.s	no_ptr			; ...no ->...
 	moveq	#0,d2			; ...yes, do it
 	moveq	#iop.sptr,d0
+
 	move.l	d1,-(sp)
 	add.l	winofs(a5),d1
 	trap	#3			; set pointer position in absolute coords

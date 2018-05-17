@@ -20,13 +20,24 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
-     
+
+
+
+=====
+3.22
+=====
+
+Atari ST and STE monochrome modes work again.
+FEX_M keyword : is the same as EX_M but as a function.
+Bugfix : better edge detection when moving window in movemodes 1 and above.
+SMSQmulator bugfixes.
+
 
 =====
 3.21
 =====
 
-Bugfix : If you try to make a diectory and a file that has channels open to
+Bugfix : If you try to make a directory and a file that has channels open to
 it would be moved to that directory, the directory is NOT created. Note: in
 that case an empty file with the name ofthat directory will have been created.
 In other words : when you create a directory, don't have channels open to files

@@ -1,5 +1,8 @@
 ; DV3 JAVA Floppy Disk get/set drive name
+
+; 0.01 put A1 into ari stack pointer after java call
 ; 0.00 @ 2014 W. Lenerz
+
 
 	section dv3
 
@@ -13,6 +16,7 @@
 
 
 	include 'dev8_keys_java'
+	include 'dev8_keys_sbasic'
 
 
 ***************************************************
@@ -20,7 +24,7 @@
 * result$=flp_drive$(x)
 *	where x = the drive (1...8)
 *
-* restuns the native filename as string
+* returns the native filename as string
 *
 *
 ****************************************************
@@ -32,12 +36,10 @@ flp_drive$
 	jsr	ut_gxin1		; get exactly one int, or nothing
 	moveq	#jt8.getd,d0
 	dc.w	jva.trp8		; get data to java & back on the ari stack
+	move.l	a1,sb_arthp(a6)
 	tst.l	d0			; ooops, bad parameter
 	bne.s	out
 	jmp	ut_retst		; return data
-
-
-
 
 ***************************************************
 *

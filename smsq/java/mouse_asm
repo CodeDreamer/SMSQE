@@ -38,7 +38,7 @@ smsh.reg reg	a4/a5
 	move.l	jva_mrel-jva_mpos(a5),d1; mouse relative mvt
 
 
-; I have no idea why the following ocde adapted from the qxl mouse routines works
+; I have no idea why the following code adapted from the qxl mouse routines works
 
 	move.w	d1,d0			 ; supposed count
 	bpl.s	mse_ycount		 ; ... its positive
@@ -56,13 +56,13 @@ mse_addinc
 	lsr.w	#1,d0
 	addq.w	#1,d0			 ; make sure that there is a move
 	move.w	d0,pt_xicnt(a4) 	 ; update count
-		 
+
+; now check mouse buttons
 mse_bttn
 	move.b	1+jva_mbtn-jva_mpos(a5),d1 ; button clicked
 	cmp.b	#2,d1
 	bgt.s	cntr			 ; ... if >2 = button 3, do centre button
-;	 clr.w	 jva_mbtn-jva_mpos(a5)	  ; show no button clicked next time round
-	move.b	d1,pt_bpoll(a4) 	 ; this is new button or old button still depressed
+cnt	move.b	d1,pt_bpoll(a4) 	 ; this is new button or old button still depressed
 	beq.s	mse_done		 ; ... none
 	clr.b	pt_lstuf(a4)		 ; it isn't a stuff
 mse_done

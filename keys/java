@@ -9,7 +9,7 @@ jkb..key	equ	0		; byte with key typed in
 jva_clk 	equ	jva_lkkbd+4	; rtc from java
 jva_mpos	equ	jva_clk+4	; curren tpmouse pos (-1 if no change) (L)
 jva_mrel	equ	jva_mpos+4	; mouse relative mvmt from java   (L)
-jva_mbtn	equ	jva_mrel+4	; mouse button (W)
+jva_mbtn	equ	jva_mrel+4	; mouse button (L)
 jtbn..1 	equ	  1		; button 1 clicked
 jbtn..2 	equ	  2		; button 2 clicked
 jbtn..3 	equ	 -1		; button 3 (=buttons 1 & 2) clicked
@@ -31,12 +31,12 @@ jva_rand	equ	jva_memu+4	; random number
 ; "trap" keys : these cause a return to java
 ; they correspond to unused instructions for the mc68000
 
-jva.trp0	equ	$4b00		; signal a hard break & return to java
-jva.trp1	equ	$4b01		; return to java from a trap1
-jva.trp2	equ	$4b02		; trap 2
-jva.trp3	equ	$4b03		; trap 3
-jva.trp4	equ	$4b04		; trap 4
-jva.trp5	equ	$4b05		; trap 5 do misc things
+jva.trp0	equ	$a000		; signal a hard break & return to java
+jva.trp1	equ	$a001		; return to java from a trap1
+jva.trp2	equ	$a002		; trap 2
+jva.trp3	equ	$a003		; trap 3
+jva.trp4	equ	$a004		; trap 4
+jva.trp5	equ	$a005		; trap 5 do misc things
 jt5.mode	equ	  1		;   switch display mode
 jt5.rset	equ	  2		;   reset
 jt5.slep	equ	  3		;   sleep a bit
@@ -66,9 +66,9 @@ jt5.asnd	equ	  26		;   add bytes to sound device
 jt5.sttmr	equ	  27		;   set (start) timer
 jt5.gttmr	equ	  28		;   get current timer value
 
-jva.trp6	equ	$4b06
-jva.trp7	equ	$4b07
-jva.trp8	equ	$4b08		; flp access
+jva.trp6	equ	$a006
+jva.trp7	equ	$a007
+jva.trp8	equ	$a008		; flp access
 jt8.rsec	equ	  0		;   read a sector
 jt8.wsec	equ	  1		;   write a sector
 jt8.frmt	equ	  2		;   format drive
@@ -78,6 +78,15 @@ jt8.setd	equ	  5		;   set drive to native file string
 jt8.getd	equ	  6		;   get native dir as string
 
 ;jva.trp9	 equ	 $4b09		 ; win access
+jva.trp9	equ	$a009		; IP device access
+jt9.opn 	equ	  1		; IP open
+jt9.io		equ	  2		; IP I/O
+jt9.cls 	equ	  3		; IP close
+jt9.cla 	equ	  4		; IP close all
+jt9.cnm 	equ	  5		; IP channel name
+
+jva.trpA	equ	$a00a
+
 
 ; smsqmulator config info flag
 

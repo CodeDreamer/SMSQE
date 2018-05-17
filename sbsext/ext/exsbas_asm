@@ -6,6 +6,7 @@
 * 2005-01-25	2.03	Added call to Home thing (wl)
 * 2005-11-17	2.04	If A1 absolute, use supervisor mode when calling home thing
 * 2006-03-27	2.05	Use system specific execution delay (MK)
+; 2014-06-08	2.06	Added function FEX_M (pjw)
 
 	section exten
 *
@@ -17,6 +18,7 @@
 	xdef	fetsb
 	xdef	fewsb
 	xdef	fexsb
+	xdef	femsb
 *
 	xref	ut_ckcomma
 	xref	ut_cksemi
@@ -51,6 +53,10 @@
 	include 'dev8_sbsext_ut_opdefx_keys'
 
 *
+femsb			      ; Function: No waiting, owned by me
+	pea	fex_exit	stack return address
+	bra.s	emsb
+
 fexsb
 	pea	fex_exit	stack return address
 	bra.s	exsb		Function EX

@@ -1,6 +1,7 @@
 * Sprite dropping code	  V1.01    1985   Tony Tebby  QJUMP
 *
 * 2005-03-27  1.01  Extension for empty mask (MK)
+* 2015 Jul 25 1.02  Correctly handle sprites with 0 mask
 *
 *	d0 c s	byte offset / green composite
 *	d1 c s	row offset    / red composite
@@ -27,7 +28,7 @@ spm_drop
 sp_drop
 	move.l	a5,a4		set pointer to sprite pattern
 	add.l	(a5)+,a4
-	add.l	(a5),a5 	and sprite mask
+;	 add.l	 (a5),a5	 and sprite mask  NO! 1.02 wl
 *
 	move.l	a5,d3
 	move.l	(a5),a5

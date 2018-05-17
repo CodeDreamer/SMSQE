@@ -646,7 +646,7 @@
 ;	Better 3d border handling (MK).
 ;
 ; 3.06	The "Quit" keyword takes an optional parameter (long int) that is...
-;	...passed to the calling job (eg return_code=FEW(your_program)) (pjw).
+;	...passed to the calling job (eg return_code=FEW(your_program)) (PJW).
 ;	Q40 flp density is preset to High (1.44 MB disks). If you want to...
 ;	...format other density disks, set the density to D or E. (wl).
 ;	Sprites (of 6x10 size) may be used as cursor (wl).
@@ -733,7 +733,7 @@
 ; 3.16	COLOUR_NATIVE for aurora modes fixed (MK).
 ;	Window move with transparency implemented (for display modes 16, 32 and 33) (wl).
 ;
-; 3.17	Window move with transparency fixed for pulled-down wdws (WL).
+; 3.17	Window move with transparency fixed for pulled-down wdws (wl).
 ;
 ; 3.18	Menu appsub wdws may have csizes for text objects (wl).
 ;
@@ -745,7 +745,12 @@
 ; 3.21	Added file open check when making directories (wl).
 ;	SMSQ/E DV3 floppy driver for SMSQmulator (wl).
 ;
+; 3.22	Added FEX_M keyword (PJW).
+;	Better edge detection when moving window (wl).
+;	Atari mono mode works again (wl)
+;	SMSQmulator ieee float ops adde   (wl)
+;		    removed debug code during initialisation (wl)
 
-smsq_vers equ	 '3.21'
+smsq_vers equ	 '3.22'
 
 	end

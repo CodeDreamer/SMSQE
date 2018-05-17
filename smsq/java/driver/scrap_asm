@@ -2,7 +2,9 @@
 *
 *	Copying to/from the Scrap to/from the clipboard
 *
-*	making menu bar visible again
+*	Making menu bar visible again
+*
+*	Set QL or IEEE floating point routines
 *
 *	v. 1.00  copyright W. Lenerz 2013
 *
@@ -22,20 +24,25 @@
 	xref	ut_usscp
 	xref	gu_rchp
 	xref	ut_frscp
-
+	xref	qpc_patchfpu
+	xref	qpc_patch2ql
 
 
 scrap_init lea	   procs,a1
 	move.w	$110,a2
 	jmp	(a2)
 
-procs	dc.w	3
+procs	dc.w	5
 	dc.w	jvasget-*
 	dc.b	7,'JVASGET'
 	dc.w	jvasput-*
 	dc.b	7,'JVASPUT'
 	dc.w	jvambar-*
 	dc.b	7,'JVAMBAR'
+	dc.w	jvaqlfp-*
+	dc.b	7,'JVAQLFP'
+	dc.w	jvaiefp-*
+	dc.b	7,'JVAIEFP'
 	dc.l	0,0
 
 stack	equ	32060
@@ -105,6 +112,18 @@ jvasput movem.l mregs,-(a7)
 	   
 jvambar moveq	#jt5.mbar,d0
 	dc.w	jva.trp5
+	rts
+
+
+jvaqlfp lea	qpc_patch2ql,a2 	; routine to jump to
+	bra.s	fp_comn
+jvaiefp lea	qpc_patchfpu,a2
+fp_comn move.w	sr,d7
+	trap	#0			; go into supervisor mode
+	move.w	#$2700,sr		; no interrupts
+	jsr	(a2)			; patch vectors
+	move.w	d7,sr			; reset status as it was
+	moveq	#0,d0
 	rts
 
 	end

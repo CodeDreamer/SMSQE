@@ -72,7 +72,7 @@ asq_ascr dc.b	-1		; 16
 	 dc.w	0		; 18
 qcf_mlan dc.w	44		; 1a
 qcf_kstuf dc.b	250
-qcf_curs  dc.b	1
+qcf_curs  dc.b	0
 
 	xref.l	smsq_vers
 	mkcfhead {SMSQ},{smsq_vers}

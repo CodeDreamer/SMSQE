@@ -49,8 +49,8 @@ pt_sptr
 ptsp_hit
 	add.l	sd_xhito(a0),d1 	set position
 ptsp_do
-; moving te pointer about with the robot class takes alot of tim
-	dc.w	jva.trp6		; the next instructions re handled in java directly
+; moving the pointer about with the robot class takes a lot of time
+	dc.w	jva.trp6		; the next instructions are handled in java directly
 ;	 move.l  pt_ssize(a3),d0
 ;	 cmp.w	 d0,d1			 y out of range?
 ;	 bhs.s	 pt_or			 ... yes
@@ -60,6 +60,9 @@ ptsp_do
 ;	 clr.b	 pt_schfg(a3)		 scheduler busy
 ;	 clr.b	 pt_offscr(a3)		 cannot SET offscreen
 ;	 move.l  a1,-(sp)
+
+	move.l	d1,pt_npos(a3)		set new position
+
 	jsr	pt_fwind		... but find window anyway
 	move.l	(sp)+,a1
 	moveq	#0,d0

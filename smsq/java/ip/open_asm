@@ -1,0 +1,81 @@
+; Open IP	   V1.00				 2004	Marcel Kilgus
+; 1.01 adapted for java wl
+	section ip
+
+	xdef	ip_open
+
+	xref	io_ckchn
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_qlv'
+	include 'dev8_smsq_java_ip_data'
+	include 'dev8_keys_java'
+
+ip_open
+	movem.l d3/a0,-(sp)
+	move.l	#$dfdfdfdf,d0
+	move.w	(a0)+,d2
+	and.l	(a0)+,d0
+	cmp.l	tcp_name,d0
+	beq.s	ipo_found
+	cmp.l	udp_name,d0
+	beq.s	ipo_found
+	cmp.l	sck_name,d0
+	beq.s	ipo_sck
+	moveq	#err.fdnf,d0
+	bra.s	ipo_exit
+
+tcp_name dc.b	'TCP_'
+udp_name dc.b	'UDP_'
+sck_name dc.b	'SCK_'
+
+ipo_sck
+	cmp.l	#4,d3			; is a channel id in d3?
+	bls.s	ipo_found		; ... probably not
+
+	movem.l d7/a0/a3,-(sp)
+	moveq	#0,d0
+	move.l	d3,a0			; check channel ID
+	jsr	io_ckchn
+	tst.l	d0
+	bmi.s	ipo_ipar
+	cmp.l	#chn.id,chn_id(a0)	; really IP channel?
+	bne.s	ipo_ipar		; ... no
+	move.l	chn_data(a0),d3 	; data address for that channel
+	movem.l (sp)+,d7/a0/a3
+
+ipo_found
+
+	moveq	#chn_end,d1
+	move.w	mem.achp,a2
+	jsr	(a2)
+	bne.s	ipo_exit
+
+	move.l	#chn.id,chn_id(a0)
+	move.l	a0,a2
+	moveq	#jt9.opn,d0
+	dc.w	jva.trp9
+	tst.l	d0
+	bne.s	ipo_error
+
+	move.l	a0,chn_data(a2)
+	move.l	a2,4(sp)
+
+ipo_exit
+	movem.l (sp)+,d3/a0
+	rts
+
+ipo_ipar
+	movem.l (sp)+,d7/a0/a3
+	moveq	#err.ipar,d0
+	bra.s	ipo_exit
+
+ipo_error
+	move.l	d0,-(sp)
+	move.l	a2,a0
+	move.w	mem.rchp,a2		; error, release CDB
+	jsr	(a2)
+	move.l	(sp)+,d0
+	bra.s	ipo_exit
+
+	end

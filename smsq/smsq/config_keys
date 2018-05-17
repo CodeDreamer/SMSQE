@@ -11,6 +11,7 @@ sms_bflp   equ	4	   ; byte	0 no floppy boot, 1 or 2
 sms_bwin   equ	5	   ; byte	BOOT WIN drive
 sms_defl   equ	6	   ; word	default keyboard language
 sms_btarg  equ	8	   ; byte	boot target
+sms_ieee   equ	8	   ; byte	use ieee floats for some operations? (SMSQMulator)
 sms_bpart  equ	9	   ; byte	boot partition
 sms_idisp  equ	$a	   ; 6 words	initial disp_size
 sms_issize equ	$a	   ; byte	initial screen size (VGA / Aurora)

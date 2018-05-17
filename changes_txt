@@ -3,15 +3,41 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
 
+
+
+-----------------------------------------------------------------------------
+
+3.22
+
+    BUGFIXES
+	ee_wman_move_asm		1.21	better edge detection  (wl)
+
+    Bugfixes for Atari
+	iod_con2_atmono_sprite_drop_asm 1.02	correctly handle sprites with 0 mask (wl)
+	iod_con2_atmono_sprite_save_asm 1.01	refer to correct sprite save area (pt_spsav) (wl)
+
+    Bugfixes for Smqmulator
+	dv3_java_fd_drive_asm		0.01	set sb_arthp after java call (wl)
+	smsq_java_driver_nfa_useq_asm	0.02	  "       "	 "   "
+	smsq_java_hwinit_asm		2.01	added config item for ieee floats (wl)
+	smsq_java_driver_most_asm	1.02	possibly use java routines for some fp ops (wl)
+	smsq_java_smsq_base_asm 	2.04	removed debug code (blats etc) (wl)
+	smsq_java_driver_most_asm	1.03	integrated the rtc routines  & removed <rtc module (wl)
+
+    New keyword  FEX_M
+	sbsext_ext_exsbas_asm		2.06	added FEX_M routine  (pjw)
+	smsq_sbas_procs_tk2procs_asm	2.08	FEX_M linked in  (wl)
+
+	smsq_smsq_config_keys		.	config key sms_ieee for smsqmulator
 -----------------------------------------------------------------------------
 
 3.21
 
-   BUGFIX
+    BUGFIX
 	dv3_qlf_drmake_asm		3.01   don't allow dir creation if a file has open channels and would be moved into the dir (wl)
 
     FLP for SMSQmulator
-	dv3_java_			.	New files added (dv3 floppy driver routines (wl)
+	dv3_java_			.	New files added (dv3 floppy driver routines) (wl)
 	smsq_java_dv3e_asm		1.00	new module header for DV3 files (wl)
 
     SMSQmulator

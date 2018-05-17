@@ -31,7 +31,7 @@ smsq_sel
 	assert	sbl.os,$1f		 ; msb of facility is OS
 	cmp.l	#$100000,D7		 ; more than 1mb of mem?
 	bge.s	ssel_noload		 ; yes, don't load this
-	tas	sbl_facility(a5)	 ; load it
+	tas	sbl_facility(a5)	 ; load it ?
 	bne.s	ssel_noload		 ; ... already loaded
 	moveq	#sbl.load,d0
 	rts

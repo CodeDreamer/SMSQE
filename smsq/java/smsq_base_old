@@ -1,6 +1,6 @@
 ; Initialise SMSQ  V2.02     1994  Tony Tebby
 ; 2003-01-22	2.03	use sms_dlan to copy default language (wl)
-; 2015 Jul 27	2.04	removed debug code (blats etc)
+
 	section base
 
 	xdef	smsq_base
@@ -32,6 +32,10 @@
 
 smsq_base
 	lea	ini_sstk,a7		 ; set ssp
+	move.l	#$20400,-(sp) #####
+	bsr.l	blat	       #####
+	addq.l	#4,sp
+
 	bra.l	sms_reset		 ; reset
 
 	section init
@@ -45,8 +49,14 @@ sms_reset
 	move.l	a4,d7			 ; set requested RAMTOP
 
 sms_init
+	move.b	#0,ini_ouch
+
+	move.l #$20400,-(sp) #####
+	bsr.l blat	     #####
 	jsr	init_vec		 ; initialise vector area
+	bsr.l blat	     #####
 	jsr	init_trp		 ; initialise TRAP vectors
+	bsr.l blat	     #####
 
 	move.l	sms.sysb,a0
 	move.l	jva_lkptr,d0		 ; java -> smsqe comm block
@@ -55,15 +65,23 @@ sms_init
 	move.l	d0,a2
 	move.w	(a2),sys_rand(a0)	 ; random number seed
 rnd_do
+
+
 	jsr	init_sys		 ; initialise system vars
+	bsr.l blat	     #####
 	jsr	init_exrv		 ; initialise exception redirection vec
+	bsr.l blat	     #####
 	jsr	init_sbst		 ; initialise SuperBASIC stub
+	bsr.l blat	     #####
 
 ; system initialisation complete
 
 	move.l	#sb.jobsz+jcb_end,d1	 ; set up job
 
+;sbtrns      jsr     mem_atpa		      ; starting here, if it ever does
+; if this is changed back, look for all ;sbtrns
 	jsr	mem_achp		 ; starting here, if it ever does
+	bsr.l blat	     #####
 
 	lea	chp.len(a0),a2
 	move.w	#(jcb_end-chp.len)/4-1,d0
@@ -79,10 +97,17 @@ smsi_jclear
 	lea	jcb_end(a0),a6
 	lea	sb.jobsz(a6),a1
 	move.l	a1,usp
-	move.w	#$0700,sr		 ; go, but no interrupts yet!!
 
+	bsr.s blat	     #####
+	move.l	(sp)+,d0     #####
+	move.w	#$0700,sr		 ; go, but no interrupts yet!!
+	move.l	d0,-(sp)     #####
 smsi_job
+
+	bsr.s blatu	     #####
 	jsr	init_ext		 ; initialise (SBASIC and) extensions
+	bsr.s blatu	     #####
+
 	trap	#0
 	move.w	sms_dlan+sms.conf,d1	 ; default language
 	moveq	#0,d2
@@ -103,5 +128,69 @@ smsi_job
 	and.w	#$dfff,sr		 ; user mode
 
 	jmp	(a0)			 ; start job with config in d7
+
+blatu
+	tst.b	ini_ouch
+	bgt.s	blatx
+	rts
+
+blat
+	tst.b	ini_ouch
+	beq.s	blat_rts
+	blt.s	x_flash
+blatx
+	cmp.b	#1,ini_ouch ; only produce blats on ini_ouch = 1
+	bne.s	blat_rts
+	movem.l d0/a4,-(sp)
+	move.l	$0c(sp),a4
+	move.l	#$ffff0000,(a4)
+	addq.l	#4,$0c(sp)
+	move.l	#4000000,d0
+	subq.l	#1,d0
+	bgt.s	*-2
+	movem.l (sp)+,d0/a4
+blat_rts
+	rts
+
+; This flash routine sends the net low for one period, then high for one period.
+; This is repeated a4 times and then there are two periods low.
+; The sequence is repeated once again and followed by a double pause.
+
+	include 'dev8_smsq_qxl_keys'
+
+x_flash
+; rts
+	movem.l d0/d1,-(sp)
+	addq.l	#1,$0c(sp)		; increment
+	move.l	$0c(sp),d0
+	bsr.s	flash1			; flash once
+	move.l	$0c(sp),d0
+	bsr.s	flash1			; and again
+	bsr.s	flashidle		; extra idel
+	movem.l (sp)+,d0/d1
+	rts
+
+flashlp
+	tst.b	qxl_netl		 ; net low
+	bsr.s	flashp
+	tst.b	qxl_neth		 ; net high
+	bsr.s	flashp
+flash1
+	subq.b	#1,d0
+	bcc.s	flashlp 		 ; ... and repeat
+
+	tst.b	qxl_netl		 ; idle low
+flashidle
+	bsr.s	flashp
+	nop
+flashp
+	move.l	#1000000,d1		 ; 1,000,000 cycles for about .2 sec
+	move.l	#300000,d1		; 1,000,000 cycles for about .2 sec
+	subq.l	#1,d1
+	bne.s	*-2
+	rts
+
+
+
 
 	end

@@ -1,14 +1,15 @@
 ; NFA/SFA USE use name query   v. 2.03	     (c) w. lenerz
 ; based on
 ; RAM Disk USE use name   V2.01     1989  Tony Tebby  QJUMP
-; v 0.01 when xxx_USE device is called, pass this on to Java
+
+; v. 0.02 put A1 in ari stack pointer after java call , remove use for flp drive
+; v. 0.01 when xxx_USE device is called, pass this on to Java
 
 	section exten
 
 	xdef	nfa_useq
 	xdef	sfa_useq
 	xdef	win_useq
-	xdef	flp_useq
 	xdef	mem_useq
 
 	xref	ut_gxin1
@@ -16,6 +17,7 @@
 	xref	ut_retst
 
 	include 'dev8_keys_java'
+	include 'dev8_keys_sbasic'
 
 
 ;+++
@@ -23,9 +25,6 @@
 ;---
 mem_useq
 	move.l	#'MEM0',d7
-	bra.s	comn_use
-flp_useq
-	move.l	#'FLP0',d7
 	bra.s	comn_use
 win_useq
 	move.l	#'WIN0',d7
@@ -43,6 +42,7 @@ comn_use
 	jsr	ut_gxin1		; get exactly one int, or nothing
 	moveq	#jt5.drvq,d0
 	dc.w	jva.trp5		; get data to java & back on the ari stack
+	move.l	a1,sb_arthp(a6)
 	tst.l	d0			; ooops, bad parameter
 	bne.s	out
 	jmp	ut_retst		; return data

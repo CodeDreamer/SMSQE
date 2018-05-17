@@ -1,0 +1,12 @@
+section header
+section init
+section version
+section io
+
+program dev8_smsq_java_ip_x
+input dev8_smsq_java_ip_base_rel
+input dev8_smsq_io_ckchn_rel
+library dev8_smsq_java_ip_lib
+library dev8_iod_iou_lib
+library dev8_util_gut_lib
+library dev8_smsq_smsq_end_rel

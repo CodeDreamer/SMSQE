@@ -1,4 +1,4 @@
-; SMSQ Q40 Hardware Initialisation V3
+; SMSQ Java "Hardware" Initialisation V3
 
 ; Called with a7 a valid, safe stack
 ;	      d4 the host (QDOS) version number
@@ -14,7 +14,8 @@
 ;			    zero in d6
 ;			    top of RAM in d7
 ;
-* 2003-09-27	      v.2.00 (?)	added OSPS config item (wl)
+* 2003-09-27		v.2.00 (?)	added OSPS config item (wl)
+* 2015 May 24		  2.01		added config item for ieee floats  (wl)
 
 ; at the end of this routine, we must have :
 ;			    pointer to config info in a2
@@ -72,7 +73,7 @@ hwinit_name
 	dc.l	jva_cfgf4
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
-	dc.l	'3.21'
+	dc.l	'3.22'
 	dc.l	'0000'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
@@ -119,7 +120,9 @@ noyes	mkcfitem 'OSPC',code,'C',qcf_curs,,,\
 	mkcfitem 'OSPD',code,'S',qcf_ctlc,,,\
        {Use new CTRL+C switch behaviour},.noyes
 
-
+	mkcfitem 'OSPF',code,'F',glcxbtarg,,,\
+       {Use ieee floating point routines},.noyes
+	
 	mkcfend
 	dc.l	0
 
@@ -183,11 +186,11 @@ sms_wbase
 mod_table
 
 	dc.l	sms.base-4,sms.base
-	dc.l	0
+	dc.l	0			; load everything in one slice
 
-	dc.l	sms.base-4,$4000	 ; first slice
-	dc.l	$4200-4,$c000		 ; second slice
-	dc.l	$10020-4,$17d00 	 ; third slice (avoid 'Gold')
-	dc.l	0
+;	 dc.l	 sms.base-4,$4000	  ; first slice
+;	 dc.l	 $4200-4,$c000		  ; second slice
+;	 dc.l	 $10020-4,$17d00	  ; third slice (avoid 'Gold')
+;	 dc.l	 0
 
 	end
