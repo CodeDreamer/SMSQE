@@ -74,6 +74,8 @@ sppo_scr
 
 	tst.b	d5			 ; input buffer required?
 	blt.s	sppo_obuf		 ; ... no
+	clr.w	spd_cdct(a3)
+
 	lea	spc_ibuf(a0),a2
 	lea	spd_ibuf(a3),a1
 	tst.l	(a1)			 ; input buffer already there?

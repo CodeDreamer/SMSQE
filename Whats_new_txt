@@ -20,10 +20,10 @@ This here file only contains a short description of the new features.
 
 What is new in versions :
 
-======
- 3.04
-======
-
+=============
+ 3.04 & 3.05
+=============
+Simple bug fixes
 Display bug fix
 The smsqemake_exe program takes new parameters (see the doc in the
 _extras_help dir)

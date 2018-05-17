@@ -1,6 +1,7 @@
-; Draw 3d border	V1.01				2002 Marcel Kilgus
+; Draw 3d border	V1.02				2002 Marcel Kilgus
 ;
 ; 2003-05-02  1.01  Implemented the err.orng error handling I forgot (MK)
+; 2004-01-26  1.02  bugfix in horizontal line drawing (mk)
 
 	section wman
 
@@ -394,7 +395,7 @@ wb_horline
 	add.w	d1,s.byo(a1)
 	bsr	w3d_block2
 	add.w	d1,d1
-	andi.w	#$ffff,d1
+	andi.l	#$ffff,d1		; 1.02
 	move.l	d1,d2
 	and.l	d5,d1
 	moveq	#0,d0

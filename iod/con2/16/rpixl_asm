@@ -1,4 +1,5 @@
-; dragon Read/scan pixel colour 	       v0.00   Sept 1987  J.R.Oakley  QJUMP
+; dragon Read/scan pixel colour  v0.00	 Sept 1987  J.R.Oakley  QJUMP
+; 2004-01-24	0.01	cosmetic change set the "end" right after the first rts (wl)
 ;
 ;	Registers:
 ;		Entry				Exit
@@ -25,11 +26,17 @@
 ;
 	xdef	pt_rpixl
 ;
+
 pt_rpixl
  moveq	#err.ipar,d0
  rts
- dc.l $4afbedeb
- rts
+ end
+
+
+	dc.l $4afbedeb
+	rts
+
+
 	bsr	ptr_setu		; do initial setup
 	bne	ptr_exit		; whoops
 	tst.l	d2			; are we scanning?

@@ -636,9 +636,13 @@
 ;	Mode screen aspect ratio is variable (MK)
 ;
 ; 3.04	fixed pointer save on new move operation (wl)
+;
+; 3.05	corrected QL mode 8  sprite cache handling (JG)
+;	rptr distinguishes better between loose items & appsub menu items
+;	spp open clears CD ijactive count (MK)
+;	better 3d border handling (MK)
 
-
-smsq_vers equ	 '3.04'
+smsq_vers equ	 '3.05'
 
 
 

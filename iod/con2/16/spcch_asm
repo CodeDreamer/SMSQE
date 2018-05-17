@@ -1,4 +1,4 @@
-; 16 bit sprite cache routines	  V2.14 		 1999	Tony Tebby
+; 16 bit sprite cache routines	  V2.15 		 1999	Tony Tebby
 ;							  2002	Marcel Kilgus
 ;
 ; 2001-06-29  2.01  Fixed severe bug in cache setup (MK)
@@ -9,6 +9,7 @@
 ; 2003-02-17  2.13  Moved sprite list scan to pt_fsprd (MK)
 ; 2003-02-21  2.14  Added RLE compression and Alpha channel support (MK)
 ;		    Moved generic code to ptr_spcch_asm (MK)
+; 2003-10-26  2.15  Correct QL mode 8 routine (JG)
 
 	section driver
 
@@ -192,7 +193,7 @@ ptcp_ql8
 ptcpql8_make
 	move.w	d1,d3
 ptcpql8_word
-	moveq	#16,d6	; 32 bits at a time
+	moveq	#8,d6  ; 32 bits at a time, only 8 pixels (v. 2.15)!
 	move.b	(a2)+,d4
 	move.b	(a2)+,d5
 	lsl.w	#8,d4
@@ -214,7 +215,7 @@ ptcpql8_bit
 	move.w	(a3,d0.l),(a4)+ ; SIC: two GD2 pixels for one mode 8 pixel
 	subq.w	#2,d3
 	ble.s	ptcpql8_emake
-	subq.w	#4,d6
+	subq.w	#1,d6
 	bgt.s	ptcpql8_bit
 	bra.s	ptcpql8_word
 ptcpql8_emake
@@ -238,7 +239,7 @@ ptcm_ql8
 ptcmql8_make
 	move.w	d1,d3
 ptcmql8_word
-	moveq	#16,d6	; 32 bits at a time
+	moveq	#8,d6  ; 32 bits at a time
 	move.b	(a2)+,d5
 	or.b	(a2)+,d5
 	lsl.w	#8,d5
@@ -247,20 +248,14 @@ ptcmql8_word
 ptcmql8_bit
 	moveq	#0,d0
 	add.w	d5,d5
-	bcc.s	ptcmql8_bit2
-	moveq	#-1,d0
-	clr.w	d0
-ptcmql8_bit2
-	lsl.w	#1,d5	; just ignore the Flash/Blue mask part
-	add.w	d5,d5
 	bcc.s	ptcmql8_set
-	not.w	d0
+	moveq	#-1,d0
 ptcmql8_set
 	lsl.w	#1,d5	; again, ignore the Flash/Blue mask part
 	move.l	d0,(a4)+
 	subq.w	#2,d3
 	ble.s	ptcmql8_emake
-	subq.w	#4,d6
+	subq.w	#1,d6
 	bgt.s	ptcmql8_bit
 	bra.s	ptcmql8_word
 ptcmql8_emake

@@ -1,0 +1,80 @@
+100 REMark MAKE SURE YOU LRESPR THE OUTPTR_BIN EXTENSIONS
+110 REMark BEFORE USING THIS PROGRAM (in dev8_extras_exe_source)
+120 :
+130 DEFine PROCedure p
+140   read_data_to_exclude
+150   o%=FOP_OVER('ram1_diffs_result_txt')
+160   file_check "dev8_"
+170   PRINT#o%
+180   CLOSE#o%
+190   COPY 'ram1_diffs_result_txt',scr
+200 END DEFine p
+210 :
+220 DEFine PROCedure file_check (mdir$)
+230 REMark check for files that shouldn't be on the source disk
+240 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new
+250   FOR lp%=1 TO 50
+260     myfile$="ram1_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+270     chan%=FOP_NEW (myfile$)             : REMark try to open unique file
+280     IF chan%>0:EXIT lp%
+290   END FOR lp%
+300   PRINT mdir$
+310   IF chan%<0:RETurn                     : REMark ooops!!!!
+320   WDIR#chan%,mdir$                     : REMark dir in file
+330   GET#chan%\0                           : REMark reset file pointer to start
+340   REPeat lp%
+350     IF EOF(#chan%):EXIT lp%
+360     INPUT#chan%,a$                      : REMark get filename
+370     IF a$="":NEXT lp%
+380     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+390     IF t%
+400       file_check mdir$(1 TO 5)&a$(1 TO t%-1)
+410       NEXT lp%
+420     END IF
+430     IF is_excluded% (a$):NEXT lp%       : REMark don't treat all files
+440     PRINT#o%,a$
+450   END REPeat lp%
+460   CLOSE#chan%
+470   DELETE myfile$
+480 END DEFine file_check
+490 :
+500  DEFine PROCedure sa
+510   SAVE_O DEV8_extras_check_bas
+520 END DEFine sa
+530 :
+540 DEFine FuNction is_excluded%(a$)
+550 REMark this excludes files from being considered as new or upgrades files
+560 REMark returns 1 if file is to be excluded, 0 if not
+570 REMark needs asearch from outptr_bin, used the global var exclusion$
+580 LOCal extn$,tc%
+590   IF "keys_" INSTR a$:RETurn 1
+600   IF "mac_" INSTR a$:RETurn 1
+610   IF "extras_" INSTR a$:RETurn 1
+620   tc%=LEN(a$): IF tc%<5:RETurn 1
+630   extn$= a$(tc%-3 TO)
+640   IF extn$=="_asm":RETurn 1    : REMark
+650   IF extn$=="_cct":RETurn 1    : REMark
+660   IF extn$=="cctx":RETurn 1    : REMark
+670   IF extn$=="cctf":RETurn 1    : REMark
+680   IF extn$=="link":RETurn 1    : REMark
+690   IF extn$=="_bas":RETurn 1    : REMark
+700   IF extn$=="data":RETurn 1    : REMark
+710   IF extn$=="keys":RETurn 1    : REMark
+720   IF extn$=="_txt":RETurn 1    : REMark
+730   RETurn 0
+740 END DEFine is_excluded%
+750 :
+760 DEFine PROCedure read_data_to_exclude
+770 LOCal lp%,a$,num%
+780   RESTORE  890
+790   FOR lp%=1 TO 1000
+800     READ a$
+810     IF a$="":EXIT lp%
+820   END FOR lp%
+830   num%=lp%-1
+840   DIM exclusions$(num%,50)
+850   RESTORE 890
+860   FOR lp%=1 TO num%:READ exclusions$(lp%)
+870 END DEFine read_data_to_exclude
+880 :
+890 DATA ""

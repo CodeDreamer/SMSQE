@@ -2,15 +2,21 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 ------------------------------------------------------------------------------
-3.04
-    BUGFIX
-	 ee_wman_move_asm		1.16	fixed pointer save on new move operation (wl)
+3.05
+    BUGFIXES
+	iod_con2_16_spcch_asm		2.15	Correct QL mode 8 routine (jg)
+	ee_wman_rptr_asm		1.10	Even better check to distinguish between loose menu & appsub items (wl)
+	ee_wman_3db_asm 		1.02	bugfix in horizontal line drawing (mk)
+	iod_con2_16_rpixl_asm		0.01	cosmetic change set the "end" right after the first rts (wl)
+	smsq_spp_open_asm		2.11	clear count of CD inactive (mk)
 
+3.04
+    BUGFIXES
+	ee_wman_move_asm		1.16	fixed pointer save on new move operation (wl)
 
 3.03
 
     BUGFIXES
-
 	ee_wman_procs_procs_asm 	1.02	WM_BLOCK procedure fixed (GG/MK)
 	smsq_spp_thing_asm		2.12	Some fixes for non QPC_use (MK)
 	sbsext_ext_pars_asm		1.01	fixed parnam$ (& parstr$) bugs (wl)

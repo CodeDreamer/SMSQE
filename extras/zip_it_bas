@@ -3,7 +3,7 @@
 120 DEFine PROCedure p
 130 LOCal zip$
 140   d
-200    do_zip " -r9  win4_smsqe.zip dd_* dv3_* ee_* exe_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt"
+200    do_zip " -r9  ram3_smsqe.zip dd_* dv3_* ee_* extras_* help_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* util_*  changes_txt readme_txt styleguide_txt uti_lib whats_new_txt licence_doc licence_txt"
 240 END DEFine p
 250 :
 260 DEFine PROCedure sa
