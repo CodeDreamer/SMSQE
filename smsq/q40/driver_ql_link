@@ -1,23 +1,23 @@
 program dev8_smsq_q40_driver_ql
 
 section header
-section base      ; base area for any extension or program
+section base	  ; base area for any extension or program
 section version   ; version messages
-
+section kbd
 section driver
 section sprite
 section blob
 
-section init      ; initialisation
+section init	  ; initialisation
 
 section gen_util  ; general utilities
-section cv        ; conversions
+section cv	  ; conversions
 
-section con       ; console
+section con	  ; console
 section gw
-section ctab      ; console tables
+section ctab	  ; console tables
 
-input   dev8_smsq_q40_driver_ql_rel
+input dev8_smsq_q40_driver_ql_rel
 library dev8_iod_con2_q40ql_lib
 library dev8_util_thg_parm_rel
 library dev8_iod_iou_lib

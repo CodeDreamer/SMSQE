@@ -20,9 +20,14 @@ smsq_msg8
 	dc.w	6
 	dc.l	msg_deu-*
 
+	dc.w	ldm.msgt,8,39	 ; Italian
+	dc.w	6
+	dc.l	msg_ita-*
+
 	dc.w	ldm.msgt,8,33	 ; French
 	dc.w	smsq_msgc-*
 	dc.l	msg_fra-*
+
 
 ; message tables
 
@@ -53,7 +58,7 @@ eng_to	 mkstr	{ TO }
 eng_exst mkstr	{ exists, }
 eng_ovrw mkstr	{OK to overwrite}
 eng_scts mkstr	{ sectors\}
-eng_jobh mkstr	{Job tag    owner priority\}
+eng_jobh mkstr	{Job Tag    Owner Priority Job-Name\}
 eng_nabt mkstr	{net aborted\}
 eng_infl mkstr	{K in files\}
 
@@ -120,6 +125,37 @@ fra_jobh mkstr	{Job Étiq. prop. prioritÉ\}
 fra_nabt mkstr	{Net interrompu\}
 fra_infl mkstr	{K en fichiers\}
 
+msg_ita dc.w	39
+	dc.w	ita_fmtq-msg_ita
+	dc.w	ita_abrt-msg_ita
+	dc.w	ita_grab-msg_ita
+	dc.w	ita_llrc-msg_ita
+	dc.w	ita_ynch-msg_ita
+	dc.w	ita_yn-msg_ita
+	dc.w	ita_ynaq-msg_ita
+	dc.w	ita_to-msg_ita
+	dc.w	ita_exst-msg_ita
+	dc.w	ita_ovrw-msg_ita
+	dc.w	ita_scts-msg_ita
+	dc.w	ita_jobh-msg_ita
+	dc.w	ita_nabt-msg_ita
+	dc.w	ita_infl-msg_ita
+
+ita_fmtq mkstr	{Per FORMATtare il disco, premere }
+ita_abrt mkstr	{******* TERMINATO *******}
+ita_grab mkstr	{Allocazione di memoria di lavoro (kilobytes)> }
+ita_llrc mkstr	{richiamo ultima linea digitata}
+ita_ynch mkstr	{SNTA}
+ita_yn	 mkstr	{..Si o No? }
+ita_ynaq mkstr	{..Si/No/Tutti/Abbandona? }
+ita_to	 mkstr	{ a }
+ita_exst mkstr	{ esiste, }
+ita_ovrw mkstr	{OK per riscrivere}
+ita_scts mkstr	{ settori\}
+ita_jobh mkstr	{ID Tag  ID-Prop. Prioritç Nome-Job\}
+ita_nabt mkstr	{net interrotta\}
+ita_infl mkstr	{K nei files\}
+ 
 	ds.w	0
 
 	end

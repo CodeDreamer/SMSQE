@@ -22,7 +22,7 @@
 	xdef	bl_drop
 
 bl_drop
- trap #15
+
 	exg	a2,a5		get blob and pattern in logical order
 	addq.l	#4,a2		skip null pointer to colour pattern
 	add.l	(a2),a2 	set blob address

@@ -80,7 +80,7 @@ qxl_clck dc.b	0
    1,1,{WIN1},2,2,{WIN2},3,3,{WIN3},4,4,{WIN4},5,5,{WIN5},6,6,{WIN6},7,7,{WIN7}
 
 	mkcfitem 'OSPL',word,'L',qxl_lang,,,\
-       {Country Code (33=F, 44=GB 49=D etc.)},0,$7fff
+       {Country Code (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
 
 	mkcfitem 'OSPC',byte,'C',qxl_clck,,,\
        {Processor clock speed (or 0 for auto detect)},0,$7f

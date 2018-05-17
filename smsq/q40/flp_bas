@@ -19,7 +19,7 @@
 230 ln1$='dev8_smsq_smsq_lang'
 240 ln2$='dev8_smsq_q40_kbd_lang'
 250 ln3$='dev8_smsq_sbas_lang'
-260 ex1$='dev8_smsq_sbas_procs_x'
+260 ex1$='dev8_smsq_sbas_procs_x_q60'
 270 ex2$='dev8_smsq_q40_driver_dv3'
 280 ex3$='dev8_smsq_q40_driver_ser'
 290 ex4a$='dev8_smsq_q40_driver_ql'

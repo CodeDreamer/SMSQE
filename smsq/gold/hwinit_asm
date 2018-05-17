@@ -68,7 +68,7 @@ glc.conf  equ	*-glc_cx
 	mkcfhead {SMSQ},{smsq_vers}
 
 	mkcfitem 'OSPL',word,0,glc_lang,,,\
-       {Country Code (33=F, 44=GB 49=D etc.)},0,$7fff
+       {Country Code (33=F, 44=GB, 49=D, 39=IT etc.)},0,$7fff
 
 	mkcfitem 'OSPi',code,0,glc_nqimi,,,\
        {Do you wish to ignore the QIMI interface},0,N,{No},$ff,Y,{Yes}

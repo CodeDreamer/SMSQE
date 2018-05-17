@@ -1,0 +1,57 @@
+100 DEFine PROCedure p
+110   change 'win1_','dev8_','ram1_'
+120 END DEFine p
+130 :
+140 DEFine PROCedure change (old$,new$,d$)
+150 LOCal lp%,c%,a$
+160   c%=FOP_OVER('ram1_px')
+170   DIR#c%,d$
+180   CLOSE#c%
+190   c%=FOP_IN('ram1_px')
+200   INPUT#c%,a$
+210   INPUT#c%,a$
+220   REPeat lp%
+230     IF EOF(#c%):EXIT lp%
+240     INPUT#c%,a$
+250     do_xchange d$&a$,old$,new$
+260   END REPeat lp%
+270   CLOSE#c%
+280 END DEFine change
+290 :
+300 DEFine PROCedure sa
+310   SAVE_O dev8_extras_change_bas
+320 END DEFine sa
+330 :
+340 DEFine PROCedure do_xchange (file$,old$,new$)
+350 REMark exchange new$ for old$ in file, provided it is no executable file
+360 LOCal ch%,f$,fdte,o%,lp%,hit%,line$,repl%
+370   ch%=FOP_IN(file$)
+380   IF ch%<0 :PRINT "coudn't open "&file$,:REPORT#1,ch%:RETurn
+390   t%=FTYP(#ch%)
+400   IF t%<> 0:CLOSE#ch%:RETurn
+410   fdte=FUPDT(#ch%)
+420   o%=FOP_OVER(file$&'2')
+430   repl%=LEN(old$)
+440   WHEN ERRor
+450     line$=""
+460   END WHEN
+470   REPeat lp%
+480     IF EOF(#ch%):EXIT lp%
+490     INPUT#ch%,line$
+500     hit%=old$ INSTR line$: REMark possibly replace
+510     IF hit%
+520         IF hit%>1
+530           line$=line$(1 TO hit%-1)&new$&line$(hit%+repl% TO)
+540         ELSE
+550           line$=new$ & line$(repl%+1 TO)
+560         END IF
+570     END IF
+580     PRINT#o%,line$
+590   END REPeat lp%
+600   CLOSE#ch%
+610   SET_FUPDT#o%,fdte
+620   CLOSE#o%
+630   DELETE file$
+640   RENAME file$&'2',file$
+650 END DEFine do_xchange
+660 :

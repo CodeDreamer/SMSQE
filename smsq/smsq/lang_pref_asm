@@ -13,7 +13,11 @@ smsq_pref
 	dc.w	ldm.pref,0,34		 ; Spanish
 	dc.w	6
 	dc.l	prf_esp-*
-
+	
+	dc.w	ldm.pref,0,39		 ; Italian
+	dc.w	6
+	dc.l	prf_ita-*
+	  
 	dc.w	ldm.pref,0,45		 ; Denmark
 	dc.w	6
 	dc.l	prf_dk-*
@@ -42,6 +46,7 @@ smsq_pref
 	dc.w	smsq_msg-*
 	dc.l	prf_eng-*
 
+ 
 ; Preference tables
 
 prf_eng
@@ -65,6 +70,11 @@ prf_swe
 prf_dk
 	dc.l	'DK  '
 	dc.w	45,0
+
+prf_ita
+	dc.l	'IT  '
+	dc.w	39,0
+
 prf_esp
 	dc.l	'E   '
 	dc.w	34,0

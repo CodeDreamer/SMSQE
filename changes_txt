@@ -1,7 +1,80 @@
 SMSQ/E	file(s) 			version
-
 Version changed 			of file changes made
 ------------------------------------------------------------------------------
+2y99
+
+  CHANGES FOR SHADOW   (MK)
+
+	iod_con2_16_Q40_shad_asm	1.00	added (MK)
+	iod_con2_q4016_cct			adapted to take that file into
+---						account (wl)
+
+  CHANGES FOR MOVEP -- REMOVED FROM Q40/Q60 CODE (FD)
+
+	iod_con2_q40_blob_drop_asm	2.01	replaced refs to movep (FD)
+	iod_con2_q40_sprite_move_asm	1.01	replaced refs to movep (FD)
+	iod_con2_q40_mblock_asm 	2.01	replaced refs to movep (FD)
+	iod_con2_q40_sprite_drop_asm	1.01	replaced refs to movep (FD)
+	sbsext_ext_q60_colr_asm 	2.01	replaced refs to movep (FD)
+	sbsext_ext_q60_cct			modified for this change (FD+WL)
+	iod_con2_q40ql_cct			modified for this change (FD+WL)
+	smsq_q40_driver_ql_link 		modified for this change (FD+WL)
+	smsq_sbas_procs_q60_link		modified for this change (FD+WL)
+---						(wl only changed refs to win1)
+  CHANGES FOR ITALIAN LANGUAGE SUPPORT (BY FD)
+	ee_hk_conf_italian_asm		1.00	added by FD
+	ee_hk_italian_asm		1.00	added by FD
+	ee_hk_cct				modified for this change (FD+WL)
+
+	lang_italian_cctx
+	lang_italian_cont_asm
+	lang_italian_date_asm
+	lang_italian_ebad_asm
+	lang_italian_erms_asm
+	lang_italian_esc_asm
+	lang_italian_exst_asm
+	lang_italian_fdtab_asm
+	lang_italian_fnam_asm
+	lang_italian_frmt_asm
+	lang_italian_help_asm
+	lang_italian_hktyp_asm
+	lang_italian_jobn_asm
+	lang_italian_more_asm
+	lang_italian_nptr_asm
+	lang_italian_nwmn_asm
+	lang_italian_okov_asm
+	lang_italian_ptab_asm
+	lang_italian_pver_asm
+	lang_italian_rtry_asm
+	lang_italian_syst_asm
+	lang_italian_system_asm
+	lang_italian_udev_asm
+	lang_italian_wver_asm
+	lang_italian_ynaq_asm	       1.00 for all, all added by FD, win1_
+						changed to dev8_ by WL
+
+	smsq_kbd_IBM_Italian_asm
+	smsq_smsq_lang_msg_asm
+	smsq_smsq_lang_msg8_asm
+	smsq_smsq_lang_msgc_asm
+	smsq_smsq_lang_pref_asm
+	smsq_sbas_lang_asm
+	smsq_smsq_lang_tra_asm			modified by FD for italian language
+						and WL (win1 -> dev8)
+	smsq_kbd_ibm_cct			changed to suit
+	smsq_q40_hwinit_asm			(FD) added possibility to configure
+						for it. language
+	smsq_atari_hwinit_asm			same (wl)
+	smsq_gold_hwinit_asm			same (wl)
+	smsq_qxl_hwinit_asm			same (wl)
+
+----
+	OTHER CHANGES
+	iod_con2_16_blob_drop_asm	   removed TRAP#15 (WL)
+---
+
+-------------------------------------------------------------------------------
+
 2x99	iod_con2_ptr_mouse_asm		1.00	removed reference to useless
 						key file (wl)
 	iod_con2_gold_PROCV_asm 	1.00	same (wl)
@@ -48,3 +121,11 @@ Version changed 			of file changes made
 	   smsq_smsq_1mb_os instead of smsq_smqe_os
 
 2.99	  none - as delivered by TT
+
+
+keys:
+
+FD = Fabrizio Diversi
+MK = Marcel Kilgus
+TT = Tony Tebby
+WL = Wolfgang Lenerz

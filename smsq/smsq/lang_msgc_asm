@@ -20,9 +20,14 @@ smsq_msgc
         dc.w    6
         dc.l    msg_deu-*
 
+        dc.w    ldm.msgt,$c,39	  ; Italian
+        dc.w    6
+        dc.l    msg_ita-*
+
         dc.w    ldm.msgt,$c,33	  ; French
         dc.w    smsq_tra-*
         dc.l    msg_fra-*
+
 
 ; message  tables
 
@@ -46,6 +51,14 @@ msg_fra dc.w    33
 
 fra_mth3 mkstr  {JanFƒvMarAvrMaiJunJulAo›SepOctNovDƒc}
 fra_dow3 mkstr  {DimLunMarMerJeuVenSam}
+
+msg_ita dc.w    39
+        dc.w    ita_mth3-msg_ita
+        dc.w    ita_dow3-msg_ita
+
+ita_mth3 mkstr  {GenFebMarAprMagGiuLugAgoSetOttNovDic}
+ita_dow3 mkstr  {DomLunMarMerGioVenSab}
+
         end
 
         ds.w    0

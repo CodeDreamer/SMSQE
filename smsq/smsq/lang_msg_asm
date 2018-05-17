@@ -20,9 +20,14 @@ smsq_msg
 	dc.w	6
 	dc.l	msg_deu-*
 
+	dc.w	ldm.msgt,0,39	 ; Italian
+	dc.w	6
+	dc.l	msg_ita-*
+
 	dc.w	ldm.msgt,0,33	 ; French
 	dc.w	smsq_msg8-*
 	dc.l	msg_fra-*
+
 
 ; message  tables
 
@@ -172,5 +177,54 @@ fra_rdo  mkstr	{protection en Écriture\}
 fra_isyn mkstr	{syntaxe non valable\}
 fra_noms mkstr	{message inconnu\}
 fra_accd mkstr	{accês interdit\}
+
+msg_ita dc.w	  39
+	dc.w	ita_nc-msg_ita
+	dc.w	ita_ijob-msg_ita
+	dc.w	ita_imem-msg_ita
+	dc.w	ita_orng-msg_ita
+	dc.w	ita_bffl-msg_ita
+	dc.w	ita_ichn-msg_ita
+	dc.w	ita_fdnf-msg_ita
+	dc.w	ita_fex-msg_ita
+	dc.w	ita_fdiu-msg_ita
+	dc.w	ita_eof-msg_ita
+	dc.w	ita_drfl-msg_ita
+	dc.w	ita_inam-msg_ita
+	dc.w	ita_trns-msg_ita
+	dc.w	ita_fmtf-msg_ita
+	dc.w	ita_ipar-msg_ita
+	dc.w	ita_mchk-msg_ita
+	dc.w	ita_iexp-msg_ita
+	dc.w	ita_ovfl-msg_ita
+	dc.w	ita_nimp-msg_ita
+	dc.w	ita_rdo-msg_ita
+	dc.w	ita_isyn-msg_ita
+	dc.w	ita_noms-msg_ita
+	dc.w	ita_accd-msg_ita
+
+ita_nc	 mkstr	{Operazione incompleta !\}
+ita_ijob mkstr	{Job ID non valido\}
+ita_imem mkstr	{Memoria insufficente\}
+ita_orng mkstr	{Valore fuori limite\}
+ita_bffl mkstr	{Buffer pieno\}
+ita_ichn mkstr	{ID di canale invalido\}
+ita_fdnf mkstr	{Non trovato\}
+ita_fex  mkstr	{Gia' esistente\}
+ita_fdiu mkstr	{ê in uso\}
+ita_eof  mkstr	{fine del file\}
+ita_drfl mkstr	{Unitç piena\}
+ita_inam mkstr	{Nome invalido\}
+ita_trns mkstr	{Errore di trasmissione\}
+ita_fmtf mkstr	{Formattazione fallita\}
+ita_ipar mkstr	{Parametro invalido\}
+ita_mchk mkstr	{Verifica unitç fallita\}
+ita_iexp mkstr	{Errore nell' espressione\}
+ita_ovfl mkstr	{Overflow aritmetico\}
+ita_nimp mkstr	{Non ancora implementato\}
+ita_rdo  mkstr	{Protetto in scrittura\}
+ita_isyn mkstr	{Sintassi invalida\}
+ita_noms mkstr	{Messaggio sconosciuto\}
+ita_accd mkstr	{Accesso negato\}
 	ds.w	0
 	end

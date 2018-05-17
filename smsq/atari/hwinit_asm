@@ -81,7 +81,7 @@ asq_ascr dc.b	-1
        {WIN1 partition number},0,11
 
 	mkcfitem 'OSPL',word,'L',asq_lang,,,\
-       {Default Language Code 33=F, 44=GB, 49=D},0,$7fff
+       {Default Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	mkcfitem 'OSPF',code,'F',asq_fram,,,\
        {Use Fast RAM if exists},$ff,Y,{Yes},$00,N,{No}

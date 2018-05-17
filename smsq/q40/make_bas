@@ -9,89 +9,95 @@
 180   EW qmake ;'\c dev8_smsq_q40_driver_ql_ \b \0 all \1 \2'
 190   EW qmake ;'\c dev8_smsq_q40_driver_16_ \b \0 all \1 \2'
 200   EW qmake ;'\c dev8_smsq_q40_kbd_lang_ \b \0 all \1 \2'
-210 END DEFine qmake_it
-220 :
-230 DEFine PROCedure qmake_it_full
-240   EW qmake ;'\c dev8_smsq_q40_hwinit_ \b \0 all \1 \2'
-250   EW qmake ;'\c dev8_smsq_q40_nasty_ \b \0 all \1 \2'
-260   EW qmake ;'\c dev8_smsq_q40_cache_ \b \0 all \1 \2'
-270   EW qmake ;'\c dev8_smsq_q40_driver_ser_ \b \0 all \1 \2'
-280   EW qmake ;'\c dev8_smsq_q40_driver_dv3_ \b \0 all \1 \2'
-290   EW qmake ;'\c dev8_smsq_q40_driver_ql_ \b \0 all \1 \2'
-300   EW qmake ;'\c dev8_smsq_q40_driver_16_ \b \0 all \1 \2'
-310   EW qmake ;'\c dev8_smsq_q40_kbd_lang_ \b \0 all \1 \2'
-320 REMark SMSQ/E generic part
-330   EW qmake ;'\c dev8_smsq_smsq_loader_ \b \0 all \1 \2'
-340   EW qmake ;'\c dev8_smsq_smsq_1mb_ \b \0 all \1 \2' : REMark change for fast memory
-345   REMark EW qmake ;'\c dev8_smsq_smsq_ \b \0 all \1 \2' : REMark before change for fast memory
-350   EW qmake ;'\c dev8_smsq_smsq_cache40c_ \b \0 all \1 \2'
-360   EW qmake ;'\c dev8_smsq_sbas_ \b \0 all \1 \2'
-370   EW qmake ;'\c dev8_smsq_smsq_lang_ \b \0 all \1 \2'
-380   EW qmake ;'\c dev8_smsq_sbas_lang_ \b \0 all \1 \2'
-390   EW qmake ;'\c dev8_smsq_sbas_procs_ \b \0 all \1 \2'
-400   EW qmake ;'\c dev8_smsq_smsq_wman_ \b \0 all \1 \2'
-410   EW qmake ;'\c dev8_smsq_smsq_hotkey_ \b \0 all \1 \2'
-420 END DEFine qmake_it_full
-430 :
-440 DEFine PROCedure make_it
-450 REMark compile only the Q40 specifi parts
-460   CLS:PRINT 'compiling...'
-470   compile_and_check 'dev8_smsq_q40_hwinit_link'
-480   compile_and_check 'dev8_smsq_q40_nasty_link'
-490   compile_and_check 'dev8_smsq_q40_cache_link'
-500   compile_and_check 'dev8_smsq_q40_driver_ser_link'
-510   compile_and_check 'dev8_smsq_q40_driver_dv3_link'
-520   compile_and_check 'dev8_smsq_q40_driver_ql_link'
-530   compile_and_check 'dev8_smsq_q40_driver_16_link'
-540   compile_and_check 'dev8_smsq_q40_kbd_lang_link'
-550   PRINT "finished"
-560 END DEFine make_it
-570 :
-580 DEFine PROCedure make_it_full
-590 REMark compile SMSQ/E and the Q40 specific parts
-600 REMark Q40 part
-610   CLS:PRINT "compiling..."
-620   compile_and_check 'dev8_smsq_q40_hwinit_link'
-630   compile_and_check 'dev8_smsq_q40_nasty_link'
-640   compile_and_check 'dev8_smsq_q40_cache_link'
-650   compile_and_check 'dev8_smsq_q40_driver_ser_link'
-660   compile_and_check 'dev8_smsq_q40_driver_dv3_link'
-670   compile_and_check 'dev8_smsq_q40_driver_ql_link'
-680   compile_and_check 'dev8_smsq_q40_driver_16_link'
-690   compile_and_check 'dev8_smsq_q40_kbd_lang_link'
-700 REMark SMSQ/E generic part
-710   compile_and_check 'dev8_smsq_smsq_loader_link'
-720   compile_and_check 'dev8_smsq_smsq_1mb_link': REMark change for fast memory
-725   REMark compile_and_check 'dev8_smsq_smsq_1mb_link': REMark before change for fast memory
-730   compile_and_check 'dev8_smsq_smsq_cache40c_link'
-740   compile_and_check 'dev8_smsq_sbas_link'
-750   compile_and_check 'dev8_smsq_smsq_lang_link'
-760   compile_and_check 'dev8_smsq_sbas_lang_link'
-770   compile_and_check 'dev8_smsq_sbas_procs_link'
-780   compile_and_check 'dev8_smsq_smsq_wman_link'
-790   compile_and_check 'dev8_smsq_smsq_hotkey_link'
-800   PRINT 'finished'
-810 END DEFine make_it_full
-820 :
-830 DEFine PROCedure sa
-840   SAVE_O dev8_smsq_q40_make_bas
-850 END DEFine sa
-860 :
-870 DEFine PROCedure compile_and_check (a$)
-880 LOCal chan%,is_ok$,ch_len
-890   EXEP_W "make";a$&" -w"
-900   is_ok$=a$(1 TO LEN(a$)-4)
-910   chan%=FOP_IN(is_ok$&'log'):  REMark open log file
-920   IF chan%<0
-930      PRINT a$& " : "&"couldn't open log file"
-940      RETurn
-950   END IF
-960   ch_len=FLEN(#chan%)
-970   GET#chan%\ch_len-10
-980   INPUT#chan%,is_ok$
-990   CLOSE#chan%
-1000   IF NOT is_ok$=="No errors"
-1010     PRINT a$ & " : Compile/link error!"
-1020   END IF
-1030 END DEFine compile_and_check
-1040 :
+210   EW qmake ;'\c dev8_smsq_sbas_procs_q60_ \b \0 all \1 \2'
+220 END DEFine qmake_it
+230 :
+240 DEFine PROCedure qmake_it_full
+250   EW qmake ;'\c dev8_smsq_q40_hwinit_ \b \0 all \1 \2'
+260   EW qmake ;'\c dev8_smsq_q40_nasty_ \b \0 all \1 \2'
+270   EW qmake ;'\c dev8_smsq_q40_cache_ \b \0 all \1 \2'
+280   EW qmake ;'\c dev8_smsq_q40_driver_ser_ \b \0 all \1 \2'
+290   EW qmake ;'\c dev8_smsq_q40_driver_dv3_ \b \0 all \1 \2'
+300   EW qmake ;'\c dev8_smsq_q40_driver_ql_ \b \0 all \1 \2'
+310   EW qmake ;'\c dev8_smsq_q40_driver_16_ \b \0 all \1 \2'
+320   EW qmake ;'\c dev8_smsq_q40_kbd_lang_ \b \0 all \1 \2'
+330   EW qmake ;'\c dev8_smsq_sbas_procs_q60_ \b \0 all \1 \2'
+340 REMark SMSQ/E generic part
+350   EW qmake ;'\c dev8_smsq_smsq_loader_ \b \0 all \1 \2'
+360   EW qmake ;'\c dev8_smsq_smsq_1mb_ \b \0 all \1 \2' : REMark change for fast memory
+370   REMark EW qmake ;'\c dev8_smsq_smsq_ \b \0 all \1 \2' : REMark before change for fast memory
+380   EW qmake ;'\c dev8_smsq_smsq_cache40c_ \b \0 all \1 \2'
+390   EW qmake ;'\c dev8_smsq_sbas_ \b \0 all \1 \2'
+400   EW qmake ;'\c dev8_smsq_smsq_lang_ \b \0 all \1 \2'
+410   EW qmake ;'\c dev8_smsq_sbas_lang_ \b \0 all \1 \2'
+420   EW qmake ;'\c dev8_smsq_smsq_wman_ \b \0 all \1 \2'
+430   EW qmake ;'\c dev8_smsq_smsq_hotkey_ \b \0 all \1 \2'
+440 END DEFine qmake_it_full
+450 :
+460 DEFine PROCedure make_it
+470 REMark compile only the Q40 specific parts
+480   CLS:PRINT 'compiling...'
+490   compile_and_check 'dev8_smsq_q40_hwinit_link'
+500   compile_and_check 'dev8_smsq_q40_nasty_link'
+510   compile_and_check 'dev8_smsq_q40_cache_link'
+520   compile_and_check 'dev8_smsq_q40_driver_ser_link'
+530   compile_and_check 'dev8_smsq_q40_driver_dv3_link'
+540   compile_and_check 'dev8_smsq_q40_driver_ql_link'
+550   compile_and_check 'dev8_smsq_q40_driver_16_link'
+560   compile_and_check 'dev8_smsq_q40_kbd_lang_link'
+570   compile_and_check 'dev8_smsq_sbas_procs_60_link'
+580   PRINT "finished"
+590 END DEFine make_it
+600 :
+610 DEFine PROCedure make_it_full
+620 REMark compile SMSQ/E and the Q40 specific parts
+630 REMark Q40 part
+640   CLS:PRINT "compiling..."
+650   compile_and_check 'dev8_smsq_q40_hwinit_link'
+660   compile_and_check 'dev8_smsq_q40_nasty_link'
+670   compile_and_check 'dev8_smsq_q40_cache_link'
+680   compile_and_check 'dev8_smsq_q40_driver_ser_link'
+690   compile_and_check 'dev8_smsq_q40_driver_dv3_link'
+700   compile_and_check 'dev8_smsq_q40_driver_ql_link'
+710   compile_and_check 'dev8_smsq_q40_driver_16_link'
+720   compile_and_check 'dev8_smsq_q40_kbd_lang_link'
+730   compile_and_check 'dev8_smsq_sbas_procs_q60_link'
+740 REMark SMSQ/E generic part
+750   compile_and_check 'dev8_smsq_smsq_loader_link'
+760   compile_and_check 'dev8_smsq_smsq_1mb_link': REMark change for fast memory
+770   REMark compile_and_check 'dev8_smsq_smsq_1mb_link': REMark before change for fast memory
+780   compile_and_check 'dev8_smsq_smsq_cache40c_link'
+790   compile_and_check 'dev8_smsq_sbas_link'
+800   compile_and_check 'dev8_smsq_smsq_lang_link'
+810   compile_and_check 'dev8_smsq_sbas_lang_link'
+820   compile_and_check 'dev8_smsq_smsq_wman_link'
+830   compile_and_check 'dev8_smsq_smsq_hotkey_link'
+840   compile_and_check 'dev8_smsq_sbas_procs_link'
+850   PRINT 'finished'
+860 END DEFine make_it_full
+870 :
+880 DEFine PROCedure sa
+890   SAVE_O dev8_smsq_q40_make_bas
+900 END DEFine sa
+910 :
+920 DEFine PROCedure compile_and_check (a$)
+930 LOCal chan%,is_ok$,ch_len
+940   PRINT a$;
+950   EXEP_W "make";a$&" -w"
+960   is_ok$=a$(1 TO LEN(a$)-4)
+970   chan%=FOP_IN(is_ok$&'log'):  REMark open log file
+980   IF chan%<0
+990      PRINT a$& " : "&"couldn't open log file"
+1000      RETurn
+1010   END IF
+1020   ch_len=FLEN(#chan%)
+1030   GET#chan%\ch_len-10
+1040   INPUT#chan%,is_ok$
+1050   CLOSE#chan%
+1060   IF NOT is_ok$=="No errors"
+1070     PRINT " : Compile/link error!"
+1080   ELSE
+1090     PRINT " -OK"
+1100   END IF
+1110 END DEFine compile_and_check
+1120 :

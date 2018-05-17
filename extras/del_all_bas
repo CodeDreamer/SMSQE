@@ -124,7 +124,7 @@
 1330   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
 1340   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
 1350   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_rom"
-1360   DATA "smsq_q40_driver_ql"
+1360   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
 1370   DATA ""
 1380 END DEFine q40_targets
 1390 :
