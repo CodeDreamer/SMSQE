@@ -1,5 +1,5 @@
 ; SMS (QXL) Supervisor mode BLAT routine
-
+; 2006-10-20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 	section blat
 
 	xdef	blatt
@@ -9,17 +9,17 @@
 	include 'dev8_smsq_qxl_keys'
 
 
-blat macro blv
- move.b [blv],-(sp)
- jsr	blatt
- addq.l #2,sp
- endm
-
-blatl macro blv
- move.l [blv],-(sp)
- jsr	blattl
- addq.l #4,sp
- endm
+*blat macro blv
+* move.b [blv],-(sp)
+* jsr	 blatt
+* addq.l #2,sp
+* endm
+*
+*blatl macro blv
+* move.l [blv],-(sp)
+* jsr	 blattl
+* addq.l #4,sp
+* endm
 
 
 

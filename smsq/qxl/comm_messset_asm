@@ -1,5 +1,5 @@
 ; SMS (QXL) Message Setup		 1998 Tony Tebby
-
+; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 	section comm
 
 	xdef	qxl_mess_set
@@ -10,19 +10,19 @@
 	include 'dev8_smsq_qxl_keys'
 	include 'dev8_keys_qu'
 
- xref	blatt
-blat macro blv
- move.b [blv],-(sp)
- jsr	blatt
- add.w	#2,sp
- endm
-
- xref	blattl
-blatl macro blv
- move.l [blv],-(sp)
- jsr	blattl
- addq.l #4,sp
- endm
+* xref	 blatt
+*blat macro blv
+* move.b [blv],-(sp)
+* jsr	 blatt
+* add.w  #2,sp
+* endm
+*
+* xref	 blattl
+*blatl macro blv
+* move.l [blv],-(sp)
+* jsr	 blattl
+* addq.l #4,sp
+* endm
 
 ;+++
 ; This routine sets up the messages to send

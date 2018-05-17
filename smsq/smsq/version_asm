@@ -712,6 +712,7 @@
 ;	Correct length set in home dir if simple device (wl).
 ;	New keywords YEAR%, MONTH%, DAY% and WEEKDAY% (MK).
 ;	QA.OP/QA.MOP load/store fixed for op-codes below $80 (MK).
+;	Working QXL keyboard LEDs (BC).
 
 smsq_vers equ	 '3.13'
 

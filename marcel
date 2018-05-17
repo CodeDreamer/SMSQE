@@ -1,0 +1,52 @@
+
+
+
+
+
+
+
+
+
+
+
+
+Hi Wolfgang. 
+
+>> Schwer zu sagen ob's noch mehr Unterschiede gibt. Pflegst das mal ein
+>> und schickst mir eine neue .bin?
+> OK, anbei.
+
+Okay, 2 Dinge. Erstens, ich bin bl„d. Ich hab zwar die Sourcen mit dem
+Code, aber nicht die Sourcen mit den BASIC Keywords geschickt.
+Allerdings muss ich auf der anderen Seite feststellen dass das SMSQ/E
+was Du geschickt hast identisch ist mit dem, dass Du letztes mal
+geschickt hattest. Also touchƒ w‡rde ich sagen ;-)
+
+Hab alles nochmal angeh€ngt, auœerdem auch meine Revision von der
+version_asm.
+
+Ansonsten versuche ich gerade ein wenig hinter das WirrWar von
+    win1_smsq_sbas_procs_procs_q60_asm
+und
+    sbsext_ext_q60_
+zu kommen.
+
+Offensichtlich wurde ersteres mal benutzt, um die WRITEBACK etc
+Keywords einzubinden, nur wird das File nirgends benutzt! Sieht so aus
+als ob die Befehle mittlerweile in einem eigenen Cache-Modul gelandet
+sind, kann das sein?
+
+In dem Fall schlage ich vor die sbsext_ext_colr_asm  nderungen f‡r Qx0
+f‡r alle Plattformen zu ‡bernehmen (macht keinen grossen Unterschied.
+Hab das beigef‡gt) und dann folgende Dateien komplett zu l„schen, da
+sie meines Erachtens nicht mehr ben„tigt werden:
+    sbsext_ext_q60_cachemodes_asm
+    sbsext_ext_q60_cct
+    sbsext_ext_q60_colr_asm
+    smsq_sbas_procs_q60_link
+    smsq_sbas_procs_procs_q60_asm
+
+Entsprechende Referenzen zu procs_q60 anschliessend einfach wieder auf
+die normalen procs zur‡ckbiegen.
+    
+Beste Gr‡œe, Marcel

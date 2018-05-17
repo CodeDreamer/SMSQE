@@ -1,4 +1,5 @@
 ; Base area SMSQ Q40 Drivers / 16 bit display
+; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 
 	section header
 
@@ -9,19 +10,19 @@
 	include 'dev8_smsq_smsq_config_keys'
 
 
-blatu macro blv
- xref blattu
- move.b [blv],-(sp)
- jsr	blattu
- add.w	#2,sp
- endm
-
-blatul macro blv
- xref blattul
- move.l [blv],-(sp)
- jsr	blattul
- addq.l #4,sp
- endm
+*blatu macro blv
+* xref blattu
+* move.b [blv],-(sp)
+* jsr	 blattu
+* add.w  #2,sp
+* endm
+*
+*blatul macro blv
+* xref blattul
+* move.l [blv],-(sp)
+* jsr	 blattul
+* addq.l #4,sp
+* endm
 
 header_base
 	dc.l	qxl_con-header_base	 ; length of header

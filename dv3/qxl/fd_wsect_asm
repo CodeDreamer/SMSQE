@@ -1,4 +1,5 @@
 ; DV3 QXL Floppy Disk Write Sector      1993	  Tony Tebby
+; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 
 	section dv3
 
@@ -17,19 +18,19 @@
 	include 'dev8_smsq_qxl_comm_keys'
 	include 'dev8_mac_assert'
 
-blat macro blv
- xref	blatt
- move.b [blv],-(sp)
- jsr	blatt
- add.w	#2,sp
- endm
-
-blatl macro blv
- xref	blattl
- move.l [blv],-(sp)
- jsr	blattl
- addq.l #4,sp
- endm
+*blat macro blv
+* xref	 blatt
+* move.b [blv],-(sp)
+* jsr	 blatt
+* add.w  #2,sp
+* endm
+*
+*blatl macro blv
+* xref	 blattl
+* move.l [blv],-(sp)
+* jsr	 blattl
+* addq.l #4,sp
+* endm
 
 ;+++
 ; This routine writes a sector to a Floppy disk for direct sector IO

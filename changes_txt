@@ -3,6 +3,25 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
+3.14
+    GRADUAL MOVE TOWARDS GWASS COMPATIBILITY - COSMETIC CHANGES
+	dv3_qxl_fd_rsect_asm		1.01	BLAT macro definitions commented out - macro wasn't used (wl)
+	dv3_qxl_fd_wsect_asm		1.01	same
+	dv3_qxl_hd_rsect_asm		1.01	same
+	dv3_qxl_hd_wsect_asm		1.01	same
+	iod_con2_ptr_install_asm	2.03	same
+	iod_con2_qxl_disp_size_asm	1.01	same
+	smsq_qxl_comm_blat_asm		1.01	same
+	smsq_qxl_comm_isrv2_asm 	1.01	same
+	smsq_qxl_comm_messpr_asm	1.03	same
+	smsq_qxl_comm_messset_asm	1.01	same
+	smsq_qxl_driver_16_asm		1.01	same
+	smsq_qxl_driver_ql_asm		1.01	same
+	smsq_qxl_nasty_e2_asm		1.01	same
+
+-----------------------------------------------------------------------------
+
+
 3.13
 
     BUGFIXES
@@ -64,10 +83,7 @@ Version   changed			of file   changes made
 	smsq_qxl_driver_most_link	-	updated to suit
 
 
-
-
-
-    ADDITIONAL SBASIC KEYWORDS FOR DATE CALCULAIONS (MK)
+    ADDITIONAL SBASIC KEYWORDS FOR DATE CALCULATIONS (MK)
 	sbsext_ext_date_asm		2.01	added YEAR%, MONTH%, DAY% and WEEKDAY%
 	smsq_sbas_procs_procs_asm	2.04	added keyword names for above
 

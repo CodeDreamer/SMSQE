@@ -1,6 +1,7 @@
 ; SMS (QXL) Message Processing		  1998 Tony Tebby
 ; 2005.01.10	1.01	added QXL restart (BC)
 ; 2006.10.01	1.02	added led updates, creates qmp_kbd_llck & uses it (BC)
+; 2006.10.20	1.03	BLAT macro definitions commented out - macro wasn't used (wl)
 
 	section comm
 
@@ -26,19 +27,19 @@
 
 qmp.reg reg d0/d1/a1-a3
 
- xref	blatt
-blat macro blv
- move.b [blv],-(sp)
- jsr	blatt
- add.w	#2,sp
- endm
+* xref	 blatt
+*blat macro blv
+* move.b [blv],-(sp)
+* jsr	 blatt
+* add.w  #2,sp
+* endm
 
- xref	blattl
-blatl macro blv
- move.l [blv],-(sp)
- jsr	blattl
- addq.l #4,sp
- endm
+* xref	 blattl
+*blatl macro blv
+* move.l [blv],-(sp)
+* jsr	 blattl
+* addq.l #4,sp
+* endm
 
 ;+++
 ; This routine processes the messages received

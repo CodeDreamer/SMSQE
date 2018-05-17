@@ -1,6 +1,7 @@
 * Install a new console driver	V2.02	 2000	 Tony Tebby
 *
-* 2003-04-24  2.02  Added table pointer for vectored routine
+* 2003-04-24  2.02	Added table pointer for vectored routine
+* 2006-10-20  2.03	BLAT macro definitions commented out - macro wasn't used (wl)
 
 	xdef	pt_install
 	xdef	pt_installu
@@ -37,19 +38,19 @@
 
 	section init
 
-blat macro blv
- xref blatt
- move.b [blv],-(sp)
- jsr	blatt
- add.w	#2,sp
- endm
-
-blatl macro blv
- xref blattl
- move.l [blv],-(sp)
- jsr	blattl
- addq.l #4,sp
- endm
+*blat macro blv
+* xref blatt
+* move.b [blv],-(sp)
+* jsr	 blatt
+* add.w  #2,sp
+* endm
+*
+*blatl macro blv
+* xref blattl
+* move.l [blv],-(sp)
+* jsr	 blattl
+* addq.l #4,sp
+* endm
 
 pt_installu
 	moveq	#sms.xtop,d0
