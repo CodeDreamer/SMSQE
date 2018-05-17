@@ -773,7 +773,9 @@
 ;	FSEND_EVENT function added (wl).
 ;	SMSQmulator : JVA_VER$ etc added, better stipple handling, copy QL screen (wl).
 ;
-
-smsq_vers equ	 '3.28'
+; 3.29	dmedium_drive$ fixed (MK).
+;	INPUT buffer is limited to max string length (32K -2) (wl).
+;
+smsq_vers equ	 '3.29'
 
 	end

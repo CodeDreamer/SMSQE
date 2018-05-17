@@ -4,11 +4,19 @@ Version   changed			of file   changes made
 
 
 -----------------------------------------------------------------------------
-3.28
 
-   smsq_sbas_iexpr_asm			1.02	check x is valid for a$(x to) and date$()(x to) (MK)
-   sbsext_ext_event_asm 		1.01	added fsend_event (wl)
-   smsq_sbas_procs_xtprocs_asm		2.05	amended to suit
+3.29
+    BUGFIXES
+	smsq_qpc_ip_open_asm		1.01	internal changes (MK)
+	sbsext_ext_dminfo_asm		1.01	dmedium_drive$ fixed (MK)
+	sbsext_ext_print_asm		2.02	INPUT buffer is limited to max string length (32K -2) (wl)
+-----------------------------------------------------------------------------
+
+3.28
+   BUGFIXES
+	smsq_sbas_iexpr_asm		1.02	check x is valid for a$(x to) and date$()(x to) (MK)
+	sbsext_ext_event_asm		1.01	added fsend_event (wl)
+	smsq_sbas_procs_xtprocs_asm	2.05	amended to suit
 
    SMSQmulator copy QL screen
 	smsq_java_copyscr_asm		1.01	Copy screen from $20000 to actual screen.

@@ -1,6 +1,7 @@
 ; PRINT / INPUT / WIDTH       V2.01      1990	Tony Tebby   QJUMP
 ;
 ; 2006-04-02  2.01  INPUT returns buffer overlow for compiled programs (MK)
+; 2017-01-30  2.02  INPUT buffer is limited to max string length (32K -2) (wl)
 
 	section exten
 
@@ -155,7 +156,7 @@ pr_inpl
 	move.w	d2,a2
 	cmp.l	d2,a2		 ; word overflowed?
 	beq.s	pr_inpdo
-	move.l	#$7fff,d2	 ; max length
+	move.l	#$7ffe,d2	 ; max length  *** 2.02
 pr_inpdo
 	moveq	#iob.flin,d0
 	jsr	ut_trp3r
@@ -168,10 +169,19 @@ pr_inpdo
 	move.l	a1,sb_buffp(a6)  ; set pointer
 	cmpi.l	#sb.flag,sb_flag(a6) ; interpreted BASIC?		     MK
 	bne.s	pr_bffl 	 ; ... no, don't try to resize the buffer!   MK
-	move.l	d2,d1		 ; space required
-	jsr	ut_chkbf	 ; allocate
-	bra.s	pr_inpl
 
+**** 2.02
+	move.l	#$7ffe,d1	 ; max length (a1 points AFTER the bytes got)
+	add.l	sb_buffb(a6),d1  ; + buffer base
+	sub.l	sb_buffp(a6),d1  ; - buffer pointer = 7ffe - number in buffer
+	ble.s	pr_bffl 	 ; we're at max capacity
+	move.l	d1,d2		 ; nbr of bytes to get
+			
+	jsr	ut_chkbf	 ; allocate, puts sb_buffp(a6) into A1
+	bra.s	pr_inpdo	 ; DON'T check d2 any more
+			  
+**** 2.02
+			
 pr_curd
 	move.l	d0,-(sp)
 	moveq	#iow.dcur,d0

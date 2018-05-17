@@ -11,7 +11,6 @@
 	xdef	wm_ink
 	xdef	wm_strip
 	xdef	wm_block
-	xdef	wm_ablock
 	xdef	wm_border
 	xdef	wm_movemode
 	xdef	wm_movealpha
@@ -88,36 +87,13 @@ wm_rts
 	rts
 
 ;+++
-; WM_BLOCKA (#ch,) xs, ys, xo, yo, col, alpha
-;---
-wm_ablock
-	bsr	wm_getwman
-	move.l	d4,-(a7)
-	jsr	ut_chan1		; get a channel id
-	movem.l (a7)+,d4
-	bne.s	wm_rts
-	move.l	a5,d0
-	sub.l	a3,d0
-	sub.l	#6*8,d0 		; there must be 6 params still
-	bne	wm_ipar
-	move.l	a3,d4
-	lea	-8(a5),a3
-	jsr	ut_gtint		; get only the last param
-	bne.s	wm_rts
-	move.w	(a6,a1.l),d5
-	andi.w	#$ff,d5 		; alpha is a bute
-	move.l	a3,a5
-	move.l	d4,a3
-	move.l	#'ALPH',d4		; flag signal alpha
-	bra.s	wm_blk1
-;+++
 ; WM_BLOCK (#ch,) xs, ys, xo, yo, col
 ;---
 wm_block
 	bsr	wm_getwman
 	jsr	ut_chan1		; get a channel id
 	bne.s	wm_rts
-wm_blk1 subq.l	#8,a5
+	subq.l	#8,a5
 	cmpa.l	a3,a5
 	ble	wm_ipar
 	jsr	ut_gtint
@@ -132,7 +108,8 @@ wm_blk1 subq.l	#8,a5
 	move.l	(a6,a1.l),d1
 	moveq	#-1,d3
 	lea	4(a6,a1.l),a1
-	jmp	wm.trap3(a2)
+	jsr	wm.trap3(a2)
+	rts
 
 ;+++
 ; WM_BORDER (#ch,) width, colour
@@ -140,15 +117,16 @@ wm_blk1 subq.l	#8,a5
 wm_border
 	bsr	wm_getwman
 	jsr	ut_chan1		; get a channel id
-	bne.s	wm_rts2
+	bne.s	wm_rts
 	jsr	ut_gxli2
-	bne.s	wm_rts2
+	bne.s	wm_rts
 
 	moveq	#iow.defb,d0
 	move.l	4(a6,a1.l),d1
 	move.l	(a6,a1.l),d2
 	moveq	#-1,d3
-	jmp	wm.trap3(a2)
+	jsr	wm.trap3(a2)
+	rts
 
 ;+++
 ; WM_MOVEMODE move_type% (0..3)
@@ -156,14 +134,14 @@ wm_border
 wm_movemode
 	bsr	wm_getwdata
 	jsr	ut_gtin1		; get one int
-	bne.s	wm_rts2
+	bne.s	wm_rts
 	move.w	(a6,a1.l),d0
 	blt.s	wm_ipar 		; and it must be between 0...
 	cmp.w	#3,d0			; ... and 2
 	bgt.s	wm_ipar
 	move.b	d0,wd_movemd(a2)
 	clr.l	d0
-wm_rts2 rts
+	rts
 
 ;+++
 ; WM_MOVEALPHA move_alpha% (0..255)

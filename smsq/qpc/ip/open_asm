@@ -1,4 +1,4 @@
-; Open IP	   V1.00				 2004	Marcel Kilgus
+; Open IP	   V1.01				 2004	Marcel Kilgus
 
 	section ip
 
@@ -11,8 +11,11 @@
 	include 'dev8_smsq_qpc_ip_data'
 	include 'dev8_smsq_qpc_keys'
 
+stk.reg reg	d3/a0
+stk.a0	equ	4
+
 ip_open
-	movem.l d3/a0,-(sp)
+	movem.l stk.reg,-(sp)
 	move.l	#$dfdfdfdf,d0
 	move.w	(a0)+,d2
 	and.l	(a0)+,d0
@@ -51,15 +54,16 @@ ipo_found
 	bne.s	ipo_exit
 
 	move.l	#chn.id,chn_id(a0)
-	move.l	a0,a2
-	dc.w	qpc.ipopn
+	move.l	a0,a2			; remember chan-block
+	move.l	stk.a0(sp),a1		; device name
+	dc.w	qpc.ipopn		; returns internal ptr in a0
 	bne.s	ipo_error
 
-	move.l	a0,chn_data(a2)
-	move.l	a2,4(sp)
+	move.l	a0,chn_data(a2) 	; remember internal ptr in chan block
+	move.l	a2,stk.a0(sp)		; return allocated chan block in a0
 
 ipo_exit
-	movem.l (sp)+,d3/a0
+	movem.l (sp)+,stk.reg
 	rts
 
 ipo_ipar
