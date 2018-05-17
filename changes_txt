@@ -1,6 +1,17 @@
   
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
+
+-----------------------------------------------------------------------------
+
+3.18
+    CSIZES IN APPLICATION SUBWINDOWS
+	ee_wman_swdef_asm		1.03	 new subroutine wm_swdfn sets appsub csizes according to wirking definition (wl)
+	ee_wman_mdraw_asm		1.02	 uses that new subroutine (wl)
+	ee_wman_setup_asm		1.05	 check for and possibly set appsub wdw csizes (wl)
+	keys_wdef			.	 amended to suit
+	keys_wman			.	 amended to suit
+
 -----------------------------------------------------------------------------
 
 3.17
@@ -9,6 +20,7 @@ Version   changed			of file   changes made
 
 
 -----------------------------------------------------------------------------
+
 3.16
     BUGFIXES
 	iod_con2_aur8_colrm_asm 	1.01	Fixed striped colours in COLOUR_NATIVE mode (MK)

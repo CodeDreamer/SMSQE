@@ -9,7 +9,8 @@
 	xdef	sfa_use
 	xdef	win_use
 	xdef	flp_use
-
+	xdef	mem_use
+			
 	xref	iou_use
 	xref	ut_gxin1
 	xref	ut_gxst1
@@ -21,6 +22,10 @@
 ;+++
 ;      NFA_USE xxx
 ;---
+mem_use
+	move.l	#'MEM0',d7
+	bra.s	comn_use
+			
 flp_use
 	move.l	#'FLP0',d7
 	bra.s	comn_use
@@ -40,6 +45,7 @@ comn_use
 	sub.l	a5,d0			 ; just one parameter?
 	blt.s	set_nam
 dev_usen
+	dc.w	jva.trp0
 	jsr	iou_use
 	moveq	#jt5.use,d0
 	dc.w	jva.trp5		; get data to java

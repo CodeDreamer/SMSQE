@@ -28,6 +28,7 @@ smsq_name
 
 	xref	hdop_init
 	xref	nfa_init
+	xref	mem_init
 	xref	sfa_init
 	xref	win_init
 	xref	flp_init
@@ -41,6 +42,7 @@ smsq_name
 	xref	ssss_init
 	xref	hdop_keyr
 	xref	scrap_init
+	xref	snd_init
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sys'
@@ -75,9 +77,12 @@ start
 	jsr	flp_init
 	jsr	sfa_init
 	jsr	nfa_init
+	jsr	mem_init
 	jsr	win_init
 	jsr	ssss_init
 	jsr	scrap_init
+	jsr	snd_init
+
 
 sys_init
 

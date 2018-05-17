@@ -734,7 +734,9 @@
 ;	Window move with transparency implemented (for display modes 16, 32 and 33) (wl).
 ;
 ; 3.17	Window move with transparency fixed for pulled-down wdws (WL).
+;
+; 3.18	Menu appsub wdws may have csizes for text objects (wl).
 
-smsq_vers equ	 '3.17'
+smsq_vers equ	 '3.18'
 
 	end

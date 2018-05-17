@@ -23,6 +23,25 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 =====
+3.18
+=====
+Different CSIZEs in application windows.
+
+
+=====
+3.17
+=====
+Bugfix.
+
+
+=====
+3.16
+=====
+Several bugfixes.
+Window move with transparency.
+
+
+=====
 3.15
 =====
 
@@ -31,11 +50,11 @@ The code base now incorporates the GoldCard drivers for 256 colours.
 The code base now incorporates the files for non SMSQ/E pointer gen & wman.
 
 
-
 ======
  3.14
 ======
 A new SMSQE version, for SMSQmulator  (subdir smsq_java)
+
 
 ======
  3.13
@@ -60,7 +79,6 @@ Faster job execution.
 ======
  3.12
 ======
-
 
 Background drawing: Even when a window is partially covered, printing into
 this window continues. This goes with two new BAsic commands: PE_BGON to
@@ -93,7 +111,7 @@ New commands POKE_F, POKES_F,PEEK_F, PEEKS_F for flaoting point poking/peeking
  3.11
 ======
 
-Support for the home thing
+Support for the home thing.
 
 
 ======
@@ -102,12 +120,13 @@ Support for the home thing
 
 Cursor Sprite Clipping is implemented:
 
-The cursor sprite,w hen reaching the edges of the screen is "clipped" until its
+The cursor sprite, when reaching the edges of the screen is "clipped" until its
 origin.
 
 Sprites with no (= solid) masks are implemented. These take less space.
 
 Some bugfixes.
+
 
 ======
  3.09
@@ -129,7 +148,7 @@ It is possible to restart the QXL SMSQE by typing SMSQE / under DOS.
 
 
 The Qx0 code no longer contains the cachecontrol module, please use Mark
-Swift's extentions again (on xhich this module is based, anyway).
+Swift's extentions again (on which this module is based, anyway).
 
 The Qx0 in ROM starts with the cache disabled again.
 
@@ -151,7 +170,7 @@ EX_M: This behaves a bit like EX in that the calling job continues executing
 (like EW). This means that if you get rid of the calling job, you will also get
 rid of the created job(s).
 
-A treat for QXL owners: Thanks to Bruno COATIVY, you can now configure whether
+A treat for QXL owners: Thanks to Bruno COATIVY, you can now configure
 what dos drive letters (C:, D: etc) corresponds to win1_, win2_ etc...
 Just configure the new SMSQE.EXE file, under the "Host" section.
 
@@ -178,21 +197,19 @@ dev8_extras_new_cursor_txt
 Attempt to have Gold Card Miracle hard disks working again.
 
 
-
 =============
  3.04 & 3.05
 =============
-Simple bug fixes
-Display bug fix
+Simple bug fixes.
+Display bug fix.
 The smsqemake_exe program takes new parameters (see the doc in the
-_extras_help dir)
-
+_extras_help dir).
 
 
 ======
  3.03
 ======
-1 - Many bugfixes
+1 - Many bugfixes.
 
 2 - A new cachecontrol module for the Q60, based on Code kindly supplied by
 Mark Swift.
@@ -222,7 +239,6 @@ You can configure in what state your machine should boot.
 Up to now, if you pressed both shift keys at once and then released only one,
 the system also considered that you had released the other.
 
- 
 4 - INPUT uses F10 (or any other configured keystroke) to put the content of
 the "console" channel into the stuffer buffer in a READ/EDIT line trap (only!).
 You can configure the keystroke with the usual configuration program.
@@ -260,7 +276,6 @@ moved about the screen.
 2 - Full window : the entire indow is moved with the mouse
 
 Please read the "move_txt' documentation for more details.
-
 
 
 On a more anecdotical scale, the doc, exe, help, new subdirectories

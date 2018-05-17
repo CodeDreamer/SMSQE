@@ -157,8 +157,10 @@
 ;		       Double 3d border type fixed (MK)
 ;
 ;	V2.06	       New window move with transparency (wl)
+;
+;	V2.07	       menu appsub wdw may have csizes for text objects (wl)
 
-wm_vers equ	'2.06'
+wm_vers equ	'2.07'
 wm.pver equ	'2.02'
 
 	end

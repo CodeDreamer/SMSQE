@@ -9,6 +9,7 @@
 	xdef	sfa_useq
 	xdef	win_useq
 	xdef	flp_useq
+	xdef	mem_useq
 
 	xref	ut_gxin1
 	xref	ut_chkri
@@ -20,10 +21,12 @@
 ;+++
 ;      NFA_USE$ xxx
 ;---
+mem_useq
+	move.l	#'MEM0',d7
+	bra.s	comn_use
 flp_useq
 	move.l	#'FLP0',d7
 	bra.s	comn_use
-
 win_useq
 	move.l	#'WIN0',d7
 	bra.s	comn_use
@@ -44,22 +47,5 @@ comn_use
 	bne.s	out
 	jmp	ut_retst		; return data
 out	rts
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	end

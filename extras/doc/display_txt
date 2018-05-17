@@ -19,6 +19,7 @@ Contents:
 	V - System palette entries
 	VI - New Basic commands
 	VII - New Move modes
+	VIII - Csizes for menu appsub windows
 
 I - New CON driver vectors
 =-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1133,3 +1134,127 @@ totally transparent when it is moved (i.e. you would only ever see the
 background) this is considered to be an error and a value of 255 will be used!
 4) alpha blending requires a lot of computing power - it may be too slow
 on your machine.
+
+
+
+VIII - Csizes for text objects in menu application sub-windows
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+Application subwindow text objects may now have character sizes other than 0,0.
+Of course, this only applies to programs specially written to take
+advantage of these xiszes.
+
+The values for the csizes are stored in the working definition at previously
+unused locations ($26 and $27).
+The values are the same as those for the CSIZE command i.e. 0 to 3 for the
+x csize and 0 or 1 for the y csize. Behaviour if other values are given is
+undefined.
+
+Note that the csizes are, of course, the same for all objects of a menu
+application sub-window (but different appsubwdw may have different csizes).
+
+How to use these:
+
+1 - For the machine code programmer :
+
+The values are stored at offsets
+
+wwa_xcsz equ	$26
+wwa_ycsz equ	$27
+
+in the working definition, as byte-sized values.
+The key files have been amended to suit.
+
+You may also set these sizes in a menu appsub definition which will
+be converted to a working definition by the standard setup vector. In that
+case set the values BELOW the start of the normal defintion : at -4 of the
+start, set a flag, i.e. a long word 'XTND' and at -6 set a word with the
+x (-6) and y (-5) csizes values as bytes.
+	  
+DO NOT FORGET TO ADJUST THE SIZES OF YOUR OBJECTS' HITSIZE AND SPACING IF
+YOU USE BIGGER CHARACTERS.
+	  
+
+2 - For the basic programmer.
+
+Two procedures have been created for the two common toolkits, qptr and easyotr.
+
+For qptr :
+----------
+
+def proc set_csizes_QPTR (appsub_list,num%,x_csize%,y_csize%)
+rem set the csizes for menu appsub windows
+rem params:
+rem   appsub_list
+rem	the appsub list as returned by the RD_AWTA basic function  and/or
+rem	the MK_AWL extension
+rem   num%
+rem	the appsub number, starting at 1 for the first appsub wdw
+rem   x_csize%
+rem	 the x csize (0 ... 3), same as for the CSIZE command
+rem   y_csize%
+rem	 the y csize (0 or 1), same as for the CSIZE command
+rem
+rem   If there is any error in the parameters, this jusy gives up silently
+rem   without generating an error
+rem
+local appsub_nbr%,appsub
+  appsub_nbr%=peek_w(appsub_list)		: rem nbr of appsub wdws
+  if appsub_nbr% < num% or num% < 1: return	: rem wrong appsub number
+  appsub=peek_l(appsub_list+2+4*(num%-1))	: rem get poiner to appsub wdw
+  if x_csize% > -1 and x_csize% < 4
+      poke appsub+38,x_csize%			: rem set size
+  endif
+  if y_csize% > -1 and y_csize% < 2
+      poke appsub+39,y_csize%			: rem set size
+  endif
+end def set_csizes_QPTR
+
+
+Call this procedure once you have created the appsub list.
+
+For easyptr:
+------------
+
+def proc set_csizes_EASYPTR (channel%,num%,x_csize%,y_csize%)
+rem set the csizes for menu appsub windows
+rem params:
+rem   channel%
+rem	the channel number, which must be the same one as used for MAWDRAW
+rem	or MAWSETUP. THIS DOES NOT DEFAULT TO ANYTHING, you MUST
+rem	supply this parameter correctly.
+rem   num%
+rem	the appsub number, starting at 1 for the first appsub wdw
+rem   x_csize%
+rem	 the x csize (0 ... 3), same as for the CSIZE command
+rem   y_csize%
+rem	 the y csize (0 or 1), same as for the CSIZE command
+rem
+rem   If there is any error in the parameters, this just gives up silently
+rem   without generating an error
+rem
+local appsub_nbr%,appsub
+  appsub= MWDEF(#channel%)			: rem the working definition
+  appsub_nbr%=peek_w(appsub+110)		: rem nbr of appsub wdws
+  if appsub_nbr% < num% or num% < 1: return	: rem wrong appsub number
+  appsub=peek_l(appsub+112)			: rem point to appsub list
+  appsub=peek_l(appsub+4*(num%-1))		: rem get poiner to appsub wdw
+  if x_csize% > -1 and x_csize% < 4
+      poke appsub+38,x_csize%			: rem set size
+  endif
+  if y_csize% > -1 and y_csize% < 2
+      poke appsub+39,y_csize%			: rem set size
+  endif
+end def set_csizes_EASYPTR
+:
+
+For this to work, create your menu with the MAWSETUP command and
+call this procedure afterwords.
+
+
+You will find both procedures in a common file	:
+dev8_extras_source_setcsizes_bas.
+
+
+DO NOT FORGET TO ADJUST THE SIZES OF YOUR OBJECTS' HITSIZE AND SPACING IF
+YOU USE BIGGER CHARACTERS.
