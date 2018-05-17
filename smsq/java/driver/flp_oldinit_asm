@@ -75,7 +75,7 @@ noyes	mkcfitem 'JVW0',code,'D',disable,,,\
 	dc.l	jva_cfgf2
 	dc.l	jva_cfgf3
 	dc.l	jva_cfgf4
-	dc.l	'FLP0'
+	dc.l	'FLPX'
 
 
 disable dc.b	0

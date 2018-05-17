@@ -1,416 +1,416 @@
 ; Directory Device Driver V3 keys
-        nolist
+	nolist
 
 ; Device Driver Linkage Block
 
-ddl_pllk    equ $0008   ; long    polling interrupt linkage
-ddl_poll    equ $000c   ; long    polling interrupt service routine address
-ddl_shlk    equ $0010   ; long    scheduler loop linkage
-ddl_sched   equ $0014   ; long    scheduler loop service routine address
-ddl_ddlk    equ $0018   ; long    io driver linkage
-ddl_io      equ $001c   ; long    input / output routine address
-ddl_open    equ $0020   ; long    open routine address
-ddl_close   equ $0024   ; long    close routine address
-ddl_fslv    equ $0028   ; long    forced slaving address
+ddl_pllk    equ $0008	; long	  polling interrupt linkage
+ddl_poll    equ $000c	; long	  polling interrupt service routine address
+ddl_shlk    equ $0010	; long	  scheduler loop linkage
+ddl_sched   equ $0014	; long	  scheduler loop service routine address
+ddl_ddlk    equ $0018	; long	  io driver linkage
+ddl_io	    equ $001c	; long	  input / output routine address
+ddl_open    equ $0020	; long	  open routine address
+ddl_close   equ $0024	; long	  close routine address
+ddl_fslv    equ $0028	; long	  forced slaving address
 ddl_spr1    equ $002c
-ddl_chname  equ $0030   ; long    channel name routine
-ddl_format  equ $0034   ; long    format routine address
-ddl_ddlen   equ $0038   ; long    drive definition block LENgth
-ddl_dnuse   equ $003c   ; string  drive name (current usage)
-ddl_dname   equ $0042   ; string  drive name
+ddl_chname  equ $0030	; long	  channel name routine
+ddl_format  equ $0034	; long	  format routine address
+ddl_ddlen   equ $0038	; long	  drive definition block LENgth
+ddl_dnuse   equ $003c	; string  drive name (current usage)
+ddl_dname   equ $0042	; string  drive name
 
-ddl_rev     equ $0048   ; byte    driver revision number
-ddl_buff    equ $0049   ; byte    set if buffered driver
-ddl.nbuff     equ $00           ; not buffered
-ddl.buff      equ $ff           ; buffered
-ddl_cylhds  equ $004a   ; byte    set if sector routines require cyl/head/side
-ddl_sectl   equ $004b   ; byte    set for each cylinder length supported
-ddl_mtype   equ $004c   ; byte    medium type
-ddl.ram       equ 0             ; ram disk
-ddl.flp       equ 1             ; floppy disk
-ddl.hd        equ 2             ; hard disk
-ddl.od        equ 3             ; optical disk
-ddl_msect   equ $004d   ; byte    set to max if multiple sector reads supported
-ddl_dens    equ $004e   ; byte    bit mask of densities supported
-ddl_dv3     equ $0050   ; long    base of DV3 linkage
-ddl_ndv3    equ $0058   ; long    pointer to next DV3 driver
-ddl_bfbas   equ $005c   ; long    pointer to linkage block buffer!!!
+ddl_rev     equ $0048	; byte	  driver revision number
+ddl_buff    equ $0049	; byte	  set if buffered driver
+ddl.nbuff     equ $00		; not buffered
+ddl.buff      equ $ff		; buffered
+ddl_cylhds  equ $004a	; byte	  set if sector routines require cyl/head/side
+ddl_sectl   equ $004b	; byte	  set for each cylinder length supported
+ddl_mtype   equ $004c	; byte	  medium type
+ddl.ram       equ 0		; ram disk
+ddl.flp       equ 1		; floppy disk
+ddl.hd	      equ 2		; hard disk
+ddl.od	      equ 3		; optical disk
+ddl_msect   equ $004d	; byte	  set to max if multiple sector reads supported
+ddl_dens    equ $004e	; byte	  bit mask of densities supported
+ddl_dv3     equ $0050	; long	  base of DV3 linkage
+ddl_ndv3    equ $0058	; long	  pointer to next DV3 driver
+ddl_bfbas   equ $005c	; long	  pointer to linkage block buffer!!!
 
-; Device Specific Routine Vector (JMP   xxx.l)
+; Device Specific Routine Vector (JMP	xxx.l)
 
-ddl_check   equ $0062           ; check device / medium for open
-ddl_direct  equ $006a           ; set up for direct access IO
-ddl_rsect   equ $0072           ; read sector
-ddl_wsect   equ $007a           ; write sector
-ddl_vsect   equ $0082           ; verify sector
-ddl_slbfill equ $008a           ; slave block needs filling
-ddl_slbupd  equ $0092           ; slave block updated
-ddl_dflush  equ $009a           ; flush all buffers for a drive
-ddl_fflush  equ $00a2           ; flush all buffers for a file
-ddl_fslave  equ $00aa           ; find slave linkage
-ddl_mformat equ $00b2           ; medium format
-ddl_status  equ $00ba           ; drive status
-ddl_done    equ $00c2           ; close last file on drive
-ddl_zap     equ $00ca           ; tidy up, we are going to zap the driver
-ddl_vtop    equ $00d0           ; top of vector table
+ddl_check   equ $0062		; check device / medium for open
+ddl_direct  equ $006a		; set up for direct access IO
+ddl_rsect   equ $0072		; read sector
+ddl_wsect   equ $007a		; write sector
+ddl_vsect   equ $0082		; verify sector
+ddl_slbfill equ $008a		; slave block needs filling
+ddl_slbupd  equ $0092		; slave block updated
+ddl_dflush  equ $009a		; flush all buffers for a drive
+ddl_fflush  equ $00a2		; flush all buffers for a file
+ddl_fslave  equ $00aa		; find slave linkage
+ddl_mformat equ $00b2		; medium format
+ddl_status  equ $00ba		; drive status
+ddl_done    equ $00c2		; close last file on drive
+ddl_zap     equ $00ca		; tidy up, we are going to zap the driver
+ddl_vtop    equ $00d0		; top of vector table
 
-ddl_master  equ $00d0   ; long    pointer to master device driver
-ddl_slave   equ $00d4   ; long    pointer to (next) slave
+ddl_master  equ $00d0	; long	  pointer to master device driver
+ddl_slave   equ $00d4	; long	  pointer to (next) slave
 
-ddl_thhdr   equ $00e0           ; embedded Thing header
-ddl_thing   equ $00f0           ; embedded Thing
+ddl_thhdr   equ $00e0		; embedded Thing header
+ddl_thing   equ $00f0		; embedded Thing
 ddl_thadd     equ $0100
 ddl_thverid   equ $0116
 ddl_thname    equ $011a
-ddl_thtop   equ $0130           ; top of embedded thing
-ddl_drive   equ $0140           ; drive specific part of linkage
+ddl_thtop   equ $0130		; top of embedded thing
+ddl_drive   equ $0140		; drive specific part of linkage
 
 ; Drive Definition Block
 
-ddf_ddlk    equ $0010   ; long    ptr master device driver link (ddl_ddlk, QDOS)
-ddf_dnum    equ $0014   ; byte    drive number
-ddf_drid    equ $0015   ; byte    drive ID
-ddf_mname   equ $0016   ; chars   medium name (up to 10 chars + 2 rnd long)
-ddf_nropen  equ $0022   ; byte    number of files open on this medium
-ddf_wprot   equ $0023   ; byte    set if write protected
+ddf_ddlk    equ $0010	; long	  ptr master device driver link (ddl_ddlk, QDOS)
+ddf_dnum    equ $0014	; byte	  drive number
+ddf_drid    equ $0015	; byte	  drive ID
+ddf_mname   equ $0016	; chars   medium name (up to 10 chars + 2 rnd long)
+ddf_nropen  equ $0022	; byte	  number of files open on this medium
+ddf_wprot   equ $0023	; byte	  set if write protected
 ddf.wprot     equ $ff
-ddf_mstat   equ $0024   ; byte    medium status
-ddf.mnew      equ $00           ; new medium, not checked
-ddf.mok       equ $ff           ; medium ok
-ddf.mchg      equ $01           ; medium changed
-                                ; other +ve  drive specific (error) flags
-ddf_lock    equ $0025   ; byte    non zero if medium is locked
-ddf.open      equ   0           ; not locked
-ddf.locked    equ  -1           ; locked
-ddf.unlock    equ   1           ; needs to be unlocked
-ddf_dosd    equ $0026   ; byte    set if date in DOS format
+ddf_mstat   equ $0024	; byte	  medium status
+ddf.mnew      equ $00		; new medium, not checked
+ddf.mok       equ $ff		; medium ok
+ddf.mchg      equ $01		; medium changed
+				; other +ve  drive specific (error) flags
+ddf_lock    equ $0025	; byte	  non zero if medium is locked
+ddf.open      equ   0		; not locked
+ddf.locked    equ  -1		; locked
+ddf.unlock    equ   1		; needs to be unlocked
+ddf_dosd    equ $0026	; byte	  set if date in DOS format
 ddf.ddsu    equ -(10*365+2)*24*60*60 ; DOS date (1980) to Unix date (1970)
-ddf.dqlu    equ (9*365+2)*24*60*60   ;  QL date (1961) to Unix date (1970)
-ddf_zalloc  equ $0027   ; byte    set if zero length file has sector allocated
-ddf_flong   equ $0028   ; long    format in a long word
-ddf_ftype   equ $0028   ; byte    format type
-ddf.drct      equ  -1           ; -ve direct access
-ddf.qdos      equ   1           ; generic QDOS format for directory devices
-ddf.msdos     equ   2           ; generic MSDOS format for directory devices
-ddf_stype   equ $0029   ; byte    format sub-type
-ddf.ram       equ   -1          ; RAM disk (internal format)
-ddf.ql5a      equ   0           ; QL5A
-ddf.ql5b      equ   1           ; QL5B
-ddf.qlwa      equ   2           ; QLWA
-ddf.msd3      equ   0           ; MSDOS with 3 nibble map
-ddf.msd4      equ   1           ; MSDOS with 4 nibble map
-ddf_density equ $002a   ; byte    density
-ddf.sd        equ   0           ; single density
-ddf.dd        equ   1           ; double density
-ddf.hd        equ   2           ; high density
-ddf.ed        equ   3           ; extra high
-ddf_slflag  equ $002b   ; byte    sector length flag
+ddf.dqlu    equ (9*365+2)*24*60*60   ;	QL date (1961) to Unix date (1970)
+ddf_zalloc  equ $0027	; byte	  set if zero length file has sector allocated
+ddf_flong   equ $0028	; long	  format in a long word
+ddf_ftype   equ $0028	; byte	  format type
+ddf.drct      equ  -1		; -ve direct access
+ddf.qdos      equ   1		; generic QDOS format for directory devices
+ddf.msdos     equ   2		; generic MSDOS format for directory devices
+ddf_stype   equ $0029	; byte	  format sub-type
+ddf.ram       equ   -1		; RAM disk (internal format)
+ddf.ql5a      equ   0		; QL5A
+ddf.ql5b      equ   1		; QL5B
+ddf.qlwa      equ   2		; QLWA
+ddf.msd3      equ   0		; MSDOS with 3 nibble map
+ddf.msd4      equ   1		; MSDOS with 4 nibble map
+ddf_density equ $002a	; byte	  density
+ddf.sd	      equ   0		; single density
+ddf.dd	      equ   1		; double density
+ddf.hd	      equ   2		; high density
+ddf.ed	      equ   3		; extra high
+ddf_slflag  equ $002b	; byte	  sector length flag
 ddf.128       equ 0
 ddf.256       equ 1
 ddf.512       equ 2
 ddf.1024      equ 3
 ddf.2048      equ 4
 ddf.4096      equ 5
-ddf_fsave   equ $002c   ; long    format saved
-ddf_rdid    equ $0030   ; long    root directory file ID
-ddf.rdid      equ 1             ; implicit value if no real value
-ddf_rdlen   equ $0034   ; long    root directory length
-ddf_xslv    equ $0038   ; word    extra slave blocks for one sector
-ddf_slen    equ $003a   ; word    sector length (bytes) (the true value)
-ddf_strk    equ $003c   ; word    sectors per track (or 0)
-ddf_xxx     equ $003e   ; word    spare
-ddf_sintlv  equ $0040   ; word    physical interleave
-ddf_sskew   equ $0042   ; word    physical skew
-ddf_heads   equ $0044   ; word    number of heads
-ddf_scyl    equ $0046   ; word    sectors per cylinder
+ddf_fsave   equ $002c	; long	  format saved
+ddf_rdid    equ $0030	; long	  root directory file ID
+ddf.rdid      equ 1		; implicit value if no real value
+ddf_rdlen   equ $0034	; long	  root directory length
+ddf_xslv    equ $0038	; word	  extra slave blocks for one sector
+ddf_slen    equ $003a	; word	  sector length (bytes) (the true value)
+ddf_strk    equ $003c	; word	  sectors per track (or 0)
+ddf_xxx     equ $003e	; word	  spare
+ddf_sintlv  equ $0040	; word	  physical interleave
+ddf_sskew   equ $0042	; word	  physical skew
+ddf_heads   equ $0044	; word	  number of heads
+ddf_scyl    equ $0046	; word	  sectors per cylinder
 
-ddf_asect   equ $0048   ; word    allocation size (sectors)
-ddf_asize   equ $004a   ; word    allocation size (bytes)
-ddf_atotal  equ $004c   ; long    total allocation units
-ddf_agood   equ $0050   ; long    good allocation units
-ddf_afree   equ $0054   ; long    free allocation units
-ddf_fhlen   equ $0058   ; long    inbuilt file header length
-ddf_rdsb    equ $005c   ; long    pointer to root directory first slave block
-ddf_chnlst  equ $0060   ; long    pointer to linked list of channel blocks
-ddf_smask   equ $0064   ; long    byte within sector mask (1-sector length)
-ddf_itop    equ $0068   ; long    internal to pathname translate
-ddf_ptoi    equ $006c   ; long    pathname to internal translate
-ddf_itopck  equ $0070   ; long    internal to pathname check translate
+ddf_asect   equ $0048	; word	  allocation size (sectors)
+ddf_asize   equ $004a	; word	  allocation size (bytes)
+ddf_atotal  equ $004c	; long	  total allocation units
+ddf_agood   equ $0050	; long	  good allocation units
+ddf_afree   equ $0054	; long	  free allocation units
+ddf_fhlen   equ $0058	; long	  inbuilt file header length
+ddf_rdsb    equ $005c	; long	  pointer to root directory first slave block
+ddf_chnlst  equ $0060	; long	  pointer to linked list of channel blocks
+ddf_smask   equ $0064	; long	  byte within sector mask (1-sector length)
+ddf_itop    equ $0068	; long	  internal to pathname translate
+ddf_ptoi    equ $006c	; long	  pathname to internal translate
+ddf_itopck  equ $0070	; long	  internal to pathname check translate
 
-ddf_remv    equ $0078   ; byte    set if medium is removeable
-ddf_ptddl   equ $007c   ; long    pointer to (master/slave) ddl for this dr def
+ddf_remv    equ $0078	; byte	  set if medium is removeable
+ddf_ptddl   equ $007c	; long	  pointer to (master/slave) ddl for this dr def
 
-ddf_mcheck  equ $0082           ; format dependent medium check
-ddf.change  equ     1             ; changed medium
-ddf.unrec   equ     2             ; unrecognised format
-ddf_drname  equ $008a           ; find / create / delete / change name in dir
+ddf_mcheck  equ $0082		; format dependent medium check
+ddf.change  equ     1		  ; changed medium
+ddf.unrec   equ     2		  ; unrecognised format
+ddf_drname  equ $008a		; find / create / delete / change name in dir
 ddf.remove  equ    -1
 ddf.dir     equ     0
 ddf.old     equ     1
 ddf.new     equ     2
 ddf.either  equ     3
 ddf.rename  equ     4
-ddf_drmake  equ $0092           ; make directory
-ddf_drent   equ $009a           ; fetch entry from directory
-ddf_drefile equ $00a2           ; fetch directory entry for file
-ddf_dresel  equ $00aa           ; fetch selected entry from directory
-ddf_drsfile equ $00b2           ; set directory information for file
-ddf..updd   equ   $00             ; update date
-ddf..arcd   equ   $01             ; archive date
-ddf..data   equ   $02             ; un-initialised data allocation
-ddf..xtra   equ   $03             ; extra file information
-ddf..vers   equ   $04             ; version number
-ddf..dsattr equ   $05             ; DOS attributes
-ddf..type   equ   $06             ; file type
-ddf..flen   equ   $1f             ; file length
-ddf_salloc  equ $00ba           ; allocate new sector
-ddf_slocate equ $00c2           ; locate sector
-ddf_strunc  equ $00ca           ; truncate sectors for file
-ddf_sload   equ $00d2           ; scatter load
-ddf_ssave   equ $00da           ; scatter save
-ddf_fselect equ $00e2           ; select appropriate format
-dff_heads   equ   $00           ; number of heads
-dff_cyls    equ   $02           ; number of cylinders
-dff_size    equ   $04           ; size table
+ddf_drmake  equ $0092		; make directory
+ddf_drent   equ $009a		; fetch entry from directory
+ddf_drefile equ $00a2		; fetch directory entry for file
+ddf_dresel  equ $00aa		; fetch selected entry from directory
+ddf_drsfile equ $00b2		; set directory information for file
+ddf..updd   equ   $00		  ; update date
+ddf..arcd   equ   $01		  ; archive date
+ddf..data   equ   $02		  ; un-initialised data allocation
+ddf..xtra   equ   $03		  ; extra file information
+ddf..vers   equ   $04		  ; version number
+ddf..dsattr equ   $05		  ; DOS attributes
+ddf..type   equ   $06		  ; file type
+ddf..flen   equ   $1f		  ; file length
+ddf_salloc  equ $00ba		; allocate new sector
+ddf_slocate equ $00c2		; locate sector
+ddf_strunc  equ $00ca		; truncate sectors for file
+ddf_sload   equ $00d2		; scatter load
+ddf_ssave   equ $00da		; scatter save
+ddf_fselect equ $00e2		; select appropriate format
+dff_heads   equ   $00		; number of heads
+dff_cyls    equ   $02		; number of cylinders
+dff_size    equ   $04		; size table
 dff.size    equ     4
-ddf_format  equ $00ea           ; format
-ddf.full    equ   0             ; full format
-ddf.quick   equ   1             ; quick format
-ddf.reform  equ   2             ; re-format
-ddf.unform  equ  -1             ; unformat
-ddf_logphys equ $00f2           ; logical to physical translate
-ddf_rsinfo  equ $00fa           ; reset medium information
-ddf_mnset   equ $0102           ; set the medium name
-ddf_umap    equ $010a           ; update map
+ddf_format  equ $00ea		; format
+ddf.full    equ   0		; full format
+ddf.quick   equ   1		; quick format
+ddf.reform  equ   2		; re-format
+ddf.unform  equ  -1		; unformat
+ddf_logphys equ $00f2		; logical to physical translate
+ddf_rsinfo  equ $00fa		; reset medium information
+ddf_mnset   equ $0102		; set the medium name
+ddf_umap    equ $010a		; update map
 
-ddf_psoff   equ $0120   ; long    physical sector offset = first sector of drive
-ddf_lsoff   equ $0124   ; long    logical sector offset = first sector of data
-ddf_slbl    equ $0128   ; long    slave block range low (-ve if not set)
-ddf_slbh    equ $012c   ; long    slave block range high
-ddf_mupd    equ $0130   ; byte    set if map updated, cleared by umap (1st call)
-ddf_slld    equ $0131   ; bytes   set if slaved load preferred to scatter
-ddf_drive   equ $0140           ; drive specific status area
+ddf_psoff   equ $0120	; long	  physical sector offset = first sector of drive
+ddf_lsoff   equ $0124	; long	  logical sector offset = first sector of data
+ddf_slbl    equ $0128	; long	  slave block range low (-ve if not set)
+ddf_slbh    equ $012c	; long	  slave block range high
+ddf_mupd    equ $0130	; byte	  set if map updated, cleared by umap (1st call)
+ddf_slld    equ $0131	; bytes   set if slaved load preferred to scatter
+ddf_drive   equ $0140		; drive specific status area
 ddf_dtop    equ $0180
 
 ; Device Driver Linkage Initilisation Table
 
-dlt_lklen   equ $0000   ; long    linkage block length
-dlt_ddlen   equ $0004   ; long    drive definition block length
-dlt_dname   equ $0008   ; 4 bytes drive name 3 upper case + '0'
-dlt_rev     equ $000c   ; byte    driver revision number
-dlt_buff    equ $000d   ; byte    set if buffered driver
-dlt_cylhds  equ $000e   ; byte    set for cylinder / head / side
-dlt_sectl   equ $000f   ; byte    bit set for each sector length supported
-dlt_mtype   equ $0010   ; byte    medium type
-dlt_msect   equ $0011   ; byte    multiple sector support
-dlt_dens    equ $0012   ; byte    density flags
-dlt_s0      equ $0013   ; byte    zero
+dlt_lklen   equ $0000	; long	  linkage block length
+dlt_ddlen   equ $0004	; long	  drive definition block length
+dlt_dname   equ $0008	; 4 bytes drive name 3 upper case + '0'
+dlt_rev     equ $000c	; byte	  driver revision number
+dlt_buff    equ $000d	; byte	  set if buffered driver
+dlt_cylhds  equ $000e	; byte	  set for cylinder / head / side
+dlt_sectl   equ $000f	; byte	  bit set for each sector length supported
+dlt_mtype   equ $0010	; byte	  medium type
+dlt_msect   equ $0011	; byte	  multiple sector support
+dlt_dens    equ $0012	; byte	  density flags
+dlt_s0	    equ $0013	; byte	  zero
 
-dlt_poll    equ $0014   ; word    polling interrupt service routine rel addr
-dlt_sched   equ $0016   ; word    scheduler loop service routine relative addr
+dlt_poll    equ $0014	; word	  polling interrupt service routine rel addr
+dlt_sched   equ $0016	; word	  scheduler loop service routine relative addr
 
-dlt_check   equ $0018   ; word    rel addr of check device / medium for open
-dlt_direct  equ $001a   ; word    rel addr of set up for direct access IO
-dlt_rsect   equ $001c   ; word    rel addr of read sector
-dlt_wsect   equ $001e   ; word    rel addr of write sector
-dlt_vsect   equ $0020   ; word    rel addr of verify sector
-dlt_slbfill equ $0022   ; word    rel addr of fill slave block
-dlt_slbupd  equ $0024   ; word    rel addr of slave block updated
-dlt_dflush  equ $0026   ; word    rel addr of flush all buffers for a drive
-dlt_fflush  equ $0028   ; word    rel addr of flush all buffers for a file
-dlt_fslave  equ $002a   ; word    rel addr of find slave linkage
-dlt_mformat equ $002c   ; word    rel addr of medium format
-dlt_status  equ $002e   ; word    rel addr of drive status
-dlt_done    equ $0030   ; word    rel addr of close last file on drive
-dlt_zap     equ $0032   ; word    rel addr of driver zap
-dlt_lvec    equ dlt_zap         ; last vector
+dlt_check   equ $0018	; word	  rel addr of check device / medium for open
+dlt_direct  equ $001a	; word	  rel addr of set up for direct access IO
+dlt_rsect   equ $001c	; word	  rel addr of read sector
+dlt_wsect   equ $001e	; word	  rel addr of write sector
+dlt_vsect   equ $0020	; word	  rel addr of verify sector
+dlt_slbfill equ $0022	; word	  rel addr of fill slave block
+dlt_slbupd  equ $0024	; word	  rel addr of slave block updated
+dlt_dflush  equ $0026	; word	  rel addr of flush all buffers for a drive
+dlt_fflush  equ $0028	; word	  rel addr of flush all buffers for a file
+dlt_fslave  equ $002a	; word	  rel addr of find slave linkage
+dlt_mformat equ $002c	; word	  rel addr of medium format
+dlt_status  equ $002e	; word	  rel addr of drive status
+dlt_done    equ $0030	; word	  rel addr of close last file on drive
+dlt_zap     equ $0032	; word	  rel addr of driver zap
+dlt_lvec    equ dlt_zap 	; last vector
 
-dlt_thname  equ $0034   ; word    rel addr of thing name
-dlt_thing   equ $0036   ; word    rel addr of thing
+dlt_thname  equ $0034	; word	  rel addr of thing name
+dlt_thing   equ $0036	; word	  rel addr of thing
 
-dlt_mname   equ $0038   ; 4 bytes master drive name 3 upper case + '0'
+dlt_mname   equ $0038	; 4 bytes master drive name 3 upper case + '0'
 
 ; preset table
 
-dlt_preset  equ $003c           ; start of preset table
-dlt_offset    equ $00   ; word    offset within linkage block 0=end
-dlt_bytes     equ $02   ; word    number of bytes to preset
-dlt_data      equ $04   ; byte    data to preset
+dlt_preset  equ $003c		; start of preset table
+dlt_offset    equ $00	; word	  offset within linkage block 0=end
+dlt_bytes     equ $02	; word	  number of bytes to preset
+dlt_data      equ $04	; byte	  data to preset
 
 ; vectored interrupt table
 
-dlt_vintab  equ $003e           ; start of vector interrupt table (no preset)
-;dlt_offset   equ $00   ; word    offset within linkage block 0=end
-dlt_vimovem   equ $02   ; word    movem mask
-dlt_viserv    equ $04   ; word    rel addr of vectored interrupt server
-dlt_vivect    equ $06   ; word    address of interrupt vector
+dlt_vintab  equ $003e		; start of vector interrupt table (no preset)
+;dlt_offset   equ $00	; word	  offset within linkage block 0=end
+dlt_vimovem   equ $02	; word	  movem mask
+dlt_viserv    equ $04	; word	  rel addr of vectored interrupt server
+dlt_vivect    equ $06	; word	  address of interrupt vector
 
 ; hardware access tables
 
-dlt_acctab  equ $0040           ; start of access table (no preset or vint)
-dlt_access    equ $00   ; word    relative pointer to hardware access routine
+dlt_acctab  equ $0040		; start of access table (no preset or vint)
+dlt_access    equ $00	; word	  relative pointer to hardware access routine
 
 
-dlt_end     equ $0042           ; end of table (no preset, vint or access)
+dlt_end     equ $0042		; end of table (no preset, vint or access)
 
 ; Format dependent vector
 
-fdv_next    equ $0000   ; word    pointer to next
-fdv_ftype   equ $0002   ; byte    format type (0 to 127)
-fdv_dosd    equ $0003   ; byte    set if date is in DOS format
-fdv_name    equ $0004   ; string  format name (max 7 chars zero padded to 8)
-fdv_zalloc  equ $000e   ; byte    set if zero length file has sector allocated
-fdv_sss0    equ $000f   ; byte    zero
+fdv_next    equ $0000	; word	  pointer to next
+fdv_ftype   equ $0002	; byte	  format type (0 to 127)
+fdv_dosd    equ $0003	; byte	  set if date is in DOS format
+fdv_name    equ $0004	; string  format name (max 7 chars zero padded to 8)
+fdv_zalloc  equ $000e	; byte	  set if zero length file has sector allocated
+fdv_sss0    equ $000f	; byte	  zero
 
 ; table of relative word pointers
 
-fdv_itop    equ $0010           ; internal to pathname translate
-fdv_ptoi    equ $0012           ; pathname to internal translate
-fdv_itopck  equ $0014           ; internal to check translate
-fdv_mcheck  equ $0016           ; format dependent medium check
-fdv_drname  equ $0018           ; find / create / delete / change name in dir
-fdv_drmake  equ $001a           ; make directory
-fdv_drent   equ $001c           ; fetch entry from directory
-fdv_drefile equ $001e           ; fetch directory entry for file
-fdv_dresel  equ $0020           ; fetch selected directory entry
-fdv_drsfile equ $0022           ; set directory information for file
-fdv_salloc  equ $0024           ; allocate new sector
-fdv_slocate equ $0026           ; locate new sector
-fdv_strunc  equ $0028           ; truncate sectors for file
-fdv_sload   equ $002a           ; scatter load
-fdv_ssave   equ $002c           ; scatter save
-fdv_fselect equ $002e           ; select format
-fdv_format  equ $0030           ; format
-fdv_logphys equ $0032           ; 2 logical to physical translate vectors
-fdv_rsinfo  equ $0036           ; reset medium information
-fdv_mnset   equ $0038           ; set the medium name
-fdv_umap    equ $003a           ; update map on disk
-fdv_lvec    equ fdv_umap        ; last vector
+fdv_itop    equ $0010		; internal to pathname translate
+fdv_ptoi    equ $0012		; pathname to internal translate
+fdv_itopck  equ $0014		; internal to check translate
+fdv_mcheck  equ $0016		; format dependent medium check
+fdv_drname  equ $0018		; find / create / delete / change name in dir
+fdv_drmake  equ $001a		; make directory
+fdv_drent   equ $001c		; fetch entry from directory
+fdv_drefile equ $001e		; fetch directory entry for file
+fdv_dresel  equ $0020		; fetch selected directory entry
+fdv_drsfile equ $0022		; set directory information for file
+fdv_salloc  equ $0024		; allocate new sector
+fdv_slocate equ $0026		; locate new sector
+fdv_strunc  equ $0028		; truncate sectors for file
+fdv_sload   equ $002a		; scatter load
+fdv_ssave   equ $002c		; scatter save
+fdv_fselect equ $002e		; select format
+fdv_format  equ $0030		; format
+fdv_logphys equ $0032		; 2 logical to physical translate vectors
+fdv_rsinfo  equ $0036		; reset medium information
+fdv_mnset   equ $0038		; set the medium name
+fdv_umap    equ $003a		; update map on disk
+fdv_lvec    equ fdv_umap	; last vector
 
 ; Filing System Channel Block
 
-d3c_len     equ $0000 ; long    LENgth of channel block
-d3c_drvr    equ $0004 ; long    address of driver linkage
-d3c_ownr    equ $0008 ; long    OWNeR of this channel
-d3c_rflg    equ $000c ; long    pointer to channel Closed FLaG, cleared on close
-d3c_tag     equ $0010 ; word    channel TAG
-d3c_stat    equ $0012 ; byte    STATus 0 ok, $01 wait, $ff wait (rel a6)
-d3c_actn    equ $0013 ; byte    IO action (stored value of d0)
-d3c_jbwt    equ $0014 ; long    JoB WaiTing for IO
+d3c_len     equ $0000 ; long	LENgth of channel block
+d3c_drvr    equ $0004 ; long	address of driver linkage
+d3c_ownr    equ $0008 ; long	OWNeR of this channel
+d3c_rflg    equ $000c ; long	pointer to channel Closed FLaG, cleared on close
+d3c_tag     equ $0010 ; word	channel TAG
+d3c_stat    equ $0012 ; byte	STATus 0 ok, $01 wait, $ff wait (rel a6)
+d3c_actn    equ $0013 ; byte	IO action (stored value of d0)
+d3c_jbwt    equ $0014 ; long	JoB WaiTing for IO
 
-d3c_qdlink  equ $0018 ; long    QDOS LINKed list of channel blocks
-d3c_accs    equ $001c ; byte    ACCeSs mode
-d3c_qdid    equ $001d ; byte    DRive ID for QDOS compatibility
-d3c_atype   equ $001e ; byte    access type
-d3c.adir    equ   -1          ; directory
-d3c.file    equ    0          ; normal file
-d3c.asect   equ    1          ; direct sector
+d3c_qdlink  equ $0018 ; long	QDOS LINKed list of channel blocks
+d3c_accs    equ $001c ; byte	ACCeSs mode
+d3c_qdid    equ $001d ; byte	DRive ID for QDOS compatibility
+d3c_atype   equ $001e ; byte	access type
+d3c.adir    equ   -1	      ; directory
+d3c.file    equ    0	      ; normal file
+d3c.asect   equ    1	      ; direct sector
 
-d3c_fpos    equ $0020 ; long    File POSition
-d3c_feof    equ $0024 ; long    File EOF
-d3c_csb     equ $0028 ; long    current slave block
+d3c_fpos    equ $0020 ; long	File POSition
+d3c_feof    equ $0024 ; long	File EOF
+d3c_csb     equ $0028 ; long	current slave block
 
-d3c_ro      equ $002c ; byte    read only (positive)
-d3c_updt    equ $002c ; byte    updated (negative)
-d3c.ok      equ   0
-d3c.ro      equ   1
+d3c_ro	    equ $002c ; byte	read only (positive)
+d3c_updt    equ $002c ; byte	updated (negative)
+d3c.ok	    equ   0
+d3c.ro	    equ   1
 d3c.updt    equ  -1
-d3c_usef    equ $002d ; byte    file USE Flags
-d3c..bst    equ   0           ; backup date set
-d3c..vst    equ   1           ; version set
-d3c..ust    equ   2           ; update date set
-d3c_nnslv   equ $002e ; byte    set if new slave block should not be created
+d3c_usef    equ $002d ; byte	file USE Flags
+d3c..bst    equ   0	      ; backup date set
+d3c..vst    equ   1	      ; version set
+d3c..ust    equ   2	      ; update date set
+d3c_nnslv   equ $002e ; byte	set if new slave block should not be created
 
-d3c_qname   equ $0032 ; string  QDOS file NAME
-d3c.qnml    equ   $24 ;         max QDOS file NaMe LeNgth
+d3c_qname   equ $0032 ; string	QDOS file NAME
+d3c.qnml    equ   $24 ; 	max QDOS file NaMe LeNgth
 
-d3c_name    equ $0058 ; string  internal path file name
-d3c.pthl    equ   $46 ;         max path name length
-d3c.pname   equ   0   ;         pathname separator for filenames
-d3c.pext    equ   1   ;         pathname separator for extensions
+d3c_name    equ $0058 ; string	internal path file name
+d3c.pthl    equ   $46 ; 	max path name length
+d3c.pname   equ   0   ; 	pathname separator for filenames
+d3c.pext    equ   1   ; 	pathname separator for extensions
 
-d3c_qdend   equ $00a0 ;         end of QDOS block  (dummy heap header)
-d3c_qdnchk  equ $00b0 ; long    no check for share flag
-d3c.qdnchk  equ 'NCHK'  ;       = chn.nchk
-d3c_dgroup  equ $00b4 ; long    drive group number
-d3c_fgroup  equ $00b8 ; long    file group number
-d3c_fsect   equ $00bc ; long    file sector number
-d3c_flid    equ $00c0 ; long    FiLe ID
-d3c_drid    equ $00c4 ; word    drive ID
-d3c_drnr    equ $00c6 ; word    DRive NumbeR
-d3c_ddef    equ $00c8 ; long    pointer to Drive DEFinition
-d3c_sdsb    equ $00cc ; long    (Sub-)Directory slave block
-d3c_sdid    equ $00d0 ; long    (Sub-)Directory ID
-d3c_sdlen   equ $00d4 ; long    (Sub-)Directory end of file
-d3c_sdent   equ $00d8 ; long    (Sub-)Directory entry number
-d3c_denum   equ $00dc ; long    directory entry number in directory entry
-d3c.defile  equ    -1         ; directory entry for file is negative
-d3c_dren    equ $00e0 ;         space for directory entry
+d3c_qdend   equ $00a0 ; 	end of QDOS block  (dummy heap header)
+d3c_qdnchk  equ $00b0 ; long	no check for share flag
+d3c.qdnchk  equ 'NCHK'	;	= chn.nchk
+d3c_dgroup  equ $00b4 ; long	drive group number
+d3c_fgroup  equ $00b8 ; long	file group number
+d3c_fsect   equ $00bc ; long	file sector number
+d3c_flid    equ $00c0 ; long	FiLe ID
+d3c_drid    equ $00c4 ; word	drive ID
+d3c_drnr    equ $00c6 ; word	DRive NumbeR
+d3c_ddef    equ $00c8 ; long	pointer to Drive DEFinition
+d3c_sdsb    equ $00cc ; long	(Sub-)Directory slave block
+d3c_sdid    equ $00d0 ; long	(Sub-)Directory ID
+d3c_sdlen   equ $00d4 ; long	(Sub-)Directory end of file
+d3c_sdent   equ $00d8 ; long	(Sub-)Directory entry number
+d3c_denum   equ $00dc ; long	directory entry number in directory entry
+d3c.defile  equ    -1	      ; directory entry for file is negative
+d3c_dren    equ $00e0 ; 	space for directory entry
 d3c.dren    equ   $44
-d3c_setmask equ $00e0 ; long    mask of information to be updated
-d3c_flen    equ $00e4 ; long    file length (including header, for file = feof)
-d3c_updd    equ $00e8 ; long    update date
-d3c_arcd    equ $00ec ; long    archive date
-d3c_data    equ $00f0 ; long    uninitialised data length
-d3c_xtra    equ $00f4 ; long    extra information
-d3c_vers    equ $00f8 ; word    version
-d3c_dsattr  equ $00fa ; byte    DOS attributes
-d3c_type    equ $00fb ; byte    file type
+d3c_setmask equ $00e0 ; long	mask of information to be updated
+d3c_flen    equ $00e4 ; long	file length (including header, for file = feof)
+d3c_updd    equ $00e8 ; long	update date
+d3c_arcd    equ $00ec ; long	archive date
+d3c_data    equ $00f0 ; long	uninitialised data length
+d3c_xtra    equ $00f4 ; long	extra information
+d3c_vers    equ $00f8 ; word	version
+d3c_dsattr  equ $00fa ; byte	DOS attributes
+d3c_type    equ $00fb ; byte	file type
 
 d3c_fnam    equ $0100 ; string up to 36 ($24) chars - not set for file
 
-d3c_link    equ $0128 ; long    linked list of channel blocks
-d3c_fenum   equ $012c ; long    formatted entry number -ve is header
-d3c_fentry  equ $0130 ;         formatted entry
-d3c_end     equ $0170 ;         DV3 channel end
+d3c_link    equ $0128 ; long	linked list of channel blocks
+d3c_fenum   equ $012c ; long	formatted entry number -ve is header
+d3c_fentry  equ $0130 ; 	formatted entry
+d3c_end     equ $0170 ; 	DV3 channel end
 
 
 ; The DV3 Thing
 
-dv3_lklist  equ $30     ; long    pointer to list of DV3 linkage blocks
-dv3_fdtab   equ $34     ; long    pointer to format dependent table
-dv3_fdmax   equ $38     ; word    highest type in format dependent table
-;dv3_icache  equ $3a     ; 6 byte  vector to instruction cache routine
-dv3_top     equ $40              ; top of DV3 thing
+dv3_lklist  equ $30	; long	  pointer to list of DV3 linkage blocks
+dv3_fdtab   equ $34	; long	  pointer to format dependent table
+dv3_fdmax   equ $38	; word	  highest type in format dependent table
+;dv3_icache  equ $3a	 ; 6 byte  vector to instruction cache routine
+dv3_top     equ $40		 ; top of DV3 thing
 
 
 ; Slave block table entries
 
 ; System entries - format is obligatory
 
-sbt_stat equ    $0000   ; byte    STATus of block
+sbt_stat equ	$0000	; byte	  STATus of block
 
 ; Filing system slave block entries - format is flexible
 
-sbt_dsct equ    $0001   ; byte    drive sector within group
-sbt_dgrp equ    $0002   ; word    drive group
-sbt_file equ    $0004   ; word    file (ID) number
-sbt_sect equ    $0006   ; word    sector number within file
-sbt_end  equ    $0008
+sbt_dsct equ	$0001	; byte	  drive sector within group
+sbt_dgrp equ	$0002	; word	  drive group
+sbt_file equ	$0004	; word	  file (ID) number
+sbt_sect equ	$0006	; word	  sector number within file
+sbt_end  equ	$0008
 
-sbt.len  equ    $0008           ; length of slave block table
-sbt.size equ    $0200           ; size of slave block
-sbt.mins equ    $0400           ; minimum size of slave area
-sbt.shft equ    6               ; block table address to block address SHiFT
+sbt.len  equ	$0008		; length of slave block table
+sbt.size equ	$0200		; size of slave block
+sbt.mins equ	$0400		; minimum size of slave area
+sbt.shft equ	6		; block table address to block address SHiFT
 
 ; status byte usage
 
-sbt.driv equ    %11110001+$ffffff00 ; mask of pointer to DRIVe
-sbt.drvv equ    %11110011+$ffffff00 ; mask of DRiVe Valid bits
-sbt.stat equ    %00001111           ; mask of STATus bits
-sbt.actn equ    %00001100           ; mask of ACTioN bits
-sbt.inus equ    %00001110           ; mask of IN USe bits
+sbt.driv equ	%11110001+$ffffff00 ; mask of pointer to DRIVe
+sbt.drvv equ	%11110011+$ffffff00 ; mask of DRiVe Valid bits
+sbt.stat equ	%00001111	    ; mask of STATus bits
+sbt.actn equ	%00001100	    ; mask of ACTioN bits
+sbt.inus equ	%00001110	    ; mask of IN USe bits
 
 ; slave block status bits (least significant four)
 
-sbt..fsb equ    0                   ; Filing System Block
-sbt..rrq equ    3                   ; Read ReQuest
-sbt..wrq equ    2                   ; Write ReQuest
-sbt..vld equ    1                   ; block is VaLiD
-sbt.mpty equ    %0001               ; block eMPTY
-sbt.read equ    %1001               ; awaiting READ
-sbt.true equ    %0011               ; block is TRUE representation of file
-sbt.veri equ    %1011               ; awaiting VERIfy
-sbt.writ equ    %0111               ; awaiting WRITe (updated)
+sbt..fsb equ	0		    ; Filing System Block
+sbt..rrq equ	3		    ; Read ReQuest
+sbt..wrq equ	2		    ; Write ReQuest
+sbt..vld equ	1		    ; block is VaLiD
+sbt.mpty equ	%0001		    ; block eMPTY
+sbt.read equ	%1001		    ; awaiting READ
+sbt.true equ	%0011		    ; block is TRUE representation of file
+sbt.veri equ	%1011		    ; awaiting VERIfy
+sbt.writ equ	%0111		    ; awaiting WRITe (updated)
 
-        list
+	list

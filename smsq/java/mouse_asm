@@ -1,4 +1,4 @@
-; Java Mouse Routines this is called from the kbd polling routine
+; Java Mouse Routines this is called from the polling interrupt
 ; mouse button 1 (left) = 1
 ; mouse button 2 (right) = 2
 ; both	left & right = 3
@@ -40,9 +40,8 @@ smsh.reg reg	a4/a5
 
 ; I have no idea why the following ocde adapted from the qxl mouse routines works
 
-
 	move.w	d1,d0			 ; supposed count
-	bpl.s	mse_ycount		 ; ... itšs positive
+	bpl.s	mse_ycount		 ; ... its positive
 	neg.w	d0
 mse_ycount
 	swap	d1

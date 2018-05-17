@@ -7,8 +7,9 @@
 160 ERT HOT_RES('l',dev$&'Make'):ERT HOT_REMV('l')
 170 CLS:PRINT" Loading QMac"
 180 ERT HOT_RES('l',dev$&'Qmac'):ERT HOT_REMV('l')
-190 EX smsqemake
-200 :
-210 DEFine PROCedure sa
-220   SAVE_O dev8_extras_compile_boot
-230 END DEFine sa
+190 LRESPR dev8_extras_cline_bin
+200 EX smsqemake
+210 :
+220 DEFine PROCedure sa
+230   SAVE_O dev8_extras_compile_boot
+240 END DEFine sa

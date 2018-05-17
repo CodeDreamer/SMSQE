@@ -88,7 +88,7 @@
     A  -  The EX(ec)  etc command. Support for the Home Thing is built into
     the OS as of SMSQ/E version 3.11. Whenever you use the EX commands, the
     home directory for the job to be EXecuted will be set up automatically.
-    This support does  not exist  on QDOS  machines, since,  obviously, thr
+    This support does  not exist  on QDOS  machines, since,  obviously, the
     EXEC command itself had  to be  modified, which  is not  possible under
     QDOS.
     

@@ -55,8 +55,12 @@ smsh.reg reg	d1/d2/a1/a2
 	move.l	jva_lkkbd(a1),d0	; get current key char(s)
 	clr.l	jva_lkkbd(a1)		; no more
 	move.l	(sp)+,a1
+	move.l	sys_klnk(a6),a1 	; keyboard linkage
 	move.l	d0,d1			; char(s) gotten
 	bne.s	hok_chkc		; there were some
+	btst	#0,$29(a1)		; shift pressed?
+	beq.s	hok_rts 		; no
+	sf	sys_dfrz(a6)		; yes, unfreeze screen
 hok_rts
 	movem.l (a7)+,smsh.reg
 	rts
@@ -67,31 +71,32 @@ hok_chkc
 	beq.s	wheel
 	cmp.l	#$d9d9d9,d1
 	beq.s	wheel
-	tst.l	d1			 ; break?
-	bmi.s	hok_break		 ; ... yes
+	tst.l	d1			; break?
+	bmi.s	hok_break		; ... yes
 
-	cmp.w	sys_swtc(a6),d1 	 ; switch queue?
-	beq.s	hok_swtc		 ; ... yes
+	cmp.w	sys_swtc(a6),d1 	; switch queue?
+	beq.s	hok_swtc		; ... yes
 
-	cmp.b	#k.cf5,d1		 ; screen freeze?
-	beq.s	hok_dfrz		 ; ... yes
+	cmp.b	#k.cf5,d1		; screen freeze?
+	beq.s	hok_dfrz		; ... yes
 
-	cmp.b	#k.caps,d1		 ; CAPSLOCK?
+	cmp.b	#k.caps,d1		; CAPSLOCK?
 	beq.s	hok_caps
 
-	move.w	d1,sys_lchr(a6) 	 ; save last character
+	move.w	d1,sys_lchr(a6) 	; save last character
+	move.w	d1,kb_lcod(a1)		; also here
 hok_putu
-	sf	sys_dfrz(a6)		 ; unfreeze screen
+	sf	sys_dfrz(a6)		; unfreeze screen
 hok_putc
-	cmp.b	#$ff,d1 		 ; ALT?
-	bne.s	hok_put1		 ; ... no
-	swap	d1			 ;
-	jsr	ioq_test		 ; ... yes, check
-	subq.l	#2,d2			 ; ... ... for room for 2
-	blt.s	hok_rts 		 ; ... no
+	cmp.b	#$ff,d1 		; ALT?
+	bne.s	hok_put1		; ... no
+	swap	d1			;
+	jsr	ioq_test		; ... yes, check
+	subq.l	#2,d2			; ... ... for room for 2
+	blt.s	hok_rts 		; ... no
 	swap	d1
-	jsr	ioq_pbyt		 ; put one byte
-	lsr.w	#8,d1			 ; ... and then the other
+	jsr	ioq_pbyt		; put one byte
+	lsr.w	#8,d1			; ... and then the other
 hok_put1
 	jsr	ioq_pbyt		 ; put byte in kbd queue
 	bra.s	hok_rts

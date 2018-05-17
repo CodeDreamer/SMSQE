@@ -1,5 +1,6 @@
-; GOLD Card Hardware Operations
-
+; Java "Hardware" Operations @ w. Leerz 2012-2014
+;
+; 1.01 2014 May 07 keyboard linkage is linked in
 	section sms
 
 	xdef	hdop_init
@@ -39,8 +40,8 @@ kbd_procs
 	proc_end
 
 ;+++
-; This is initialisation for the hardware operations - for the QL this includes
-; the physical layers of the keyboard and serial receiver as these are mixed up.
+; This is initialisation for the "hardware" operations
+; the keyboard thing is there for compatibility reasons, it is of no use.
 ;---
 hdop_init
 	lea	kbd_procs,a1
@@ -67,7 +68,7 @@ hdop_ithg
 	move.l	(a1)+,(a2)+
 	move.b	(a1)+,(a2)+
 
-	jsr	gu_thzlk
+	jsr	gu_thzlk		 ; link in thing
 
 	move.w	sys_lang(a6),d1 	 ; default keyboard table
 	jsr	kbd_sett		 ; set tables
@@ -77,16 +78,41 @@ hdop_ithg
 	lea	iod_pllk(a3),a0
 	moveq	#sms.lpol,d0
 	trap	#do.sms2
+
+	move.l	a3,sys_klnk(a6) 	 ; set pointer to linkage  (v. 1.01)
+
 hdop_rts
 	rts
 
 
 ;+++
-; kbd polling routine
+; mouse & kbd polling routines
 ;---
 hdop_poll
-kbd_poll
 	jsr	mse_poll
-	bsr.l	kbd_read		; on interrupt read kbd
-	rts
+kbd_poll
+	jmp	kbd_read		; on interrupt read kbd
+
+	end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	end

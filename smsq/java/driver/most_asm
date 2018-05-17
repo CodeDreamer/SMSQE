@@ -1,4 +1,5 @@
-; base area SMSQ GOLD Drivers
+; base area SMSQ JAVA Drivers
+; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
 
 	section header
 
@@ -31,7 +32,6 @@ smsq_name
 	xref	mem_init
 	xref	sfa_init
 	xref	win_init
-	xref	flp_init
 	xref	sms_hdop
 	xref	dev_init
 	xref	nul_init
@@ -75,7 +75,6 @@ start
 	jsr	rd_init
 	jsr	iob_init
 	jsr	history_init
-	jsr	flp_init
 	jsr	sfa_init
 	jsr	nfa_init
 	jsr	mem_init
@@ -92,81 +91,47 @@ sys_init
 	moveq	#sms.xtop,d0
 	trap	#do.sms2
 
-	clr.w	psf_sr(a5)		 ; we can clear interrupts on return
+	clr.w	psf_sr(a5)		; we can clear interrupts on return
 
-	lea	qd_int2,a0		 ; set interrupt routine address
+	lea	qd_int2,a0		; set interrupt routine address
 	lea	exv_i2,a5
-	bsr.s	irm_wbase
+	move.l	a0,(a5)
 
-	moveq	#$ffffff00+pc.maskt+pc.intri,d0 ; enable transmit interrupt
-	move.b	d0,sys_qlir(a6) 	 ; .... and always clear interface int
-	move.b	d0,pc_intr
+	move.b	 #0,sys_qlir(a6)	 ; always clear interface int
 
 	lea	hw_poll,a0
-	lea	sms.hpoll,a5		 ; and tidy up
-	bsr.s	irm_wbase
+	lea	sms.hpoll,a5		; setup harware poll, which is just anrts
+	move.l	a0,(a5)
 
 	lea	sms_hdop,a0
-	lea	sms.t1tab+sms.hdop*4,a5  ; set hdop
-	bsr.s	irm_wbase
-	bra.s	boot_dev		; (try to) set boot device
+	lea	sms.t1tab+sms.hdop*4,a5 ; set hdop
+	move.l	a0,(a5)+
 
-irm_wbase
-	move.l	a0,d0			 ; write a0 to vector area
-	swap	d0
-	bsr.s	wb_do
-	swap	d0
-wb_do
-	jmp	sms.wbase
 
-;+++
-; Java polling interrupt server operating off the frame interrupt.
-; Clears all interrupts.
-; See SHD_POLL.
-;---
-hw_poll
-	moveq	#0,d7
-	move.b	d7,pc_intr		 ; clear ALL interrupts
+	tst.b	sms.conf+sms_nqimi	; use less cpu if idle?
+	beq.s	exit			; no ->...
+	lea	sched,a0		; yes, link in my scheduler routine
+	clr.l	(a0)+			; just in case
+	lea	jva_sched,a1
+	move.l	a1,(a0)
+	subq.l	#4,a0
+	moveq	#sms.lshd,d0
+	trap	#$1
+exit	clr.l	d0
+hw_poll 				; this is the "hardware poll" !!!!!!
 	rts
 
-
-;+++++++++++++++++++++++++++
-; try to set the default devices
-;+++++++++++++++++++++++++++
-
-	xref	gu_fopen
-	xref	gu_fclos
-
-boot_dev
-	move.l	jva_lkptr,d0		; get ptr to linkage block
-	beq.s	end_bt			; huh???
-	add.l	#jva_boot,d0
-	move.l	d0,a0
-	move.l	(a0),d0 		; possible boot device
-	beq.s	end_bt			; none
-	lea	boot_nam,a0
-	move.l	d0,2(a0)		; boot device
-	moveq	#ioa.kshr,d3
-	jsr	gu_fopen		; try to open boot file
-	beq.s	boot_fnd		; OK
-end_bt	moveq	#0,d0			; not found, doesn't matter
-set_rts rts
-
-boot_fnd
-	jsr	gu_fclos		; close file again
-	lea	sys_datd(a6),a0 	; set as data default
-	bsr.s	boot_set
-	lea	sys_prgd(a6),a0 	; and as prog default
-boot_set
-	move.l	(a0),d0 		; set?
-	beq.s	set_end
-	move.l	d0,a0
-	move.l	boot_nam+2,2(a0)	; set boot device as default
-	moveq	#0,d0
-set_end rts
+	dc.l	0			; space for possible scheduler routine link
+sched	dc.l	0,0
 
 
-boot_nam
-	dc.w	9,'nfa1_boot'
+**********
+*
+* Java scheduler routine - tries to see whether machine is busy
+*
+**********
+jva_sched
+	dc.w	jva.trp7
+	rts
 
 	end

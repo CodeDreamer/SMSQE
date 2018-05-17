@@ -742,7 +742,10 @@
 ;
 ; 3.20	Added read-only check in dv3_sbyt (MK).
 ;
+; 3.21	Added file open check when making directories (wl).
+;	SMSQ/E DV3 floppy driver for SMSQmulator (wl).
+;
 
-smsq_vers equ	 '3.20'
+smsq_vers equ	 '3.21'
 
 	end

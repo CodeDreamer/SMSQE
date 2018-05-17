@@ -19,8 +19,9 @@ jva_scinc	equ	jva_scrl+4	; length of line in bytes (W)
 jva_scrxs	equ	jva_scinc+2	; xsize in pixels (W)
 jva_scrys	equ	jva_scrxs+2	; ysize in pixels (W)
 jva_boot	equ	jva_scrys+2	; possible boot device (L)
-jva_keyr	equ	jva_boot+4	; keyrow (8 bytes)
-jva_nfau	equ	jva_keyr+8	; nfa use name eg 'WIN0"
+;jva_keyr	 equ	 jva_boot+4	 ; keyrow (8 bytes)
+;jva_nfau	 equ	 jva_keyr+8	 ; nfa use name eg 'WIN0"
+jva_nfau	equ	jva_boot+4	; nfa use name eg 'WIN0"
 jva_sfau	equ	jva_nfau+4
 jva_winu	equ	jva_sfau+4
 jva_flpu	equ	jva_winu+4
@@ -66,8 +67,19 @@ jt5.sttmr	equ	  27		;   set (start) timer
 jt5.gttmr	equ	  28		;   get current timer value
 
 jva.trp6	equ	$4b06
+jva.trp7	equ	$4b07
+jva.trp8	equ	$4b08		; flp access
+jt8.rsec	equ	  0		;   read a sector
+jt8.wsec	equ	  1		;   write a sector
+jt8.frmt	equ	  2		;   format drive
+jt8.ckwp	equ	  3		;   check for write protect
+jt8.ckst	equ	  4		;   check for drive status
+jt8.setd	equ	  5		;   set drive to native file string
+jt8.getd	equ	  6		;   get native dir as string
 
-; smsqmultor config info flag
+;jva.trp9	 equ	 $4b09		 ; win access
+
+; smsqmulator config info flag
 
 jva_cfgf1	equ    '<<SM'
 jva_cfgf2	equ    'SQMU'

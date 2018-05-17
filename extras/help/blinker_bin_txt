@@ -4,14 +4,14 @@
 
 
 
-         
-         Blinker_bin
-         
-         
-         This adds a few new keywords, notably is_extn:
-         
-         Syntax:  is_extn ("keyword") will return 1 if the keyword exists,0
-         if not.
-         
-         
-         Plase load this extension file with LRESPR.
+	 
+	 Blinker_bin
+	 
+	 
+	 This adds a few new keywords, notably is_extn:
+	 
+	 Syntax:  is_extn ("keyword") will return 1 if the keyword exists,0
+	 if not.
+	 
+	 
+	 Please load this extension file with LRESPR.

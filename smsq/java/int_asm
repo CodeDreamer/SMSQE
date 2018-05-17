@@ -18,17 +18,7 @@ qd_int2
 ; set primary stack frame and locate system variable base
 	movem.l psf.reg,-(sp)		 ; save main working registers
 	move.l	sms.sysb,a6		 ; system variable base
-; for the time being, the only interrupts are 50 hz frame interrupts.
-;	 move.b  pc_intr,d7
-;	 clr.b	 pc_intr
-;	 cmpi.b   #8,d7
-;	 beq.s	 shd_poll
-qdi_exit
-;	 movem.l (sp)+,psf.reg
-;	 rte
-
 shd_poll
-
 	addq.w	#1,sys_pict(a6) 	 ; one more poll
 	move.l	sms.spoll,a5
 	jmp	(a5)			 ; polling interrupt   (calls smsq_shd_poll_asm)

@@ -9,6 +9,7 @@
 	include 'dev8_keys_sys'
 	include 'dev8_keys_err'
 	include 'dev8_keys_java'
+	include 'dev8_smsq_kbd_keys'
 
 ;+++
 ; Internal keyrow call for pointer interface
@@ -32,15 +33,14 @@ hdop_keyr
        ; bne.s	 kbkr_bp		  ; not a nibble
 	moveq	#0,d1
 	move.b	(a3)+,d1		 ; row number
-
 	
 kbkr_do
 	cmp.w	#7,d1
 	bgt.s	no_read 		; I can't read more than that!
-	move.l	4,d0			; my linkage block
+	move.l	sys_klnk(a6),d0
 	beq.s	kbkr_bp 		; ooops
 	move.l	d0,a3
-	move.b	jva_keyr(A3,D1.W),D1	; get keyrow state
+	move.b	kb_krwem(a3,d1.w),d1	; get keyrow state
 
 kbkr_ok
 	moveq	#0,d0

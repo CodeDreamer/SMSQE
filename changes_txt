@@ -2,14 +2,33 @@
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
+
 -----------------------------------------------------------------------------
+
+3.21
+
+   BUGFIX
+	dv3_qlf_drmake_asm		3.01   don't allow dir creation if a file has open channels and would be moved into the dir (wl)
+
+    FLP for SMSQmulator
+	dv3_java_			.	New files added (dv3 floppy driver routines (wl)
+	smsq_java_dv3e_asm		1.00	new module header for DV3 files (wl)
+
+    SMSQmulator
+	smsq_java_hdop_asm		1.01	actually links in keyboard linkage (wl)
+
+-----------------------------------------------------------------------------
+
 3.20
+
     BUGFIX
 	dv3_dv3_buff_asm		3.01	Added read-only check in dv3_sbyt (MK)
 
 
 -----------------------------------------------------------------------------
+
 3.19
+
     QPC SPECIFIC SOURCES INTEGRATED
 	dv3_qpc 			.	added
 	iod_con2_qpc			.	added
@@ -22,9 +41,11 @@ Version   changed			of file   changes made
 
     BUGFIX
 	ee_wman_swdef_asm		1.04	Fixed pending new-line bug in wm_csize (MK)
+
 -----------------------------------------------------------------------------
 
 3.18
+
     CSIZES IN APPLICATION SUBWINDOWS
 	ee_wman_swdef_asm		1.03	 new subroutine wm_swdfn sets appsub csizes according to wirking definition (wl)
 	ee_wman_mdraw_asm		1.02	 uses that new subroutine (wl)
@@ -35,6 +56,7 @@ Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
 3.17
+
     BUGFIXES
 	ee_wman_move_asm		1.20	Window move with transparency fixed for pulled-down wdws L
 
@@ -42,6 +64,7 @@ Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
 3.16
+
     BUGFIXES
 	iod_con2_aur8_colrm_asm 	1.01	Fixed striped colours in COLOUR_NATIVE mode (MK)
 
@@ -64,6 +87,7 @@ Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
 3.15
+
     BUGFIXES
 	ee_wman_3db_asm 		1.03	double border type fixed (MK)
 	ee_wman_trap3_as		1.03	Fixed 3d border with zero width (MK)
@@ -87,6 +111,7 @@ Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
 3.14
+
     GRADUAL MOVE TOWARDS GWASS COMPATIBILITY - COSMETIC CHANGES
 	dv3_qxl_fd_rsect_asm		1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 	dv3_qxl_fd_wsect_asm		1.01	same
@@ -115,7 +140,6 @@ Version   changed			of file   changes made
 
 
 -----------------------------------------------------------------------------
-
 
 3.13
 
@@ -194,6 +218,7 @@ Version   changed			of file   changes made
 
 	SMSQEMAKE			-	adds home target to aurora, remodels Qx0 targets
 -----------------------------------------------------------------------------
+
 3.12
 
     SCREEN BACKGROUND WRITING EVEN IF WINDOW IS PARTLY BURIED (MK)
@@ -288,6 +313,7 @@ Version   changed			of file   changes made
 
 
 -----------------------------------------------------------------------------
+
 3.11
 
     BUGFIXES (thanks to MK for pointing these out, the errors he corrected were all mine)
@@ -309,7 +335,9 @@ Version   changed			of file   changes made
 	sbsext_ext_exsbas_asm		2.03	added call to gu_shome (mk)
 
 -----------------------------------------------------------------------------
+
 3.10
+
    SPRITE CLIPPING (MK)
 	iod_con2_ptr_sadd_asm		2.03	many changes for pointer sprite clipping
 	iod_con2_ptr_limit_asm		1.01	same
@@ -343,6 +371,7 @@ Version   changed			of file   changes made
    MISC
 	smsqemake			.	Some bugfixes (wl - thanks to Duncan Neithercut)
 -----------------------------------------------------------------------------
+
 3.09
 
 
@@ -388,11 +417,13 @@ Version   changed			of file   changes made
 	smsqemake			.	internal changes, use the new
 						outptr_bin for it
 -----------------------------------------------------------------------------
+
 3.08
     QPC internal version only
    
 
 -----------------------------------------------------------------------------
+
 3.07
     QXL - CONFIGURABLE DRIVES FOR WIN1 TO 8.
 	.				. THE FILENAME REMAINS "QXL.WIN" BUT

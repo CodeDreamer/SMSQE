@@ -45,7 +45,6 @@ comn_use
 	sub.l	a5,d0			 ; just one parameter?
 	blt.s	set_nam
 dev_usen
-	dc.w	jva.trp0
 	jsr	iou_use
 	moveq	#jt5.use,d0
 	dc.w	jva.trp5		; get data to java

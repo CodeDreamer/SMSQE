@@ -19,8 +19,21 @@ This here file only contains a short description of the new features.
 
 
 
-
 What is new in versions :
+     
+
+=====
+3.21
+=====
+
+Bugfix : If you try to make a diectory and a file that has channels open to
+it would be moved to that directory, the directory is NOT created. Note: in
+that case an empty file with the name ofthat directory will have been created.
+In other words : when you create a directory, don't have channels open to files
+that would have to be moved into the new directory .
+
+SMSQmulator uses the SMSQ/E dv3 drivers for floppy access.
+
 
 =====
 3.20
@@ -35,7 +48,7 @@ SMSQmulator specifc : timer added.
 =====
 
 QPC specific code integrated.
-appsub window CSIZE bugfix.
+Appsub window CSIZE bugfix.
 
 
 

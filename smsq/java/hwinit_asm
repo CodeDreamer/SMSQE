@@ -72,8 +72,8 @@ hwinit_name
 	dc.l	jva_cfgf4
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
-	dc.l	'3.20'
-	dc.w	'00'
+	dc.l	'3.21'
+	dc.l	'0000'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0
@@ -86,7 +86,7 @@ glcxbpart dc.b	0
 glc_scr  dc.b	0
 glc_mode dc.b	ptd.16
 glcxidisp dc.b	0,0,0,0,0,0,0,0,0,0
-glc_nqimi dc.b	0
+glc_nqimi dc.b	1			; use less cpu when idle? (used for qimi on gold card)
 glc_clock dc.b	0
 glcxxxx   dc.b	0,0			; reset for small mem
 qcf_mlan  dc.w	44			; default message language
@@ -149,17 +149,16 @@ hwinit	tst.l	d7			; soft or hard reset?
 hwinit2 move.l	a7,d7			; top of ram
 	sub.l	#jva.ssp,d7		; minus space for ssp = new ramptop
 
-	move.l	 #sys.java+sys.mqlc,d6	; 68000 / (gold card) + disp type
+	move.l	 #sys.java+sys.mqlc,d6	; 68000 / java + disp type
 	move.w	#$2700,sr		; stop interrupts
 hwi_comms
-	move.l	(sp)+,a0		 ; return address
+	move.l	(sp)+,a0		; return address
 
-	clr.l	-(sp)			 ; facilities
-	clr.l	-(sp)			 ; language
-	move.l	d6,-(sp)		 ; processor, mmu/fpu, std disp
-	move.l	#'JAVA',-(sp)		 ; this is a java machine emulator
+	clr.l	-(sp)			; facilities
+	clr.l	-(sp)			; language
+	move.l	d6,-(sp)		; processor, mmu/fpu, std disp
+	move.l	#'JAVA',-(sp)		; this is a java machine emulator
 
-								    
 	clr.l	d6			; no special RAM
 	clr.l	d5
 
