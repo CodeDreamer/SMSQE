@@ -13,7 +13,8 @@
 ;			    zero in d5
 ;			    zero in d6
 ;			    top of RAM in d7
-* 2003-09-27	      v.2.00 (?)	added OSPS config item
+* 2003-09-27	v.2.00 (?)	added OSPS config item
+* 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
 
 	section hwinit
 
@@ -36,18 +37,20 @@
 	include 'dev8_mac_creg'
 
 header_base
-	dc.l	hwinit_base-header_base ; length of header
-	dc.l	0			; module length unknown
-	dc.l	smsq_end-hwinit_base	; loaded length
-	dc.l	0			; checksum
-	dc.l	0			; always select
-	dc.b	0			; main level
+	dc.l	hwinit_base-header_base  ; length of header
+	dc.l	0			 ; module length unknown
+	dc.l	smsq_end-hwinit_base	 ; loaded length
+	dc.l	0			 ; checksum
+	dc.l	0			 ; always select
+	dc.b	0			 ; main level
 	dc.b	0
 	dc.w	hwinit_name-*
 
 hwinit_name
 	dc.w	36,'Q40 Hardware Initialisation for SMSQ'
 	dc.l	'    '
+
+
 
 qcf_cx
 qcf_mmu 	dc.b	 -1	 ; 00
@@ -96,16 +99,16 @@ qcf_curs	dc.b	1	 ; 1d
 ; copy module at (a0) to 4(a1)-(a2) linking to (a3) and updating a3 to a1
 
 q40_mdinst
-	move.l	d0,d0			; debugger precaution
-	st	q40_lowrom		; write to RAM
+	move.l	d0,d0			 ; debugger precaution
+	st	q40_lowrom		 ; write to RAM
 	move.l	a1,(a3)
 	move.l	a1,a3
 	clr.l	(a1)+
 q40_mdloop
-	move.w	(a0)+,(a1)+		; copy module
+	move.w	(a0)+,(a1)+		 ; copy module
 	cmp.l	a2,a1
 	blt.s	q40_mdloop
-	st	q40_lowram		; read from RAM
+	st	q40_lowram		 ; read from RAM
 	rts
 
 hwinit_base
@@ -134,7 +137,7 @@ hwinit
 	dtt1	#$00ffe020		; set DTT1 for all cached copyback
 ;	dtt1	#$00ffe000		; set DTT1 for all cached write through
 
-; NB the transparent translation is changed is the MMU is set
+; NB the tranparent translation is changed is the MMU is set
 
 hwi_peri
 	st	q40_ebr 		; reset extension bus
@@ -244,17 +247,17 @@ hwi_setRAM
 ; smsq write to base area routine
 
 sms_wbase
-	st	q40_lowrom		; write to RAM
+	st	q40_lowrom		 ; write to RAM
 	move.w	d0,(a5)+
-	st	q40_lowram		; read from RAM
+	st	q40_lowram		 ; read from RAM
 	rts
 
 ; loader tables
 
 mod_table
-	dc.l	sms.base-4,sms.base	; first slice (just the reset routine)
-	dc.l	0			; we cannot have code that can write to low memory in low
-					; memory - this is a problem for QMON and hard reset (above)
+	dc.l	sms.base-4,sms.base  ; first slice (just the reset routine)
+	dc.l	0  ; we cannot have code that can write to low memory in low
+		   ; memory - this is a problem for QMON and hard reset (above)
 
 mmu.ptr  equ	%11+%01000		; resident + used
 mmu.cpmode equ	%11+%11000+%0100000	; resident + used and modified + copyback
@@ -282,15 +285,15 @@ hwim_rtloop
 	move.l	a0,-(a4)
 	dbra	d0,hwim_rtloop
 
-	dc.w	$F518			; pflusha ; invalid ATC
+	dc.w	$F518 ;pflusha		; invalid ATC
 	screg	urp,a4
 	screg	srp,a4
 	screg	tc,#$c000		; enable MMU
 
-	itt0   #$007fc000		; set ITT0
-	itt1   #$fe01c040		; set ITT1
-	dtt0   #$007fc000		; set DTT0
-	dtt1   #$fe01c040		; set DTT1
+	itt0   #$fe00e000		; set ITT0 for ROM / Screen cached writethrough
+	itt1   #$00000000		; set ITT1 for none
+	dtt0   #$ff00e040		; set DTT0 for top 16M serialised
+	dtt1   #$fe00e020		; set DTT0 for screen cached copyback
 
 	rts
 

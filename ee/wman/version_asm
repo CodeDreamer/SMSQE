@@ -147,9 +147,12 @@
 ;		       Fixed bug for stippled borders in WMAN (WL)
 ;
 ;	V2.02	       Fixed WM_BLOCK (GG + MK)
-;	v2.03	       fixed pointer save on new move operation (wl)
+;
+;	V2.03	       Fixed pointer save on new move operation (wl)
+;
+;	V2.04	       Fixed spurious outline when using outline move, on mouse button release
 
-wm_vers equ	'2.03'
+wm_vers equ	'2.04'
 wm.pver equ	'2.01'
 
 	end

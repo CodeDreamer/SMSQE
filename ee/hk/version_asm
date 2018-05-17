@@ -84,7 +84,9 @@
 ;
 ;	2.30	New keywords Fex etc... (PW & MK)
 ;		SMSQ/E version now configurable again (MK)
+;
+;	2.31	New keyword HOT_GETSTUFF$ (MK)
 
-hk_vers equ    '2.30'
+hk_vers equ    '2.31'
 
 	end

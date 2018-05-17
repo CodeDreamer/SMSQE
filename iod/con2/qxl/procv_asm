@@ -1,5 +1,5 @@
 ; QXL QL/Hi RES Mode Procs	    2000  Tony Tebby
-
+; 2005.01.10	1.01	useless weeded out (BC)
 	section init
 
 	xdef	cn_procv
@@ -185,8 +185,7 @@ qxls_xysize
 	mulu	#4,d2
 	cmp.l	d1,d2
 	bge.s	qxls_check
-	move.l	d1,d2
-	move.l	d1,d2
+	move.l	d1,d2			; v. 1.01
 
 qxls_check
 	moveq	#2,d6			 ; assume giant

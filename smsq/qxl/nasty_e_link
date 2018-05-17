@@ -1,6 +1,6 @@
 program dev8_smsq_qxl_nasty_e
 
-input   dev8_smsq_qxl_nasty_e2_rel
+input dev8_smsq_qxl_nasty_e2_rel
 library dev8_smsq_qxl_speed_rel
 library dev8_smsq_qxl_rtc_rel
 library dev8_smsq_qxl_comm_isrv2_rel
@@ -17,6 +17,8 @@ library dev8_smsq_kbd_ibm_pc84x_rel
 library dev8_smsq_qxl_hdop_lib
 library dev8_smsq_ioq_lib
 library dev8_iod_iob_lib
+library dev8_iod_con2_qxl_disp_clear_rel
+library dev8_iod_con2_qxl_xmode_rel
 library dev8_util_gut_lib
 library dev8_util_cv_lib
 library dev8_smsq_smsq_end_rel

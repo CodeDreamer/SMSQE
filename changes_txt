@@ -1,17 +1,69 @@
-
+  
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
+
+-----------------------------------------------------------------------------
+3.09
+
+
+   HOT_GETSTUFF$  EXTENSION (MK)
+
+	ee_hot_gstuff_asm		1.00	adds GET_HOTSTUFF$ (0 | -1)
+	ee_hot_init_asm 		2.05	changed to suit
+	ee_hk_version_asm		  .	changed to suit
+	ee_hot_cct			  .	changed to suit
+
+
+   BUGFIXES (WL)
+
+	smsq_ioa_ffsd_asm		2.02	check that drive number <=8 for directory device drivers (one could use "ram9_"!!!)
+	smsq_q40_hwinit_asm		2.01	caches are off by default, else
+					. .	 code doesn't work in ROM
+
+	. . the Qx0 cachemode control module is now actually linked into the code...
+	smsq_q40_cachemode_init_asm	1.01	preconfigure to serialized
+	smsq_q40_CACHEMODE_asm		1.02	reset sr to state on entry, rationalised
+
+	ee_wman_move_asm		2.04	Fixed spurious outline when using outline move, on mouse button release
+
+   QXL - RETURN TO SMSQE FROM DOS BY TYPING "SMSQE /" (BC) AND BUGFIXES
+
+	iod_con2_qxl_disp_clear_asm	1.01	completely revamped version (BC)
+						(faster code)
+	smsq_qxl_comm_messpr_asm	1.01	added qxl restart (BC)
+	iod_con2_qxl_procv_asm		1.01	optimisation (BC)
+	smsq_qxl_nasty_e_link		.	changed to suit
+
+	.				.	PC side source code changes
+	qxl_qxl.inc			1.02	added key for qxl restart (bc)
+	qxl.qxl2.asm			1.02	needs at least a 256 (BC)
+	qxl.qxl_stio.asm		1.01	parameter exchange corrected (BC)
+	qxl.qxl_data.asm		1.02	added QXL restart message (BC)
+	qxl.qxl_cmd.asm 		1.01	correct file open (BC)
+	qxl.qxl_mse.asm 		1.01	correct saves (BC)
+	qxl.qxl_vmod.asm		1.01	optimisation (BC)
+	qxl.qxl_blod.asm		1.01	optimisation (BC)
+
+    MISC
+	smsqemake			.	internal changes, use the new
+						outptr_bin for it
+-----------------------------------------------------------------------------
+3.08
+    QPC internal version only
+   
+
 -----------------------------------------------------------------------------
 3.07
-    QXL - CONFIGURABLE DRIVES FOR WIN1 TO 8. THE FILENAME REMAINS
-    "QXL.WIN" BUT DRIVE LETTERS CAN BE ANY DOS DRIVE YOU CARE (BC)
+    QXL - CONFIGURABLE DRIVES FOR WIN1 TO 8.
+	.				. THE FILENAME REMAINS "QXL.WIN" BUT
+	.				. DRIVE LETTERS CAN BE ANY DOS DRIVE YOU CARE (BC)
 	smsq_qxl_host_asm		1.01	use config items for drive letters
-	smsq_qxl_QXL2_EXE			this is the new "PC" file, changes below
-	PC side source code:
-	QXL_DATA.ASM			1.01	changes to suit
-	QXL.INC 			1.01	same
-	QXL2.ASM			1.01	same
-	QXL_PHYS.ASM			1.01	same
+	smsq_qxl_QXL2_EXE		.	this is the new "PC" file, changes below
+	.	.			PC side source code changes :
+	qXL_DATA_ASM			1.01	changes to suit
+	qXL_INC 			1.01	same
+	qXL2_ASM			1.01	same
+	qXL_PHYS_ASM			1.01	same
 
     MISC
 	sbsext_ext_exsbas_asm		2.02	added EX_M (wl)
@@ -19,8 +71,8 @@ Version   changed			of file   changes made
 
     BUGFIXES
 	dv3_q40_fd_init_asm		3.02	Q40 floppy density is REALLY preset to 2 (wl)
-						(see 3.06) damn, a 1 byte change
-						and I still got it wrong!
+	.				.	(see 3.06) damn, a 1 byte change
+	.				.	 and I still got it wrong!
 -----------------------------------------------------------------------------
 3.06
 

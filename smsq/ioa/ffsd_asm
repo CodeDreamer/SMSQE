@@ -1,4 +1,5 @@
 * Find filing system device   V2.01    1986   Tony Tebby  QJUMP
+* 2004.09.21		2.02	check that drive number <= 8 (wl)
 *
 	section ioa
 *
@@ -59,6 +60,10 @@ iff_cknr
 	sub.b	#'0',d1 		0?
 	beq.l	iff_nf
 	move.w	d1,d5			drive number
+**
+	cmp.b	#8,d1			but not more than 8!!!!
+	bhi	iff_nf
+**
 	cmp.b	#'_',(a1)+		then underscore?
 	bne.s	iff_nf
 	subq.w	#2,d7			two fewer characters

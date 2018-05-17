@@ -10,7 +10,7 @@ Moreover, there is a directory called "New" in the "extras" subdirectory.
 This contains documentation on the new features that are introduced with this
 new version of SMSQ/E,to the extent that such documentation exists.
 Please note that, for the sake of completeness, the same documentation also
-exists in the "extras_doc" directory. At each new version of SMSQ/E the content
+exists in the "extras_doc" directory. For each new version of SMSQ/E, the content
 of the "extras_new" directory is erased and only the documentation/description
 of new features are kept in that "extras_new" directory.
 
@@ -19,6 +19,39 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+
+======
+ 3.09
+======
+
+The GET_HOTSTUFF$ command is introduced.
+
+This permits you to get at the content of the stuffer buffer.
+
+Syntax:
+
+a$=GET_HOTSTUFF$(parameter)
+
+If no parameter, or parameter = 0: get the current content (same as ALT SPACE).
+If parameter = -1: get the previous content (same as ALT SHIFT SPACE).
+
+
+It is possible to restart the QXL SMSQE by typing SMSQE / under DOS.
+
+
+The Qx0 code no longer contains the cachecontrol module, please use Mark
+Swift's extentions again (on xhich this module is based, anyway).
+
+The Qx0 in ROM starts with the cache disabled again.
+
+
+
+======
+ 3.08
+======
+(nothing)
+
+
 ======
  3.07
 ======

@@ -627,34 +627,46 @@
 ;	PRT_USE$ used wrong offset - fixed (wl).
 ;	Cursor move if one-line wdw fixed (delete still a problem) and added...
 ;	...configurable key to enter line into stuffer buffer (wl).
-;	PARNAM$ and PARSTR$ fixed (wl)
-;	EXTRAS lists all keywords, not only those it thinks are not in ROM (MK)
-;	new Cachemode module for the Qx0 (FD, based on code donated by Mark Swift)
-;	Extended colour border call with 0 border bug fixed (MK)
-;	(Super) Goldcard initilisation problem fixed (MK)
-;	Left & right shift keys are handled separately (MK)
-;	Mode screen aspect ratio is variable (MK)
+;	PARNAM$ and PARSTR$ fixed (wl).
+;	EXTRAS lists all keywords, not only those it thinks are not in ROM (MK).
+;	new Cachemode module for the Qx0 (FD, based on code donated by Mark Swift).
+;	Extended colour border call with 0 border bug fixed (MK).
+;	(Super) Goldcard initilisation problem fixed (MK).
+;	Left & right shift keys are handled separately (MK).
+;	Mode screen aspect ratio is variable (MK).
 ;
-; 3.04	Fixed pointer save on new move operation (wl)
+; 3.04	Fixed pointer save on new move operation (wl).
 ;
-; 3.05	Corrected QL mode 8  sprite cache handling (JG)
-;	Rptr distinguishes better between loose items & appsub menu items
-;	Spp open clears CD inactive count (MK)
-;	Better 3d border handling (MK)
+; 3.05	Corrected QL mode 8  sprite cache handling (JG).
+;	Rptr distinguishes better between loose items & appsub menu items (wl).
+;	Spp open clears CD inactive count (MK).
+;	Better 3d border handling (MK).
 ;
 ; 3.06	The "Quit" keyword takes an optional parameter (long int) that is...
-;	...passed to the calling job (eg return_code=FEW(your_program)) (pjw)
+;	...passed to the calling job (eg return_code=FEW(your_program)) (pjw).
 ;	Q40 flp density is preset to High (1.44 MB disks). If you want to...
-;	...format other density disks, set the density to D or E. (wl)
-;	Sprites (of 6x10 size) may be used as cursor (wl)
+;	...format other density disks, set the density to D or E. (wl).
+;	Sprites (of 6x10 size) may be used as cursor (wl).
 ;
 ; 3.07	New keyword EX_M use like EX, but the job created is owned by the calling
-;	job
+;	job (wl).
 ;	Q40 flp density is REALLY preset to High (1.44 MB disks). If you want to...
-;	...format other density disks, set the density to D or E. (wl)
-;	QXL version allows you to determine which PC drive is win1_ etc...
+;	...format other density disks, set the density to D or E. (wl).
+;	QXL version allows you to determine which PC drive is win1_ etc... (BC).
+;	QPC SMSQ/E sampled sound system (SSSS) support (MK).
+;	QPC small fix in FORMAT of removeable WIN drives (MK).
+;
+; 3.08	QPC intername version only : new basic commands (PAR_DEFAULTPRINTER$, SER_GET
+;
+; 3.09	HOT_GETSTUFF$ added (MK).
+;	Qx0 code is ROMmable again (wl).
+;	Qx0 cachecontrol module revamped (wl).
+;	No directory drive nbr > 8 allowed (wl).
+;	QXL version bugfixes and restart possibility (BC).
+;	QPC new basic commands (QPC_WINDOWSIZE, PAR_GETFILTER, PAR_SETFILTER) (MK).
+;	Outline move spurious outline problem fixed (wl).
 
-smsq_vers equ	 '3.07'
+smsq_vers equ	 '3.09'
 
 
 

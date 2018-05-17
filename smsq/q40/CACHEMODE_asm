@@ -1,6 +1,6 @@
 ; Q40/Q60 Caches management  v. 1.00	copyright (c) Mark Swift
-; 2003-10-17			1.01	adapted for SMSQ/E (FD)
-
+; 2003-10-17	1.01	adapted for SMSQ/E (FD)
+; 2005-01-21	1.02	rationalised, reset sr as was on entry (wl)
 	section exten
 
 	xdef copyback
@@ -11,61 +11,37 @@
 	include 'dev8_keys_sys'
 ;
 
-copyback
-	cmp.l	a3,a5
-	bne.s	rprt_bp
-
-	moveq	#0,d0		; mt.inf
-	trap	#1
-
-	move.b	sys_ptyp(a0),d0
-	cmp.b	#$40,d0
-	bcs.s	rprt_ni
-
-	trap	#0		; supervisor mode
-	ori.w	#$700,sr
-
-	bsr	hw_copyback
-	bra.s	b_ttracux
-;
-writethrough
-	cmp.l	a3,a5
-	bne.s	rprt_bp
-
-	moveq	#0,d0		; mt.inf
-	trap	#1
-
-	move.b	sys_ptyp(a0),d0
-	cmp.b	#$40,d0
-	bcs.s	rprt_ni
-
-	trap	#0		; supervisor mode
-	ori.w	#$700,sr
-
-	bsr	hw_writethrough
-	bra.s	b_ttracux
-;
-serialized
-	cmp.l	a3,a5
-	bne.s	rprt_bp
-	moveq	#0,d0		; mt.inf
-	trap	#1
-	move.b	sys_ptyp(a0),d0
-	cmp.b	#$40,d0
-	bcc.s	atleast040
 rprt_ni
 	moveq	#err.ni,d0
 	rts
+	 
+copyback
+	lea	hw_copyback,a2
+	bra.s	common
+writethrough
+	lea	hw_writethrough,a2
+	bra.s	common
+serialized
+	lea	hw_serialized,a2
+common
+	cmp.l	a3,a5			; are htere parameters?
+	bne.s	rprt_bp 		; yes : error
 
-atleast040
+	moveq	#0,d0			; mt.inf
+	trap	#1
 
-	trap	#0		; supervisor mode
-	ori.w	#$700,sr
+	move.b	sys_ptyp(a0),d0 	; what type of processor is this?
+	cmp.b	#$40,d0
+	bcs.s	rprt_ni 		; not at least a '40
 
-	bsr	hw_serialized
+	move.w	sr,d0
+	trap	#0			; supervisor mode
+	ori.w	#$700,sr		; don't interrupt
+	move.w	d0,-(sp)		; keep old status
+	jsr	(a2)			; do routine
 
 b_ttracux
-	andi.w	#$d8ff,sr	; ints on & user mode
+	move.w	(a7)+,sr		; get old mode back
 	moveq	#0,d0
 	rts
 

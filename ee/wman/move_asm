@@ -10,6 +10,7 @@
 ;					moving secondary wdws ok
 ; 2003-06-18		v. 1.15 	added mode 4 kludge
 ; 2003-10-29		v. 1.16 	pointer sprite is saved
+; 2005-01-21		v. 1.17 	outline move: spurious outline :fixed (wl)
 ;---------------------------------------------------------------------------
 	section wman
 
@@ -539,7 +540,8 @@ leave
 	move.b	mtyp(a5),d0		; type of move
 	subq.b	#1,d0			; outline only?
 	bne.s	lv_nobox		; ...no
-	bsr.s	do_trace		; ... yes, untrace box
+	move.l	d4,d1			; ... yes, get correct coords back (1.17)
+	bsr.s	do_trace		;     and untrace box
 	moveq	#0,d1
 	moveq	#iow.sova,d0
 	trap	#3			; unset xor

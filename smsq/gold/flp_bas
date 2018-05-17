@@ -20,11 +20,9 @@
 290 ex2a$='dev8_smsq_gold_kbd_abc'
 300 ex2$='dev8_smsq_gold_driver_most'
 310 ex3a$='dev8_smsq_gold_driver_ql'
-320 ex3b$='dev7_smsq_gold_driver_8'
 330 ex3q$='dev8_smsq_gold_qimi'
 340 ex3w$='dev8_smsq_smsq_wman'
 350 ex3sq$='dev8_smsq_gold_sysspr'
-360 ex3sh$='dev7_smsq_qpc_sysspr'
 370 ex4$='dev8_smsq_gold_driver_dv3'
 380 ex5$='dev8_smsq_gold_driver_nd'
 390 ex6$='dev8_smsq_gold_driver_nds'
@@ -34,7 +32,7 @@
 430 :
 440 IF 'c' INSTR cmd$ = 0
 450   IF 'q' INSTR cmd$ = 0: qm$ = nl$
-470   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,qm$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3b$,ex3q$,ex3w$,ex3sh$,ex4$,ex5$,ex6$,ex9$,ex10$,ex1$, 'dev8_SMSQ_GOLD_gold8'
+470   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,qm$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex9$,ex10$,ex1$, 'dev8_SMSQ_GOLD_gold8'
 480 ELSE
 490   rc 'dev8_smsq_gold_flp_bas'
 500   rc f$

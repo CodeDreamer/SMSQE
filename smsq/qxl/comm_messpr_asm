@@ -1,4 +1,6 @@
 ; SMS (QXL) Message Processing		  1998 Tony Tebby
+; 2005.01.10	1.01	added QXL restart (BC)
+
 
 	section comm
 
@@ -9,10 +11,15 @@
 	xref	cv_dtmrt
 	xref	ioq_pbyt
 	xref	kbd_pc84x
+	xref	qxl_mess_add
+	xref	pt_xmode
+	xref	cn_copy_clear
 
 	include 'dev8_smsq_qxl_keys'
 	include 'dev8_smsq_qxl_comm_keys'
+	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_sys'
+	include 'dev8_keys_con'
 	include 'dev8_mac_assert'
 
  xref	blatt
@@ -52,7 +59,7 @@ qmp_table
 	dc.w	qmp_kbdd-qmp_table	 ; Keyboard data
 
 	dc.w	qmp_vmack-qmp_table	 ; Video mode set acknowledge
-	dc.w	qmp_exit-qmp_table	 ; nop
+	dc.w	qmp_rstrt-qmp_table	 ; QXL restart
 	dc.w	qmp_exit-qmp_table	 ; nop
 	dc.w	qmp_exit-qmp_table	 ; nop
 
@@ -137,8 +144,45 @@ qmp_kbdloop
 
 qmp_vmack
 	addq.l	#4,a4			 ; next message
-	move.l	qxl_scr_work,a5
-	clr.b	qxl_vhold(a5)		 ; display updates no longer held
+	move.l	qxl_scr_work,a2
+	clr.b	qxl_vhold(a2)		 ; display updates no longer held
+	lea	qmp_qrt_flg(pc),a5
+	tst.b	(a5)				; QXL restart?
+	beq	qmp_loop			; no
+	cmp.b	#ptd.16,qxl_vcolr(a2)		; 16 bit depth?
+	beq	qmp_loop			; yes
+	move.l	sys_clnk(a6),a3 		; console linkage
+	move.b	pt_dmode(a3),d1
+	jsr	pt_xmode
+	sf	(a5)				; QXL restart finished
+	bra	qmp_loop
+
+qmp_qrt_flg
+	dc.w	$0000
+
+qmp_rstrt
+	addq.l	#4,a4				; next message
+	lea	qmp_qrt_flg(pc),a5		; QXL restart...
+	st	(a5)				; ...in progress
+	move.l	qxl_scr_work,a2 		; screen work area
+	st	qxl_vhold(a2)			; hold display updates
+	jsr	cn_copy_clear
+	move.l	qxl_message,a3			; message area
+	lea	qxl_ms_vmode+qxl_ms_len(a3),a1	; mode message length
+	move.l	#4<<16+qxm.vmode<<8,(a1)	; ... message length and key
+	move.b	qxl_vcolr(a2),d0		; internal colour
+	beq.s	qrt_sclr			; QL mode
+	subq.b	#1,d0				; VGA mode is one different
+
+qrt_sclr
+	move.b	d0,qxm_vclr-qxl_ms_len(a1)		; set colour
+	move.b	qxl_vsize(a2),d0
+	bpl.s	qrt_ssiz				; QL mode?
+	addq.b	#1,d0					; yes
+
+qrt_ssiz
+	move.b	d0,qxm_vres-qxl_ms_len(a1)		; set size
+	jsr	qxl_mess_add				; add message to queue
 	bra	qmp_loop
 
 ;
