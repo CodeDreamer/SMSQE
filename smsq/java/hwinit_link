@@ -1,0 +1,6 @@
+program dev8_smsq_java_hwinit
+
+input dev8_smsq_java_hwinit_rel
+library dev8_smsq_smsq_version_rel
+library dev8_smsq_java_disptype_rel
+library dev8_smsq_smsq_end_rel

@@ -3,6 +3,29 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
+3.15
+    BUGFIXES
+	ee_wman_3db_asm 		1.03	double border type fixed (MK)
+	ee_wman_trap3_as		1.03	Fixed 3d border with zero width (MK)
+	ee_wman_qdos_trap3_asm		1.02	Fixed 3d border with zero width (MK)
+	iod_con2_ptr_pick_asm		1.04	Save a3 around sms.rchp, QDOS may smash that (MK)
+	iod_con2_ptr_wpap_asm		1.03	Save a few registers around mem.rchp for QDOS systems
+	iod_con2_ptr_wremv_asm		1.06	Save A3 during sms.rchp for QDOS systems (MK)<
+	iod_con2_ql_recol_asm		0.02	Fixed mode 8 (MK)
+	keys_colour
+	mac_menu
+	mac_xref
+	smsq_kbd_ibm_tables_asm 	1.02	Fixed keyrow line 1, bit 5 ("\" on English kbds) (MK)
+	smsq_qa_muldiv_asm<		2.02	Fixed denormalised value on divide (MK)
+	smsq_sbas_cmptk_asm		1.01	Fixed "for i=0 to a(0,0)" bug  (MK)
+	smsq_uq_serio_asm		1.01	Fixed uq_ssq (GG)
+	util_gut_flinf_asm		1.01	(not used in smsqe) (MK)
+	iod_con2_qxl16_sprite_drop_asm	1.11	correctly handle sprites with 0 mask pointer (MK,wl)
+
+	ee_ptr				.	added this directory, makes non smsqe pointer gen
+	smsq_gold_driver_8_asm		.	added for goldcard 256 colours mode
+-----------------------------------------------------------------------------
+
 3.14
     GRADUAL MOVE TOWARDS GWASS COMPATIBILITY - COSMETIC CHANGES
 	dv3_qxl_fd_rsect_asm		1.01	BLAT macro definitions commented out - macro wasn't used (wl)
@@ -18,6 +41,18 @@ Version   changed			of file   changes made
 	smsq_qxl_driver_16_asm		1.01	same
 	smsq_qxl_driver_ql_asm		1.01	same
 	smsq_qxl_nasty_e2_asm		1.01	same
+
+    BUGFIX
+       smsq_init_exv_asm		2.02	correct order of stack compression instructions (GG)
+
+    CHANGES FOR SMSQMULATOR
+	ee_wman_move_asm		1.18	check for smsqmulator when ptr move check (wl)
+	keys_sys				added java "machine" for sys.mtyp (wl)
+	keys_java				added file contains keys for SMSQmulator (wl)
+
+	smsq_java				added this subdir contains all the SMSQ/E files specific to SMSQmulator (wl)
+
+
 
 -----------------------------------------------------------------------------
 

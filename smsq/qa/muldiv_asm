@@ -1,4 +1,6 @@
-; QL Arithmetic Multiply/Divide    V2.01   1990  Tony Tebby  QJUMP
+; QL Arithmetic Multiply/Divide    V2.02   1990  Tony Tebby  QJUMP
+;
+; 2006-12-18  2.02  Fixed denormalised value on divide (MK)
 
 	section qa
 
@@ -257,7 +259,7 @@ qmd_put
 	tst.b	d7			 ; negate?
 	beq.s	qmd_putd		 ; ... no
 	neg.l	d1
-	cmp.l	#$c000000,d1		 ; funny value?
+	cmp.l	#$c0000000,d1		 ; funny value?
 	bne.s	qmd_putd
 	tst.w	d2			 ; underflowable?
 	beq.s	qmd_putd		 ; ... yes

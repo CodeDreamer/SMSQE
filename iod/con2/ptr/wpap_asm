@@ -1,8 +1,9 @@
-; Define wallpaper				v1.02	   1999  Tony Tebby
+; Define wallpaper				v1.03	   1999  Tony Tebby
 ;							    2002  Marcel Kilgus
 ;
 ; 2002-02-13  1.01  Adapted for on-the-fly wallpaper (MK)
 ; 2002-05-30  1.02  Returns last used colour in D1. Fixes mode change issue (MK)
+; 2011-03-02  1.03  Save a few registers around mem.rchp for QDOS systems (MK)
 
 ;
 	section driver
@@ -143,8 +144,10 @@ ptw_redraw
 
 	move.l	(sp)+,a0		; remove dummy channel block
 	suba.l	#sd.extnl,a0
+	movem.l a2-a3,-(sp)		; save smashed registers on QDOS systems
 	move.w	mem.rchp,a1
 	jsr	(a1)
+	movem.l (sp)+,a2-a3
 ptw_exok
 	move.l	pt_bgcld(a3),d1 	; return last colour set
 	moveq	#0,d0

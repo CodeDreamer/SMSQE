@@ -1,0 +1,75 @@
+; Java Mouse Routines this is called from the kbd polling routine
+; mouse button 1 (left) = 1
+; mouse button 2 (right) = 2
+; both	left & right = 3
+; middle button = 4
+	section mouose
+
+	xdef	mse_poll
+
+	xref	pt_button3
+
+	include 'dev8_keys_con'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_smsq_kbd_keys'
+	include 'dev8_keys_java'
+
+;--- mouse polling routine
+
+mse_poll
+smsh.reg reg	a4/a5
+	movem.l smsh.reg,-(a7)
+
+	
+	move.l	sys_clnk(a6),d0 	; pointer linkage
+	beq.s	mse_done
+	move.l	d0,a4
+	move.l	jva_lkptr,d0		; java -> smsqe comm block
+	beq.s	mse_done		; ?? a very bad ooops here!
+	add.l	#jva_mpos,d0		; point to mouse area in comm block: mouse pos
+	move.l	d0,a5
+
+	move.l	(a5),d1 		; mouse position
+	bmi.s	mse_bttn		; can't be neg, so mouse didn't move, check buttons
+	move.l	d1,pt_npos(a4)
+	move.l	#-1,(a5)		; signal mouse didn't move
+	move.l	jva_mrel-jva_mpos(a5),d1; mouse relative mvt
+
+
+; I have no idea why the following ocde adapted from the qxl mouse routines works
+
+
+	move.w	d1,d0			 ; supposed count
+	bpl.s	mse_ycount		 ; ... itšs positive
+	neg.w	d0
+mse_ycount
+	swap	d1
+	tst.w	d1			 ; other supposed cont
+	bge.s	mse_addinc		 ; ... its positive
+	neg.w	d1
+mse_addinc
+	add.w	d1,d0			 ; total count
+	add.w	pt_xicnt(a4),d0 	 ; total so far
+	lsr.w	#1,d0			 ; reduced
+	add.b	pt_wake(a4),d0		 ; wake up speed
+	lsr.w	#1,d0
+	addq.w	#1,d0			 ; make sure that there is a move
+	move.w	d0,pt_xicnt(a4) 	 ; update count
+		 
+mse_bttn
+	move.b	1+jva_mbtn-jva_mpos(a5),d1 ; button clicked
+	cmp.b	#2,d1
+	bgt.s	cntr			 ; ... if >2 = button 3, do centre button
+;	 clr.w	 jva_mbtn-jva_mpos(a5)	  ; show no button clicked next time round
+	move.b	d1,pt_bpoll(a4) 	 ; this is new button or old button still depressed
+	beq.s	mse_done		 ; ... none
+	clr.b	pt_lstuf(a4)		 ; it isn't a stuff
+mse_done
+	movem.l (a7)+,smsh.reg
+	rts
+
+cntr	movem.l (a7)+,smsh.reg
+	jmp	pt_button3
+	end

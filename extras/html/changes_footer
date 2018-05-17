@@ -1,0 +1,11 @@
+    <P>
+    <img src = "images/deg1.png"  width = 450 height =1>
+    <P>
+  </DIV>
+  Go to <A Href="#top"> Top of document</A>
+  <p>
+  Go to <A Href="index.php">Start document (Main Page)</A>
+  <p>
+  Go to <A Href="versions.html">SMSQ/E Versions Log</A>
+</BODY>
+</HTML>

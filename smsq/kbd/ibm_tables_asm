@@ -1,6 +1,7 @@
 ; SMSQ IBM internal key tables	 2000 Tony Tebby
 ;
-; 2000-06-24  1.01  Handles left and right shift key separately.
+; 2000-06-24  1.01  Handles left and right shift key separately. (MK)
+; 2007-05-09  1.02  Fixed keyrow line 1, bit 5 ("\" on English kbds) (MK)
 
 	section kbd
 
@@ -20,7 +21,7 @@ kbd_krtab
 	dc.b	$01,$17,$44,$33   ; 1c
 	dc.b	$64,$43,$63,$24   ; 20
 	dc.b	$74,$23,$04,$73   ; 24
-	dc.b	$72,$52,$07,$08   ; 28
+	dc.b	$72,$52,$07,$51   ; 28
 	dc.b	$12,$37,$32,$47   ; 2c
 	dc.b	$42,$67,$62,$77   ; 30
 	dc.b	$22,$57,$07,$28   ; 34

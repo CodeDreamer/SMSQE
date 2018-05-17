@@ -1,0 +1,18 @@
+; Trap3 routines for sfa/qxl/nfa drivers.
+; They just call the JVM.
+; v. 0.00
+; (C) W Lenerz 2012.
+
+
+	section nfa
+
+	xdef	nfa_io
+
+	include 'dev8_keys_java'
+
+
+nfa_io
+	dc.w	jva.trp3		; do in java
+	tst.l	d0
+nfa_rts rts
+	end

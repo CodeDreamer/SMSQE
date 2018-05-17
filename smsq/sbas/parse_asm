@@ -305,7 +305,7 @@ sbp_stnl
 	move.l	a0,d2
 	sub.l	a1,d2			 ; a1 points to chars / d2 is length
 
-	jsr	sb_pakey		 ; check keys
+	jsr	sb_pakey		 ; check keys  (changes A3)
 	beq.l	sbp_ckit		 ; ok, done, check item permitted
 
 sbp_lname

@@ -815,7 +815,7 @@ Gets the number of elements contained in a system palette. Each system
 palette, of course, has the same number of elements.
 
 
-SP_GET [#channel,] [number,] address, first, count
+SP_GET [number,] address, first, count
 
 This gets the colours from a system palette and puts them somewhere. The
 optional "number" parameter tells us which system palette we want (0 to 3,

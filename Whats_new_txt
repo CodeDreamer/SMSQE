@@ -7,8 +7,8 @@ is contained in changes_txt.
 
 Moreover, there is a directory called "New" in the "extras" subdirectory.
 
-This contains documentation on the new features that are introduced with this
-new version of SMSQ/E,to the extent that such documentation exists.
+This contains documentation on the new features that are introduced with
+new versions of SMSQ/E, to the extent that such documentation exists.
 Please note that, for the sake of completeness, the same documentation also
 exists in the "extras_doc" directory. For each new version of SMSQ/E, the content
 of the "extras_new" directory is erased and only the documentation/description
@@ -21,6 +21,21 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+
+=====
+3.15
+=====
+
+Several bugfixes.
+The code base now incorporates the GoldCard drivers for 256 colours.
+The code base now incorporates the files for non SMSQ/E pointer gen & wman.
+
+
+
+======
+ 3.14
+======
+A new SMSQE version, for SMSQmulator  (subdir smsq_java)
 
 ======
  3.13

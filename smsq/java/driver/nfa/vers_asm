@@ -1,0 +1,10 @@
+	section nfa
+
+	xdef	nfa_vers
+
+
+
+
+nfa_vers	dc.w	4,'0.00'
+
+	end

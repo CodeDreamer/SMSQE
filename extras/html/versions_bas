@@ -1,0 +1,127 @@
+100 REMark   THIS PROGRAMS MAKES THE HTML FILE ""NFA2_versions.html" "
+110 REMark   USED ON THE SMSQE WEBSITE.
+120 :
+130 REMark   THE RESULTING FILES ARE COPIED TO NFA2_
+140 REMark   WHICH SHOULD POINT TO THE "website" subdir.
+150 :
+160 REMark   THIS  PROGRAM NEEDS THE FILES "VERSION_HEADER" AND "VERSIONS_FOOTER" WWHICH SUOUULD
+170 REMark   LIE IN THE EXTRAS8HTML SUBDIRECTORY.
+180 :
+190 REMark   THE INFO IS TAKEN FROM THE "dev8_smsq_smsq_version_asm" FILE.
+200 :
+210 REMark   THIS PROGRAM IS COPYRIGHT (C) W. LENERZ 2004-2013
+220 REMark   ALL RIGHTS RESERVED.
+230 :
+240
+250
+260 p
+270 :
+280 DEFine PROCedure init
+290   lg$='class="lightTD"'
+300   dg$='class="darkTD"'
+310 END DEFine init
+320 :
+330 DEFine PROCedure make_into_html(mfile$,resfile$)
+340 LOCal inc%,outc%,lp%,a$,lp2%,lp3%,t%,flag%
+350   inc%=FOP_IN(mfile$)
+360   IF inc%<0:RETurn
+370   outc%=FOP_OVER(resfile$)
+380   IF outc%<0
+390     CLOSE#inc%
+400     RETurn
+410   END IF
+420   init
+430   copy_file "dev8_extras_html_versions_header",outc%
+440   flag%=0
+450   REPeat lp%
+460     INPUT#inc%,a$
+470     IF "xdef" INSTR a$:EXIT lp%   : REMark get to first separator
+480   END REPeat lp%
+490   REPeat lp%
+500     IF EOF(#inc%):EXIT lp%
+510     a$=ginput$                              : REMark get one line
+520     IF "#&#" INSTR a$:NEXT lp%:EXIT lp%     : REMark ignore all those lines
+530     IF '-------------' INSTR a$:EXIT lp%    : REMark this is the end
+540     IF LEN(a$)<3:NEXT lp%                   : REMark line not long enough
+550     IF a$(1)<>";":NEXT lp%                  : REMark only treat commented lines
+560     a$=strip_tab$(a$(2 TO ))                : REMark strip off ";", tab & space
+570     IF a$(1) INSTR "123456789" AND (a$(2)='.' OR a$(2) INSTR "123456789" )
+580       IF flag%
+590         PRINT#outc%;"            </TBODY>"
+600         PRINT#outc%;"          </TABLE>"
+610       END IF
+620       t%="." INSTR a$
+630       b$=a$(1 TO t%+2)                      : REMark this is the version number
+640       PRINT#outc%;"  <BR><p><p>"
+650       PRINT#outc%;"  <H2><U>SMSQ/E Version "&b$&"</U></H2>"
+660       PRINT#outc%;"  <p> "
+670       PRINT#outc%;'          <TABLE ';lg$;' border=0 cellPadding=5 cellSpacing=1 Width="100%">'
+680       PRINT#outc%;"            <TBODY>"
+690       flag%=1
+700       a$=strip_tab$(a$(t%+3 TO))
+710       IF a$="":NEXT lp%
+720     END IF
+730     b$=""
+740     REPeat lp2%
+750       b$=a$(LEN(a$))
+760       IF b$ INSTR ".!":EXIT lp2%
+770         b$=ginput$
+780         IF b$<>"":b$=strip_tab$(b$(2 TO))
+790         IF b$="":EXIT lp2%
+800         a$=a$&" "&b$
+810     END REPeat lp2%
+820     PRINT#outc%;"                <TR><TD ";dg$;" > "&a$&"</TD></TR>"
+830   END REPeat lp%
+840   PRINT#outc%;"            </TBODY>"
+850   PRINT#outc%;"          </TABLE>"
+860   copy_file "dev8_extras_html_versions_footer",outc%
+870   CLOSE#outc%
+880   CLOSE#inc%
+890 END DEFine make_into_html
+900 :
+910 DEFine PROCedure copy_file (mfile$,chan%)
+920 REMark copy content of text file mfile$ into channel chan%
+930 LOCal inc%,lp%,a$
+940   inc%=FOP_IN(mfile$)
+950   IF inc%<0:RETurn                         : REMark open file failed
+960   REPeat lp%
+970     IF EOF(#inc%):EXIT lp%
+980     INPUT#inc%,a$                       : REMark get one line
+990     PRINT#chan%,a$                      : REMark and print it
+1000   END REPeat lp%
+1010   CLOSE#inc%
+1020 END DEFine copy_file
+1030 :
+1040 DEFine FuNction ginput$
+1050 LOCal lp%,a$
+1060   REPeat lp%
+1070     IF EOF(#inc%):RETurn ""
+1080     INPUT#inc%,a$
+1090     a$=STRIP_SPACES$(a$)
+1100     IF "-------" INSTR a$:RETurn ""
+1110     IF a$<>"":RETurn a$
+1120   END REPeat lp%
+1130 END DEFine ginput$
+1140 :
+1150 DEFine PROCedure p
+1160   make_into_html  "dev8_smsq_smsq_version_asm";"NFA2_versions.html"
+1170   PRINT "done"\\"copied to NFA2_versions.html"
+1180   IF cmd$<>"":QUIT
+1190 END DEFine p
+1200 :
+1210 DEFine PROCedure sa
+1220   SAVE_O dev8_extras_html_versions_bas
+1230 END DEFine sa
+1240 :
+1250 DEFine FuNction strip_tab$(a$)
+1260 REMark returns string stripped of tab and spaces
+1270 LOCal b$,t%,lp%
+1280   b$=STRIP_SPACES$(a$)
+1290   IF b$="":RETurn ""
+1300   REPeat lp%
+1310     IF b$(1)<> CHR$(9):RETurn STRIP_SPACES$(b$)
+1320     IF LEN(b$)=1:RETurn ""
+1330     b$=b$(2 TO)
+1340   END REPeat lp%
+1350   RETurn ""
+1360 END DEFine strip_tab$

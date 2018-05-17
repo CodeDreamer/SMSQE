@@ -5,6 +5,12 @@ xjsr    macro   name
         jsr     [name]
         endm
 
+xjmp    macro   name
+        xref    [name]
+        jmp     [name]
+        endm
+
+
 xbsr    macro   name
         xref    [name]
         bsr     [name]

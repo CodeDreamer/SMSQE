@@ -1,4 +1,6 @@
-* Pick window				v1.03   Sept 1986  J.R.Oakley	QJUMP
+* Pick window				v1.04   Sept 1986  J.R.Oakley	QJUMP
+*
+* 2011-03-02  1.04  Save a3 around sms.rchp, QDOS may smash that (MK)
 *
 *	Put a given window on top of the pile.	This routine is entered
 *	from PT_PICKW, to bring the bottom window to the top,
@@ -150,11 +152,11 @@ fix_slock
 fix_rhp
 	tst.b	sd_mysav(a0)		; my save area?
 	beq.s	fix_ulk 		; no, just unlock
-	movem.l a0-a2,-(sp)
+	movem.l a0-a3,-(sp)
 	move.l	sd_wsave(a0),a0 	; heap to return
 	moveq	#sms.rchp,d0
 	trap	#1			; return it
-	movem.l (sp)+,a0-a2
+	movem.l (sp)+,a0-a3
 fix_ulk
 	moveq	#sd.wunlk,d2		; unlock
 fix_dolk

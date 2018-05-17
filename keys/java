@@ -1,0 +1,66 @@
+; keys for java emulator
+
+jva.ssp 	equ	$400		; space for ssp, taken from ramtop, ramtop will be decreases by this
+
+
+jva_lkptr	equ	$4		; pointer to linkage area
+jva_lkkbd	equ	0		; long word for kbd info  (L)
+jkb..key	equ	0		; byte with key typed in
+jva_clk 	equ	jva_lkkbd+4	; rtc from java
+jva_mpos	equ	jva_clk+4	; curren tpmouse pos (-1 if no change) (L)
+jva_mrel	equ	jva_mpos+4	; mouse relative mvmt from java   (L)
+jva_mbtn	equ	jva_mrel+4	; mouse button (W)
+jtbn..1 	equ	  1		; button 1 clicked
+jbtn..2 	equ	  2		; button 2 clicked
+jbtn..3 	equ	 -1		; button 3 (=buttons 1 & 2) clicked
+jva_scrn	equ	jva_mbtn+4	; pointer to screen base    (L)
+jva_scrl	equ	jva_scrn+4	; length of screen in bytes (L)
+jva_scinc	equ	jva_scrl+4	; length of line in bytes (W)
+jva_scrxs	equ	jva_scinc+2	; xsize in pixels (W)
+jva_scrys	equ	jva_scrxs+2	; ysize in pixels (W)
+jva_boot	equ	jva_scrys+2	; possible boot device (L)
+jva_keyr	equ	jva_boot+4	; keyrow (8 bytes)
+jva_nfau	equ	jva_keyr+8	; nfa use name eg 'WIN0"
+jva_sfau	equ	jva_nfau+4
+jva_winu	equ	jva_sfau+4
+jva_flpu	equ	jva_winu+4
+jva_rand	equ	jva_flpu+4
+
+; "trap" keys : these cause a return to java
+; they correspond to unused instructions for the mc68000
+
+jva.trp0	equ	$4b00		; signal a hard break & return to java
+jva.trp1	equ	$4b01		; return to java from a trap1
+jva.trp2	equ	$4b02		; trap 2
+jva.trp3	equ	$4b03		; trap 3
+jva.trp4	equ	$4b04		; trap 4
+jva.trp5	equ	$4b05		; trap 5 do misc things
+jva.trp6	equ	$4b06
+jt5.mode	equ	  1		;   switch display mode
+jt5.rset	equ	  2		;   reset
+jt5.slep	equ	  3		;   sleep a bit (NRIY)
+jt5.driv	equ	  4		;   set dir/file for a device
+jt5.fill	equ	  5		;   (only in 16 bit colour mode) fill a block with colour
+jt5.move	equ	  6		;   (only in 16 bit colour mode) move a block
+jt5.use 	equ	  7		;   set USE name for device
+jt5.sssi	equ	  8		;   initialise ssss
+jt5.sssk	equ	  9		;   ssss kill sound
+jt5.sssa	equ	  10		;   ssss add bytes/mutiple bytes to ssss
+jt5.qry 	equ	  11		;   general java query, d1.l =parameter (to and fro)
+jt5.beep	equ	  12		;   start beep
+jt5.bpof	equ	  13		;   stop beep
+jt5.sssc	equ	  14		;   "close" ssss sound
+jt5.drvq	equ	  15		;   drive query
+jt5.xc2s	equ	  16		;   transfer from clipboard to scrap
+jt5.xs2cp	equ	  17		;   transfer from scrap to clopboard
+jt5.time	equ	  18		;   get time from java
+jt5.mbar	equ	  19		;   make menu bar visible
+
+
+
+; smsqmultor config info flag
+
+jva_cfgf1	equ    '<<SM'
+jva_cfgf2	equ    'SQMU'
+jva_cfgf3	equ    'LATO'
+jva_cfgf4	equ    'RX>>'

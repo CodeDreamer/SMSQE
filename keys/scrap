@@ -1,0 +1,34 @@
+; keys for Scrap
+ nolist
+; keys for INFO
+sci_dtyp equ	$04		; type of data
+sci_mcnt equ	$0c		; modify count
+sci_bufl equ	$14		; buffer length
+
+; keys for PUT
+scp_dtyp equ	$03		; type of data
+scp_styp equ	$04		; source type
+scp_strg equ	$08		; source string (if type=0)
+scp_flln equ	$0c		; flag or length of data
+scp_uccd equ	$10		; user-supplied copy-code
+
+; keys for GET
+scg_dtyp equ	$03		; type of data
+scg_dest equ	$04		; destination address
+scg_bufl equ	$08		; buffer length
+scg_uccd equ	$0c		; user-supplied copy-code
+
+; Scrap Thing structure
+scp_type equ	$08	b type of current SCRAP contents
+scp_mcnt equ	$0a	w scrap modify count
+scp_maxs equ	$0c	l maximum size of scrap
+scp_ussz equ	$10	l current size used
+scp_data equ	$14	  data
+
+; Scrap data types
+scpt.txt equ	0	text
+scpt.spt equ	2	sprite
+scpt.blb equ	4	blob
+scpt.pat equ	6	pattern
+scpt.are equ	8	area
+ list

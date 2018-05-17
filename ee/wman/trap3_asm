@@ -2,6 +2,7 @@
 ;
 ; 2003-01-30  1.01  Fixed condition code returns (MK)
 ; 2002-06-05  1.02  Fixed bug in setborder (MK + WL)
+; 2010-12-17  1.03  Fixed 3d border with zero width
 
 	section wman
 
@@ -81,6 +82,7 @@ wmc_setborder
 	beq.s	wmsb_draw
 
 	move.w	wmc.d2+2(sp),d2 ; border width
+	beq.s	wmsb_draw
 	jsr	wm_3db		; draw 3d border
 	bra.s	wmsb_exit
 

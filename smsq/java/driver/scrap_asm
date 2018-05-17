@@ -1,0 +1,110 @@
+*************************************************************************
+*
+*	Copyoing to/from the Scrap to/from the clipboard
+*
+*	making menu bar visible again
+*
+*	v. 1.00  copyright W. Lenerz 2013
+*
+************************************************************************
+
+
+	section scrap
+
+	include dev8_keys_thg
+	include dev8_keys_menu
+	include dev8_keys_scrap
+	include dev8_keys_java
+
+	xdef	scrap_init
+
+	xref	gu_achp0
+	xref	ut_usscp
+	xref	gu_rchp
+	xref	ut_frscp
+
+
+
+scrap_init lea	   procs,a1
+	move.w	$110,a2
+	jmp	(a2)
+
+procs	dc.w	2
+	dc.w	jvasget-*
+	dc.b	7,'JVASGET'
+	dc.w	jvasput-*
+	dc.b	7,'JVASPUT'
+	dc.w	jvambar-*
+	dc.b	7,'JVAMBAR'
+	dc.l	0,0
+
+stack	equ	32060
+
+mregs	reg	a0/a1/a4/d2
+
+jvasget movem.l mregs,-(a7)
+	move.l	#'PUT ',d2		; we're PUTting things into the scrap
+	jsr	ut_usscp		; use extension
+	bne.s	exit			; ooops
+	move.l	a1,a4
+
+	move.l	#stack,d0
+	jsr	gu_achp0		; get mem
+	bne.s	exit1			; ooops
+
+
+	move.b	#0,scp_dtyp(a0) 	; what to put = string
+	move.l	#0,scp_styp(a0) 	; source type
+	move.l	#0,scp_flln(a0) 	; flag : overwrit existing string
+	move.l	#0,scp_uccd(a0) 	; no additional copy routine
+	lea	52(a0),a1		; point to place for string
+	move.l	a1,scp_strg(a0) 	; set in parameters
+	moveq	#jt5.xc2s,d0
+	dc.w	jva.trp5		; get data into (a1) from java
+
+	move.l	a0,a1			; point to params now
+	jsr	thh_code(a4)		; call the scrap extension routine
+	move.l	d0,-(a7)
+exit3	jsr	gu_rchp 		; release space
+	bra.s	exit2
+exit1	move.l	d0,-(a7)
+exit2	bsr	ut_frscp		; free	scrap
+	move.l	(a7)+,d0
+exit	movem.l (a7)+,mregs
+	tst.l	d0
+	rts
+
+
+
+jvasput movem.l mregs,-(a7)
+	move.l	#'GET ',d2		; we're GETting things from the scrap
+	jsr	ut_usscp		; use extension
+	bne.s	exit			; ooops
+	move.l	a1,a4
+
+	move.l	#stack,d0
+	jsr	gu_achp0		; get mem
+	bne.s	exit1			; ooops
+
+
+	move.b	#0,scg_dtyp(a0) 	; what to get = string
+	move.l	#32000,scg_bufl(a0)	; size of buffer
+	move.l	#0,scg_uccd(a0) 	; no additional copy routine
+	lea	52(a0),a1		; point to place for string
+	move.l	a1,scg_dest(a0) 	; where to copy to
+
+	move.l	a0,a1			; point to params now
+	jsr	thh_code(a4)		; call the scrap extension routine
+	move.l	d0,-(a7)
+	bne.s	exit3
+	lea	52(a0),a1
+
+	moveq	#jt5.xs2cp,d0
+	dc.w	jva.trp5		; get data at (a1)  to java
+	bra.s	exit3
+	   
+jvambar moveq	#jt5.mbar,d0
+	dc.w	jva.trp5
+	rts
+
+	end

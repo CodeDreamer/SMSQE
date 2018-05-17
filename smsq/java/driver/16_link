@@ -1,0 +1,28 @@
+program dev8_smsq_java_driver_16
+
+section header
+section base      ; base area for any extension or program
+section version   ; version messages
+section kbd
+section driver
+section sprite
+section blob
+
+section init      ; initialisation
+
+section gen_util  ; general utilities
+section cv        ; conversions
+
+section con       ; console
+section gw
+section ctab      ; console tables
+
+input dev8_smsq_java_driver_16_rel
+library dev8_iod_con2_java16_lib
+library dev8_util_thg_parm_rel
+library dev8_iod_iou_lib
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_end_rel

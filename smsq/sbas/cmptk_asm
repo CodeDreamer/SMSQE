@@ -1,4 +1,6 @@
-; SBAS_CMPTK - SBASIC convert source to compiler tokens
+; SBAS_CMPTK - SBASIC convert source to compiler tokens v1.01
+;
+; 2012-04-29  1.01  Fixed "for i=0 to a(0,0)" bug			   (MK)
 
 	section sbas
 
@@ -956,7 +958,9 @@ sbx_cstr
 sbx_cnam
 	cmp.w	#tkw.name,d6		 ; name?
 	bne.s	sbx_cexp		 ; ... no
+	move.l	d3,-(sp)		 ; sbc_name might smash d3
 	bsr	sbc_name		 ; ... yes, process name
+	move.l	(sp)+,d3
 	bra.s	sbx_pop
 
 sbx_cexp

@@ -1,0 +1,88 @@
+; Trap2 routines for qxl/sfa/nfa drivers.
+; They just call the JVM.
+; v. 0.01 10.07.2012 close file deveases nbr of open files, deletes chan defn blk
+; v. 0.00 (C) W Lenerz 2012.
+
+
+	section nfa
+
+	xdef	nfa_opn
+	xdef	nfa_clo
+	xdef	nfa_fmt
+	xdef	nfa_dlt
+
+	xref	iou_close
+
+	include 'dev8_keys_java'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_chn'
+	include 'dev8_keys_iod'
+		
+reg.opfl reg	d6
+
+nfa_opn
+	movem.l reg.opfl,-(sp)
+	move.b	chn_drid(a0),iod_drid(a1) ; keep drive ID
+
+	moveq	#0,d6			 ; get drive number
+	move.b	iod_dnum(a4),d6
+	swap	d6			 ; in msw
+	move.l	a1,chn_ddef(a0) 	 ; set definition pointer
+	move.l	d6,chn_drnr(a0) 	 ; drive / file ID 
+	move.l	iod_rdln(a1),chn_feof(a0) ; and length
+
+	movem.l (sp)+,reg.opfl
+opold	moveq	#1,d0			; type of trap = open
+	dc.w	jva.trp2		; do open in java
+	tst.l	d0
+nfa_rts rts
+
+
+nfa_clo moveq	#2,d0			; close channel
+	dc.w	jva.trp2		; do close in java
+	jmp	iou_close
+
+	tst.l	d0
+	bne.s	nfa_rts
+
+	move.b	chn_drid(a0),d0
+	lsl.b	#2,d0
+	lea	sys_fsdd(a6),a2
+	move.l	(a2,d0.w),a2
+
+	subq.b	#1,iod_nrfl(a2)
+	lea	chn_link(a0),a0
+	lea	sys_fsdt(a6),a1
+	move.w	mem.rlst,a4
+	jsr	(a4)
+	lea	-chn_link(a0),a0
+	move.w	mem.rchp,a4
+	jmp	(a4)
+
+
+nfa_fmt moveq	#3,d0			; format medium
+	dc.w	jva.trp2		; do in java
+	tst.l	d0
+	rts
+
+nfa_dlt moveq	#4,d0			; delete file
+	dc.w	jva.trp2		; do in java
+	tst.l	d0
+	rts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	 end

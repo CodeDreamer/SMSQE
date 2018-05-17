@@ -11,6 +11,7 @@
 ; 2003-06-18		v. 1.15 	added mode 4 kludge
 ; 2003-10-29		v. 1.16 	pointer sprite is saved
 ; 2005-01-21		v. 1.17 	outline move: spurious outline :fixed (wl)
+; 2012-04-21		v. 1.18 	check for smsqmulator made when testing for ptr move (wl)
 ;---------------------------------------------------------------------------
 	section wman
 
@@ -181,9 +182,12 @@ mv_save move.l	chblk(a5),a1		; point to channel defn block
 	move.l	sd_xhito(a1),winorg(a5) ; keep current hit area origin
 	clr.l	winofs(a5)
 	move.b	sys_mtyp(a6),d0
-	sub.b	#sys.mqpc,d0		; qpc?
+	andi.b	#sys.mtyp,d0
+	sub.b	#sys.java,d0		; smsqmulator?
+	beq.s	qpc			; yes
+	sub.b	#sys.mqpc-sys.java,d0	; qpc?
 	bne.s	no_qpc			; ... no
-	move.l	pt_npos(a3),d1
+qpc	move.l	pt_npos(a3),d1
 	sub.l	winorg(a5),d1		; offset mouse position <-> win origin
 	move.l	d1,winofs(a5)
 no_qpc
@@ -459,7 +463,10 @@ tm_lp
 	bne	leave			; no, so we leave the move operation
 tm_testxy
 	move.b	sys_mtyp(a6),d0
-	sub.b	#sys.mqpc,d0		; qpc?
+	andi.b	#sys.mtyp,d0
+	sub.b	#sys.java,d0		; smsqmulator?
+	beq.s	tl_testxy_qpc		; yes
+	sub.b	#sys.mqpc-sys.java,d0	; qpc?
 	bne.s	tm_tstxy_o		; ... no
 tl_testxy_qpc
 	move.l	winorg(a5),d4		; ...yes, old window coordinates

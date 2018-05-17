@@ -1,0 +1,178 @@
+; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
+
+	section sound
+
+	xdef	ssss_init
+
+	xref	gu_achpp
+	xref	gu_rchp
+	xref	snd_nam
+	include 'dev8_keys_q40'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_68000'
+	include 'dev8_smsq_smsq_base_keys'
+	include 'dev8_mac_proc'
+	include 'dev8_keys_java'
+
+
+ssss_qstart equ $10
+ssss_qin    equ $14
+ssss_qout   equ $18
+ssss_qend   equ $1c
+ssss_qbase  equ $20
+ssss.len    equ 100*1024
+ssss_end    equ ssss_qbase+ssss.len
+
+
+
+;+++
+; SSSS initialisation.
+;
+;	a0-a3  scratch
+;	status return standard
+;---
+ssss_init
+	move.l	#ssss_end,d0	       ; allocate a block for the queue
+	move.l	d0,-(a7)
+	jsr	gu_achpp
+	bne.s	ssss_xrts
+	move.l	(a7)+,d1
+	move.l	a0,d0
+	add.l	d1,d0
+	subq.l	#8,d0
+	move.l	#'java',(a0)+		;4
+	move.l	d0,ssss_qend(a0)	; this is the end of the queue
+	lea	ssss_qbase(a0),a2
+	move.l	a2,ssss_qstart(a0)
+	move.l	a2,ssss_qin(a0)
+	move.l	a2,ssss_qout(a0)
+	lea	ssss_vector,a2
+	move.l	(a2),(a0)+		; ssss flag   8
+	move.l	a2,(a0)+		; facility vector  12
+	move.w	#$4e73,(a0)		; RTE	 14
+	lea	exv_i4,a1
+	move.l	(a1),-(a7)		; keep old interrupt vector in case of error
+	move.l	a0,(a1)
+	moveq	#jt5.sssi,d0
+	dc.w	jva.trp5		; link into sound interface in java
+	tst.l	d0			; OK?...
+	bne.s	ssss_err		; ... no
+	addq.l	#4,a7
+	jmp	snd_nam 		; link in some sbasic procs
+ssss_xrts
+	addq.l	#4,a7
+	rts
+
+
+ssss_err
+	move.l	(a7)+,(a1)		: error, reset old interrupt vector
+	sub.l	#12,a0			; unlink heap
+	jmp	gu_rchp
+	    
+; utility vector
+
+ssss_vector
+	dc.l	'SSSS'			; 0
+	bra.l	sss_add1		; 4
+	bra.l	sss_setm		; 8
+	bra.l	sss_addm		; 12
+	bra.l	sss_kill		; 16
+	bra.l	sss_sample		; 20
+	bra.l	sss_close		; 24
+
+  
+; add a sample
+; D1 & D2.b have the samples
+sss_add1
+	move.l	ssss_qin(a3),a1
+	move.b	d1,(a1)+		      ; put samples in
+	move.b	d2,(a1)+
+	cmp.l	ssss_qend(a3),a1	      ; end of queue?
+	bne.s	sssa_updt		      ; no
+	lea	ssss_qbase(a3),a1	      ; yes restart at base
+sssa_updt
+	cmp.l	ssss_qout(a3),a1	      ; queue full?
+	beq.s	sssa_rts		      ; ... yes, don't update pointer
+	move.l	a1,ssss_qin(a3) 	      ; ... no, update in pointer
+sssa_rts
+	move.l	d0,-(a7)
+	moveq	#jt5.sssa,d0
+	dc.w	jva.trp5
+	move.l	(a7)+,d0
+	rts
+
+	    
+; set up to add multiple samples
+; A1 = start of queue and A2 = end of queue in return
+sss_setm
+	move.l	ssss_qin(a3),a1 	      ; next in
+	move.l	ssss_qout(a3),a2	      ; next out
+	subq.w	#2,a2			      ; cannot fill completely
+	cmp.l	a1,a2			      ; ... wrapped around?
+	bge.s	sss_mrts		      ; ... no
+	cmp.l	ssss_qstart(a3),a2	      ; is out at start?
+	move.l	ssss_qend(a3),a2	      ; (does not smask condition codes)
+	bge.s	sss_mrts
+	subq.w	#2,a2			      ; ... yes, cannot fill right to end
+sss_mrts
+	rts
+
+
+; add multiple samples
+; A1 points to samples, D2 = nbr of samples (?)
+
+sss_addm
+	cmp.l	ssss_qend(a3),a1	      ; end of queue
+	blt.s	sss_aset		      ; ... no
+	move.l	ssss_qstart(a3),ssss_qin(a3)  ; ... back to beginning
+	bra.s	cont
+sss_aset
+	move.l	a1,ssss_qin(a3)
+
+cont	move.l	d0,-(a7)
+	moveq	#jt5.sssa,d0
+	dc.w	jva.trp5
+	move.l	(a7)+,d0
+	rts
+
+; kill the sound
+
+sss_kill
+	movem.l d1/d2/a1/a2,-(sp)
+	move.l	ssss_qin(a3),a2    ; the bytes will go here
+
+	moveq	#$ffffff80,d1
+	moveq	#$ffffff80,d2
+sss_kloop
+	bsr.s	sss_add1	   ; add zero
+	beq.s	sss_kloop	   ; keep on until queue is not full
+
+	move.l	a2,ssss_qout(a3)   ; one sample only in queue
+	move.l	d0,-(a7)
+	moveq	#jt5.sssk,d0
+	dc.w	jva.trp5
+	move.l	(a7)+,d0
+	movem.l (sp)+,d1/d2/a1/a2
+	rts
+
+; return length  of samples in queue
+
+sss_sample
+	move.l	ssss_qin(a3),d0
+	sub.l	ssss_qout(a3),d0
+	bpl.s	sss_sset
+	add.l	ssss_qend(a3),d0
+	sub.l	ssss_qstart(a3),d0
+sss_sset
+	lsr.l	#1,d0
+	rts
+
+
+; tell java that no more bytes are forthcoming
+sss_close
+	move.l	d0,-(a7)
+	moveq	#jt5.sssc,d0
+	dc.w	jva.trp5
+	move.l	(a7)+,d0
+	rts
+	end

@@ -52,8 +52,8 @@ s.len	equ	[s.cnt] 	; size of block
 ; Special 3d border routine
 ;
 ;	d0  r	status
-;	d1 c p	border width
-;	d2 c p	border colour code
+;	d1 c p	border colour code
+;	d2 c p	border width
 ;	d3 c p	timeout
 ;---
 wm_3db

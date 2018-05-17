@@ -1,0 +1,119 @@
+; Java Emul RTC operations
+; 0.02	made into module (wl)
+; 0.01	initial version (wl)
+
+
+	section header
+
+	xref	smsq_end
+
+	include 'dev8_keys_stella_bl'
+
+header_base
+	dc.l	rtc_base-header_base	 ; length of header
+	dc.l	0			 ; module length unknown
+	dc.l	smsq_end-rtc_base	 ; loaded length
+	dc.l	0			 ; checksum
+	dc.l	select-header_base	 ; select on processor
+	dc.b	1			 ; 1 level down
+	dc.b	0
+	dc.w	smsq_name-*
+
+smsq_name
+	dc.w	29,'SMSQ RTC Initialisation - '
+	dc.l	rtc.card
+	dc.l	'    '
+	dc.w	$200a
+
+select
+	moveq	#sbl.load,d0
+	rts
+
+	section init
+
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_smsq_smsq_base_keys'
+	include 'dev8_mac_assert'
+	include 'dev8_keys_err'
+	include 'dev8_keys_java'
+
+rtc_base
+
+; The initialisation requires a return to system state
+; The interrupts remain masked
+
+	moveq	#sms.xtop,d0
+	trap	#do.sms2		 ; do code until rts as extop
+
+	assert	sms.rrtc,sms.srtc-1,sms.artc-2
+	lea	sms.t1tab+sms.rrtc*4,a5  ; set rtc
+	lea	sms_rrtc,a0
+	bsr.s	nasty_wbase
+	lea	sms_srtc,a0
+	bsr.s	nasty_wbase
+	lea	sms_artc,a0
+
+nasty_wbase
+	move.l	a0,d0			 ; write a0 to vector area
+	swap	d0
+	bsr.s	wb_do
+	swap	d0
+wb_do
+	jmp	sms.wbase
+
+
+	section rtc
+
+
+	xdef	sms_artc
+	xdef	sms_rrtc
+	xdef	sms_srtc
+
+
+rtc.card  equ	'JAVA'
+				
+
+;+++
+; Read date taking the Year Month Day Hour Minute and Second from the RTC
+;
+;	d1  r  date
+;	status return 0 or err.nc
+;---
+sms_rrtc
+	move.l	sms.rte,-(sp)
+	moveq	#jt5.time,d0
+	dc.w	jva.trp5
+	rts
+
+;	 move.l  a5,-(sp)
+;	 move.l  jva_lkptr,d0
+;	 beq.s	 done			 ; ?? serious error here, but pretend there isn't
+;	 move.l  d0,a5
+;
+;	 move.l  jva_clk(a5),d1 	 ; get time from JVM
+;done	 move.l  (sp)+,a5
+;	 moveq	 #0,d0
+;	 rts
+
+
+;+++
+; Adjust the RTC date by D1 seconds
+;
+;	d1 cr  adjustment / date
+;	status return 0
+;---
+sms_srtc
+sms_artc
+	move.l	sms.rte,-(sp)
+	moveq	#0,d0
+	rts
+;+++
+; Set date taking putting Year Month Day Hour Minute and Second into the RTC
+;
+;	d1 cp  date
+;	status return 0 or err.nc
+;---
+
+
+	end

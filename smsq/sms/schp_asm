@@ -15,7 +15,8 @@
 *
 *	all other registers preserved
 *
-sms_schp
+sms_schp   ;moveq	 #0,d0
+;	 bra.l	 sms_rtok
 	move.l	a0,-(sp)		save base
 	sub.w	#chp.len,a0		backspace to header
 	moveq	#chp.len*2-1,d0

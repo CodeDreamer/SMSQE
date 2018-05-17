@@ -713,7 +713,24 @@
 ;	New keywords YEAR%, MONTH%, DAY% and WEEKDAY% (MK).
 ;	QA.OP/QA.MOP load/store fixed for op-codes below $80 (MK).
 ;	Working QXL keyboard LEDs (BC).
+;
+; 3.14	Cosmetic changes, removal of "Blat" macro defns in several files (WL).
+;	Correct stack compression in init_exv_asm (GG).
+;	Added java "machine" in machine definitions (WL).
+;	Added check for SMSQmulator when moving windows (WL).
+;	Added SMSQmulator specific code (WL).
+;
+; 3.15	Double border type fixed (MK).
+;	Fixed 3d border with zero width (MK).
+;	In some pointer ops, save A3 during sms.rchp for QDOS systems (MK).
+;	Fixed mode 8 for recolour (MK).
+;	Fixed keyrow line 1, bit 5 ("\" on English kbds) in ibm tables (MK).
+;	Fixed denormalised value on divide (MK).
+;	Fixed "for i=0 to a(0,0)" loop bug  (MK).
+;	Fixed uq_ssq in serio (GG).
+;	Correctly handle sprites with 0 mask pointer for qxl,java (MK,wl).
 
-smsq_vers equ	 '3.13'
+
+smsq_vers equ	 '3.15'
 
 	end

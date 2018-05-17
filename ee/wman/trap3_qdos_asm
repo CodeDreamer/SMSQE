@@ -1,7 +1,8 @@
-; New colour trap dispatcher   V1.01		2003 Marcel Kilgus
+; New colour trap dispatcher   V1.02		2003 Marcel Kilgus
 ; QDOS Version!
 ;
 ; 2003-01-30  1.01  Fixed condition code returns
+; 2010-12-17  1.02  Fixed 3d border with zero width
 
 	section wman
 
@@ -66,6 +67,7 @@ wmc_setborder
 	beq.s	wmsb_draw
 
 	move.w	wmc.d2+2(sp),d2 ; border width
+	beq.s	wmsb_draw
 	jsr	wm_3db		; draw 3d border
 	bra.s	wmsb_exit
 

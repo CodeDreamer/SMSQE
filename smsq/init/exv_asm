@@ -1,5 +1,5 @@
 ; Initialise exception vectors	 V2.01	   1992 Tony Tebby
-
+; 2013 Jan 25  2.02  correct stack compression (GG)
 	section init
 
 	xdef	init_exv
@@ -169,9 +169,9 @@ aerr
 	lsr.w	#8,d0
 	lsr.w	#4,d0			 ; index stack frame table
 	move.b	exf_size(pc,d0.w),d0
-	move.l	(sp),(sp,d0.w)		 ; compress stack
+	move.l	6(sp),6(sp,d0.w)	 ; compress stack  v. 3.14
 	move.w	4(sp),4(sp,d0.w)
-	move.l	6(sp),6(sp,d0.w)
+	move.l	(sp),(sp,d0.w)		 ; compress stack 3.14
 	clr.w	$a(sp,d0.w)
 	add.w	d0,sp
 	move.l	(sp)+,d0

@@ -1,4 +1,6 @@
-;	Recolour a window	v0.00   1991  Tony Tebby
+;	Recolour a window	v0.01   1991  Tony Tebby
+;
+; 2009-06-06  0.01  Fixed mode 8 (MK)
 ;
 ;	QL Colour
 ;
@@ -20,6 +22,7 @@
 	xdef	cn_recol
 
 cn_recol
+	move.b	pt_dmode(a3),d4 	 ; get mode byte now (a3 is used later)
 	movem.w sd_xmin(a0),d0-d3
 	move.l	sd_scrb(a0),a3
 	mulu	sd_linel(a0),d1
@@ -34,7 +37,7 @@ cn_recol
 	mulu	sd_linel(a0),d3 	 ; ... number of lines
 	lea	(a3,d3.l),a2		 ; off end line
 
-	cmp.b	#ptm.ql8,pt_dmode(a3)	 ; which mode are we in?
+	cmp.b	#ptm.ql8,d4		 ; which mode are we in?
 	beq.s	cnr_8row
 
 cnr_4row

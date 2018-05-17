@@ -1,4 +1,4 @@
-(document last amended for version 3.01)
+(document last amended for version 3.14)
 
 Please look to the file whats_new_txt to see what's new in this version
 of SMSQ/E!
@@ -12,8 +12,13 @@ of SMSQ/E!
 
 1 - Compiling the source code
 
+You can compile the sources either the "easy way" or the "hard way".
 
-There is a document called "HowTo" in the subdirectory "extras_help".
+The easy way is to use the program called "extras_exe_SMSQEMake".
+Thereis a help text for this in the "extras_help" directory.
+
+If you want to do this the "hard way" (why?), there is a document called
+"HowTo" in the subdirectory "extras_help".
 
 It exists either as a simple text file (HowTo_txt) or as a Quill Doc file
 (HowTo_doc).
@@ -36,26 +41,35 @@ code that came from Tony Tebby and put them all into one subdirectory called
    _help
    _new
    _doc
+   _html
+   _source
+   _old
 
+The _help subdirectory will contain the help files, as and when they are made.
+Help files are there to explain how some programs work, not how new SMSQ/E
+features work.
 
-The help subdirectory will contain the help files, as and when they are made.
-
-The exe subdirectory contains additional programs that are useful or essential
+The _exe subdirectory contains additional programs that are useful or essential
 for compiling the source code.
 
-The doc directory contains documentation on new features.
+The _doc directory contains documentation on new features.
 
-The new subdirectory contain documentation on features that are new to
-THIS version of SMSQ/E.
+The _new subdirectory contains documentation on features that are new to
+THIS version of SMSQ/E. In the next version, this documentation is moved to
+either the _doc or the _help subdirectories.
 
-In the next version, this documentation is moved to either the _doc or the
-_help subdirecotories.
+The _html subdirectory contains programs generating some of the html files
+for the smsqe website.
 
+The _source subdirectory contains the source files for the non basic programs
+found in the dev8_extras_ and dev8_extras_exe_ subdirectories.
+
+The _old subdirectory contains old basic files no longer used or necessary in
+more modern versions of the sources.
 
 The extras directory itself contains additional programs, mostly those used by
 myself in an attempt to make compilation easier. Any program put into that
 directory should have a corresponding help file in the help directory.
-
 
 3 - Changes to the source code.
 

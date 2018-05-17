@@ -1,33 +1,26 @@
-         Del_all_bas
-         
-         This little basic program (in the extras subdirectory) will delete
-         all of the lib files and targets compiled on dev8_.
-         
-         To  use   this  program  (the  procedures   used  should  be  self
-         explanatory), you  need the cline_bin extension,  which adds a new
-         keyword  "Current_line" (see below). You can find this file in the
-         extras directory.
-         
-         I use this for two reasons:
-         
-         -  to make sure, every time I recompile something, that everything
-         is recompiled afresh.  This way,  the compiler/linker  might catch
-         some errors.
-         
-         - to delete  all of the  targets when distributing  the source, in
-         compliance with the licence.  
-         
-         
-         Cline_bin
-         
-         
-         This  will   add  a  new  keyword,   CURRENT_LINE  to  the  Sbasic
-         interpreter.  This keyword returns the line number on which it was
-         called (0 if called directly from the command line).
-         
-         You should  avoid  using  this  keyword  from  within  a  compiled
-         program. For QLIB,  this keywords returns  0  due to  a fluke, but
-         nothing is guaranteed. I don't think it will crash your machine if
-         used from within a compiled program, but it might...
-         
-         
+Del_all_bas
+
+
+This little basic program (in the extras subdirectory) will delete
+all  lib, rel, err, map and log  files and all targets compiled on
+dev8_.
+
+
+To  use   this  program  (the  procedures   used  should  be  self
+explanatory), you  need the cline_bin extension,  which adds a new
+keyword  "Current_line" (see the  help file for  cline). Just load
+this file with LRESPR. You  can  find  this  file  in  the  extras
+directory.  You also need the "blinker_bin" file, also loaded with
+LRESPR and also in  the extras  directory (see  the help  file for
+that).
+
+
+I use the del_all program for two reasons:
+
+-  to make sure, every time I recompile something, that everything
+is recompiled afresh.  This way,  the compiler/linker  might catch
+some errors.
+
+-  to delete all of the non essentials files when distributing the
+source (it makes for smaller zip files).
+

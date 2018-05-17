@@ -9,6 +9,7 @@
 *
 c.mbord   equ     sp.winbd
 c.mback   equ     sp.winbg                     ; window attributes
+c.mink    equ     sp.winfg
 c.mhigh   equ     sp.litemhigh                 ; item highlight
 c.bbord   equ     sp.butbd                     ; button main window border
 c.bback   equ     sp.butbg                     ; button main window background

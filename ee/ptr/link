@@ -1,0 +1,9 @@
+program dev8_ee_ptr_gen
+section base
+section version
+section driver
+input dev8_ee_ptr_base_rel
+input dev8_ee_ptr_gen_rel
+library dev8_ee_ptr_lib
+library dev8_iod_con2_sprite_ql_lib
+library dev8_util_gut_lib

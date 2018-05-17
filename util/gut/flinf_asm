@@ -1,4 +1,6 @@
-; Set File Information			V1.00   1989  Tony Tebby  QJUMP
+; Set File Information			V1.01   1989  Tony Tebby  QJUMP
+;
+; 2007-07-30  1.01  Show big file sizes in MB (MK)
 
 	section gen_util
 
@@ -90,10 +92,17 @@ gfi_dtloop
 	cmp.l	#99999999,d1		 ; silly length?
 	ble.s	gfi_cvln		 ; OK
 
-	moveq	#7,d1		   ; XXX *** dragon
-gfi_blatloop
-	move.b	#'*',(a0)+	   ; the length seems to be limited to 8 chars
-	dbra	d1,gfi_blatloop    ; in the menu structure
+;;;	   moveq   #7,d1	      ; XXX *** dragon
+;;;gfi_blatloop
+;;;	   move.b  #'*',(a0)+	      ; the length seems to be limited to 8 chars
+;;;	   dbra    d1,gfi_blatloop    ; in the menu structure
+	addi.l	#$0FFFFF,d1		; MK round up
+	moveq	#20,d0			; MK
+	lsr.l	d0,d1			; MK convert to MB
+	jsr	cv_d1asc		; MK
+	move.b	#' ',(a0)+		; MK
+	move.b	#'M',(a0)+		; MK
+	move.b	#'B',(a0)+		; MK
 	bra.s	gfi_cpnm
 
 gfi_cvln
