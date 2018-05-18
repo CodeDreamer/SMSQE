@@ -122,55 +122,60 @@
 1310   DATA "dev8_smsq_aurora_SMSQE",    "Aurora_bin"      : REMark aurora 8 bit
 1320   DATA "dev8_smsq_java_java",       "SMSQE"           : REMark Code file for SMSQmulator, ready to be used
 1330   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
-1340   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1350   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1360   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1370   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1380   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1390   DATA "dev8_whats_new_txt",        "whats_new_txt"
-1400   DATA "dev8_changes_txt",          "changes_txt"
-1410   DATA "dev8_readme_txt",           "readme_txt"
-1420   DATA "","" : REMark leave TWO empty strings here
-1430 END DEFine do_binaries
-1440 :
-1450 DEFine PROCedure z
-1460   LOCal lp%,zip$
-1470   RESTORE 1240
-1480   zip$=' -j9 '&'ram1_m.zip '
-1490   REPeat lp%
-1500     READ a$
-1510     IF a$="":EXIT lp%
-1520     zip$=zip$&a$&" "
-1530   END REPeat lp%
-1540   do_zip zip$
-1550 END DEFine z
-1560 :
-1570 DEFine PROCedure do_zip (zip$)
-1580 LOCal destt$,progg$,dataa$
-1590   destt$=DESTD$
-1600   progg$=PROGD$
-1610   dataa$=DATAD$
-1620   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-1630   EW dev1_progs_zip;zip$
-1640   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
-1650 END DEFine do_zip
-1660 :
-1670 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-1680 DATA "dev8_iod_con2_ptr_wremv_asm"
-1690 DATA ""
-1700 :
-1710 DEFine PROCedure do_copy
-1720 LOCal ddr$,lp%,a$ ,f$
-1730   ddr$="ram3_"
-1740   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
-1750   RESTORE 810
-1760   REPeat lp%
-1770     READ a$
-1780     IF a$="":EXIT lp%
-1790     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
-1800   END REPeat lp%
-1810   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
-1820   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
-1830   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
-1840 END DEFine do_copy
-1850 :
+1340   DATA "dev8_smsq_q68_QL_RAM.BIN",  "Q68_SMSQ.SYS"    : REMark ssqe for Q68, standalone
+1350   DATA "nfa1_Q68_SMSQ.WIN",         "Q68_SMSQ.WIN"    : REMark smsqe for Q68, win drive
+1360   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
+1370   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1380   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1390   DATA "DEV8_smsq_q68_QL_RAM.BIN",  "Q68_SMSQ.WIN"    : REMark Code file for Q68 (win file), ready to be used
+1400   DATA "DEV8_smsq_q68_QL_RAM.BIN3", "Q68_RAM.SYS "    : REMark Code file for Q68 ("naked" file), ready to be used
+1410   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1420   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1430   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+1440   DATA "dev8_whats_new_txt",        "whats_new_txt"
+1450   DATA "dev8_changes_txt",          "changes_txt"
+1460   DATA "dev8_readme_txt",           "readme_txt"
+1470   DATA "","" : REMark leave TWO empty strings here
+1480 END DEFine do_binaries
+1490 :
+1500 DEFine PROCedure z
+1510   LOCal lp%,zip$
+1520   RESTORE 1240
+1530   zip$=' -j9 '&'ram1_m.zip '
+1540   REPeat lp%
+1550     READ a$
+1560     IF a$="":EXIT lp%
+1570     zip$=zip$&a$&" "
+1580   END REPeat lp%
+1590   do_zip zip$
+1600 END DEFine z
+1610 :
+1620 DEFine PROCedure do_zip (zip$)
+1630 LOCal destt$,progg$,dataa$
+1640   destt$=DESTD$
+1650   progg$=PROGD$
+1660   dataa$=DATAD$
+1670   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+1680   EW dev1_progs_zip;zip$
+1690   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
+1700 END DEFine do_zip
+1710 :
+1720 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+1730 DATA "dev8_iod_con2_ptr_wremv_asm"
+1740 DATA ""
+1750 :
+1760 DEFine PROCedure do_copy
+1770 LOCal ddr$,lp%,a$ ,f$
+1780   ddr$="ram3_"
+1790   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
+1800   RESTORE 810
+1810   REPeat lp%
+1820     READ a$
+1830     IF a$="":EXIT lp%
+1840     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
+1850   END REPeat lp%
+1860   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
+1870   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
+1880   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
+1890 END DEFine do_copy
+1900 :

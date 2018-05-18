@@ -1,0 +1,68 @@
+; ndt_tsct
+; ndt_rdly
+
+
+
+
+
+
+
+; ndt_wgap
+; ndt_lsct
+; ndt_back
+ndt_wact
+	move.w	(a3,d0.w),d0	26 ; 14 ; 14
+ndt_walp
+	ror.l	#8,d7		28 ; 24 ; 24
+	btst	d7,(a5) 	12 ; 13 ; 15
+	dbne	d0,ndt_walp	18 ; 10 ; 10
+	rts
+
+
+
+; ndt_wsct
+--> ndt_walp hier oben
+
+
+
+
+; ndt_csct
+; ndt_bace
+; ndt_bsct
+ndt_wina
+	move.w	(a3,d0.w),d0	26 ; 14 ; 14
+ndt_wilp
+	ror.l	#8,d7		28 ; 24 ; 24
+	btst	d7,(a5) 	12 ; 13 ; 15
+	dbeq	d0,ndt_wilp	18 ; 10 ; 10
+	rts
+
+
+
+; ndt_esct
+; ndt_xsct
+; ndt_paus
+; ndt_bnak
+; ndt_xack
+	 dbra	 d0,*		 18    ; 10    = 2.4;0.64us until end of scout
+
+
+
+; ndt_rbto
+; ndt_rtmo
+	btst	d7,(a5) 		wait for net to go active
+	dbne	d3,ndr_active
+
+
+
+; ndt_send
+	ror.w	d0,d7		14; 46; 66  rot 2;20;30
+	ror.l	d0,d7		16; 48; 68  rot 2;20;30
+
+
+
+
+
+senden nds_sscout
+
+

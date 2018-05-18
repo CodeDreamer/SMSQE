@@ -1,0 +1,8 @@
+sending one byte is as follows:
+
+the byte is preceded by two stop bits (=1, setting the net ACTIVE)
+followed by one start bit (=0, net INACTIVE)
+followed by 8 bits of data
+followed by 2 stop bits (=1, setting the net ACTIVE).
+
+each bit is to be held for 11.2°

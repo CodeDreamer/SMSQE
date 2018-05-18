@@ -1,0 +1,44 @@
+program dev8_smsq_smsq_q68_os
+
+section header
+section base
+section qd
+section shd
+section io
+section sms
+section mem
+section ioa
+section ioq
+section iou
+section cv
+
+section init
+
+section thing
+section version
+section language
+section gen_util
+section md
+
+input   dev8_smsq_smsq_header_rel
+input   dev8_smsq_smsq_base_q68_rel
+input   dev8_smsq_smsq_version_rel
+library dev8_smsq_init_lib
+library dev8_smsq_smsq_privv_rel
+library dev8_smsq_smsq_buse_rel
+library dev8_smsq_smsq_dummy_rel
+library dev8_smsq_qd_lib
+library dev8_smsq_sms_lib
+library dev8_smsq_ioa_lib
+library dev8_smsq_mem_1mb_lib
+library dev8_smsq_sbas_move_rel
+library dev8_smsq_shd_lib
+library dev8_smsq_io_lib
+library dev8_smsq_ioq_lib
+library dev8_smsq_uq_lib
+library dev8_iod_iou_lib
+library dev8_iod_iob_lib
+library dev8_util_thg_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_smsq_smsq_end_rel

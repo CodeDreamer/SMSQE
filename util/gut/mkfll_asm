@@ -1,5 +1,8 @@
-; Make File List		   V1.00   1989  Tony Tebby  QJUMP
+; Make File List		   V1.02   1989  Tony Tebby  QJUMP
 ;					after Jonathan Oakley
+; ????-??-??  1.01  Preserve A2 for MKLIS (Jochen Merz)
+; 2017-11-24  1.02  Check 2nd char is 1..8 for Xx_ network check (MK)
+
 	section gen_util
 
 	xdef	gu_mkfll
@@ -122,6 +125,7 @@ gmf_nodir
 	moveq	#0,d2
 	moveq	#'_',d3 		 ; set end of section char
 
+	move.l	a2,-(sp)		 ; preserve a2 for mklis	    JM
 	move.w	(a2)+,d1
 	move.w	d1,gmf_dvnl(a3) 	 ; length of device
 
@@ -131,7 +135,12 @@ gmf_nodir
 *NET	    move.b  (a2),d2
 *NET	    cmp.b   #'n',(a0,d2.w)	     ; N at start?
 *NET	    bne.s   gmf_stdev
-	addq.l	#3,a2			 ; ... yes, strip Nn_
+	move.b	1(a2),d2		 ; At least 2nd char is 1..8?	     MK
+	cmp.b	#'1',d2 		 ;				     MK
+	bcs.s	gmf_stdev		 ;				     MK
+	cmp.b	#'8',d2 		 ;				     MK
+	bhi.s	gmf_stdev		 ;				     MK
+	addq.l	#3,a2			 ; ... yes, strip Xn_
 
 gmf_stdev
 	cmp.b	(a2)+,d3		 ; skip until past _
@@ -149,6 +158,7 @@ gmf_lcloop
 	subq.w	#1,d1
 gmf_lclend
 	bgt.s	gmf_lcloop
+	move.l	(sp)+,a2		 ; get back a2 for mklis	     JM
 
 	lea	gmf_rdir,a0		 ; point to entry generating routine
 	move.w	#fll.elen,d0		 ; entry length

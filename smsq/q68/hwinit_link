@@ -1,0 +1,6 @@
+program dev8_smsq_q68_hwinit
+
+input dev8_smsq_q68_hwinit_rel
+library dev8_util_gut_lib
+library dev8_smsq_smsq_version_rel
+library dev8_smsq_smsq_end_rel

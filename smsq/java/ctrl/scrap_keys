@@ -1,0 +1,29 @@
+; Scrap keys: indexes into the syncscrap dataspace
+	nolist
+jss_thg equ	$00	; long	address of info thing
+jss_ssc equ	$04	; word	stored scrap (modify) counter
+jss_scc equ	$06	; word	stored clipboard modify counter
+
+jss_inf equ	$10	;	INFO parameter block
+jss_typ equ	$10+$04 ; byte	Current type
+jss_cnt equ	$10+$0c ; word	Scrap modify count
+jss_bfl equ	$10+$14 ; long	Buffer length minimum
+
+jss_get equ	$30	;	GET parameter block
+jss_dtp equ	$30+$03 ; byte	Data type
+jss_dst equ	$30+$04 ; long	Destination address
+jss_dbl equ	$30+$08 ; long	Length of destination buffer
+jss_usc equ	$30+$0c ; long	User supplied code
+
+jss_put equ	$40	;	PUT parameter block
+jss_pdt equ	$40+$03 ; byte	Data type
+jss_pad equ	$40+$08 ; long	Source address
+jss_pfl equ	$40+$0c ; byte	Add string flag
+jss_puc equ	$40+$10 ; long	User supplied code
+
+jss_len equ	$60	;	Buffer length
+	list
+
+
+
+

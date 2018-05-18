@@ -4,6 +4,7 @@
 
 ; this "reads" the keyboard coming from the emulator & puts the keystrokes
 ; into the keyboard queue
+; 1.02 mouse wheel code is transferred to driver_mouse
 ; 1.01 special long word input when mouse moved
 ; 1.00 initial version
 
@@ -12,7 +13,7 @@
 	xdef	kbd_read
 	xdef	kbd_vers
 
-kbd_vers equ	'1.01'
+kbd_vers equ	'1.02'
 
 
 	xref	ioq_tstg
@@ -35,19 +36,9 @@ kbd_vers equ	'1.01'
 ; QL keyboard routine (called from poll)
 ;---
 
-; wheel on mouse moved - generate 3 keystrokes
-wheel
-	jsr	ioq_pbyt		 ; put byte in kbd queue
-	jsr	ioq_pbyt		 ; put byte in kbd queue
-	jsr	ioq_pbyt		 ; put byte in kbd queue
-	and.l	#$ff,d1 		 ;
-	move.w	d1,sys_lchr(a6) 	 ; save last character
-	bra.s	hok_rts
-kbd_read
-
 
 smsh.reg reg	d1/d2/a1/a2
-	movem.l smsh.reg,-(a7)
+kbd_read movem.l smsh.reg,-(a7)
 	move.l	sys_ckyq(a6),d0 	; any keyboard queue?
 	beq.s	hok_rts 		; no!
 	move.l	d0,a2			; A2 = current keyboard queue
@@ -70,10 +61,6 @@ hok_rts
 
 
 hok_chkc
-	cmp.l	#$d1d1d1,d1
-	beq.s	wheel
-	cmp.l	#$d9d9d9,d1
-	beq.s	wheel
 	tst.l	d1			; break?
 	bmi.s	hok_break		; ... yes
 
@@ -101,7 +88,7 @@ hok_putc
 	jsr	ioq_pbyt		; put one byte
 	lsr.w	#8,d1			; ... and then the other
 hok_put1
-	jsr	ioq_pbyt		 ; put byte in kbd queue
+	jsr	ioq_pbyt		; put byte in kbd queue
 	bra.s	hok_rts
 ; break
 hok_break

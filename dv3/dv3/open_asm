@@ -1,4 +1,6 @@
-; DV3 open routines		  V3.01 	  1992 Tony Tebby
+; DV3 open routines		  V3.02 	  1992 Tony Tebby
+;
+; 2017-11-26  3.02  Try to release removable drive after DELETE operation (MK)
 
 	section dv3
 
@@ -333,8 +335,7 @@ dop_del
 	move.l	d0,d4			 ; save error
 	moveq	#0,d0			 ; non-urgent flush
 	jsr	ddl_fflush(a3)		 ; and do flush
-	move.l	d4,d0
-	bra.l	dop_exit
+	bra.l	dop_exit_del		 ; always try to close drive (err in d4)
 
 dop_nfok
 	cmp.w	#err.fdnf,d0		 ; not found
@@ -441,7 +442,8 @@ dop_link
 dop_exit
 	move.l	d0,d4
 	beq.s	dop_rchn		 ; OK, return channel
-	tst.b	ddf_nropen(a4)		 ; bad, any files open?
+dop_exit_del				 ; always try to close drive (err in d4)
+	tst.b	ddf_nropen(a4)		 ; any files open?
 	bne.s	dop_rchn		 ; ... yes, return channel
 	jsr	ddl_done(a3)		 ; ... no, we've finished with drive
 

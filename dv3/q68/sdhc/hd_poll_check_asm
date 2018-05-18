@@ -1,0 +1,23 @@
+; DV3 Q68 SDHC card Polling Routine	   2017     W. Lenerz
+; based on
+; DV3 QXL Hard Disk Polling Routine	   1993     Tony Tebby
+
+	section dv3
+
+	xdef	hd_poll_check
+
+	xref	hd_poll
+
+	include 'dev8_keys_sys'
+
+;+++
+; Hard disk polling Interrupt Routine - Q68
+; this is currently imperfect, as it doesn't distiguish between both drives
+; so if one is being used, the other won't be.
+;
+hd_poll_check
+	tst.w	sys_cdiu(a6)		 ; sector transfer buffer in use?
+	beq.l	hd_poll 		 ; ... no
+	rts
+
+	end

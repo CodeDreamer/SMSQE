@@ -1,0 +1,79 @@
+; DV3 Q40 Find Partition (Atari root)	   V3.01    1999  Tony Tebby
+; 2003-01-17  V3.01 Fixed the ICD extension (8 additional partitions in table)	 (JG)
+;
+;
+	section dv3
+
+	xdef	hd_fpart
+
+	xref	id_diradd
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_qlwa'
+	include 'dev8_keys_atari'
+	include 'dev8_dv3_keys'
+	include 'dev8_dv3_hd_keys'
+;+++
+; DV3 FAT32 find 1st partition.
+; It starts by loading and examining the root sector.
+;
+;	d1  r	as d3 but in ths format if required
+;	d2  r	size of partition, -1 no partition table
+;	d3  r	sector number with partition root
+;	d4  r	partition ID
+;	d7 c  p drive ID / number
+;	a3 c  p pointer to linkage block
+;	a4 c  p pointer to physical definition
+;
+;	error return 0 or error
+;---
+
+badsec0 equ	'NONO'
+hd_fpart
+hfp.reg reg	d5/d6/a1/a2
+	movem.l hfp.reg,-(sp)
+	moveq	#0,d4
+	clr.l	d0
+	move.w	d7,d4
+
+; get the partition the drive is supposed to be on into d4
+
+	moveq	#1,d4		*******  always use 1st partition
+
+	subq.w	#1,d4
+	lsl.w	#4,d4			; part. ptrs are spaced 16 bytes apart
+	add.w	#dos_prt1,d4		; d4 = what partition we need
+
+	lea	hdl_buff(a3),a1 	; root sector buffer
+	moveq	#1,d2			; only read 1 sector
+	move.l	badsec0,(a1,d4.w)	; preset error
+	jsr	hdl_rsint(a3)		; read sector 0
+	bne.s	hfp_npart		; no partition
+
+	move.b	dos_vmbr(a1),d0 	; check for valid boot sector
+	beq.s	s0ok			; seems to be ok
+	cmp.b	#$80,d0 		; and this could be an ok value, too
+	bne.s	hfp_mchk		; ooops
+s0ok	cmp.w	$55AA,$1fe(a1)		; is this still the boot sector?
+	bne.s	hpf_mchk		; no, bummer
+
+; I should now have the boot sector at (a1), now find partition
+; get nbr of partition	sector - is in Intel format, so switch around
+mbr_ok
+	move.l	(a1,d4.w),d1		; get ptr to partition, intel formt
+	cmp.l	#badsec0,d1		; is this bad?
+	beq.s	hpf_mchk		; yes!
+	xlong	d1
+	move.l	d1,d3			; physical root sector
+	move.b	#1,hdl_npart(a3)	; partition found
+	clr.l	d0
+hfp_exit
+	movem.l (sp)+,hfp.reg
+	rts
+hfp_mchk
+	moveq	#err.mchk,d0
+hfp_npart
+	st	hdl_npart(a3)		 ; set no partition found
+	bra.s	hfp_exit
+
+	end

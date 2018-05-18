@@ -1,0 +1,186 @@
+; Q68 DV3 SDHC Control Procedures   V1.00    2017 W. Lenerz
+
+; partially based on
+
+; DV3 Standard Hard Disk Control Procedures   V1.03    1999   Tony Tebby
+
+
+	section exten
+
+	xdef	hd_thing
+	xdef	hd_tname
+	xdef	win_wpr
+
+	xref	win_drv
+	xref	thp_ostr
+	xref	dv3_usep
+	xref	dv3_acdef
+
+	include 'dev8_keys_thg'
+	include 'dev8_keys_q68'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_err'
+	include 'dev8_mac_thg'
+	include 'dev8_mac_assert'
+	include 'dev8_dv3_keys'
+	include 'dev8_dv3_hd_keys'
+
+hd_byte dc.w thp.ubyt,0
+
+hd_wdstr dc.w	thp.ubyt	 ; drive
+	 dc.w	thp.call+thp.str ; string
+	 dc.w	0
+
+hd_bochr dc.w	thp.ubyt	 ; drive
+	 dc.w	thp.char+thp.opt ; with optional character
+	 dc.w	0
+
+
+hd_noptm dc.w	thp.ubyt	 ; drive
+	 dc.w	thp.ubyt+thp.opt+thp.nnul ; default is set
+	 dc.w	0
+
+
+hdt.reg reg	d1/d2/d3/d5/d6/d7/a0/a1/a2/a3
+
+;+++
+; Thing NAME
+;---
+hd_tname dc.b	0,11,'WIN Control',$a
+
+;+++
+; This is the Thing with the WIN extensions
+;---
+hd_thing
+
+;+++
+; WIN_USE xxx
+;---
+win_use thg_extn {USE },win_format,thp_ostr
+	jmp    dv3_usep
+
+	    
+;+++
+; WIN_FORMAT n, (0|1)
+;---
+win_format thg_extn {FRMT},win_wpr,hd_noptm
+	movem.l hdt.reg,-(sp)
+
+	bsr.s	hdt_prep
+
+	tst.l	(a1)			 ; true or false?
+	sne	d5
+	neg.b	d5
+	bra.s	wwp_do
+  
+; prepare for simple operation
+
+hdt_prep
+	moveq	#8,d0
+	move.l	(a1)+,d7		 ; drive number
+	beq.s	hdt_ipar4
+	cmp.l	d0,d7
+	bhi.s	hdt_ipar4
+	lea	-ddl_thing(a2),a3
+	rts
+	
+
+;+++
+; WIN_WP n, (0|1)
+;---
+win_wpr thg_extn {WPRT},win_drive$,hd_noptm
+	movem.l hdt.reg,-(sp)
+
+	bsr.s	hdt_prep
+
+	tst.l	(a1)			 ; true or false?
+	sne	d5
+wwp_do
+	move.l	a3,-(sp)
+	lea	hdt_sets,a0		 ; set drive undefined
+	jsr	dv3_acdef		 ; action on definition
+	move.l	(sp)+,a3
+hdt_setwp
+	add.w	#hdl_wprt-1,d7		 ; set write protect
+
+; set a byte in all blocks
+
+hdt_seta
+	move.b	d5,(a3,d7.w)		 ; set flag
+	move.l	ddl_slave(a3),a3
+	move.l	a3,d0
+	bne	hdt_seta
+	bra	wd$_exit
+
+hdt_sets
+	bne.s	hdt_rok 		 ; ... no drive
+	sf	ddf_mstat(a4)		 ; drive changed
+hdt_rok
+	moveq	#0,d0
+	rts
+
+hdt_ipar4
+	addq.l	#4,sp
+hdt_ipar
+	moveq	#err.ipar,d0
+	bra.s  wd$_exit
+
+
+;+++
+; drv$= WIN_DRIVE$ (n)
+;---
+win_drive$ thg_extn {DRV$},win_drv,hd_wdstr
+	movem.l hdt.reg,-(sp)
+	move.l	(a1)+,d3		; drve nbr
+	ble.s	wd$_ipar
+	cmp.l	#8,d3
+	bhi.s	wd$_ipar
+
+	lea	-ddl_thing(a2),a3	; master linkage
+
+	lea	hdl_unit-1(a3),a2	; pointer to logical to phys table
+	clr.l	d1
+	move.b	(a2,d3.w),d1		; card this is on (-1, 0 or q68_coft)
+	lsl.w	#4,d3			; 16 bytes per entry in drv name tble
+	move.l	hdl_targ(a3),a2
+	addq.l	#2,d3			; point to entry for this drive
+	add.l	d3,a2			; entry after max length word
+
+	move.w	2(a1),d0		; buffer size
+	move.l	4(a1),a1		; point to buffer
+	move.w	(a2)+,d3		; length of name
+	beq.s	wd$_empty		; no name, done
+	addq.w	#2,d3			; need comma and drv nbr
+	cmp.w	d3,d0			; enough space in buffer?
+	blt.s	wd$_bffl		; no
+	move.w	d3,(a1)+		; name length
+	subq.w	#3,d3			; dbf & 2 more chars
+wd$lp1	move.b (a2)+,(a1)+
+	dbf	d3,wd$lp1
+wd$_cma move.b	#',',(a1)+
+	tst.b	d1
+	blt.s	wd$_non
+	lsr.w	#q68_dshft,d1		; 0 or 1
+	add.w	#$31,d1 		; add 1 and convert to ascii
+wd$_drv move.b	d1,(a1)+
+wd$_done
+	moveq	#0,d0
+wd$_exit
+	movem.l (sp)+,hdt.reg
+	rts
+
+wd$_ipar
+	moveq	#err.ipar,d0
+	bra.s	wd$_exit
+		      
+wd$_bffl
+	moveq	#err.bffl,d0
+	bra.s	wd$_exit
+wd$_empty
+	clr.w	(a1)
+	bra.s	wd$_cma
+wd$_non moveq	#'N',d1
+	bra.s	wd$_drv
+	   
+	end

@@ -1,5 +1,8 @@
 ; DV3 QPC Lock/Unlock Drive   V3.00     1998	  Tony Tebby
 ;				        2000	  Marcel Kilgus
+;
+; 2017-11-26  3.01  Allow driver number to only be a byte, not word (MK)
+
 	section dv3
 
 	xdef	hd_lock 		; lock drive
@@ -26,6 +29,7 @@ hd_lock
 	dc.w	qpc.hdlck
 	moveq	#0,d0
 	rts
+
 ;+++
 ; This routine unlocks a drive
 ;
@@ -38,6 +42,7 @@ hd_lock
 ;---
 hd_unlock
 	move.l	a2,-(a7)
+	andi.w	#$ff,d7
 	lea	hdl_remd(a3),a2
 	tst.b	-1(a2,d7.w)		; removeable?
 	beq.s	hd_exit 		; ... no

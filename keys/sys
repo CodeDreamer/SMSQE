@@ -118,6 +118,7 @@ sys.mgold equ	  $0a		   Gold card
 sys.msgld equ	  $0c		   SuperGOLD card
 sys.mfal  equ	  $10		   Falcon
 sys.mq40  equ	  $11		   Q40
+sys.mq68  equ	  $12		   Q68
 sys.mtt   equ	  $18		   TT
 sys.mqxl  equ	  $1c		   QXL
 sys.mqpc  equ	  $1e		   QPC
@@ -173,6 +174,8 @@ sys_klnk  equ	$00e8	 long	pointer to keyboard linkage
 * Fixed filing system working area (QL)
 *
 sys_filw equ	$00ee to $0100
+sys_cdiu equ	$00ee	word	Q68 flag for card in use
+
 *
 * Filing system tables
 *

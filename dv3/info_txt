@@ -1,0 +1,72 @@
+Different filing systems
+
+
+Most DV3 device drivers are split into at least three parts
+
+From lower to higher level, these are :
+
+1 - The physical routines
+2 - the filesystem related routines
+3 - The i/o and related routine
+
+Mostly, the
+
+
+1 - The physical routines
+These are the routines that allow physical access to a drive, the most
+important ones being those that allow read/writing one sector. SMSQE accesses
+all read/write operations to the disk through 2 single routines: Read one
+sector (dv3_xxx_rsect_asm) and write one sector (dv3_xxx_wsect_asm).
+So every operation, even if only for a single byte will, in the end, always
+result in one sector being read/written.
+
+Other physical routines are :
+The routine to format a disk (xxx_mformat_asm), to check whether a disk is
+write protected (xxx_ckwp) or ready, to start/stop a drive and some others.
+
+It goes without saying that these routines are strictly dependent on the
+actual hardware (real or emulated).
+
+
+2 - The filesystem related routines
+These are the routines that pertain to a specific file system. They contain
+info about the type of file system, and routines to handle file system
+specific tasks, such a figuring out which entry in a fat would belong to what
+file, how the root sector is to be handled, where sectors should be read from
+and written to etc.
+
+
+Currently handled file systems
+
+There are currently 3 groups of filesystems SMSQE knows about:
+
+1 - QL5A/QL5B/QLWA
+This is the standard Qdos filesystem, used in floppies (QL5A/QL5B) and in
+hard disks (QLWA), be they real ones (Atari, Qx0) or qxl.win type container
+files.
+The files for this can be found in the dv3_qlf_ subdirectory.
+
+2 - MSDOS
+This is the filesystem that can handle MSDOS Fat drives. For the time being,
+only FAT12 or FAT16 can be handled.
+There are two filesystems here:
+The files that are in the  dv3_msd_ subdirectory can handle FAT12 and small
+FAT16 drives (not more that 32 MiB) - mostly used, I believe, to read DOS
+floppy disks.
+
+The files that are in the  dv3_msd16_ subdirectory can handle larger
+FAT16 drives but this is still limited : the FAT16 partition must be bigger than
+32 MiB and smaller then 256 MiB.
+
+
+The system should automatically recongnize what format a drive is for.
+
+For this each filing system contains a "table", e.g dv3_qlf_table_asm.
+This refers to the msd_table, so that a chain of tables exist.
+
+
+
+
+
+W. Lenerz
+June 2017

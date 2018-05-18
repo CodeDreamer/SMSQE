@@ -8,9 +8,9 @@ dev8_dv3_dv3_flush_rel
 dev8_dv3_dv3_format_rel
 dev8_dv3_dv3_locfd_rel
 dev8_dv3_dv3_fcheck_rel
-dev8_dv3_dv3_setfd40_rel
-dev8_dv3_dv3_redef40_rel
-dev8_dv3_dv3_io40_rel
+dev8_dv3_q40_setfd_rel
+dev8_dv3_dv3_redef_rel
+dev8_dv3_dv3_io_rel
 dev8_dv3_dv3_pos_rel
 dev8_dv3_dv3_mkdr_rel
 dev8_dv3_dv3_rename_rel
@@ -26,8 +26,11 @@ dev8_dv3_dv3_sbloc_rel
 dev8_dv3_dv3_sbnew_rel
 dev8_dv3_dv3_date_rel
 dev8_dv3_dv3_slen_rel
-dev8_dv3_dv3_density_rel
+dev8_dv3_dv3_acdef_rel
 dev8_dv3_dv3_fdef_rel
+dev8_dv3_dv3_density_rel
+dev8_dv3_dv3_usep_rel
+dev8_dv3_dv3_chname_rel
 dev8_dv3_dv3_xqd_rel
 dev8_dv3_dv3_xmsd_rel
 dev8_dv3_dv3_version_rel

@@ -1,18 +1,18 @@
 * Initialisation constants for SMSQ
-        nolist
+	nolist
 
-ini_sysb equ    $00028000 SYStem variables Base
-ini_sstk equ    $00028480 Supervisor STacK (initial pointer)
-ini_ouch equ    ini_sysb+sys_ouch    ouch address (normally 0)
+ini_sysb equ	$00028000 SYStem variables Base
+ini_sstk equ	$00028480 Supervisor STacK (initial pointer)
+ini_ouch equ	ini_sysb+sys_ouch    ouch address (normally 0)
 
-ini.jobt equ    $1e0      JOB Table size, 112 jobs max
-ini.chnt equ    $5a0      CHaNnel Table size, 336 channels max
-              ;=$780      $28480+$780 = 28c00
+ini.jobt equ	$1e0	  JOB Table size, 112 jobs max
+ini.chnt equ	$5a0	  CHaNnel Table size, 336 channels max
+	      ;=$780	  $28480+$780 = 28c00
 
 ; initialisation constants
 
-ini_scrb equ    $00020000       initial SCReen Base address
-ini.scrs equ    $00008000       initial SCReen Size
-ini.dmod equ    $00             initial Display MODe
+ini_scrb equ	$00020000	initial SCReen Base address
+ini.scrs equ	$00008000	initial SCReen Size
+ini.dmod equ	$00		initial Display MODe
 
-        list
+	list

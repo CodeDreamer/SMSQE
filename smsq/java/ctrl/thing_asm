@@ -1,6 +1,7 @@
 ; SMSQmulator Control Procedures   V1.00    2017 W. Lenerz
 ; contains the extensions
 ; MBAR, VER$, WTIT,NNAM,PPUP, TMRS,TMRG
+; 1.01 JVA_MINIMIZE added
 	section exten
 
 	xdef	ctrl_thing
@@ -109,19 +110,53 @@ wdw_rts rts
 ; One string return parameter.
 ; Tries to get the SMSQmulator net name.
 ;---
-jt_nnam thg_extn {NNAM},jt_ppup,thp_rstr
+jt_nnam thg_extn {NNAM},jt_hadd,thp_rstr
 	moveq	#jt9.name,d0
 	dc.w	jva.trp9		; get name, ; D0 & cc set by java
 	rts
+
+ 
+;+++
+; JVA_NETADDR$
+; One string return parameter.
+; Tries to get the SMSQmulator net address.
+;---
+jt_hadd thg_extn {HADD},jt_ppup,thp_rstr
+	moveq	#jt9.addr,d0
+	dc.w	jva.trp9		; get addr, ; D0 & cc set by java
+	rts
+
 ;+++
 ; JVA_POPUP
 ; No parameter.
 ; Pops up/blinks SMSQmulator wdw.
 ;---
-jt_ppup thg_extn {PPUP},jt_tmrs,thp_nul
+jt_ppup thg_extn {PPUP},jt_minimize,thp_nul
+	clr.l	d0
 	dc.w	jva.trpb
 	rts				; D0 & cc set by java
 
+     
+;+++
+; JVA_MINIMIZE
+; No parameter.
+; Pops up/blinks SMSQmulator wdw.
+;---
+jt_minimize thg_extn {MMIZ},jt_host,thp_nul
+	moveq	#jtb.mini,d0
+	dc.w	jva.trpb
+	rts				; D0 & cc set by java
+
+     
+;+++
+; JVA_HOSTOS$
+; One string return parameter.
+; Tries to get the name and version of the host os smsqmulator is running on
+;---
+jt_host thg_extn {HOST},jt_sndo,thp_rstr
+	moveq	#jt5.host,d0
+	bra.s	dotp5		     ; get name, ; D0 & cc set by java
+	rts
 
 
 *************************************************************************
@@ -134,7 +169,16 @@ jt_ppup thg_extn {PPUP},jt_tmrs,thp_nul
 *
 ************************************************************************
 
-
+	    
+;+++
+; JVA_SOUNDING
+; One word return parameter.
+; Gets the status of the menu bar   (0 =hidden, 1 =showing)
+;---
+jt_sndo thg_extn {SNDO},jt_tmrs,jth_rwrd
+	moveq	#jt5.sndon,d0
+	bra	dotp5
+		      
 ;+++
 ; JVA_TMRSET
 ; No parameter.
@@ -185,4 +229,5 @@ jt_exit thg_extn {EXIT},jt_qlfp,thp_nul
 	moveq	#jt5.exit,d0
 	bra.s	dotp5
 
+	
 	end

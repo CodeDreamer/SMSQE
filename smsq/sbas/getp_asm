@@ -1,4 +1,6 @@
 ; Get parameters - QL Compatible    1990  Tony Tebby
+;
+; 2017-05-12  1.01  Fixed arithmetic-stack overflow on long strings (MK)
 
 	section uq
 
@@ -249,7 +251,7 @@ sgp_sets
 	move.l	a1,d7
 	sub.l	d1,d7			 ; appx arith stack pointer after op
 	cmp.l	a4,d7			 ; enough room?
-	bhs.s	sgp_cpye		 ; ... yes
+	bge.s	sgp_cpye		 ; ... yes		       *** 1.01
 	bsr.s	sgp_ald1		 ; ... no
 	bra.s	sgp_cpye
 

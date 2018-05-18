@@ -1,0 +1,169 @@
+
+
+USING QXL.WIN CONTAINERS ON FAT32 FORMATTED DRIVES
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+As of version  3.32 of SMSQ/E, the  Qx0 can use not  only the usual IDE
+drives  with Atari and QDOS partitions, but also QXL.WIN type container
+files on FAT32 formatted  media. Whilst  the intention  is to  use this
+with  SDHC cards in appropriate adapters for easy data exchange between
+the Qx0 and the rest of the QL world, this doesnÄôt have to be the case
+necessarily: I  have  successfully  used  a  standard  IDE  hard  drive
+formatted with a FAT 32 partition containing a QXL.WIN file on it.
+
+Please note that the Qx0 does  not  read  FAT32  media  directly,  just
+QXL.WIN files on such a media.
+
+Special attention must  be paid as  to how the  QXL.WIN container files
+are stored on  the media.  IÄôll use  a SDHC  cards in  the appropriate
+adapters as an example.
+
+For the cards  to be  useful, they  must be  partitioned and  the first
+primary partition must  be formatted  in FAT32  format (this  cannot be
+done on the Qx0). The different container files the Qx0 needs to access
+must be  put into  that partition,  which should  be possible  from any
+machine  running an OS that can  read/write SDHC cards (Linux, Windows,
+macOs): just copy the files to the card.
+
+The Qx0 has at least two IDE slots, one master and one slave. The ideal
+solution  would be that the ÄúoldÄù disk remain in the master slot, the
+new  disk (or card  adapter) in the  slave position. That  way, any old
+SMSQE could  boot from the old disk, load  v. 3.32 (or later) of SMSQ/E
+and then use the new disk.  Be  advised,  however,  that  it  had  been
+reported  to me that some  card adapters will only  work as masters. In
+that case,  you would  need, either  to boot  from a  floppy, or  get a
+second  IDE I/O card. Using container files  on the card As stated, the
+QXL.WIN  container files must lie in the first primary partition on the
+media which must be formatted with a FAT32 file system. Moreover, these
+container  files must be located within  the first 16 directory entries
+of this FAT32 formatted partition. 
+
+SMSQ/E for the Qx0 expects that all container files (i.e. files for WIN
+drives) lie in  contiguous sectors  on the  media. If  this is  not the
+case, the file is said  to  be  ÄúfragmentedÄù.  Fragmented  files  are
+deadly  here: SMSQ/E assumes that, once it has found the beginning of a
+container  file, the  rest of  that container  file lies  in contiguous
+sectors  on the  media/card, and  it will  cheerfully write  into those
+contiguous sectors which it  deems still  belong to  that file.  If the
+file is  fragmented, these contiguous sectors may  not belong to it but
+to another file, which will thus be irretrievably corrupted. 
+
+So,  special precautions must be taken  when writing the container (and
+other) file(s) to  the media. The  best and recommended  way to achieve
+this  is to make sure that, before writing the QXL.WIN files, the media
+is  freshly formatted. Then, one after  the other, write each container
+file to the  media immediately  after formatting  it. Once  the QXL.WIN
+file is safely on the media, SMSQE will not cause file fragmentation in
+the FAT32 system..
+
+Note : practise has shown that in most cases it may not be necessary to
+reformat the media. You could also  delete  every  single  file  on  it
+before copying new files onto  it.  Under  no  circumstances,  however,
+should  you only delete files selectively:  this may leave ÄúholesÄù in
+the file allocation table  and  this  lead  to  fragmented  files  (see
+below). However, the recommendation still is to format the card and not
+just to delete all files from it.
+
+When copying  several files to  the freshly formatted  media, make sure
+that  the copy process of  each file is finished  before you start that
+for the  next file. If not,  it may happen that  the two copy processes
+write  concurrently to the media, which could mean that the sectors for
+the two files  interleave. Depending  on the  operating system  you use
+(linux, windows, mac  os) if  you drag  several files  to the  media at
+once,  several concurrent copy  processes might be  started which might
+lead  to file fragmentation. So, to avoid  this, just drag the files to
+copy one after the other.
+
+Never just  delete a single file  -be it a container  file or any other
+file-   from the media,  but always format  it (or at  least delete ALL
+files  from it), and then write the files  to it again: If you delete a
+single file  from the card  and later write  another, bigger, container
+file  to the card, it is possible that part of this container file will
+lie in the sectors  previously occupied  by the  deleted file,  and the
+rest  in  previously  unoccupied  sectors.  This  file  would  then  be
+fragmented  and not lie in contiguous sectors on the card: a recipe for
+a disaster.
+
+If  a container file becomes fragmented, you WILL experience data loss,
+and other files on the card might also be irrecoverably damaged! 
+
+Do not drag and drop several files onto the card at once. Do not delete
+files  from the card Äì  always format it. It  is very much recommended
+that you read the section Avoiding fragmentation to make sure you treat
+the card as you should.
+
+
+Naming scheme
+=-=-=-=-=-=-=
+
+The  file name of a container file MUST be in "8.3" format, i.e. a name
+of  1 to 8 characters, possibly followed by a decimal point and a three
+letter   extension.  Missing   letters  are   filled  up   with  spaces
+automatically by the  system. The name  and extension must  be in upper
+case  and the extension, if present, must be separated from the name by
+a period (".").
+
+Please only use plain  ASCII characters  for the  name and  no accented
+characters, i.e. the letters A-Z and numbers 0-9.
+
+In all commands or configuration items where you must give or configure
+a name, SMSQ/E tries to  help  you  as  much  as  possible.  Names  are
+automatically  converted into  upper case  and correctly  formatted, so
+that Äúqlwa.winÄù would automatically be converted to ÄúQLWA    .WINÄù.
+However, a Äú_Äù is not converted to a Äú.Äù .
+
+
+The new WIN_DRIVE command
+=-=-=-=-=-=-=-=-=-=-=-=-=
+
+To allow for QXL.WIN files to be used as container files, the WIN_DRIVE
+command has been extended.
+
+The previous scheme was : WIN_DRIVE n,t,u,p
+
+where  
+n is the drive number. 
+t is the target number (from 0 -3). 
+u is the unit number (unused). 
+p is the partition number.
+
+u and p may be omitted and will then default to 0.
+
+If you do not use the  new  facility,  the  WIN_DRIVE  command  remains
+unchanged. 
+
+If you do use it, append the drive name at the end: 
+
+WIN_DRIVE n,t,u,p,name$
+
+In this case, the u and p parameters MUST be given, though they will be
+ignored.
+
+Example : 
+
+     WIN_DRIVE 4,1,0,0,"QXL.WIN"
+
+will set the file called QXL.WIN, to be found on the first partition of
+the  FAT32 formatted drive in target 1 (i.e. the ÄúslaveÄù drive in IDE
+slot  0), as WIN drive 4. Do not use  any values other then 0 for u and
+p.
+
+The quotes are not necessary.
+
+
+W. Lenerz 
+December 2017
+
+
+
+
+
+
+
+
+
+
+
+
+
+          

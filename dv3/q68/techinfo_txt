@@ -1,0 +1,48 @@
+
+Drive config
+
+
+The initial drive config is contained in the config block in hwinit_asm
+
+
+In that file, the following info is copied to a fixed memory location,
+located at q68_cfgb : the initial drive names, the drive->card table.
+The drive->card table contains, for each drive, the card it is on, as follows
+0  not on any drive
+1  on drive 1
+2  on drive 2
+
+When the driver is initialized, the initial names of the drives are normalized
+and stored above the drive->card table.
+
+So the final format of the config info at q68_cfgb is as follows:
+
+high memory
+
+		       8*16 bytes for normalized drive names
+
+  q68_cfbg+q68.norn	  -> start of normalized names
+
+			8 bytes for table
+
+  q68_cfgb+q68.dvtb	  -> start of drive->card table
+
+			8 * 16 bytes for initial drive names
+
+  q68_cfgb		  ->  start of data
+
+
+
+
+
+
+
+
+
+low memory
+
+
+
+ problems
+							       THESE 8 BYTES
+ATTENTION HDL_TARGET IS USED AS A BUFFER DO  NOT STAOR INFO IN

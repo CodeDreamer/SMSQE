@@ -1,0 +1,45 @@
+; SuperBASIC procedure / function macros
+; this is the same as dev8_mac_basic, except that the bra are long, not short
+	nolist
+
+proc_thg  macro name
+	  xref	ut_proc
+proc_thg  jsr	ut_proc
+	  dc.w	[.len(name)],'[name]'
+	  endm
+
+fun_thg  macro name
+	 xref  ut_fun
+fun_thg  jsr   ut_fun
+	 dc.w  [.len(name)],'[name]'
+	 endm
+
+fun40_thg macro name
+	  xref	ut_fun40
+fun40_thg jsr	ut_fun40
+	  dc.w	[.len(name)],'[name]'
+	  endm
+
+proc	  macro name
+	  ifstr {[.lab]} = {} goto proc_call
+	  xdef	[.lab]
+proc_call maclab
+[.lab]	  bsr  proc_thg
+	  dc.l	'[name]'
+	  endm
+
+fun	  macro name,space
+	  ifstr {[.lab]} = {} goto fun_call
+	  xdef	[.lab]
+fun_call  maclab
+[.lab]	  moveq #[space],d7
+	  bsr  fun_thg
+	  dc.l	'[name]'
+	  endm
+
+fun40	  macro name
+	  xdef	[.lab]
+[.lab]	  bsr  fun40_thg
+	  dc.l	'[name]'
+	  endm
+	list

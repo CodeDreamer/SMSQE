@@ -88,8 +88,6 @@ pt.supsr equ	  pt.supio  save or restore - suppress as IO
 pt.clrdq equ	  20	  wait before clear dummy queue
 pt_pmode equ	$51	previous mode
 pt_schfg equ	$52	scheduler flag, true if scheduler updated pointer record
-; pt_freez equ	  $53	  pointer freezer
-; pt.freez equ	    5	    1/10 sec
 
 pt_change equ	$58	address of screen size / colour depth change routine
 pt_pfrx  equ	$5c	x position, fractional part

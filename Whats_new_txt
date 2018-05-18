@@ -21,6 +21,34 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 
+
+=====
+3.32
+=====
+
+Bugfixes:
+There are various bugfixes for network drive names resolution.
+QPC & SMSQmulator use the correct SQRT replacement routines.
+QPC better handling of removable drives.
+
+Additional features:
+Filesystem for FAT16 disks of up to 256 MiB (currently only ysed in Q68).
+Filesystem for QUBide drives.
+
+Q40/Q60:
+It is now possible to use IDE hard disks formatted with FAT32 and contining
+QXL.WIN "drives" (see explanation in the extras_new directory).
+The purpose of this is to allow easier data exchange between the Qx0 and the
+rest of the QL world : Adapters exist which will plug into the Q40 IDE connector
+and can read SDHC memory cards. If you format such a card on FAT32, you can
+exchange QXL.WIN drives easily!
+
+DISP_MODE command for Qx0 introduced.
+
+Q68:
+Q68 version of SMSQE introduced.
+
+
 =====
 3.31
 =====

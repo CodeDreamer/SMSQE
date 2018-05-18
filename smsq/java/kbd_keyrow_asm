@@ -45,7 +45,6 @@ kbkr_do
 	beq.s	kbkr_bp 		; ooops
 	move.l	d0,a3
 	move.b	kb_krwem(a3,d1.w),d1	; get keyrow state
-
 kbkr_ok
 	moveq	#0,d0
 kbkr_exit

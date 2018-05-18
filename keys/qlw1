@@ -1,0 +1,112 @@
+; keys for qlwa format
+
+	nolist
+
+***************************
+*
+* This is the format of the root sector of a qubide (qlw1) drive.
+*
+***************************
+
+qw1_iden equ	$0000		; word	qubide drive identifier : "qlw1"
+qw1_name equ	$0004		; stng	up to 10 characters name of drive, right padded with spaces
+qw1_rand equ	$000e		; word	random number
+qw1_updt equ	$0010		; long	how many times updated
+qw1_fgrp equ	$0014		; word	number of free clusters
+qw1_ggrp equ	$0016		; word	number of good clusters
+qw1_ngrp equ	$0018		; word	total number of clusters
+qw1_sctt equ	$001a		; word	sectors per track
+qw1_sctc equ	$001c		; word	sectors per cylinder
+qw1_trkp equ	$001e		; word	number of tracks for this partition
+qw1_sctg equ	$0020		; word	sectors per cluster (1 sector= 512 bytes)
+qw1_sctm equ	$0022		; word	clusters per fat (what's the difference with $30?)
+				; word	spare
+qw1_ftyp equ	$0026		; word	fat type (0 = atapi, 1 = cdrom)
+				; word	spare
+qw1_numh equ	$002a		; byte	number of heads
+qw1_nump equ	$002b		; byte	number of partitions
+				; long	spare
+qw1_nrmb equ	$0030		; word	number of mapping blocks
+qw1_pst1 equ	$0032		; word	start track of partition 1
+qw1_ptbl equ	$0034		; partition table for partitions 2 to 8
+
+; this is followed (in root partition only?) by:
+; $34 to $4f partitions 2 to 8, 2 words each
+;	word 1 : number of tracks for partition
+;	word 2 : start track number for partition
+    
+qw1_pstt equ	$0050		; word	start track of THIS partition
+qw1_pstb equ	$0052		; long	start block of THIS partition (lba)
+				; long	spare
+qw1_trks equ	$005a		; word	real number of tracks on disk
+qw1_prts equ	$005c		; info on paritions 9 to 40 (???)
+
+qw1_fflg equ	$00fb		; byte fat flags:
+				  ;  bit 0 checksum if set
+				  ;  bit 1 set for open case conversion
+				  ;  bit 2 set if makedir moves files
+				  ;  bit 3 set if delete uses trashcan
+qw1_fchk equ	$00fc		; FAT checksum, seems to be unused (?)
+qw1_gmap equ	$0100		; start of FAT in root sector
+
+
+*********************
+*
+* FAT format
+*
+*********************
+
+; fat entries are 2 words per entry:
+;  word 1 : file ID (=file nbr)
+;  word 2 : block number in file, starting at 0
+
+; special file numbers
+qw1_rdir  equ	0		; root dir is always file 0
+qw1_trsh  equ	1		; "trash can"
+qw1_maxf  equ	$fefd		; max nbr a file may have
+
+qw1_fatc  equ	$feff		; fat cluster
+qw1_badc  equ	$fefe		; bad cluster
+qw1_frec  equ	$ff		; free cluster (MSB)
+
+
+; MISC
+qw1.id	equ	'QLW1'		; qubide partition ID
+
+
+
+***************
+*
+* Qubide Format drive definition block for smsqe
+*
+***************
+
+; The drive definition block for a Qubide disk/partition holds not only the usual
+; dv3 information, but also the entire root sector and ALL sectors for the
+; FAT (same as for qlwa drives). These lie at qwf_root upwards. Moreover
+; the drive definition block also contains a "byte map":
+
+; At qwf_mupd there is a bitmap (actually a "byte map") of sectors occupied by
+; the FAT : each byte in the map represents one sector of the FAT. If the MSbit
+; of a byte is set, then the corresponding sector of the FAT was updated and
+; needs to be written out to the disk.
+; Since the total cluster number a Qubide disk may hold is stored in a word,
+; there can't be more than 65536 clusters. Each cluster takes 4 bytes in the
+; FAT, so one sector in the FAT can hold 128 entries for clusters. This means
+; the the maximum number of sectors a FAT will need to represnt 65536 sectors
+; is 65536/128 = 512. The byte map thus is 512 bytes long.
+
+
+
+qwf_mtop   equ	ddf_dtop	; long	pointer to top of fat
+qwf_msect  equ	ddf_dtop+$08	; word	number of fat sectors
+
+qwf_mupd   equ	ddf_dtop+$0c	; 512+4 bytes for fat updated 65536+ clusters
+qwf.mupd   equ	  512+4
+
+qwf_hfil   equ	ddf_mupd+qwf.mupd ; long  highest file number (not used)
+qwf_root   equ	qwf_hfil+4	  ; the root sector (+1st part of fat) is here
+qwf_fat    equ	qwf_root+qw1_gmap ; the fat starts here
+
+
+     list

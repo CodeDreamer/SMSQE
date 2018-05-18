@@ -1,0 +1,246 @@
+Win drives on SDHC cards
+
+
+Under SMSQE, the Q68 uses  qxl.win  type  container  files  as  mass  storage
+devices.  These files lie on the SDHC cards that you can insert into the card
+reader on  the Q68. The cards must be  formatted in FAT32 format (this cannot
+be done on the Q68, yet).
+
+The corresponding SMSQ/E  device is  called "WIN"  and, potentially,  you may
+have up to 8 different drives for this device, called "win1_" to "win8_".
+
+Each WIN drive can point to one container file lying indiscriminately on SDHC
+card one or two. The file name of the container file MUST be in "8.3" format,
+i.e. a name of 1 to 8 characters,  possibly followed by a decimal point and a
+three  letter extension. The name and extension must be in upper case and the
+extension, if present, must be separated from the name by a period (".").
+
+Please only  use  plain  ASCII  characters  for  the  name  and  no  accented
+characters, i.e. the letters A-Z and numbers 0-9.
+
+For each WIN drive, you must set the name of the container file, and the number
+of the card on which this file is to be found. SMSQ/E comes preconfigured with
+what the designers thinks are sensible names.
+
+
+Configured drives and drive configuration
+
+As mentioned, SMSQ/E  for  Q68  comes  preconfigured  with  the  names  of  8
+container files and the cards they are supposed to be on: 
+
+win1_ is  configured to point to  a file called "QL_WIN.BIN",  to be found on
+card one.
+
+win2_ is configured to point to a file also called "QL_WIN.BIN", but which is
+to be found on card two.
+
+win3_ to win4_  are  configured  to  point,  respectively,  to  files  called
+"QL_WIN3.BIN"  and "QL_WIN4.BIN" which are also supposed to lie an card 1. 
+
+The  files "QL_WIN5.BIN", "QL_WIN6.BIN", "QL_WIN7.BIN" and "QL_WIN8.BIN", for
+drives win5_ to win8_, respectively, are supposed to lie an card 2.
+
+You can  configure  these   names  with  the   usual  configuration  program,
+Menuconfig is the best choice here. This  lets  you  set  the  name  of  each
+container  file for each of the drives, and the cards they are supposed to be
+found on.
+
+You won't be able  to enter a  name that does  not comply with  the 8.3 FAT32
+standard, but you  may give the name  in lower case, it  will be converted to
+upper case later.
+
+
+
+Important notes on cards and container files
+
+1 - Do not rip out a card whilst the machine is running and certainly not when
+there are files still open to a drive.
+
+If you rip out a card whilst there are still files open, data loss WILL occur.
+Note that you will NOT be able to write the missing data to the card even if you
+reinsert it!
+
+To make it safe to remove the card whilst SMSQ/E is still running, you mau use
+the "WIN_SAFE" command (see below). This checks whether it is safe to remove the
+SDHC card from the reader. If this command returns without error, then it is
+safe to remove the card, else an error (most likely "in use") will be returned.
+
+
+2 -  Do not point two different WIN drives  to the same container file on the
+same card. For the time being, the system doesn't stop you from doing so, but
+data loss and file corruption WIN (not "can") occur as a result!
+
+If  in doubt, use the  WIN_DRIVE$ function to consult  the list of containers
+files already assigned to a drive.
+
+
+3  - Before you can use drives on an SDHC card, the card must be initialised.
+Card 1  is automatically initialised at  boot time. By design,  card 2 is not
+initialised at boot time. You have to initialise it yourself. You can do this
+with the supplied WIN_INIT command.
+  
+
+4 - Special precautions must be taken when writing the container files to the
+card.  You should dedicate a card solely for the purpose of using it with the
+Q68. 
+
+SMSQ/E requires an SDHC card formatted  in  FAT32  format  with  a  partition
+table.  SMSQ/E can only recognise  a file that lies  within the first sixteen
+entries of the FAT32 directory.
+ 
+Thus, before writing the container files, the card must be freshly formatted.
+Then write each container file immediately after formatting the card.
+
+
+Never delete a file from the card, but always format it, then first write the
+SMSQ/E operating  system  to  a  file  named  "QL_RAM.BIN".  Then  write  the
+containers  files: Container  files must  lie  in  contiguous sectors  on the
+FAT32  directory  structure of the SDHC card. This means that if you delete a
+file from the card and later write container file to the card, this container
+file may be fragmented and not lie in contiguous sectors on the card. If this
+happens,  you WILL experience  data loss, and  other files on  the card might
+also be irrevoverably damaged. If  in  doublt,  you  may  use  the  WIN_CHECK
+command. This will tell you whether a container file is fragmented or safe to
+use.
+
+
+Basic commands
+
+
+The basic commands related to drives are as follows :
+
+
+WIN_DRIVE 
+=========
+
+assigns a container file on a card to become a drive.
+
+Syntax:
+
+WIN_DRIVE drive, card,file_name$
+
+
+where :
+
+   - drive is the WIN drive number (1 ... 8) to be assigned.
+
+   - card is the SDHC card on which the file can be found (1 or 2).
+
+   - file_name$ is the container file. The file name MUST be in "8.3" format,
+i.e. a name of one to 8 characters, a decimal point and an extension of up to
+three  letters. The extension, if present, must be separated from the name by
+a period (".").
+
+Please note that this command does  not  check  that  the  file  is  actually
+present and readable on the card.
+
+The WIN_DRIVE command has an intended side-effect :
+
+
+If the  command is applied to a card  that isn't present (any more), all
+channels to all drives  that would  have corresponded  to files  on that
+card are closed, and  the drive  definition blocks  for such  drives are
+removed.
+
+This is a protection against a card being ripped out of the drive, a new
+one inserted and a write operation to the new card being made. That way,
+at least, no old information will be written to the new card.
+
+
+Example:
+
+WIN_DRIVE 2,6,"QXL.WIN"
+
+make the file "QXL.WIN" on card 2 into WIN drive 6.
+
+
+
+
+WIN_DRIVE$ 
+==========
+
+This function  returns the name of  a file corresponding to  a drive, and the
+card on which this file should be found.
+
+Syntax:
+
+name$=WIN_DRIVE$(drive)
+
+where
+
+   - drive is the drive to be questioned (1 to 8)
+
+The function returns, as a string, the name of the container file assigned to
+the drive passed as parameter, as well as the number of the card this file is
+on (1  or 2), separated from the name by  a comma. Please note that this does
+not tell you whether such a file actually exists on the card.
+
+
+Example :
+
+PRINT WIN_DRIVE$(6) might return "QL_WIN6.BIN,2"
+
+this  means that the drive  win6_ is assigned to  a file called "QL_WIN6.BIN"
+which is to be found on the card in slot 2.
+
+
+
+WIN_SAFE 
+========
+
+This command checks whether it is safe to remove a card.
+
+Syntax:
+
+WIN_SAFE card
+
+where - card is the SDHC card on which the file can be found (1 or 2).
+
+
+If this returns without error, then the card may be safely removed.
+
+
+Example:
+
+WIN_SAFE 1
+
+checks whether card 1 may be safely removed.
+
+
+
+
+
+WIN_CHECK 
+=========
+
+Checks  whether a container file on the  card is indeed in contiguous sectors
+on the card.
+
+Syntax :
+
+WIN_CHECK drive     
+
+where
+
+- drive is the WIN drive to be questioned
+
+If  this does not  return an error,  the container file  corresponding to the
+drive is ok.
+ 
+
+WIN_USE
+and
+WIN_WP   
+=======
+
+These are the standard SMSQ/E keywords and work as expected.
+
+
+
+WIN_FORMAT
+WIN_START
+WIN_STOP
+WIN_REMV
+WIN_SLUG
+
+These commands, whilst present, have no effect at all.

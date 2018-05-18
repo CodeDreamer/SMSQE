@@ -1,0 +1,69 @@
+; DV3 QXL Check Ready Drive   V3.00     1998	  Tony Tebby
+
+;     Q68		      V1.00     2017	  W. Lenerz
+
+	section dv3
+
+	xdef	hd_ckrdy
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_sys'
+	include 'dev8_dv3_keys'
+	include 'dev8_keys_java'
+	include 'dev8_keys_q68'
+	include 'dev8_dv3_hd_keys'
+	include 'dev8_dv3_hd_ide_keys'
+
+;+++
+; This routine checks if the drive is ready and if the medium has changed
+;
+;	d7 c  p drive ID / number
+;	a3 c  p linkage block
+;	a4 c  p drive definition
+;	a5 must be kept!!!!!
+;	a6 c  p sysvars
+;	status return 0, ERR.NC or ERR.MCHK
+;
+;---
+hd_ckrdy
+
+;;;;;  debug code ;;;;; ------------------------------
+
+	genif	debug = 1
+	cmp.l	#'gold',q68_jflg	; SMSQ68mulator?
+	bne.s	nojava			; no...->
+;   bra.s nojava
+jvlp1	move.l	a5,-(a7)
+	move.l d0,-(a7) 		; will be popped up in java
+	lea	hdl_unit-1(a3),a5
+	move.b	(a5,d7.w),d0
+	move.w	d0,a5
+	moveq	#jd3.rdy,d0
+	dc.w	jva.trpa		; call SMSQ68mulator
+	move.l	(a7)+,a5
+	rts
+nojava
+	endgen
+;;;;; end debug code ;;;;;; -----------------------------
+	moveq	#0,d0
+	rts
+
+	end
+
+	move.b	sys_fsco(a6),d0 	; a card was ripped out?
+	bne.s	crd_err 		; yes->
+	rts
+crd_err movem.l  d1/a5,-(a7)		; check whether this card was ripped out
+	clr.l	d1
+	lea	hdl_unit-1(a3),a5
+	move.b	(a5,d7.w),d1		; card "nbr" (0 or q68.offs)
+	lsr.w	#q68_dshft,d1		; card nbr (0 or 1)
+	btst	d1,d0			; is it this card?...
+	movem.l (a7)+,d1/a5
+	bne.s	crd_mcf 		; ... yes, medium check failed
+	clr.l	d0			; no, OK
+	rts
+crd_mcf moveq	#err.mchk,d0
+	rts
+
+	end

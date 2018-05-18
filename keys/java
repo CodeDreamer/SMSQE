@@ -25,7 +25,10 @@ jva_sfau	equ	jva_nfau+4
 jva_winu	equ	jva_sfau+4
 jva_flpu	equ	jva_winu+4
 jva_memu	equ	jva_flpu+4	; same for mem
-jva_rand	equ	jva_memu+4	; random number
+jva_rand	equ	jva_memu+4	; random number (L)
+jva_mwhl	equ	jva_rand+4	; mouse wheel (L)
+jva_sjbID	equ	jva_mwhl+4	; jobID of syncsrap job (L)
+
 
 ; "trap" keys : these cause a return to java
 ; they correspond to unused instructions for the mc68000
@@ -51,8 +54,8 @@ jt5.beep	equ	  12		;   start beep
 jt5.bpof	equ	  13		;   stop beep
 jt5.sssc	equ	  14		;   "close" ssss sound
 jt5.drvq	equ	  15		;   drive query
-jt5.xc2s	equ	  16		;   transfer from clipboard to scrap
-jt5.xs2cp	equ	  17		;   transfer from scrap to clopboard
+jt5.host	equ	  16		;   get host OS name and version
+jt5.sndon	equ	  17		;   check whether sound is still playing
 jt5.time	equ	  18		;   get time from java
 jt5.mbar	equ	  19		;   make menu bar visible
 jt5.comb	equ	  20		;   alpha combine 2 blocks
@@ -75,7 +78,9 @@ jt5.vers	equ	  36		;   get smsqmulator version
 jt5.wtit	equ	  37		;   set windowtitle
 
 jva.trp6	equ	$a006		; position pointer in java screen
+
 jva.trp7	equ	$a007		; check for idleness
+
 jva.trp8	equ	$a008		; flp access
 jt8.rsec	equ	  0		;   read a sector
 jt8.wsec	equ	  1		;   write a sector
@@ -92,11 +97,21 @@ jt9.cls 	equ	  3		;   IP close
 jt9.cla 	equ	  4		;   IP close all
 jt9.cnm 	equ	  5		;   IP get channel name
 jt9.name	equ	  6		;   (IP) get localhost name
+jt9.addr	equ	  7		;   (IP) get localhost addr
 
 jva.trpA	equ	$a00a		; (reserved for SWIN access)
+
 jva.trpB	equ	$a00b		; popup iconified prog
+jtb.pop 	equ	  0		;    popup
+jtb.mini	equ	  1		;    minimise
 jva.trpC	equ	$a00c		; copy ql screen switching
-				
+
+jva.trpD	equ	$a00d		; scrap/clipboard transfer
+jtd.xc2s	equ	  0		;   transfer from clipboard to scrap
+jtd.xs2cp	equ	  1		;   transfer from scrap to clopboard
+jtd.qryc	equ	  2		;   query current change count
+jtd.strt	equ	  3		;   start java clipborad monitor thread
+jtd.stop	equ	  4		;   stop java clipborad monitor thread
 jva.test	equ	$a100		; test instruction
 
 ; smsqmulator config info flag
@@ -111,7 +126,10 @@ jd3.rsec	equ	  0		; read a sector
 jd3.wsec	equ	  1		; write a sector
 jd3.frmt	equ	  2		; format drive
 jd3.ckwp	equ	  3		; check for write protect
-jd3.ckst	equ	  4		; check for drive status
+jd3.remv	equ	  4		; remove "card"
+jd3.insr	equ	  5		: insert "card"
+jd3.rdy 	equ	  6		; check for drive ready
 
+;
 
 	list

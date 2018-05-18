@@ -1,5 +1,5 @@
 ;	PROC FN table entry
-;	this version for pocs that are in the same file as the table, no xref
+;	this version for procs that are in the same file as the table, no xref
 
 	nolist
 

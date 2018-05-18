@@ -1,0 +1,47 @@
+; SMSQ Q68 ND drivers
+
+	section header
+
+	xref	smsq_end
+
+	include 'dev8_keys_stella_bl'
+	include 'dev8_keys_con'
+	include 'dev8_keys_sys'
+
+header_base
+	dc.l	nd_base-header_base	; length of header
+	dc.l	0			; module length unknown
+	dc.l	smsq_end-nd_base	; loaded length
+	dc.l	0			; checksum
+	dc.l	0			; always select
+	dc.b	1			; 1 level down
+	dc.b	0
+	dc.w	smsq_name-*
+
+smsq_name
+	dc.w	nm_end-*-2
+	dc.b	'SMSQ Net Driver for Q68 '
+nm_end
+	dc.w	0
+
+	section base
+
+	xref	nd_q68
+nd_base
+;	 move.l  a6,-(a7)
+;	 move.l  #$28000,a6
+
+
+;	 move.l  sys_clnk(a6),d0	 ; get kbd/pointer linkage
+;	 beq.s	 new			 ; there is none?! ->
+;	 move.l  d0,a1			 ; keep
+;	 st	 pt_xicnt(a1)
+;	 move.w  #200,pt_xinc(a1)
+;	 move.w  #200,pt_yinc(a1)
+;	 move.w  #200,pt_xicnt(a1)
+;	 move.l  #-1,pt_npos(a1)
+
+;new	 move.l  (a7)+,a6
+	jmp	nd_q68
+
+	end

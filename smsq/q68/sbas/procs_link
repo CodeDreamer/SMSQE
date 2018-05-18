@@ -1,0 +1,28 @@
+program dev8_smsq_q68_sbas_procs_x
+
+section header
+section base
+section ak
+section procs
+section exten
+section ed
+section defs
+section utils
+
+input dev8_smsq_sbas_procs_base_rel
+input dev8_smsq_q68_sbas_fastmem_rel
+library dev8_smsq_q68_sbas_procs_lib
+library dev8_sbsext_ext_lib
+library dev8_sbsext_ed_lib
+library dev8_sbsext_ut_lib
+library dev8_smsq_sbas_procs_reprocs_rel
+library dev8_smsq_qa_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_smsq_smsq_reset_rel
+library dev8_smsq_sbas_version_rel
+input   DEV8_uti_hotstuff_rel
+input   DEV8_uti_usethings_rel
+input   DEV8_uti_thingjump_rel
+input   DEV8_uti_thingvector_rel
+library dev8_smsq_smsq_end_rel

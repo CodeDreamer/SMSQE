@@ -1,0 +1,46 @@
+; SMSQ Q68 DV3 Main Routine
+
+	section header
+
+	xref	smsq_end
+	xref.l	dv3_vers
+
+header_base
+	dc.l	dv3_base-header_base	 ; length of header
+	dc.l	0			 ; module length unknown
+	dc.l	smsq_end-dv3_base	 ; loaded length
+	dc.l	0			 ; checksum
+	dc.l	0			 ; always select
+	dc.b	1			 ; 1 level down
+	dc.b	0
+	dc.w	smsq_name-*
+
+smsq_name
+	dc.w	nm_end-*-2
+	dc.b	'SMSQ DV3 DRIVERS FOR Q68'
+nm_end
+	dc.l	dv3_vers
+	dc.w	$200a
+
+	section base
+
+	xref	dv3_init
+	xref	win_init
+	xref	dv3_addfd
+	xref	qw1_table		; qubide type filesystem, links to the others
+	xref	fat_init
+	xref	qub_init
+
+dv3_base
+	bra.l	init
+
+	section init
+init
+	jsr	dv3_init		; initialise
+	lea	qw1_table,a1
+	jsr	dv3_addfd
+	jsr	win_init
+	jsr	fat_init
+	jsr	qub_init
+	rts
+	end

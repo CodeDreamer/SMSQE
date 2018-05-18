@@ -1,0 +1,60 @@
+; Q68 timing constants	  0.00 (c) W. Lenerz 2017
+
+	section init
+
+	xdef	nd_q68
+
+	xref	nd_initb
+	xref	nd_proctab
+	xref	ut_procdef
+
+	include 'dev8_keys_q68'
+
+
+nd_q68	lea	ndt_q68,a1
+	jsr	nd_initb
+	lea	nd_proctab,a1
+	jmp	ut_procdef
+
+		
+
+; table for Q68 based on the following measurements
+
+
+; Instruction	  Repeats Time °s   Time for 1 inst(°s)
+; DBF D0,*	  65336   20400   0,312
+; MOVE.B D3,(A5)  10000   2050	  0,205
+; BTST D7,(A5)	  10000   2060	  0,206
+; ASR		  10000   1030	  0,103
+; MOVE.B (A5),D3  10000   2050	  0,205
+; MOVE.B D3,(A4)  10000   2060	  0,206
+; ASR.L #1,D3	  10000   1040	  0,104
+; LSR.L #1,D3	  10000   1030	  0,103
+; MOVE.B D6,D3	  10000   1030	  0,103
+; ROR.W #1,D3	  10000   1030	  0,103
+
+
+ndt_q68
+nsg_wgap dc.w	  277-1     ; wait for gap constant		   200°s
+nsg_lsct		    ; look for scout (wait 20 ms)	 20000°s
+nsg_bace dc.w	27700-1     ; look for broadcast acknowledge end 20000°s
+nsg_csct dc.w	   41-1     ; check scout			    30°s
+nsg_esct dc.w	 1560-1     ; end of scout			 486.7°s    485us
+nsg_wsct dc.w	 4150-1     ; wait to send scout		  3000°s
+nsg_tsct dc.w	   59-1     ; timer for scout active / inactive     59 iterations
+			    ;					  (to get 31°s)
+nsg_bsct		  ; broadcast scout detect		 500us
+nsg_back dc.w	  397-1   ; broadcast acknowledge detect	 500us
+nsg_xsct		  ; extension to scout			5000us
+nsg_xack dc.w	19531-1   ; (extension to) acknowledge		5000us
+nsg_bnak dc.w	  780-1   ; broadcast NACK delay		 200us
+nsg_stmo dc.w	60000	  ; serial port timout		       20000us
+nsg_paus dc.w	  449-1     ; pause before send 		   140°s
+nsg_send dc.w	   34-1     ; send loop timer, bit should be held for 11.2°s
+nsg_rtmo dc.w	 4836-1     ; receive timout			  2500°s
+nsg_rbto dc.w	   86-1   ; receive bit timout	:  wait betwen last bit of old byte & 1st bit of new byte		   80us
+nsg_rdly dc.w	   33-1     ; receive delay start bit to bit 0	  between 10 & 11°s
+nsg_rbit dc.w	   17-1     ; receive bit loop timer		    32
+						
+
+	end

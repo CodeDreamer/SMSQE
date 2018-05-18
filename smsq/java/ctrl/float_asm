@@ -1,4 +1,5 @@
 ; SMSQmulator control extension thing, floating point extns (c) W.Lenerz 2017
+; v. 1.01 corrected SQRT
 ; v. 1.00
 
 	section exten
@@ -66,7 +67,8 @@ qpc_patchtable
 	dc.w	$0934,$48e7,ib+9	 ; MULD
 	dc.w	$0948,$48e7,ib+10	 ; MUL
 	dc.w	$093c,$48e7,ib+11	 ; x^2
-	dc.w	$09fc,$2341,ib+12	 ; SQRT
+;	 dc.w	 $09fc,$2341,ib+12	  ; SQRT (wrong)
+	dc.w	$0afe,$2029,ib+12	 ; SQRT
 	dc.w	$06b0,$48e7,ib+13	 ; COS
 	dc.w	$06bc,$48e7,ib+14	 ; SIN
 	dc.w	$0702,$4eba,ib+15	 ; COT

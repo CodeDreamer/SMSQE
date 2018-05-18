@@ -1,4 +1,6 @@
 ; Directory Device Driver V3 keys
+; v. 1.01  added ddf_sdhc (wl)
+
 	nolist
 
 ; Device Driver Linkage Block
@@ -56,6 +58,7 @@ ddl_vtop    equ $00d0		; top of vector table
 
 ddl_master  equ $00d0	; long	  pointer to master device driver
 ddl_slave   equ $00d4	; long	  pointer to (next) slave
+ddl_inus    equ $00d8	; byte	  msb Sector transfer in use (cf sys_stiu)
 
 ddl_thhdr   equ $00e0		; embedded Thing header
 ddl_thing   equ $00f0		; embedded Thing
@@ -92,6 +95,7 @@ ddf_ftype   equ $0028	; byte	  format type
 ddf.drct      equ  -1		; -ve direct access
 ddf.qdos      equ   1		; generic QDOS format for directory devices
 ddf.msdos     equ   2		; generic MSDOS format for directory devices
+ddf.qubi      equ   3		; generic QUBIDE format for directory devices
 ddf_stype   equ $0029	; byte	  format sub-type
 ddf.ram       equ   -1		; RAM disk (internal format)
 ddf.ql5a      equ   0		; QL5A
@@ -99,6 +103,8 @@ ddf.ql5b      equ   1		; QL5B
 ddf.qlwa      equ   2		; QLWA
 ddf.msd3      equ   0		; MSDOS with 3 nibble map
 ddf.msd4      equ   1		; MSDOS with 4 nibble map
+ddf.msd32     equ   2		; MSDOS fat 32 with 8 nibble map
+ddf.qw1       equ   0		; QLW1 qubide
 ddf_density equ $002a	; byte	  density
 ddf.sd	      equ   0		; single density
 ddf.dd	      equ   1		; double density
@@ -138,6 +144,14 @@ ddf_ptoi    equ $006c	; long	  pathname to internal translate
 ddf_itopck  equ $0070	; long	  internal to pathname check translate
 
 ddf_remv    equ $0078	; byte	  set if medium is removeable
+ddf_lba     equ $0079	; byte	  0 if ide drive is lba not chs
+ddf.lba     equ     0		    ; drive is LBA
+ddf.chs     equ    -1		    ; drive is CHS
+				; note this is, up to now, only of use for the Qx0
+				; this is not only used to check whether a drive
+				; is chs or lba, but also whether the byte order
+				; in a drive must be reversed when reading/writing
+				; a sector : see dv3_q40_rsect_asm
 ddf_ptddl   equ $007c	; long	  pointer to (master/slave) ddl for this dr def
 
 ddf_mcheck  equ $0082		; format dependent medium check

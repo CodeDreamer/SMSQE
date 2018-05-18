@@ -1,0 +1,18 @@
+
+
+
+
+
+Q68 config items
+
+Q680		init card 2 when booting
+Q681 - 8	winx filenames
+Q689		led on/off
+Q68A		boot from
+Q68B - I	winx cards
+Q68J - Q	qubx cards
+Q68R - Y	fatx partition numbers
+Q68Z		mouse from poll/interrupt
+Q68a - h	fatx cards
+
+q681 - 8	qubx filename

@@ -1,8 +1,8 @@
 ; SMSQMuator control thing  copyright (c) w. Lenerz 2017
-; v. 1.00
+; v. 1.01 added jva_minimize
 
 
-	include 'dev8_mac_basic'
+	include 'dev8_mac_basic2'
 	include 'dev8_mac_proc'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_qlv'
@@ -23,7 +23,7 @@
 	xref	gu_thjmp
 
 
-ctrl_vers equ	'1.00'
+ctrl_vers equ	'1.01'
 
 ctrl_init
 	lea	ctrl_tname,a0		; thing
@@ -76,38 +76,61 @@ jvappup proc	{PPUP}
 jtmrset proc	{TMRS}
 scrupdt proc	{SCRU}
 jvasget proc	{SGET}
+jvasync proc	{SYNC}
+jvasstp proc	{SSTP}
+jvamini proc	{MMIZ}
+jvasndi fun	{SNDO},8
+hostos	fun	{HOST},80
 jtmrget fun	{TMRG},20
 jbarget fun	{MBST},16
 jvannam move.l	#256,d7
-	bsr.s	fun_thg
+	bsr	fun_thg
 	dc.l	'NNAM'
+jvaaddr move.l	#256,d7
+	bsr	fun_thg
+	dc.l	'HADD'
 
 ; create the keywords
 proctab
 	proc_stt
 	proc_ref JVASPUT
-	proc_ref JVA_SPUT, jvasput
+	proc_ref JVA_SPUT , jvasput
 	proc_ref JVASGET
-	proc_ref JVA_SGET,jvasget
+	proc_ref JVA_SGET ,jvasget
 	proc_ref JVAMBAR
-	proc_ref JVA_MBAR, jvambar
+	proc_ref JVA_MBAR , jvambar
 	proc_ref JVAQLFP
-	proc_ref JVA_QLFP, jvaqlfp
+	proc_ref JVA_QLFP , jvaqlfp
 	proc_ref JVAIEFP
-	proc_ref JVA_IEFP, jvaiefp
-	proc_ref JVA_WINDOWTITLE, jvawtit
-	proc_ref JVA_POPUP,jvappup
+	proc_ref JVA_IEFP , jvaiefp
+	proc_ref JVA_WINDOWTITLE , jvawtit
+	proc_ref EMU_WINDOWTITLE , jvawtit
+	proc_ref JVA_POPUP , jvappup
+	proc_ref JVA_MINIMIZE , jvamini
+	proc_ref EMU_MINIMIZE , jvamini
 	proc_ref JTMRSET
-	proc_ref JVA_TMRSET, jtmrset
+	proc_ref JVA_TMRSET , jtmrset
 	proc_ref JVA_SCRUPDT , scrupdt
-	proc_ref JVA_EXIT, jvaexit
+	proc_ref JVA_EXIT , jvaexit
+	proc_ref EMU_EXIT , jvaexit
+	proc_ref JVA_SYNCSCRAP , jvasync
+	proc_ref EMU_SYNCSCRAP , jvasync
+	proc_ref JVA_SYNCSCRAP_STOP , jvasstp
+	proc_ref EMU_SYNCSCRAP_STOP , jvasstp
 	proc_end
 	proc_stt
-	proc_ref JVA_NETNAME$,jvannam
-	proc_ref JVA_VER$, jvavers
+	proc_ref JVA_NETNAME$ , jvannam
+	proc_ref JVA_VER$ , jvavers
+	proc_ref EMU_NETNAME$ , jvannam
+	proc_ref EMU_VER$ , jvavers
 	proc_ref JTMRGET
-	proc_ref JVA_TMRGET, jtmrget
+	proc_ref JVA_TMRGET , jtmrget
 	proc_ref JVA_MBAR_STATUS , jbarget
+	proc_ref JVA_HOSTOS$ , hostos
+	proc_ref EMU_HOSTOS$ , hostos
+	proc_ref JVA_NETADDR$ , jvaaddr
+	proc_ref EMU_NETADDR$ , jvaaddr
+	proc_ref JVA_SOUNDING , jvasndi
 	proc_end
 
 	end

@@ -1,0 +1,234 @@
+; DV3 Q68 SDHC Card Read Sector  1.00	 2016-2017 W. Lenerz
+
+	section dv3
+
+	xdef	hd_rdirect		; direct read sector
+	xdef	hd_rsint		; internal read sector
+	xdef	q68_dvstrt		; for copy2mem
+
+
+	xref	hd_hold 		; reserve the interface
+	xref	hd_release		; release the interface
+	xref	snd_cmd 		; send a command to sdhc
+	xref	q68_dvend
+
+	include 'dev8_keys_java'
+	include 'DEV8_dv3_keys'
+	include 'DEV8_keys_err'
+	include 'DEV8_dv3_hd_keys'
+	include 'dev8_keys_q68'
+
+readreg reg	d1/d2/d3/d7/a1/a2/a3
+
+
+q68_dvstrt				; needed for copy2mem
+	dc.w	hd_rdirect-*
+	dc.w	q68_dvend-*+2
+
+;+++
+; This routine reads a sector from an sdhc card, normally for direct sector I/O.
+;+++
+hd_rdirect
+	tst.w	ddf_ftype(a4)		; really direct sector I/O?
+	bge.s	hd_rsint		; ... no ->...
+	add.l	ddf_psoff(a4),d0	; ... yes, add "partition start"
+	bra.s	hd_rsint
+;+++
+; This routine reads a sector from an sdhc card.  The sector number is that of
+; the absolute sector on the SDHC card.
+; All normal read accesses to the card go through here.
+; Read is done via background transfer.
+;
+;	d0 cr	absolute sector (=block) number  / error code
+;	d1    p
+;	d2 c  p number of sectors to read (1 = 1 sector, 2 = 2 sects etc)
+;	d7 c  p drive ID / number  (from 1 to 8)
+;	a1 c  p address to read into , MUST be large enough to hold the total nbr of sectors requested
+;	a3 c  p linkage block
+;	a4 c  p drive definition
+;
+;
+;	status return 0 or ERR.MCHK
+;	The sector number is for sectors 512 bytes long. The QLSD interface needs
+;	a sector (block) position starting from the very first sector.
+;---
+hdr_inus
+	rts
+hd_rsint
+	jsr	hd_hold 		; hold the drive for me
+	bne.s	hdr_inus		; can't
+	movem.l readreg,-(a7)
+	lea	hdl_unit-1(a3),a2	; point to "unit" = card for this drive
+	clr.l	d1
+	move.b	(a2,d7.w),d1
+	move.l	#mmc1_cs,a2		; point to card physical addresses
+	add.w	d1,a2			; a2 points to the correct addresses for this drive
+	st	drv_cs(a2)		; enable the card
+		  
+;;;;;  debug code ;;;;;
+	genif debug = 1
+	cmp.l	#'gold',q68_jflg	; SMSQ68mulator?
+	bne.s	nojava			; no...->
+	move.l	d0,-(a7)		; will be popped up in java
+	tst.w	d7
+	bne.s	ok
+	moveq	#1,d7
+ok	moveq	#jd3.rsec,d0
+	dc.w	jva.trpa		; call SMSQmulator
+	bra   hdr_rts		      ; and continue ok
+nojava
+	endgen
+;;;;; end debug code ;;;;;;
+		 
+	move.l	d0,d7			; sector to get
+	subq.l	#1,d2			; go around d2 times
+; first send command16 ($51) to the card, to determine block to be read
+; ($51, 4 bytes with the address to read from, $ff)
+readloop
+	move.l	d7,d0			; sector nbr to read (0a0b0c0d)
+	moveq	#-1,d1			; ffffffff
+	move.b	d0,d1			; ffffff0d
+	rol.l	#8,d1			; ffff0dff : d1.w = last byte of address , $ff
+	move.b	#$51,d0 		; 0a0b0c51
+	ror.l	#8,d0			; 510a0b0c : $51 and first 3 bytes of address
+	bsr	snd_cmd 		; send command to card
+	bne.s	hdr_rts 		; ooops
+	tst.b	d1			; return must be 0
+	bne	hdr_err 		; ooops again
+
+; wait for reply from card
+	moveq	#100,d3 		; outer loop counter
+delay	move.w	#$fff8,d1		; inner loop counter
+waitlp1
+	st	drv_xfer(a2)
+	move.b	drv_read(a2),d0 	; get byte from card
+	cmp.b	#$fe,d0 		; was it $fe (would addq #2,d0 be faster?
+	dbeq	d1,waitlp1		; no, go round again
+	beq.s	go_on			; yes, got correct reply->
+	dbf	d3,delay		; no correct reply after inner loop done
+	bra.s	hdr_err 		; if we get here, no correct reply, give up
+
+; got a correct answer back from card, it's ready for transfer
+; now read 512 times one byte
+
+go_on
+
+newv	equ	1			; set NEW way of reading
+
+
+; The new way of copying this : attempt to interleave read byte from card
+; with write byte to mem: After signaling to the card that a new byte should be
+; read ( => st (a3) ), it will take some time to actually get the byte from the
+; card. The read attempt will then be blocked by the card until the byte is
+; ready and during that time the CPU is "suspended", ie. nothing takes place.
+; Since writing the byte gotten from the card to memory also takes some time,
+; the idea is to interleave both operations.
+; So the scheme is :
+;  signal read readiness		: st (a3)
+;  put previous byte got into memory	: move.b a0,(a1)+
+;  get next byte from card		: move.b (a2),d0
+;
+; this has not met with the expected success
+
+    genif   newv = 1
+
+	lea	drv_xfer(a2),a3 	; address to signal readiness to
+	st	(a3)			; send byte please
+	add.w	#drv_read,a2		; where to read byte from
+	move.w	#63,d3			; read loop is unrolled 8 times
+getlp					; attempt to interleave read & writes
+	move.b	(a2),d0 		; get byte
+	st	(a3)			; prepare for next read already
+	move.b	d0,(a1)+		; write byte I just got
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	dbf	d3,getlp		; get 64 * 8 bytes
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	(a2),d0 		; forget the 2 CRC bytes
+	sub.w	#drv_read,a2
+
+	addq.l	#1,d7			; get possible next block
+rd_dbf	dbf	d2,readloop
+
+    endgen
+
+
+
+; the old way of copying this : read / write in one instruction
+
+    genif   newv = 0
+    
+	move.w	#63,d3			; read loop is unrolled 8 times
+	lea	drv_xfer(a2),a3 	; address to signal readiness to
+	add.w	#drv_read,a2		; where to read byte from
+getlp
+	st	(a3)			; send byte please
+	move.b	(a2),(a1)+		; got it
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+	st	(a3)
+	move.b	(a2),(a1)+
+
+	dbf	d3,getlp
+			
+	st	(a3)
+	move.b	(a2),d0
+	st	(a3)
+	move.b	(a2),d0 		; forget the 2 CRC bytes
+	sub.w	#drv_read,a2
+
+	addq.l	#1,d7			; get possible next block
+rd_dbf	dbf	d2,readloop
+
+    endgen
+
+hdr_ok	moveq	#0,d0
+hdr_rts clr.b	drv_cs(a2)
+	tst.l	d0
+	movem.l (a7)+,readreg
+	jmp	hd_release
+	rts				; will jump to hd_release & test d0
+hdr_err
+	moveq	#err.mchk,d0		; signal drive wasn't found
+	bra.s	hdr_rts
+
+	end

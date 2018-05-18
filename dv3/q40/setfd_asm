@@ -1,4 +1,6 @@
 ; DV3 Set Format Dependent Vector     V3.00	      1992 Tony Tebby
+; use per drive check for lba not per device V3.01  W. Lenerz 2017 Nov 21
+
 
 	section dv3
 
@@ -10,7 +12,7 @@
 
 	include 'dev8_dv3_keys'
 	include 'dev8_keys_err'
-	include 'dev8_mac_creg'
+	include 'dev8_smsq_smsq_base_keys'
 
 ;+++
 ; Set the Format Dependent Vector
@@ -26,7 +28,7 @@
 ;	Status return standard
 ;---
 dv3_setfd
-dsf.reg reg	d1/a0/a1/a2/a5
+dsf.reg reg	d1/d2/a0/a1/a2/a5
 	movem.l dsf.reg,-(sp)
 
 	move.b	fdv_ftype(a2),ddf_ftype(a4) ; set constants
@@ -44,10 +46,11 @@ dsf.reg reg	d1/a0/a1/a2/a5
 
 	lea	ddf_mcheck(a4),a0	 ; fill in vectors here
 	lea	dv3_fdvec,a2		 ; default vector
+
 	moveq	#(fdv_lvec-fdv_mcheck)/2-2,d2 ; include last vector but allow
 					       ; for extra logphys and dbra
 	moveq	#(fdv_logphys-fdv_mcheck)/2,d1 ; first slice includes logphys
-	tst.b	ddl_cylhds(a3)		 ; cylinder / head / side?
+	tst.b	ddf_lba(a4)		 ; cylinder / head / side?
 	beq.s	dsf_svec		 ; ... no
 	subq.w	#1,d1			 ; ... yes, put logphys in second slice
 dsf_svec
@@ -57,7 +60,7 @@ dsf_svec
 	move.w	d2,d1
 	jsr	dv3_svec		 ; setup second slice of vectors
 
-	cinvi				 ; invalidate instruction stream
+	jsr	sms.cinvi		 ; invalidate instruction cache
 	moveq	#0,d0
 	movem.l (sp)+,dsf.reg
 	rts

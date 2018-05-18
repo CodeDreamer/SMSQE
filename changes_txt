@@ -3,6 +3,208 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
+3.32
+
+    BUGFIXES
+	smsq_sbas_getp_asm		1.01	Fixed arithmetic stack overflow on long strings (MK)
+	sbsext_ext_wclook_asm		1.03	correct handling of n8_ in wc_cntsc (wl)
+	smsq_qpc_nasty_e2_asm		1.03	Fixed SQRT offset (wl)
+	dv3_dv3_open_asm		3.02	Try to release removable drive after DELETE operation (MK)
+	dv3_qpc_hd_lock_asm		3.01	Allow driver number to only be a byte, not word (MK)
+	util_gut_mkfll_asm		1.02	Check 2nd char is 1..8 for Xx_ network check (MK)
+
+
+    GOLD CARD
+	.				. all versions check for extension ROMS
+
+    LARGER FAT16 FILESYSTEM DRIVER (wl)
+	dv3_msd16			.	newly created directory
+	dv3_msd16_cct			.	generic FAT16 driver
+	dv3_msd16_check_asm		3.01	new
+	dv3_msd16_drent_asm		3.01	new
+	dv3_msd16_salt4_asm		3.01	new
+	dv3_msd16_table_asm		3.01	new
+	dv3_msd16_umap_asm		1.00	new
+
+    FILESYSTEM TO READ QUBIDE DISKS (PARTIALLY) (wl)
+	dv3_qw1 			.	newly created directory
+	dv3_qw1_check_asm		3.01	new
+	dv3_qw1_drent_asm		3.01	new
+	dv3_qw1_drmake_asm		3.02	new
+	dv3_qw1_drset_asm		3.01	new
+	dv3_qw1_frmt_asm		3.01	new
+	dv3_qw1_fsel_asm		3.01	new
+	dv3_qw1_load_asm		3.01	new
+	dv3_qw1_salt_asm		3.01	new
+	dv3_qw1_table_asm		3.01	new
+	dv3_qw1_umap_asm		3.01	new
+
+    SMSQE FOR Q68 (wl)
+	dv3_q68 			.	newly created directories
+	dv3_q68_fat			.
+	dv3_q68_win			.
+	dv3_q68_qub			.
+	dv3_q68_sdhc			.
+	iod_con2_q6816			.
+	iod_con2_q68			.
+	iod_con2_q688			.
+	iod_con2_q68ql			.
+	smsq_q68			.
+	smsq_q68_driver 		.
+	smsq_q68_sbas			.
+	smsq_q68_spp			.
+	smsq_q68_test			.	end newly created directories
+
+	keys_dos			.	amended/created key/mac files
+	keys_q68			.
+	keys_sys			.
+	dv3_keys			.
+	dv3_msd_keys			.
+	mac_multiconfig02		.	end amended/created key/mac files
+
+	smsq_smsq_base_q68_asm		1.00	newly created files
+	sys_boot_Q68_rom_asm		1.00
+	smsq_smsq_q68_link		.
+	smsq_q68_hwinit_link		.	hardware initialisation
+	smsq_q68_hwinit_asm		1.00
+	smsq_q68_int_asm		1.00	interrupt handler
+	smsq_q68_minimod_asm		1.00	minimodule: copying to fast ram
+	smsq_q68_nasty_link		.
+	smsq_q68_nasty_asm		1.00
+	smsq_q68_rtc_asm		1.00	realtime clock handling
+	smsq_q68_driver_fastmem_asm	1.00
+	smsq_q68_driver_most_link	.	link in most drivers
+	smsq_q68_driver_most_asm	1.00
+	smsq_q68_driver_mouse_asm	1.00	mouse driver
+	smsq_q68_driver_fastmem_asm
+	smsq_q68_driver_snd_cct 	.	sound driver files
+	smsq_q68_driver_snd_names_asm	1.00
+	smsq_q68_driver_snd_ssss_asm	1.00
+	smsq_q68_hdop_beep_asm		1.00
+	smsq_q68_hdop_poll_asm		1.00
+	smsq_q68_hdop_sms_asm		1.00
+	smsq_q68_kbd_initi_asm		1.00   keyboard handling
+	smsq_q68_kbd_lang_asm		1.00
+	smsq_q68_kbd_lang_link		.
+	smsq_q68_kbd_read_asm		1.00
+	smsq_q68_sbas_procs_prot_asm	1.00	modified SLUG procedure
+	smsq_q68_sbas_procs_link	.
+	smsq_q68_sbas_procs_cct 	.
+	smsq_q68_sbas_fastmem_asmn	1.00
+	smsq_q68_spp_cct		.	ser/prt port handling
+	smsq_q68_spp_init_asm		1.00
+	smsq_q68_spp_par_asm		1.00
+	smsq_q68_spp_procs_asm		1.00
+	smsq_q68_spp_rxser_asm		1.00
+	smsq_q68_spp_sendser_asm	1.00
+	smsq_q68_spp_ser_asm		1.00
+	smsq_q68_spp_thing_asm		1.00
+	smsq_q68_test_			.	misc tes routines, not part of the code
+					
+	iod_con2_q68_blob_drop_asm	1.00	CON drivers for Q68
+	iod_con2_q68_disp_size_asm	1.00
+	iod_con2_q68_mode_asm		1.00
+	iod_con2_q68_procv_asm		1.00
+	iod_con2_q68_sprite_drop_asm	1.00
+	iod_con2_q68_sprite_move_asm	1.00
+	iod_con2_q68_xmode_asm		1.00
+	smsq_q68_driver_ql_link 	.	 QL Mode 4 drivers
+	smsq_q68_driver_ql_asm		1.00
+	iod_con2_q68ql_cct		.
+	smsq_q68_driver_16_link 	.	16 bit screen driver
+	smsq_q68_driver_16_asm		1.00
+	iod_con2_q6816_cct		.
+	iod_con2_q6816_rle_asm		1.00
+	smsq_q68_driver_8_link		.	Aurora 8 bit drivers
+	smsq_q68_driver_8_asm		1.00
+	iod_con2_q688_cct		.
+	iod_con2_q688_spcch_asm 	2.16
+	iod_con2_q688_sprite_drop_asm	1.12
+	iod_con2_q688_sprite_save_asm	1.02
+						
+	smsq_q68_driver_dv3_link	.	DV3 drivers
+	smsq_q68_driver_dv3_asm 	1.00
+	dv3_q68_cct			.
+	dv3_q68_sdhc_ckrdy_asm		1.00	SDHC card handling
+	dv3_q68_sdhc_ckwp_asm		1.00
+	dv3_q68_sdhc_cpy2mem_asm	1.00
+	dv3_q68_sdhc_hd_hold_asm	1.00
+	dv3_q68_sdhc_hd_poll_check_asm	1.00
+	dv3_q68_sdhc_inicrd_asm 	1.00
+	dv3_q68_sdhc_normalise_asm	1.00
+	dv3_q68_sdhc_rsect_asm		1.00
+	dv3_q68_sdhc_sndcmd_asm 	1.00
+	dv3_q68_sdhc_srchdrv_asm	1.00
+	dv3_q68_sdhc_wsect_asm		1.00
+						
+	dv3_q68_win_card_xxxx_asm	1.00	WIN driver for Q68
+	dv3_q68_win_chkwin_asm		1.00
+	dv3_q68_win_fpart_asm		1.00
+	dv3_q68_win_init_asm		1.00
+	dv3_q68_win_mformat_asm 	1.00
+	dv3_q68_win_thing_asm		1.00
+	dv3_q68_win_version_asm 	1.00
+	dv3_q68_win_windrv_asm		1.00
+					      
+	dv3_q68_fat_init_asm		1.00	FAT driver for Q68
+	dv3_q68_fat_fpart_asm		1.00
+	dv3_q68_fat_thing_asm		1.00
+	dv3_q68_fat_version_asm 	1.00
+	dv3_q68_hd_fpart_asm		1.00
+
+	dv3_q68_qub_init_asm		1.00	QUB driver for Q68
+	dv3_q68_qub_thing_asm		1.00
+	dv3_q68_qub_version_asm 	1.00
+	dv3_q68_hd_fpart_asm		1.00
+					    
+	dv3_msd32_clusters_asm		.	(unfinished)
+	dv3_msd32_check_asm		.
+	dv3_msd32_hd_fpart_asm		.
+	dv3_q68_techinfo_txt		.
+
+	smsq_q68_mnrv_			. win (sdhc) routines for minerva
+	smsq_q68_qdc_			. win (sdhc) routines for qdos classic
+
+    SMSQMULATOR INTERNAL CHANGES (wl)
+	java_ctrl_scrap_asm		1.01	jva_syncscrap added
+	java_ctrl_init_asm		1.00	inits thing & keywords
+	java_ctrl_thing_asm		1.01	added jva_minimise, jva_netaddr$
+	smsq_java_copyscr_asm		1.01	JVA_IS_QLSCREMU%
+
+    SMSQMULATOR DIFFERENT MOUSE WHEEL HANDLING (wl)
+	smsq_java_kbd_read_asm		1.01	no longer handles mouse wheel
+	smsq_java_driver_mouse_asm	1.01	handles mouse wheel (accel is configurable through config menu)
+
+    SMSQMULATOR BUGFIXES (wl)
+	smsq_java_ctrl_float_asm	1.01	corrected SQRT
+	smsq_java_driver_snd_ssss_asm	2.03	SSSS buffering done by java
+	smsq_java_driver_win_init_asm	1.02	data/prog defaults are set
+
+    Q40 LBA ACCESS TO QXL.WIN FILES ON FAT32 MEDIA (wl)
+	dv3_q40_hd_fpart_asm		3.02	checks for FAT32 partition
+	dv3_q40_hd_ide_cmd_asm		3.01	use per drive check for LBA not per device
+	dv3_q40_hd_ide_diradd_asm	3.01	   "            "	    "
+	dv3_q40_setfd_asm		3.01	   "            "	    "
+	dv3_qlf_fsel40_asm		3.01	   "            "	    "
+	dv3_qlf_check40_asm		3.01	   "            "	    "
+	dv3_dv3_logp40_asm		3.01	   "            "	    "
+	dv3_q40_hd_ide_rsect_asm	3.01	if LBA FAT32 access : byteswap
+	dv3_q40_hd_ide_wsect_asm	3.01	if LBA FAT32 access : byteswap
+	dv3_q40_hd_init_asm		3.01	config, normalise etc
+	dv3_q40_hd_thing_asm		1.04	WIN_DRIVE may use name for QXL.WIN file
+
+	dv3_dv3_40_cct			 .	created
+	dv3_qlf_40_cct			 .	created
+	dv3_msd_40_cct			 .	created
+	dv3_q40_cct			 .	amended to suit
+	smsq_q40_driver_dv3_link	 .	amended to suit
+
+    Q40 "DISP_MODE" COMMAND
+	iod_con2_q40_procv_asm	       1.01	Added DISP_MODE (wl)
+
+
+-----------------------------------------------------------------------------
+
 3.31
 
     LRESPR-WITHIN-PROCEDURE BUGFIX (MK)

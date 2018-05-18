@@ -1,0 +1,52 @@
+	section dv3
+
+	xdef	clusters
+
+; Fat32 uses 32 bit fat entries.
+; to avoid having to do 32 bit multiply to get from a cluster number to
+; the position in the file, I want to use Lshifts, knowing that a cluster is
+; always a power of 2 of a sector.
+;	d0    s
+;	d3    s
+;	d6 c  p nr of 512 bytes sectors per cluster
+;	a4 c  p pointer to drive definition
+
+get_shft
+	moveq	#9,d0			; shift by this many for 512 bytes
+	moveq	#0,d3
+loop1	btst	d3,d6			; divide D1 by 2 according to D6's powers of two
+	bne.s	done
+	addq.l	#1,d3
+	bra.s	loop1
+done	add.l	d3,d0			; d0 now contains the shift number
+	move.l	d0,ddf_drive(a4)	; keep this info
+	rts
+
+
+; get next cluster
+; d0 = current cluster
+; d1 = offset from start of fat to first entry in fat
+; A1 = PTR TO START OF FAT
+; return not standard
+: EQ = end of file or other pb
+; NZ = cluster ok
+nxt_clst
+	c
+	lsl.l	#2,d0			; each cluster = 4 bytes
+	add.l	d1,d0			; + offset from start of fat
+	move.l	(a1,d0.l),d0		; get next cluster
+	and.l	&$fffffff,d0		; eliminata MS nibble
+	rts
+
+
+; get the offset, from the start of the partition, to the start of a cluster
+; from the cluster number
+
+;	d0 c  r   cluster number / offset to start of cluster
+;
+
+
+	moveq	#1,d2
+	lsl.l	d0,d2
+	clr.l	d0
+	rts

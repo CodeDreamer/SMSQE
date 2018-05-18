@@ -1,4 +1,5 @@
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
+; Additions for LBA access    V3.01    W. Lenerz 2017 Nov 21
 
 	section dv3
 
@@ -17,11 +18,14 @@
 	xdef	ideo.stat
 	xdef	ideo.alt
 
+
 	xref.l	hd_vers
 	xref.s	hd.rev
 	xref	hd_1sec
 	xref	dv3_link
 	xref	dv3_acdef
+
+	xref	norm_nm
 
 	xref	gu_fopen
 	xref	gu_fclos
@@ -33,13 +37,17 @@
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_sys'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_err'
 	include 'dev8_mac_assert'
+	include 'dev8_mac_Multiconfig02'
 	include 'dev8_mac_basic'
 	include 'dev8_mac_proc'
-	include 'dev8_keys_qlv'
+	include 'dev8_keys_q40'
 
 ide.0	  equ	ide0
 ide.1	  equ	ide1
+drv_led   equ	hdl_freq+1
 
 	assert	IDE0A-IDE0,IDE1A-IDE1
 ideo.alt  equ	IDE0A-IDE0
@@ -65,29 +73,33 @@ ideo.stat equ	ideo_stat
 hd_init
 	lea	hd_proctab,a1
 	move.w	sb.inipr,a2
-	jsr	(a2)			 ; link in procedures
+	jsr	(a2)			; link in procedures
 
 	lea	hd_table,a3
-	jsr	dv3_link		 ; link in ide driver
+	jsr	dv3_link		; link in ide driver
 
 	jsr	hd_1sec
 	move.l	d0,hdl_1sec(a3)
 
+	lea	q40_wn1+2,a0		; configured name
+	lea	hdl_end(a3),a1		; names lie after device defn (linkage) block
+	bsr	norm_nm 		; copy & normalise name
+
 hdi_ckdrive
-	moveq	#0,d1			 ; try partitions 0 to 7
-	moveq	#1,d7			 ; for WIN1
-	st	hdl_npart(a3)		 ; assume no partition found at all
+	moveq	#0,d1			; try partitions 0 to 7
+	moveq	#1,d7			; for WIN1
+	st	hdl_npart(a3)		; assume no partition found at all
 
 hdi_loop
 	move.b	d1,hdl_part(a3)
 	lea	hdi_boot,a0
 	moveq	#ioa.kshr,d3
-	jsr	gu_fopen		 ; try to open
-	beq.s	hdi_found		 ; OK
-	tst.b	hdl_npart(a3)		 ; any partition found at all?
-	bne.s	hdi_npart		 ; ... no
+	jsr	gu_fopen		; try to open
+	beq.s	hdi_found		; OK
+	tst.b	hdl_npart(a3)		; any partition found at all?
+	bne.s	hdi_npart		; ... no
 
-	lea	hdi_blat,a0		 ; blat the definition
+	lea	hdi_blat,a0		; blat the definition
 	jsr	dv3_acdef
 
 	addq.b	#1,d1
@@ -96,7 +108,7 @@ hdi_loop
 
 hdi_npart
 	clr.b	hdl_part(a3)		 ; no partition, assume 0
-
+		  
 	moveq	#0,d0
 	rts
 
@@ -124,7 +136,7 @@ hdi_boot dc.w	 9,'win1_boot'
 
 
 hd_table
-	link_table	WIN, hd.rev, hdl_end, ddf_dtop
+	link_table	WIN, hd.rev, hdl_end+8*12, ddf_dtop
 	buffered
 	track
 	sectl		512
@@ -196,5 +208,55 @@ hd_proctab
 	proc_stt
 	proc_ref WIN_DRIVE$
 	proc_end
+
+
+	mkcfstart
+
+	mkcfhead {WIN},1
+
+	  mkcfitem 'Q481',string,0,q40_wn1,,ppr,{Filename for WIN1 container file},0
+
+	mkcfblend
+
+	mkcfend
+
+
+q40_wn1 dc.w   13,7
+	dc.w   'QXL.WIN',0,0,0
+
+drv_ind dc.b	$ff,0
+
+; post processing routine to make sure that a name is a valid 8.3 name
+ppr	tst.b	d1
+	beq.s	p_ok
+	addq.l	#2,a0			; point to item name
+	move.w	(a0)+,d2		; length
+	beq.s	p_ok			; 0 length is fine
+	cmp.w	#12,d2			; max chars allowed (8+3+extn)
+	bgt.s	ipar			; too many
+	subq.w	#1,d2			; prepare for dbf
+	moveq	#'.',d5 		; compare with this
+	moveq	#0,d6			; nbr of chars compared till now
+p_lp1	cmp.b	(a0)+,d5		; try to find extension marker
+	beq.s	extn			; found it, check name
+	addq.l	#1,d6			; new number of chars checked
+	dbf	d2,p_lp1		; check all chars
+; if we get here, there is no extension
+	subq.w	#8,d6			; max nbr of chars w/o extn allowed
+	ble.s	p_ok			; correct name w/ extn
+	bra.s	ipar			; wrong name
+; d2 nbr of chars remaining
+; d6 nbr of chars before extension
+extn
+	subq.w	#8,d6			; nbr of chars got before extn
+	bgt.s	ipar			; too many chars before the extension
+	cmp.w	#3,d2			; how many chars remaining for the extn?
+	bgt.s	ipar			; too many!
+p_ok	moveq	#0,d0
+	rts
+ipar	moveq	#err.inam,d0
+	rts
+
+	end
 
 	end

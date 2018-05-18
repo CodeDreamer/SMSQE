@@ -1,24 +1,26 @@
 ; MSDOS Format drive definition blocks
-        nolist
+	nolist
 
-mdf_fat    equ  ddf_dtop        ; long  pointer to base of fat
-mdf_rdir   equ  ddf_dtop+$04    ; long  pointer to base of root dir
+mdf_fat    equ	ddf_dtop	; long	pointer to base of fat
+mdf_rdir   equ	ddf_dtop+$04	; long	pointer to base of root dir
 
 ; in the drive definition
-mdf_fent   equ  ddf_dtop+$0a    ; word  number of entries in FAT
-mdf_msect  equ  ddf_dtop+$0c    ; word  number of map (root+FAT) sectors
-mdf_mdsect equ  ddf_dtop+$0e    ; word  number of map + dir sectors
+mdf_fent   equ	ddf_dtop+$0a	; word	number of entries in FAT
+mdf_msect  equ	ddf_dtop+$0c	; word	number of map (root+FAT) sectors
+mdf_mdsect equ	ddf_dtop+$0e	; word	number of map + dir sectors
 
 ; on the medium
-mdf_ress   equ  ddf_dtop+$10    ; word  number of reserved sectors
-mdf_sfat   equ  ddf_dtop+$12    ; word  number of fat sectors
-mdf_sftx   equ  ddf_dtop+$14    ; word  number of fats * number of fat sectors
+mdf_ress   equ	ddf_dtop+$10	; word	number of reserved sectors
+mdf_sfat   equ	ddf_dtop+$12	; word	number of fat sectors
+mdf_sftx   equ	ddf_dtop+$14	; word	number of fats * number of fat sectors
 
-mdf_rootf  equ  ddf_dtop+$1a    ; byte  root sector format
-mdf.dos5   equ    0               ;       MSDOS V5
-mdf.gemd   equ   -1               ;       GEMDOS
+mdf_rootf  equ	ddf_dtop+$1a	; byte	root sector format
+mdf.dos5   equ	  0		  ;	  MSDOS V5
+mdf.gemd   equ	 -1		  ;	  GEMDOS
 
-mdf_mupd   equ  ddf_dtop+$20    ; 256+32 bytes for map + root dir updated
-mdf.mupd   equ    256+32
-mdf_map    equ  ddf_dtop+$140   ;       the map is here followed by root dir
-        list
+mdf_flent  equ	ddf_dtop+$1c	; long	big nbr of entries in FAT16 *******
+
+mdf_mupd   equ	ddf_dtop+$20	; 256+32 bytes for map + root dir updated
+mdf.mupd   equ	  256+32
+mdf_map    equ	ddf_dtop+$140	;	the map is here followed by root dir
+	list

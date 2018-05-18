@@ -1,0 +1,151 @@
+; Q68 hardware and other keys
+
+	nolist
+
+; keys for physical access to sdhc  1 & 2 , absolute
+mmc1_cs 	equ	$1c300		; port for card 1
+mmc1_clk	equ	$1c304
+mmc1_din	equ	$1c308
+mmc1_dout	equ	$1c30c
+mmc1_read	equ	$1c310
+mmc1_writ	equ	$1c314
+mmc1_xfer	equ	$1c318
+
+mmc2_cs 	equ	$1c340		; port for card 2
+mmc2_clk	equ	$1c344
+mmc2_din	equ	$1c348
+mmc2_dout	equ	$1c34c
+mmc2_read	equ	$1c350
+mmc2_writ	equ	$1c354
+mmc2_xfer	equ	$1c358
+
+; keys for physical access to sdhc, relative to mmcx_cs  base address
+drv_cs		equ	0
+drv_clk 	equ	drv_cs+4
+drv_din 	equ	drv_clk+4
+drv_dout	equ	drv_din+4
+drv_read	equ	drv_dout+4
+drv_writ	equ	drv_read+4
+drv_xfer	equ	drv_writ+4
+
+q68_dshft	equ	6		; amount to shift to get to mmc2_cs
+q68.coff	equ	$40		; offset from port 1 to port 2
+
+
+; ser comms keys
+uart_txdata	equ	$1c200
+uart_rxdata	equ	$1c204
+uart_status	equ	$1c208		; ser port status
+q68..txmpty	 equ	   0		  ; Read-only Transmit Buffer Empty
+q68..rxmpty	 equ	   1		  ; Read-only Receive Buffer Empty
+q68..rxfrerr	 equ	   2		  ; Read-only Receive Frame Error
+q68..rxovr	 equ	   3		  ; Read-only Receive Overrun Error
+q68..rxfull	 equ	   4		  ; Read-only Receive FIFO Full
+q68..txstat	 equ	   6		  ; bit set to enable transmit interrupt
+q68..rxstat	 equ	   7		  ; bit set to enable receive interrupt
+q68.rxand	 equ	   2		  ; value to AND status with to check for rx bit
+q68.txand	 equ	   1		  ; value to AND status with to check for rx bit
+uart_prescale	equ	$1c20c		; word
+q68_prty	equ	1		; no parity
+q68_hand	equ	0		; no handshake
+q68_prhd	equ	q68_prty<<8+q68_hand   ; parity and handshake combined
+q68_ser_link	equ	$17d08		; keep ptr to ser linkage block here
+
+
+; Q40 compatible SSS
+sound_right	equ	$1c400		; right sound byte
+sound_left	equ	$1c404		; left - writing here triggers sound
+sound_full	equ	$1c408		; set if DAC queue is full
+
+
+; keyboard
+kbd_code	equ	$1c140		; scan code from keyboard
+kbd_unlock	equ	$1c144		; acknowledge key receipt
+k.ackn		  equ	  0		; bit to set to acknowledge key
+kbd_status	equ	$1c148		; ps2 key status register
+kbd.rcv 	equ	   0		; bit set when keyboard has key waiting
+
+
+; mouse
+mouse_status	equ	$1c168		; mouse status register
+m.rcv		equ	  0		; this bit is set if a byte can be read
+m.type		equ	  4		; bit set if mouse has mousewheel
+m.int		equ	  7		; set this to start the mouse interrupts
+					; (bits 1-3 ignored by me)
+mouse_code	equ	$1c160		; byte received from mouse - as soon as
+					; that is read, mouse_status is modified
+					; (bit 0 becomes 0)
+mouse_unlock	equ	$1c164		; any write to this means I can receive f
+					; a further byte from mouse
+
+;  // PS/2 Mouse status register
+;  // Bit 0: Read-only Mousecode received
+;  // Bit 1: Read/Write PIO Data line (0=pull low, 1=open)
+;  // Bit 2: Read/Write PIO Clock line (0=pull low, 1=open)
+;  // Bit 3: Read/Write 0=Default mode 1=PIO mode
+;  // Bit 4: Read/Write Driver info (0=Standard Mouse, 1=Intellimouse)
+;  // Bit 7: Read/Write Mouse interrupt enable
+
+
+; display
+q68_screen	equ $FE800000		; base of Screen
+q68.screen	equ 1024*768*2		; max screen size used
+q68_dmode	equ $ff000018		; display mode register : display type
+; !!!!
+;	if you change the order of these, also change the table in
+;	dev8_iod_con2_q68_procv_asm
+; !!!!
+q68.d8		equ    0		  ; QL mode 8
+q68.d4		equ    1		  ; QL mode 4
+q68.ds		equ    2		  ; Small (512*256, 16 bit colours)
+q68.dl		equ    3		  ; Large (1024*512, 16 bit colours)
+q68.dl4 	equ    4		  ; Large QL mode 4 screen (1024*768)
+q68.aur8	equ    5		  ; aurora 8 bits (1024*768)
+q68.md		equ    6		  ; Medium (512*384, 16 bit colours)
+q68.hi		equ    7		  ; very high (1024*768,16 bit)
+q68.dmax	equ    q68.hi		  ; highest screen mode nbr
+
+; misc keys
+q68_sramb	equ	$19000		; base of (fast) static ram: this con-
+					; tains a ptr to the next free space in
+					; the static ram
+q68_sramt	equ	$1c000		; top of (fast) static ram
+led		equ	$1c100		; st to turn led on, clr to turn it off
+q68_dcfg	equ	$0e		; where in cgf info drv-> card table is
+i2c_scl 	equ	$1c00c		; ?
+i2c_sda 	equ	$1c00e		; ?
+q68_card2	equ	$c		; card init item in config block
+;q68_msecf	 equ	 $d		 ; config item for mouse in config block
+			      
+q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
+					; (nb 0-5 are the same)
+q68_reset	equ	$1c024
+q68_timer	equ	$1c060
+
+; part of the info in the config block is copied to a fixed memory address
+; (in addition to the standard config info block)
+; at addres q68_cfgb the following info is stored:
+; 1- a table with smsqe type strings:
+;     8 * drive names, in config format (i.e. 1 word max length, 1 word actual
+;     string length, string.
+;     Each entry takes q68.cfgb bytes DO NOT CHANGE THIS.
+;     This is stored at that address in smsq_q68_hwinit_asm.
+; 2 - a table with 8.3 DOS names for these drives. Each name takes 8+3+1 bytes
+;     making up a total of 12 bytes (the last byte is always 0) but entries in
+;     the table are also spaced q68.cfgb bytes.
+;     This table is created by dv3_q68_qlsd_init_asm.
+;
+q68_cfgb	equ	$17D0C		; base of info on drive config
+q68.cfgb	equ	16		; spacing between drive names DONT CHANGE
+q68.norn	equ	8*q68.cfgb	; offset to normalized names
+
+; debug
+;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
+q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
+q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
+debug		equ	0		; if 1 debug code is included
+
+
+;qcf.mse	 equ	 $16
+
+	list

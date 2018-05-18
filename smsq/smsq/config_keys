@@ -17,7 +17,10 @@ sms_idisp  equ	$a	   ; 6 words	initial disp_size
 sms_issize equ	$a	   ; byte	initial screen size (VGA / Aurora)
 sms_ismode equ	$b	   ; byte	initial screen mode
 sms_xres   equ	$c	   ; word	initial x resolution
+sms_crd2   equ	$c	   ; byte	card 2 init during boot (Q68)
+sms_q68mse equ	$d	   ; byte	read mouse per poll or interr. (Q68)
 sms_yres   equ	$e	   ; word	initial y resolution
+sms_led    equ	$e	   ; byte	led state after OS setup (Q68)
 sms_acsir  equ	$16	   ; byte	ACSI auto detect removable (Atari)
 sms_nqimi  equ	$16	   ; byte	ignore qimi (Gold card)
 sms_winkbd equ	$16	   ; byte	use windows keyboard tables (QPC)
@@ -28,4 +31,4 @@ sms_kstuf  equ	$1c	   ; byte	key used to stuff into buffer in cn_edlin
 sms_curd   equ	$1d	   ; byte	use sprite as cursor?
 sms_bgio   equ	$1e	   ; byte	enable CON background I/O?
 sms_ctrlc  equ	$1f	   ; byte	use new CTRL+C behaviour?
-        list
+	list
