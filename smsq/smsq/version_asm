@@ -769,17 +769,22 @@
 ;
 ; 3.27	Max string array size is 32766, not 32767 (wl).
 ;
-; 3.28	index of string_length +1 in string slicing before the TO no longer accepted (MK).
+; 3.28	Index of string_length +1 in string slicing before the TO no longer accepted (MK).
 ;	FSEND_EVENT function added (wl).
 ;	SMSQmulator : JVA_VER$ etc added, better stipple handling, copy QL screen (wl).
 ;
-; 3.29	dmedium_drive$ fixed (MK).
+; 3.29	DMEDIUM_DRIVE$ fixed (MK).
 ;	INPUT buffer is limited to max string length (32K -2) (wl).
-;
 ;
 ; 3.30	QPC: Fixed 3rd slice of mod table, start at $10000 and not $fffc (MK).
 ;	SMSQmulator : link in floppy module (was broken in 3.29 - wl).
+;
+; 3.31	RPIXL works in 8 and 16 bit colour modes (dw).
+;	LRESPR within procedure bug fixed (mk).
+;	Home thing uses correct job ID when opening the dir for a file (wl).
+;	SMSQmulator uses "java control" Thing for misc operations (wl).
+;	The string slicing bug fix in v. 3.28 is cancelled, reverting back to old behaviour.
 
-smsq_vers equ	 '3.30'
+smsq_vers equ	 '3.31'
 
 	end

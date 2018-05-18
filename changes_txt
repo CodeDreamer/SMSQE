@@ -1,14 +1,48 @@
   
 SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
+-----------------------------------------------------------------------------
 
+3.31
+
+    LRESPR-WITHIN-PROCEDURE BUGFIX (MK)
+	keys_sbasic			.	sb_rtmde introduced
+	smsq_sbas_main_asm		1.03
+	smsq_sbas_inter_asm		1.01
+	smsq_sbas_retstk_asm		1.00	new
+	smsq_sbas_cct			.	amended to suit
+
+    RPIXL FOR MODES 16,32 & 33 (DW)
+	iod_con2_8_rpixl_asm		1.01
+	iod_con2_16_rpixl_asm		1.01	new additions
+
+    HOMETHING BUGFIX
+	smsq_home_mem2_asm		1.03	reset correct job ID on opening dirs (wl)
+
+    SMSQMULATOR INTERNAL CHANGES (WL)
+	java_ctrl_cct			.	new
+	java_ctrl_float 		1.00	ql or ieee float ops
+	java_ctrl_scrap 		1.00	scrap get and put (to/frm clipboard)
+	java_ctrl_init			1.00	inits thing & keywords
+	java_ctrl_thing 		1.00	many thing routines
+	smsq_java_timer_asm		.	deleted
+	smsq_java_driver_scrap_asm	.	deleted
+	smsq_java_driver_most_asm	1.05	amended to suit
+	smsq_java_driver_most_link	.	amended to suit
+	smsq_java_driver_mouse_asm	.	moved to smsq_java_driver_mouse_asm
+
+    REVERSING STRING SLICE BUGFIX
+	smsq_sbas_iexpr_asm		1.01	back to version 1.01
+-----------------------------------------------------------------------------
 
 3.30
+
     BUGFIX
 	smsq_qpc_hwinit_asm		1.03	Fixed 3rd slice of mod table, start at $10000 and not $fffc (MK)
 -----------------------------------------------------------------------------
 
 3.29
+
     BUGFIXES
 	smsq_qpc_ip_open_asm		1.01	internal changes (MK)
 	sbsext_ext_dminfo_asm		1.01	dmedium_drive$ fixed (MK)
@@ -16,6 +50,7 @@ Version   changed			of file   changes made
 -----------------------------------------------------------------------------
 
 3.28
+
    BUGFIXES
 	smsq_sbas_iexpr_asm		1.02	check x is valid for a$(x to) and date$()(x to) (MK)
 	sbsext_ext_event_asm		1.01	added fsend_event (wl)
@@ -1067,7 +1102,6 @@ Version   changed			of file   changes made
 
 2.99	  none - as delivered by TT
 
-
 keys:
 
 BC = Bruno Coativy
@@ -1080,17 +1114,6 @@ MK = Marcel Kilgus
 MS = Mark Swift
 TG = Thierry Godefroy
 TT = Tony Tebby
+DW = David Westbury
 PW = Per Witte
-
-
-
-
-
-
-
-
-
-
-
-
 WL = Wolfgang Lenerz

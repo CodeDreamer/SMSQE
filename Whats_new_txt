@@ -21,6 +21,14 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 
+=====
+3.31
+=====
+
+RPIXL also works for 8 and 16 bit colour modes
+Bugfix for LRESPR in procedures
+Bugfix for home thing
+
 
 =====
 3.30

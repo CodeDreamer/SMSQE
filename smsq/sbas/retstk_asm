@@ -1,0 +1,91 @@
+; SBAS_RETSTK - Translate return stack addresses/statements 2017 Marcel Kilgus
+
+	section sbas
+
+	xdef	sb_ret2pos
+	xdef	sb_ret2adr
+
+	xref	sb_addsttx
+	xref	sb_sttaddx
+
+	include 'dev8_keys_sbasic'
+	include 'dev8_mac_assert'
+
+;+++
+; Change address entries on return stack into line/statement numbers
+;---
+sb_ret2pos
+	move.l	sb_retsp(a6),d1 	 ; return stack
+	cmp.l	sb_retsb(a6),d1 	 ; any?
+	beq.s	srt_clrmde		 ; ... no, we set mode to default
+	tst.b	sb_rtmde(a6)		 ; return stack mode?
+	bne.s	srt_rts 		 ; already in line numbers
+	move.b	#1,sb_rtmde(a6) 	 ; return stack mode now line numbers
+
+srt.reg reg	d0/d2/d3/d4/d5/d7/a0/a1/a2/a3/a4/a5
+	movem.l srt.reg,-(sp)
+	lea	sb_addsttx,a5		 ; ...to position
+	moveq	#-2,d6			 ; to add before translating rt_def
+	moveq	#0,d7			 ; to add after translating rt_def
+	bra.s	srt_do
+
+srt_clrmde
+	clr.b	sb_rtmde(a6)		 ; return stack mode in abs adresses
+srt_rts
+	rts
+
+;+++
+; Change line/statements entries on return stack into absolute addresses
+;---
+sb_ret2adr
+	move.l	sb_retsp(a6),d1 	 ; return stack
+	cmp.l	sb_retsb(a6),d1 	 ; any?
+	beq.s	srt_clrmde		 ; ... no, we set mode to default
+	tst.b	sb_rtmde(a6)		 ; return stack mode?
+	beq.s	srt_rts 		 ; already abs adresses, do nothing
+	clr.b	sb_rtmde(a6)		 ; return stack mode now abs adresses
+
+	movem.l srt.reg,-(sp)
+	lea	sb_sttaddx,a5		 ; ...to address
+	moveq	#0,d6			 ; to add before translating rt_def
+	moveq	#2,d7			 ; to add after translating rt_def
+srt_do
+	move.l	sb_retsp(a6),a1 	 ; return stack
+
+srt_loop
+	move.b	rt_type(a6,a1.l),d0	 ; return stack type
+	bgt.s	srt_proc		 ; procedure / function frame
+	blt.s	srt_sarr		 ; always skip array frame
+
+	move.l	rt_ret(a6,a1.l),d0	 ; return address/statment
+	jsr	(a5)			 ; translate
+	move.l	d0,rt_ret(a6,a1.l)	 ; ...and save back
+srt_sarr
+	assert	rt.sasize,rt.gssize	 ; skip array and gosub
+	subq.l	#rt.sasize,a1
+srt_next
+	cmp.l	sb_retsb(a6),a1 	 ; another frame?
+	bgt.s	srt_loop		 ; ... yes
+srt_exit
+	movem.l (sp)+,srt.reg
+	rts
+
+
+srt_proc
+	move.l	rt_def(a6,a1.l),d0	 ; parameters swapped?
+	bpl.s	srt_parm		 ; ... no, don't translate
+	neg.l	d0
+	add.l	d6,d0			 ; rt_def is offset to bo_formp
+	jsr	(a5)			 ; translate
+	add.l	d7,d0			 ; rt_def is offset to bo_formp
+	neg.l	d0
+	move.l	d0,rt_def(a6,a1.l)	 ; ...and save back
+srt_parm
+	move.l	rt_ret(a6,a1.l),d0	 ; return address/statement
+	jsr	(a5)			 ; translate
+	move.l	d0,rt_ret(a6,a1.l)	 ; ...and save back
+
+	sub.w	#rt.pfsize,a1
+	bra.l	srt_next
+
+	end

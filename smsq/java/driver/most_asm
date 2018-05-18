@@ -1,9 +1,10 @@
-; Base area SMSQmulator Drivers  V.1.04 (c) W. Lenerz 2012-2016
+; Base area SMSQmulator Drivers  V.1.05 (c) W. Lenerz 2012-2017
 
 ; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
-; v. 1.02 2015 May 24  possibly use ieee routines
-; v. 1.03 2015 Jul 29  integrated the rtc routines
-; v. 1.04 2016 Oct 13  call to init copy QL screen routine
+; v. 1.02 2015 May 24	possibly use ieee routines
+; v. 1.03 2015 Jul 29	integrated the rtc routines
+; v. 1.04 2016 Oct 13	call to init copy QL screen routine
+; v. 1.05 2017 Apr 07	ctrl_nit replaces timer,scrap;patchfpu also in ctrl thing
 
 	section header
 
@@ -25,13 +26,11 @@ smsq_name
 
 
 	section base
-	xdef	qpc_patchfpu
-	xdef	qpc_patch2ql
 
 	xref	iob_smsq		 ; SMSQ IOB bits
 
 	xref	qd_int2
-
+	xref	qpc_patchfpu
 	xref	hdop_init
 	xref	nfa_init
 	xref	mem_init
@@ -46,10 +45,9 @@ smsq_name
 	xref	history_init
 	xref	ssss_init
 	xref	hdop_keyr
-	xref	scrap_init
 	xref	snd_init
-	xref	tmr_init
 	xref	cpyscr_init
+	xref	ctrl_init
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sys'
@@ -62,7 +60,6 @@ smsq_name
 	include 'dev8_smsq_gold_keys'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_keys_java'
-	include 'dev8_mac_assert'
 
 
 gl_most
@@ -71,10 +68,9 @@ gl_most
 	xdef	iou_dirshr
 iou_dirshr dc.w 0	; shared directories supported	(RAM disk)
 
-
 	section init
-start
-	jsr	hdop_init
+
+start	jsr	hdop_init
 	jsr	dev_init
 	jsr	nul_init
 	jsr	pipe_init
@@ -86,10 +82,10 @@ start
 	jsr	mem_init
 	jsr	win_init		; keep as last device driver
 	jsr	ssss_init
-	jsr	scrap_init
 	jsr	snd_init
-	jsr	tmr_init
 	jsr	cpyscr_init
+	jsr	ctrl_init
+
 sys_init
 
 ; When we have linked in the interrupt servers, we can enable the interrupts
@@ -103,7 +99,7 @@ sys_init
 	lea	exv_i2,a5
 	move.l	a0,(a5)
 
-	move.b	 #0,sys_qlir(a6)	 ; always clear interface int
+	move.b	 #0,sys_qlir(a6)	; always clear interface int
 
 	lea	hw_poll,a0
 	lea	sms.hpoll,a5		; setup harware poll, which is just anrts
@@ -114,10 +110,8 @@ sys_init
 	move.l	a0,(a1)+
 	tst.b	sms.conf+sms_ieee	; use patched FP routines?
 	beq.s	cpu_rtc 		; no ->
-	bsr.s	qpc_patchfpu
-
+	bsr	qpc_patchfpu
 cpu_rtc
-	assert	sms.rrtc,sms.srtc-1,sms.artc-2
 	lea	sms.t1tab+sms.rrtc*4,a1  ; set rtc
 	lea	sms_rrtc,a0
 	move.l	a0,(a1)+
@@ -149,74 +143,6 @@ sched	dc.l	0,0
 **********
 jva_sched
 	dc.w	jva.trp7
-	rts
-
-
-
-
-; this is a pure copy of the corresponding code in qpc
-; patch the FP routines to call java routines
-
-qpc_patchfpu
-	movem.l a0/a1,-(a7)
-	movea.w $11c,a0 		 ; FP vector (points to a jump)
-	movea.l 2(a0),a0		 ; Get address from jmp and use as base
-	lea	qpc_patchtable(pc),a1
-qpc_patchloop
-	move.w	(a1)+,d0
-	beq.s	qpc_endpatch
-	move.w	(a1)+,d1
-	cmp.w	(a0,d0.w),d1		 ; Original code ok?
-	bne.s	qpc_endpatch		 ; No, just quit patching
-	move.w	(a1)+,(a0,d0.w) 	 ; Patch new code
-	bra.s	qpc_patchloop
-
-qpc_endpatch
-	movem.l (a7)+,a0/a1
-	rts
-
-ib	equ	$ab00
-
-qpc_patchtable
-;		adr  ,origi,patch
-	dc.w	$0a2c,$48e7,ib+0	 ; ADDD
-	dc.w	$0a62,$48e7,ib+1	 ; ADD
-	dc.w	$0a3c,$48e7,ib+2	 ; SUBD
-	dc.w	$0a5e,$4eba,ib+3	 ; SUB
-	dc.w	$0ad8,$3011,ib+4	 ; DOUBLE
-	dc.w	$0aec,$5351,ib+5	 ; HALVE
-	dc.w	$08ae,$48e7,ib+6	 ; DIVD
-	dc.w	$08be,$48e7,ib+7	 ; DIV
-	dc.w	$08b6,$4eba,ib+8	 ; 1/x
-	dc.w	$0934,$48e7,ib+9	 ; MULD
-	dc.w	$0948,$48e7,ib+10	 ; MUL
-	dc.w	$093c,$48e7,ib+11	 ; x^2
-	dc.w	$09fc,$2341,ib+12	 ; SQRT
-	dc.w	$06b0,$48e7,ib+13	 ; COS
-	dc.w	$06bc,$48e7,ib+14	 ; SIN
-	dc.w	$0702,$4eba,ib+15	 ; COT
-	dc.w	$0714,$4eba,ib+16	 ; TAN
-	dc.w	0
-
-; patch old smsq/e routines back in
-
-qpc_patch2ql
-	movem.l a0/a1,-(a7)
-	movea.w $11c,a0 		; FP vector (points to a jump)
-	movea.l 2(a0),a0		; Get address from jmp and use as base
-	lea	qpc_patchtable(pc),a1
-qpc_patchlp
-	move.w	(a1)+,d0
-	beq.s	qpc_end
-	move.w	(a1)+,d1		: original SMSQ/E code
-	move.w	(a1)+,d2		; patched code
-	cmp.w	(a0,d0.w),d2		; patched code ok?
-	bne.s	qpc_end 		; no, just quit patching
-	move.w	d1,(a0,d0.w)		; patch original code back in
-	bra.s	qpc_patchlp
-
-qpc_end
-	movem.l (a7)+,a0/a1
 	rts
 
 ;+++

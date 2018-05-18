@@ -45,7 +45,6 @@ proc_tab
 ;***********************************************************
 
 jva_qlscremu
-	trap	#14
 	jsr	ut_gxin1
 	bne.s	out			; get exactly one int
 	move.w	(a6,a1.l),d0		; mode

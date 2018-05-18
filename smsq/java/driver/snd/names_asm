@@ -23,6 +23,7 @@ procs
 	proc_def	SOUNDSAMPLE3
 	proc_def	KILLSOUND
 	proc_def	JVAVOL
+	proc_def	JVA_VOL,jvavol
 	proc_end
 	proc_stt
 	proc_def	SOUNDSAMPLE

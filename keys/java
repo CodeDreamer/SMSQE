@@ -8,20 +8,18 @@ jva_lkptr	equ	$4		; pointer to linkage area
 jva_lkkbd	equ	0		; long word for kbd info  (L)
 jkb..key	equ	0		; byte with key typed in
 jva_clk 	equ	jva_lkkbd+4	; rtc from java
-jva_mpos	equ	jva_clk+4	; curren tpmouse pos (-1 if no change) (L)
+jva_mpos	equ	jva_clk+4	; current mouse pos (-1 if no change) (L)
 jva_mrel	equ	jva_mpos+4	; mouse relative mvmt from java   (L)
 jva_mbtn	equ	jva_mrel+4	; mouse button (L)
 jtbn..1 	equ	  1		; button 1 clicked
 jbtn..2 	equ	  2		; button 2 clicked
-jbtn..3 	equ	 -1		; button 3 (=buttons 1 & 2) clicked
+jbtn..3 	equ	 -1		; button 3 (=buttons 1 & 2, or middle) clicked
 jva_scrn	equ	jva_mbtn+4	; pointer to screen base    (L)
 jva_scrl	equ	jva_scrn+4	; length of screen in bytes (L)
 jva_scinc	equ	jva_scrl+4	; length of line in bytes (W)
 jva_scrxs	equ	jva_scinc+2	; xsize in pixels (W)
 jva_scrys	equ	jva_scrxs+2	; ysize in pixels (W)
 jva_boot	equ	jva_scrys+2	; possible boot device (L)
-;jva_keyr	 equ	 jva_boot+4	 ; keyrow (8 bytes)
-;jva_nfau	 equ	 jva_keyr+8	 ; nfa use name eg 'WIN0"
 jva_nfau	equ	jva_boot+4	; nfa use name eg 'WIN0"
 jva_sfau	equ	jva_nfau+4
 jva_winu	equ	jva_sfau+4
@@ -37,7 +35,7 @@ jva.trp1	equ	$a001		; return to java from a trap1
 jva.trp2	equ	$a002		; trap 2
 jva.trp3	equ	$a003		; trap 3
 jva.trp4	equ	$a004		; trap 4
-jva.trp5	equ	$a005		; trap 5 do misc things
+jva.trp5	equ	$a005		; trap 5 do misc things (flag in d0)
 jt5.mode	equ	  1		;   switch display mode
 jt5.rset	equ	  2		;   reset
 jt5.slep	equ	  3		;   sleep a bit
@@ -107,5 +105,13 @@ jva_cfgf1	equ    '<<SM'
 jva_cfgf2	equ    'SQMU'
 jva_cfgf3	equ    'LATO'
 jva_cfgf4	equ    'RX>>'
+
+; keys for dv3 device access	 (debug/test/Q68)
+jd3.rsec	equ	  0		; read a sector
+jd3.wsec	equ	  1		; write a sector
+jd3.frmt	equ	  2		; format drive
+jd3.ckwp	equ	  3		; check for write protect
+jd3.ckst	equ	  4		; check for drive status
+
 
 	list

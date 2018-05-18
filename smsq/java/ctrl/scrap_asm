@@ -1,24 +1,16 @@
-; Misc. keywords for scrap, menu bar, fp. ops. etc V1.03 (c) W. Lenerz 2013-2016
-
+; SMSQmulator control extension thing (c) W. Lenerz 2017
 
 ************************************************************************
 *	Copying to/from the Scrap to/from the clipboard
 *
-*	Making menu bar visible again
+*	v. 1.04  2017 Apr 07 made into extn thing
 *
-*	Set QL or IEEE floating point routines
-*
-*	Get SMSQmulator version, hstmachine name
-*
-*	v. 1.03  2016 Dec 02 add windowtitle, netname$,popup
-*	v. 1.02  2016 Oct 27 add JVA_VER$
-*
-*	copyright (C) W. Lenerz 2016
+*	copyright (C) W. Lenerz 2016-2017
 *
 ************************************************************************
 
 
-	section scrap
+	section exten
 
 	include dev8_keys_thg
 	include dev8_keys_sbasic
@@ -26,48 +18,28 @@
 	include dev8_keys_scrap
 	include dev8_keys_java
 	include dev8_mac_proc2
+	include 'dev8_mac_thg'
 
-
-	xdef	scrap_init
+	xdef	jt_sget
 
 	xref	gu_achp0
 	xref	ut_usscp
 	xref	gu_rchp
 	xref	ut_frscp
-	xref	qpc_patchfpu
-	xref	qpc_patch2ql
-	xref	ut_retst
-	xref	ut_ckri6
-	xref	ut_chkri
-	xref	ut_gtnm1
+	xref	thp_nul
 
-
-scrap_init
-	lea	procsnm,a1
-	move.w	$110,a2
-	jmp	(a2)
-
-
-procsnm
-	proc_stt
-	proc_def JVASGET
-	proc_def JVASPUT
-	proc_def JVAMBAR
-	proc_def JVAQLFP
-	proc_def JVAIEFP
-	proc_def JVA_WINDOWTITLE
-	proc_def JVA_POPUP
-	proc_end
-	proc_stt
-	proc_def JVA_VER$,jva_vers
-	proc_def JVA_NETNAME$
-	proc_end
-		 
 stack	equ	32060
 
 mregs	reg	a0/a1/a4/d2
 
-jvasget movem.l mregs,-(a7)
+;********
+; JVA_SGET
+; no parameter
+; GET content of system clipboard and put it into the menu extensions' scrap
+;********
+
+jt_sget thg_extn {SGET},jt_sput,thp_nul
+	movem.l mregs,-(a7)
 	move.l	#'PUT ',d2		; we're PUTting things into the scrap
 	jsr	ut_usscp		; use extension
 	bne.s	exit			; ooops
@@ -76,7 +48,6 @@ jvasget movem.l mregs,-(a7)
 	move.l	#stack,d0
 	jsr	gu_achp0		; get mem
 	bne.s	exit1			; ooops
-
 
 	move.b	#0,scp_dtyp(a0) 	; what to put = string
 	move.l	#0,scp_styp(a0) 	; source type
@@ -99,8 +70,15 @@ exit	movem.l (a7)+,mregs
 	tst.l	d0
 	rts
 
+ 
+;********
+; JVA_SPUT
+; no parameter
+; PUT content of the menu extensions' scrap into the system clipboard
+;********
 
-jvasput movem.l mregs,-(a7)
+jt_sput thg_extn {SPUT},,thp_nul
+	movem.l mregs,-(a7)
 	move.l	#'GET ',d2		; we're GETting things from the scrap
 	jsr	ut_usscp		; use extension
 	bne.s	exit			; ooops
@@ -109,7 +87,6 @@ jvasput movem.l mregs,-(a7)
 	move.l	#stack,d0
 	jsr	gu_achp0		; get mem
 	bne.s	exit1			; ooops
-
 
 	move.b	#0,scg_dtyp(a0) 	; what to get = string
 	move.l	#32000,scg_bufl(a0)	; size of buffer
@@ -124,59 +101,7 @@ jvasput movem.l mregs,-(a7)
 	lea	52(a0),a1
 
 	moveq	#jt5.xs2cp,d0
-	dc.w	jva.trp5		; get data at (a1)  to java
+	dc.w	jva.trp5		; get data at (a1) to java
 	bra.s	exit3
-
-
-
-jvambar moveq	#jt5.mbar,d0
-	dc.w	jva.trp5
-	rts
-
-
-
-jvaqlfp lea	qpc_patch2ql,a2 	; routine to jump to
-	bra.s	fp_comn
-jvaiefp lea	qpc_patchfpu,a2
-fp_comn move.w	sr,d7
-	trap	#0			; go into supervisor mode
-	move.w	#$2700,sr		; no interrupts
-	jsr	(a2)			; patch vectors
-	move.w	d7,sr			; reset status as it was
-	moveq	#0,d0
-	rts
-
-
-
-jva_vers jsr	 ut_ckri6		 ; make sure there's space for 6 bytes
-	moveq	#jt5.vers,d0
-	dc.w	jva.trp5		; get SMSQmulator version into d2
-	subq.l	#6,a1
-	move.l	d2,2(a6,a1.l)		;
-	move.w	#4,(a6,a1.l)
-	jmp	ut_retst		; return it
-
-
-jva_windowtitle
-	jsr	ut_gtnm1
-	bne.s	wdw_rts
-	moveq	#jt5.wtit,d0
-	dc.w	jva.trp5
-wdw_rts rts
-
-
-jva_netname$
-	moveq	#66,d1
-	jsr	ut_chkri		 ; check/expand RI stack
-	move.l	sb_arthp(a6),a1 	 ; cleaned up stack
-	moveq	#jt9.name,d0
-	dc.w	jva.trp9		 ; get name
-	bne.s	wdw_rts
-	jmp	ut_retst
-
-
-jva_popup
-	dc.w	jva.trpb
-	rts
 
 	end

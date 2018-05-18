@@ -1,4 +1,6 @@
 ; SBAS_INTER - Interpreter Main Loop and Tables         1993 Tony Tebby
+;
+; 2017-04-05  1.01  Fixed LRESPR-within-PROCedure crash (MK)
 
 	section sbas
 
@@ -18,6 +20,8 @@
 
 	xref	sb_sttadd   ; statement to address
 	xref	sb_addstt   ; and vv
+
+	xref	sb_ret2adr  ; return stack to absolute addresses
 
 	xref	sb_loopadd  ; set loop var addresses
 	xref	sb_loopstt  ; set loop var statement nrs
@@ -140,7 +144,6 @@ sis_nint
 	move.l	sb_prstp(a6),a7 	 ; stack pointer
 	add.l	a6,a7			 ; correct
 
-
 	rts
 
 ;+++
@@ -168,6 +171,7 @@ sb_inter
 	moveq	#sms.cbas,d0
 	trap	#do.sms2		 ; set this to be "current" SBASIC
 
+	jsr	sb_ret2adr		 ; ret stack to abs adresses	** 1.01
 	jsr	sb_loopadd		 ; convert loop statements to address
 
 	jsr	sbi_alar		 ; initial alloc of arithmetic stack

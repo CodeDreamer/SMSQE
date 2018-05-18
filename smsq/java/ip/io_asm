@@ -20,7 +20,7 @@ ip_doio
 	moveq	#jt9.io,d0
 	dc.w	jva.trp9
 ip_exit
-	movem.l (sp)+,a0
+	move.l	(sp)+,a0
 	rts
 
 	end

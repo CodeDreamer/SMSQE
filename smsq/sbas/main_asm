@@ -3,6 +3,7 @@
 ; 2005-11-15  1.01  Sets the boot-filename as the current file name (MK)
 ; 2005-12-08  1.02  Also registers boot in HOME directory if possible (MK)
 ;		    New command line history (up/down arrows) (MK)
+; 2017-04-05  1.03  Fixed LRESPR-within-PROCedure crash (MK)
 
 	section sbas
 
@@ -35,6 +36,8 @@
 	xref	sb_clrdat
 	xref	sb_clrall
 	xref	sb_clrfrp
+
+	xref	sb_ret2pos
 
 	xref	sb_inchan
 
@@ -715,6 +718,7 @@ sbm_clear
 	assert	0,sb.edt-$ff,sb.edtn-$80
 	tas	sb_edt(a6)			 ; edited! to redo name types
 sbm_nact
+	jsr	sb_ret2pos			 ; ret stack to line no ** 1.03
 	move.w	sb_line(a6),d0			 ; current line
 	beq.s	sbm_nactc
 	move.w	d0,sb_nline(a6) 		 ; next program line
