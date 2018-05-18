@@ -3,6 +3,9 @@ SMSQ/E	file(s) 			version
 Version   changed			of file   changes made
 
 
+3.30
+    BUGFIX
+	smsq_qpc_hwinit_asm		1.03	Fixed 3rd slice of mod table, start at $10000 and not $fffc (MK)
 -----------------------------------------------------------------------------
 
 3.29

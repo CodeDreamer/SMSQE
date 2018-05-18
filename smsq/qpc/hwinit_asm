@@ -1,7 +1,8 @@
-; SMSQ QPC Hardware Initialisation V3	v1.02		     2005 Marcel Kilgus
+; SMSQ QPC Hardware Initialisation V3	v1.03		     2005 Marcel Kilgus
 ;
 ; 2005-12-09  1.01  Taskbar button configuration
 ; 2006-05-15  1.02  BGIO configuration and CTRL+C behaviour configuration
+; 2017-02-12  1.03  Fixed 3rd slice of mod table, start at $10000 and not $fffc
 ;
 ; If d7 = 0	the RAM is setup.
 ;		$0003,d4 is written to address 0 'ROM' or 'RES'
@@ -477,11 +478,9 @@ sms_wbase
 ; loader tables
 
 mod_table
-;	 dc.l	 sms.base-4,sms.base	  ; first slice
-;	 dc.l	 0
-	dc.l	sms.base-4,$4000	 ; first slice
-	dc.l	$4200-4,$c000		 ; second slice
-	dc.l	$10000-4,$17d00 	 ; third slice
+	dc.l	sms.base-4,$4000	 ; 1st slice, up to vector table
+	dc.l	$4200,$c000		 ; 2nd slice, after vector table to ROM
+	dc.l	$10000,$17d00		 ; 3rd slice, after ROM to I/O area
 	dc.l	0
 
 	end

@@ -776,6 +776,10 @@
 ; 3.29	dmedium_drive$ fixed (MK).
 ;	INPUT buffer is limited to max string length (32K -2) (wl).
 ;
-smsq_vers equ	 '3.29'
+;
+; 3.30	QPC: Fixed 3rd slice of mod table, start at $10000 and not $fffc (MK).
+;	SMSQmulator : link in floppy module (was broken in 3.29 - wl).
+
+smsq_vers equ	 '3.30'
 
 	end

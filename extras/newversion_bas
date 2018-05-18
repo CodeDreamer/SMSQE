@@ -5,289 +5,313 @@
 140 PRINT
 150 PRINT "!!!!!!"
 160 PRINT "IT WILL FORMAT WIN4_ !!!!!!!!!!"
-170 PRINT "!!!!!!"
-180 PRINT
-190 PRINT "THIS PROGRAM MAKES WIN4_ WITH THE SOURCES"
-200 PRINT "IT ALSO MAKES THE ZIP FILE CONAINING ALL"
-210 PRINT "THE SOURCES AND THE ZIP FILES FOR THE"
-220 PRINT "INDIVIDUAL SOURCE SUBDIRECTORIES. THESE"
-230 PRINT "ARE THEN COPIED TO NFA2_new INTO THEIR"
-240 PRINT "RESPECTIVE SUBDIRECTORIES."
-250 PRINT "(nfa2_ should be ...smsqe/website)."
-260 PRINT
-270 PRINT "!!!!!"
-280 PRINT "All files in NFA2_new will be deleted!!!!"
+170 PRINT "win4_ will be set to '/windows/E/Smsqe/SMSQExxx.win'"
+180 PRINT " where xxx=smsqe version"
+190 PRINT "!!!!!!"
+200 PRINT
+210 PRINT "THIS PROGRAM MAKES WIN4_ WITH THE SOURCES"
+220 PRINT "IT ALSO MAKES THE ZIP FILE CONAINING ALL"
+230 PRINT "THE SOURCES AND THE ZIP FILES FOR THE"
+240 PRINT "INDIVIDUAL SOURCE SUBDIRECTORIES. THESE"
+250 PRINT "ARE THEN COPIED TO NFA2_new INTO THEIR"
+260 PRINT "RESPECTIVE SUBDIRECTORIES."
+270 PRINT "(nfa2_ should be ...smsqe/website)."
+280 PRINT
 290 PRINT "!!!!!"
-300 PRINT "'CLINE_BIN' MUST BE LOADED !"
-310 PRINT
-320 PRINT "This prog sets the data and prog_use dirs"
-330 PRINT "(it resets them at the end)."
+300 PRINT "All files in NFA2_new will be deleted!!!!"
+310 PRINT "!!!!!"
+320 PRINT
+330 PRINT "'CLINE_BIN' MUST BE LOADED !"
 340 PRINT
-350 PRINT "HIT ANY KEY TO CONTINUE OR ESC TO STOP"
-360 :
-370 a$=INKEY$(-1)
-380 IF a$=CHR$(27):STOP
+350 PRINT "This prog sets the data and prog_use dirs"
+360 PRINT "(it resets them at the end)."
+370 PRINT
+380 PRINT "HIT ANY KEY TO CONTINUE OR ESC TO STOP"
 390 :
-400 windrive$="win4_"       : REMark windrive where files will be copied to
-410 htmldrive$="nfa2_"      : REMark drive where html & zipped files will be copied to
-420 p
-430 :
-440 DEFine PROCedure sa
-450   SAVE_O dev8_extras_newversion_bas
-460 END DEFine sa
-470 :
-480 DEFine PROCedure p
-490   IF NOT IS_EXTN ("cline")
-500      PRINT "cline isn't loaded. Failed and stopped"
-510   END IF
-520   ichan%=2:ochan%=1
-530   CLS#ichan%:CLS#ochan%
-540   get_smsqe_version ichan%,ochan%
-550   get_new_dirs ichan%,ochan%
-560   PRINT#ochan%;"Deleting all non source files but keeping binaries..."
-570   PRINT#ochan%;"Please be patient..."
-580   EW dev8_extras_del_all_bas;"auto stop keep"
-590   PRINT#ochan%, "zipping all to ram3_"
-600   EW dev8_extras_zip_it_bas;"quit binaries docopy version"&svers$
-610   PRINT#ochan%,"Making version and changelog html files..."
-620   versions ochan%
-630   make_indexphp ochan%
-640   make_container
-650   PRINT#ochan%
-660   PRINT#ochan%," ----------------- DONE -----------------"
-670 END DEFine p
-680 :
-690 DEFine PROCedure get_smsqe_version (ichan%,ochan%)
-700 REMark this gets the version of SMSQE
-710 LOCal chan%,lp%,a$,t%
-720   CLS#ichan%
-730   INPUT#ochan%, "SMSQE version in format x.yy? (or Enter to get it from dev8_smsq_smsq_version_asm) ",smsq_vers$
-740   IF smsq_vers$=""
-750     chan%=FOP_IN('dev8_smsq_smsq_version_asm')
-760     REPeat lp%
-770       IF EOF(#chan%):EXIT lp%
-780       INPUT#chan%,a$
-790       IF "smsq_vers" INSTR a$  AND "equ" INSTR a$
-800         t%="'" INSTR a$
-810         IF t%:smsq_vers$=a$(t%+1 TO t%+4)
-820       END IF
-830     END REPeat lp%
-840     CLOSE#chan%
-850   END IF
-860   IF smsq_vers$=""
-870     PRINT#ochan%, "Failed to get smsq version!"
-880   ELSE
-890     PRINT#ochan%, "-> smsqe version : ",smsq_vers$
-900   END IF
-910   t%='.' INSTR smsq_vers$
-920   IF t%
-930     svers$=smsq_vers$(1)&smsq_vers$(3 TO 4)
-940   ELSE
-950     PRINT "no decimal point in version : wrong! Failed and stopped"
-960     STOP
-970   END IF
-980 END DEFine get_smsqe_version
-990 :
-1000 DEFine PROCedure get_new_dirs (ichan%,ochan%)
-1010 LOCal lp%,t%
-1020 REMark get new dirs for : * Subdirs  * SMSQE itself
-1030   smsqename$="smsqe"&smsq_vers$
-1040   PRINT#ochan%,"-> SMSQE name is : ";smsqename$
-1050   t%= FTEST (htmldrive$)
-1060   IF t%
-1070     PRINT#ochan%, "Error for "&htmldrive$&" : ";
-1080     REPORT#ochan%,t%
-1090     PRINT#ochan%,"Failed and stopped.":STOP
-1100   END IF
-1110   PRINT#ochan%,"dev7_ points to "&htmldrive$&"new_"
-1120   DEV_USE 7,"naf2_new_"
-1130   REMark 0 if rep exists, -1 if there is a file with the same name, -7 if it doesn't exist
-1140   t%=FTEST(htmldrive$&"new_")
-1150   SELect ON t%
-1160     =0:PRINT#ochan%, "deleting all files on dev7_":WDEL "naf2_new_"
-1170     =-1:PRINT#ochan%;"Couldn't make directory '"&htmldrive$&"new'"
-1180         PRINT#ochan%,'There seems to be a simple file with that name already!'
-1190         PRINT#ochan%,"Failed and stopped":STOP
-1200     =-7:
-1210         MAKE_DIR htmldrive$&"new"
-1220   END SELect
-1230 END DEFine get_new_dirs
-1240 :
-1250 DEFine PROCedure versions (ochan%)
-1260   PRINT#ochan%,"Making changes html text"
-1270   EW dev8_extras_html_changes_bas;"quit"
-1280   PRINT#ochan%,"Making versions html text"
-1290   EW dev8_extras_html_versions_bas;"quit"
-1300 END DEFine versions
-1310 :
-1320 DEFine PROCedure make_indexphp (ochan%)
-1330 LOCal lp%,c%,o%,a$
-1340   PRINT#ochan%,"Making index.php file"
-1350   c%=FOP_IN (htmldrive$&"indexphp.template")
-1360   IF c%<0:PRINT#ochan%, "failed to open input : ";c%:STOP
-1370   o%=FOP_OVER (htmldrive$&"index.php")
-1380   IF o%<0:PRINT#ochan%, "failed to open output":STOP
-1390   REPeat lp%
-1400     IF EOF(#c%):EXIT lp%
-1410     INPUT#c%,a$
-1420     a$=repl$(a$)
-1430     PRINT#o%,a$
-1440   END REPeat lp%
-1450   CLOSE#c%:CLOSE#o%
-1460 END DEFine make_indexphp
-1470 :
-1480 DEFine FuNction repl$(a$)
-1490 REMark xxxversionxxx is,eg 3.14
-1500 REMark xxxsmsqexxx is, eg 314/smsqe314
-1510 REMark xxxsubdirxxx is, eg 314/
-1520 REMark
-1530 REMark  smsq_vers$=eg 3.14
-1540 REMark  svers$= eg 314
-1550 LOCal t%,front$,end$
-1560   front$=a$
-1570   t%="xxxversionxxx" INSTR front$
-1580   IF t%
-1590     front$=front$(1 TO t%-1)&smsq_vers$&front$(t%+13 TO)
-1600   END IF
-1610   t%="xxxsmsqexxx" INSTR front$
+400 a$=INKEY$(-1)
+410 IF a$=CHR$(27):STOP
+420 :
+430 windrive$="win4_"       : REMark windrive where files will be copied to
+440 htmldrive$="nfa2_"      : REMark drive where html & zipped files will be copied to
+450 p
+460 :
+470 DEFine PROCedure sa
+480   SAVE_O dev8_extras_newversion_bas
+490 END DEFine sa
+500 :
+510 DEFine PROCedure p
+520   IF NOT IS_EXTN ("cline")
+530      PRINT "cline isn't loaded. Failed and stopped"
+540   END IF
+550   ichan%=2:ochan%=1
+560   CLS#ichan%:CLS#ochan%
+570   get_smsqe_version ichan%,ochan%
+580   check_win4
+590   get_new_dirs ichan%,ochan%
+600   PRINT#ochan%;"Deleting all non source files but keeping binaries..."
+610   PRINT#ochan%;"Please be patient..."
+620   EW dev8_extras_del_all_bas;"auto stop keep"
+630   PRINT#ochan%, "zipping all to ram3_"
+640   EW dev8_extras_zip_it_bas;"quit binaries docopy version"&svers$
+650   PRINT#ochan%,"Making version and changelog html files..."
+660   versions ochan%
+670   make_indexphp ochan%
+680   make_container
+690   PRINT#ochan%
+700   PRINT#ochan%," ----------------- DONE -----------------"
+710 END DEFine p
+720 :
+730 DEFine PROCedure get_smsqe_version (ichan%,ochan%)
+740 REMark this gets the version of SMSQE
+750 LOCal chan%,lp%,a$,t%
+760   CLS#ichan%
+770   INPUT#ochan%, "SMSQE version in format x.yy? (or Enter to get it from dev8_smsq_smsq_version_asm) ",smsq_vers$
+780   IF smsq_vers$=""
+790     chan%=FOP_IN('dev8_smsq_smsq_version_asm')
+800     REPeat lp%
+810       IF EOF(#chan%):EXIT lp%
+820       INPUT#chan%,a$
+830       IF "smsq_vers" INSTR a$  AND "equ" INSTR a$
+840         t%="'" INSTR a$
+850         IF t%:smsq_vers$=a$(t%+1 TO t%+4)
+860       END IF
+870     END REPeat lp%
+880     CLOSE#chan%
+890   END IF
+900   IF smsq_vers$=""
+910     PRINT#ochan%, "Failed to get smsq version!"
+920   ELSE
+930     PRINT#ochan%, "-> smsqe version : ",smsq_vers$
+940   END IF
+950   t%='.' INSTR smsq_vers$
+960   IF t%
+970     svers$=smsq_vers$(1)&smsq_vers$(3 TO 4)
+980   ELSE
+990     PRINT "no decimal point in version : wrong! Failed and stopped"
+1000     STOP
+1010   END IF
+1020 END DEFine get_smsqe_version
+1030 :
+1040 DEFine PROCedure get_new_dirs (ichan%,ochan%)
+1050 LOCal lp%,t%
+1060 REMark get new dirs for : * Subdirs  * SMSQE itself
+1070   smsqename$="smsqe"&smsq_vers$
+1080   PRINT#ochan%,"-> SMSQE name is : ";smsqename$
+1090   t%= FTEST (htmldrive$)
+1100   IF t%
+1110     PRINT#ochan%, "Error for "&htmldrive$&" : ";
+1120     REPORT#ochan%,t%
+1130     PRINT#ochan%,"Failed and stopped.":STOP
+1140   END IF
+1150   PRINT#ochan%,"dev7_ points to "&htmldrive$&"new_"
+1160   DEV_USE 7,"naf2_new_"
+1170   REMark 0 if rep exists, -1 if there is a file with the same name, -7 if it doesn't exist
+1180   t%=FTEST(htmldrive$&"new_")
+1190   SELect ON t%
+1200     =0:PRINT#ochan%, "deleting all files on dev7_":WDEL "naf2_new_"
+1210     =-1:PRINT#ochan%;"Couldn't make directory '"&htmldrive$&"new'"
+1220         PRINT#ochan%,'There seems to be a simple file with that name already!'
+1230         PRINT#ochan%,"Failed and stopped":STOP
+1240     =-7:
+1250         MAKE_DIR htmldrive$&"new"
+1260   END SELect
+1270 END DEFine get_new_dirs
+1280 :
+1290 DEFine PROCedure versions (ochan%)
+1300   PRINT#ochan%,"Making changes html text"
+1310   EW dev8_extras_html_changes_bas;"quit"
+1320   PRINT#ochan%,"Making versions html text"
+1330   EW dev8_extras_html_versions_bas;"quit"
+1340 END DEFine versions
+1350 :
+1360 DEFine PROCedure make_indexphp (ochan%)
+1370 LOCal lp%,c%,o%,a$
+1380   PRINT#ochan%,"Making index.php file"
+1390   c%=FOP_IN (htmldrive$&"indexphp.template")
+1400   IF c%<0:PRINT#ochan%, "failed to open input : ";c%:STOP
+1410   o%=FOP_OVER (htmldrive$&"index.php")
+1420   IF o%<0:PRINT#ochan%, "failed to open output":STOP
+1430   REPeat lp%
+1440     IF EOF(#c%):EXIT lp%
+1450     INPUT#c%,a$
+1460     a$=repl$(a$)
+1470     PRINT#o%,a$
+1480   END REPeat lp%
+1490   CLOSE#c%:CLOSE#o%
+1500 END DEFine make_indexphp
+1510 :
+1520 DEFine FuNction repl$(a$)
+1530 REMark xxxversionxxx is,eg 3.14
+1540 REMark xxxsmsqexxx is, eg 314/smsqe314
+1550 REMark xxxsubdirxxx is, eg 314/
+1560 REMark
+1570 REMark  smsq_vers$=eg 3.14
+1580 REMark  svers$= eg 314
+1590 LOCal t%,front$,end$
+1600   front$=a$
+1610   t%="xxxversionxxx" INSTR front$
 1620   IF t%
-1630     front$=front$(1 TO t%-1)&svers$&"/smsqe"&svers$&front$(t%+11 TO)
+1630     front$=front$(1 TO t%-1)&smsq_vers$&front$(t%+13 TO)
 1640   END IF
-1650   t%="xxxsubdirxxx" INSTR front$
+1650   t%="xxxsmsqexxx" INSTR front$
 1660   IF t%
-1670     front$=front$(1 TO t%-1)&svers$&"/"&front$(t%+12 TO)
+1670     front$=front$(1 TO t%-1)&svers$&"/smsqe"&svers$&front$(t%+11 TO)
 1680   END IF
-1690   RETurn front$
-1700 END DEFine repl$
-1710 :
-1720 DEFine PROCedure make_container
-1730 REMark this formats the win container
-1740 LOCal what_chan%,counter
-1750   PRINT#ochan%,"Now making the container file--------"
-1760   PRINT#ochan%,"Formatting "&windrive$& " !"
-1770   FORMAT windrive$&"20_SMSQE"&smsq_vers$
-1780   PRINT#ochan%
-1790   counter=0
-1800   what_chan%=FOP_OVER('ram1_mydirs')
-1810   get_dir_structure "dev8_",what_chan%
-1820   CLOSE#what_chan%
-1830   PRINT#ochan%,"Got dir structure, sorting..."
-1840   sort_it
-1850   PRINT#ochan%,"Making dir structure"
-1860   make_dir_structure "ram1_mydirs2",windrive$
-1870   PRINT#ochan%,"copying files, be patient..."
-1880   fbackup "dev8_",windrive$
-1890 END DEFine make_container
-1900 :
-1910 DEFine PROCedure get_dir_structure (dirr$,what_chan%)
-1920 LOCal a$,lp,chan%,device$,file$
-1930 LOCal k
-1940   file$="ram1_ddir"&counter&"pkk"
-1950   chan%=FOP_OVER(file$)
-1960   IF chan%<0:RETurn
-1970   DIR#chan%,dirr$
-1980   CLOSE#chan%
-1990   device$=dirr$(1 TO 4)&'_'
-2000   chan%=FOP_IN(file$)
-2010   IF chan%<0:RETurn
-2020   INPUT#chan%,a$
-2030   INPUT#chan%,a$
-2040   REPeat lp
-2050     IF EOF(#chan%):EXIT lp
-2060     INPUT#chan%,a$
-2070     k=LEN(a$)
-2080     IF k<4:NEXT lp:EXIT lp
-2090     IF a$(k-2 TO k)=' ->'
-2100       counter=counter+1
-2110       PRINT#what_chan%,a$(1 TO k-3)
-2120       a$=device$&a$(1 TO k-3)&"_"
-2130       PRINT#ochan%, "OK: ";a$
-2140       get_dir_structure a$,what_chan%
-2150     END IF
-2160   END REPeat lp
-2170   CLOSE#chan%
-2180   DELETE file$
-2190 END DEFine get_dir_structure
-2200 :
-2210 DEFine PROCedure sort_it
-2220 LOCal a$,array$(counter+10,30),chan%,c,lp
-2230   chan%=FOP_IN('ram1_mydirs')
-2240   c=1
-2250   REPeat lp
-2260     IF EOF(#chan%):EXIT lp
-2270     INPUT#chan%,a$
-2280     array$(c)=a$
-2290     c=c+1
-2300   END REPeat lp
-2310   ASORT array$,0
-2320   CLOSE#chan%
-2330   chan%=FOP_OVER('ram1_mydirs2')
-2340   FOR lp=1 TO c
-2350     a$=array$(lp)
-2360     PRINT#chan%,a$
-2370   END FOR lp
-2380   CLOSE#chan%
-2390 END DEFine sort_it
-2400 :
-2410 DEFine PROCedure make_dir_structure (file$,drive$)
-2420 LOCal lp%,a$,chan%
-2430   chan%=FOP_IN(file$)
-2440 PRINT file$,chan%
-2450   IF chan%<0: PRINT "File "&file$&" doesn't exist":RETurn
-2460   REPeat lp%
-2470     IF EOF(#chan%):EXIT lp%
-2480     INPUT#chan%,a$
-2490     IF a$="":NEXT lp%:EXIT lp%
-2500     PRINT "Making "&drive$&a$&" ..."
-2510     MAKE_DIR drive$&a$
-2520   END REPeat lp%
-2530   CLOSE#chan%
-2540 END DEFine make_dir_structure
-2550 :
-2560 DEFine PROCedure fbackup (source$,dest$)
-2570   REMark makes a forced backup, eventually deleting newer files on dest
-2580   REMark and replacing them with the files on source$
-2590   REMark fbackup "dir_with_new_files", "dir_with_old_files"
-2600 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new,b$,mdir$,mdest$
-2610   FOR lp%=1 TO 50
-2620     myfile$="ram8_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
-2630     chan%=FOP_NEW (myfile$)            : REMark try to open unique file
-2640     IF chan%>0:EXIT lp%
-2650   END FOR lp%
-2660   IF source$(LEN(source$))<>"_":source$=source$&"_"
-2670   IF dest$(LEN(dest$))<>"_":dest$=dest$&"_"
-2680   PRINT#ochan%, 'source= ';source$
-2690   PRINT#ochan%, "dest= ";dest$
-2700   mdir$=source$(1 TO 5)
-2710   mdest$=dest$(1 TO 5)
-2720   IF chan%<0:RETurn                     : REMark ooops!!!!
-2730   WDIR#chan%,source$                    : REMark dir of this rep in file
-2740   GET#chan%\0                           : REMark reset file pointer to start
-2750   REPeat lp%
-2760     IF EOF(#chan%):EXIT lp%
-2770     INPUT#chan%,a$                      : REMark get filename
-2780     IF a$="":NEXT lp%
-2790     t%= ' ->' INSTR a$                  : REMark is it a subdir?
-2800     IF t%
-2810       tc%=LEN(source$)-4
-2820       c$=a$(tc% TO)
-2830       c$=c$(TO LEN(c$)-3)&"_"
-2840       fbackup mdir$&a$(TO LEN(a$)-3)&'_',dest$&c$
-2850       NEXT lp%
-2860     END IF
-2870     tc%=FOP_IN(mdir$&a$)                : REMark open source file
-2880     date_old=FUPDT(#tc%)                : REMark file date of "old" source file
-2890     CLOSE#tc%
-2900     tc%=LEN(source$)-4                  : REMark length of name w/o subdirectory
-2910     b$=a$(tc% TO)
-2920 REMark    PRINT mdir$&a$;"  -->  ";dest$&b$
-2930     DELETE dest$&b$
-2940     COPY mdir$&a$,dest$&b$
-2950     tc%=FOPEN(dest$&b$)
-2960     SET_FUPDT#tc%,date_old
-2970     CLOSE#tc%
-2980   END REPeat lp%
-2990   CLOSE#chan%
-3000   DELETE myfile$
-3010 END DEFine fbackup
-3020 :
+1690   t%="xxxsubdirxxx" INSTR front$
+1700   IF t%
+1710     front$=front$(1 TO t%-1)&svers$&"/"&front$(t%+12 TO)
+1720   END IF
+1730   RETurn front$
+1740 END DEFine repl$
+1750 :
+1760 DEFine PROCedure make_container
+1770 REMark this formats the win container
+1780 LOCal what_chan%,counter
+1790   PRINT#ochan%,"Now making the container file--------"
+1800   PRINT#ochan%,"Formatting "&windrive$& " !"
+1810   FORMAT windrive$&"20_SMSQE"&smsq_vers$
+1820   PRINT#ochan%
+1830   counter=0
+1840   what_chan%=FOP_OVER('ram1_mydirs')
+1850   get_dir_structure "dev8_",what_chan%
+1860   CLOSE#what_chan%
+1870   PRINT#ochan%,"Got dir structure, sorting..."
+1880   sort_it
+1890   PRINT#ochan%,"Making dir structure"
+1900   make_dir_structure "ram1_mydirs2",windrive$
+1910   PRINT#ochan%,"copying files, be patient..."
+1920   fbackup "dev8_",windrive$
+1930 END DEFine make_container
+1940 :
+1950 DEFine PROCedure get_dir_structure (dirr$,what_chan%)
+1960 LOCal a$,lp,chan%,device$,file$
+1970 LOCal k
+1980   file$="ram1_ddir"&counter&"pkk"
+1990   chan%=FOP_OVER(file$)
+2000   IF chan%<0:RETurn
+2010   DIR#chan%,dirr$
+2020   CLOSE#chan%
+2030   device$=dirr$(1 TO 4)&'_'
+2040   chan%=FOP_IN(file$)
+2050   IF chan%<0:RETurn
+2060   INPUT#chan%,a$
+2070   INPUT#chan%,a$
+2080   REPeat lp
+2090     IF EOF(#chan%):EXIT lp
+2100     INPUT#chan%,a$
+2110     k=LEN(a$)
+2120     IF k<4:NEXT lp:EXIT lp
+2130     IF a$(k-2 TO k)=' ->'
+2140       counter=counter+1
+2150       PRINT#what_chan%,a$(1 TO k-3)
+2160       a$=device$&a$(1 TO k-3)&"_"
+2170       PRINT#ochan%, "OK: ";a$
+2180       get_dir_structure a$,what_chan%
+2190     END IF
+2200   END REPeat lp
+2210   CLOSE#chan%
+2220   DELETE file$
+2230 END DEFine get_dir_structure
+2240 :
+2250 DEFine PROCedure sort_it
+2260 LOCal a$,array$(counter+10,30),chan%,c,lp
+2270   chan%=FOP_IN('ram1_mydirs')
+2280   c=1
+2290   REPeat lp
+2300     IF EOF(#chan%):EXIT lp
+2310     INPUT#chan%,a$
+2320     array$(c)=a$
+2330     c=c+1
+2340   END REPeat lp
+2350   ASORT array$,0
+2360   CLOSE#chan%
+2370   chan%=FOP_OVER('ram1_mydirs2')
+2380   FOR lp=1 TO c
+2390     a$=array$(lp)
+2400     PRINT#chan%,a$
+2410   END FOR lp
+2420   CLOSE#chan%
+2430 END DEFine sort_it
+2440 :
+2450 DEFine PROCedure make_dir_structure (file$,drive$)
+2460 LOCal lp%,a$,chan%
+2470   chan%=FOP_IN(file$)
+2480 PRINT file$,chan%
+2490   IF chan%<0: PRINT "File "&file$&" doesn't exist":RETurn
+2500   REPeat lp%
+2510     IF EOF(#chan%):EXIT lp%
+2520     INPUT#chan%,a$
+2530     IF a$="":NEXT lp%:EXIT lp%
+2540     PRINT "Making "&drive$&a$&" ..."
+2550     MAKE_DIR drive$&a$
+2560   END REPeat lp%
+2570   CLOSE#chan%
+2580 END DEFine make_dir_structure
+2590 :
+2600 DEFine PROCedure fbackup (source$,dest$)
+2610   REMark makes a forced backup, eventually deleting newer files on dest
+2620   REMark and replacing them with the files on source$
+2630   REMark fbackup "dir_with_new_files", "dir_with_old_files"
+2640 LOCal chan%,lp%,myfile$,a$,t%,tc%,len_old,len_new,date_old,date_new,b$,mdir$,mdest$
+2650   FOR lp%=1 TO 50
+2660     myfile$="ram8_diffs_txt"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+2670     chan%=FOP_NEW (myfile$)            : REMark try to open unique file
+2680     IF chan%>0:EXIT lp%
+2690   END FOR lp%
+2700   IF source$(LEN(source$))<>"_":source$=source$&"_"
+2710   IF dest$(LEN(dest$))<>"_":dest$=dest$&"_"
+2720   PRINT#ochan%, 'source= ';source$
+2730   PRINT#ochan%, "dest= ";dest$
+2740   mdir$=source$(1 TO 5)
+2750   mdest$=dest$(1 TO 5)
+2760   IF chan%<0:RETurn                     : REMark ooops!!!!
+2770   WDIR#chan%,source$                    : REMark dir of this rep in file
+2780   GET#chan%\0                           : REMark reset file pointer to start
+2790   REPeat lp%
+2800     IF EOF(#chan%):EXIT lp%
+2810     INPUT#chan%,a$                      : REMark get filename
+2820     IF a$="":NEXT lp%
+2830     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+2840     IF t%
+2850       tc%=LEN(source$)-4
+2860       c$=a$(tc% TO)
+2870       c$=c$(TO LEN(c$)-3)&"_"
+2880       fbackup mdir$&a$(TO LEN(a$)-3)&'_',dest$&c$
+2890       NEXT lp%
+2900     END IF
+2910     tc%=FOP_IN(mdir$&a$)                : REMark open source file
+2920     date_old=FUPDT(#tc%)                : REMark file date of "old" source file
+2930     CLOSE#tc%
+2940     tc%=LEN(source$)-4                  : REMark length of name w/o subdirectory
+2950     b$=a$(tc% TO)
+2960 REMark    PRINT mdir$&a$;"  -->  ";dest$&b$
+2970     DELETE dest$&b$
+2980     COPY mdir$&a$,dest$&b$
+2990     tc%=FOPEN(dest$&b$)
+3000     SET_FUPDT#tc%,date_old
+3010     CLOSE#tc%
+3020   END REPeat lp%
+3030   CLOSE#chan%
+3040   DELETE myfile$
+3050 END DEFine fbackup
+3060 :
+3070 DEFine PROCedure check_win4
+3080 REMark check that win4 doesn't exist (!!!)
+3090 LOCal a$,t%
+3100   natdrv4win4$="/windows/E/Smsqe/SMSQE"
+3110   a$=natdrv4win4$&svers$&'.win'
+3120   t%=FTEST(a$)
+3130   IF t%<>-7
+3140     CLS:PRINT "Error with win4"
+3150     IF t%=0
+3160       PRINT "It already exists"
+3170     ELSE
+3180       REPORT#1,t%
+3190     END IF
+3200     PRINT "WIN4 check failed - program stopped"
+3210     STOP
+3220   END IF
+3230   natdrv4win4$=a$
+3240   WIN_USE 4,natdrv4win4$
+3250 END DEFine check_win4
+3260 :
