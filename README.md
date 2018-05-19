@@ -8,5 +8,3 @@ This repository is a mirror of the public SMSQ/E sources as published on the "ol
 There is one commit for each version to make it easy to compare them and see what lines of code changed in each version.
 
 SMSQ/E/QDOS executable files are stored in the Q-emuLator format to preserve the QDOS file headers and the *con* and *nul* files have been renamed as those names are illegal in Windows.
-
-For instructions on how to build SMSQ/E from sources, see extras/help/how_to_txt.
