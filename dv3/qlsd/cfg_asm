@@ -1,0 +1,62 @@
+	section config
+
+	xref	qsd_wn1
+	xref.l	qlsd_vers
+	xref	norm_nm
+
+	include 'dev8_keys_err'
+	include 'dev8_mac_MultiConfig02'
+
+;--------------------------------------------------------------
+qsd_cf1 dc.w	13,7					      |
+	dc.w	'QXL.WIN',0,0		; config name	      |
+;--------------------------------------------------------------
+
+	mkcfstart
+
+	 mkcfhead {QLSD},{qlsd_vers}
+
+	   mkcfitem 'QSD1',string,0,qsd_cf1,,ppr,{Filename for WIN1},0
+	  
+	 mkcfblend
+
+	mkcfend
+
+; post processing routine to make sure that a name is a valid 8.3 name
+ppr	tst.b	d1
+	beq.s	p_ok2
+	addq.l	#2,a0			; point to item name
+	move.l	a0,d7
+	move.w	(a0)+,d2		; length
+	beq.s	p_ok			; 0 length is fine
+	cmp.w	#12,d2			; max chars allowed (8+3+extn)
+	bgt.s	ipar			; too many
+	subq.w	#1,d2			; prepare for dbf
+	moveq	#'.',d5 		; compare with this
+	moveq	#0,d6			; nbr of chars compared till now
+p_lp1	cmp.b	(a0)+,d5		; try to find extension marker
+	beq.s	extn			; found it, check name
+	addq.l	#1,d6			; new number of chars checked
+	dbf	d2,p_lp1		; check all chars
+; if we get here, there is no extension
+	subq.w	#8,d6			; max nbr of chars w/o extn allowed
+	ble.s	p_ok			; correct name w/ extn
+	bra.s	ipar			; wrong name
+; d2 nbr of chars remaining
+; d6 nbr of chars before extension
+extn
+	subq.w	#8,d6			; nbr of chars got before extn
+	bgt.s	ipar			; too many chars before the extension
+	cmp.w	#3,d2			; how many chars remaining for the extn?
+	bgt.s	ipar			; too many!
+p_ok	move.l	d7,a0			;
+	move.l	a1,d7
+	lea	qsd_wn1,a1
+	bsr	norm_nm 		; normalize name
+	move.l	d7,a1
+p_ok2	moveq	#0,d0
+	rts
+ipar	moveq	#err.inam,d0
+	rts
+
+	end

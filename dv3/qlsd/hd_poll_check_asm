@@ -1,0 +1,19 @@
+; DV3 QLSD polling routine
+
+	section dv3
+
+	xdef	hd_poll_check
+
+	xref	hd_poll
+
+	include 'dev8_dv3_qlsd_keys'
+
+;+++
+; Polling Interrupt Routine
+;---
+hd_poll_check
+	tst.b	qlsd_lock(a3)		 ; device in use?
+	bpl.l	hd_poll 		 ; ... no
+	rts
+
+	end

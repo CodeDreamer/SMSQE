@@ -1,9 +1,12 @@
-; DV3 SDHC Write Sector for Q68  0.00	 2016 W. Lenerz
-; based on
+; DV3 SDHC Write Sector for Q68  1.03	 2016-2018 W. Lenerz
+;
+; 1.03 2018-05-09 save D6, use sysvars for card type
+; 1.02 delete multisector write = SMSQE actually NEVER writes more than one sector, anyway
+;      can use SD (not SDHC) cards.
+; 1.01 added multisector write
+; loosely based on
 
 ; DV3 QXL Hard Disk Read Sector      1993     Tony Tebby
-; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
-
 
 	section dv3
 
@@ -14,18 +17,18 @@
 	xref	hd_release		; release the interface
 	xref	snd_cmd 		; send a command to sdhc
 
-
 	include 'dev8_keys_java'
 	include 'DEV8_dv3_keys'
 	include 'DEV8_keys_err'
+	include 'DEV8_keys_sys'
 	include 'DEV8_dv3_hd_keys'
 	include 'dev8_keys_q68'
 
-sendreg reg	d1/d2/d3/d7/a1/a2/a3
+sendreg reg	d1-d7/a1-a3
 
 
 ;+++
-; This routine writes a sector to an sdhc card, normally for direct sector I/O.
+; This routine writes a sector to an sd(hc) card, normally for direct sector I/O.
 ;+++
 hd_wdirect
 	tst.w	ddf_ftype(a4)		; really direct sector I/O?
@@ -33,7 +36,7 @@ hd_wdirect
 	add.l	ddf_psoff(a4),d0	; yes, add "partition start"
 	bra.s	hd_wsint
 ;+++
-; This routine writes a sector to a sdhc card via background transfer.
+; This routine writes a sector to an sd(hc) card via background transfer.
 ;
 ;	d0 cr	sector number / error code
 ;	d2 c  p number of sectors (at least 1!)
@@ -55,47 +58,56 @@ hd_wsint
 	bne	hdw_inus		; can't
 	movem.l sendreg,-(a7)
 	lea	hdl_unit-1(a3),a2	; point to "unit" = card for ths drive
+	clr.l	d4
 	clr.l	d1
 	move.b	(a2,d7.w),d1
-
 	move.l	#mmc1_cs,a2		; point to card physical addresses
 	add.w	d1,a2			; a2 points to the correct addresses for this drive
-	st	drv_cs(a2)		; enable the card
+	divu	#q68.coff,d1
+	add.w	#sys_q8ct,d1
+	move.b	(a6,d1.w),d4		; get card type (and shift amount)
+	blt	hdw_err 		; card isn't initialized
+no_l	st	drv_cs(a2)		; enable the card
 
-;;;;; debug code
+;;;;; debug code --------------------------------
 	genif	debug = 1
 
 	cmp.l	#'gold',q68_jflg
 	bne.s	nodebug
+	move.l	d4,d1
+	move.l	ddf_psoff(a4),d4
+
 					; java interface
 	move.l	d0,-(a7)		; will be popped up in java
 	moveq	#jd3.wsec,d0
 	dc.w	jva.trpa		; d0 will be set
-	bra	hdw_dis
+	bra.s	hdw_dis
 nodebug
 	endgen
-;;;;; end debug code
+;;;;; end debug code  ------------------------------
 		    
 	move.l	d0,d7			; address to read from
 	subq.w	#1,d2			; prepare for dbf
-
+;	 bne	 several		 ; use multiple write if possible
+  
 ; first send command24	($58) to the card
 ; ($58, 4 bytes with the address to read from, $ff)
-wrtloop move.l	d7,d0
-	moveq	#-1,d1
-	move.b	d0,d1
-	rol.w	#8,d1			; d1.w = last byte of address , $ff
-	move.b	#$58,d0
-	ror.l	#8,d0			; $58 and first 3 bytes of address
+wrtloop
+	move.l	d7,d1
+	tst.w	d4			; use block address (sdhc) or byte address (sd)
+	beq.s	blk_add 		; block address
+	lsl.l	d4,d1			; byte, so * 512
+blk_add moveq	#24,d0
+	moveq	#-2,d6
 	bsr	snd_cmd 		; send command now
 	bne.s	hdw_dis 		; ooops
 	tst.b	d1			; return needs to be 0
 	bne.s	hdw_dis 		; ooops again
 
 lp	st	drv_xfer(a2)		; get another byte back from card
-	move.b	drv_read(a2),d0 	; (why ???)
+	move.b	drv_read(a2),d0 	; (to send some clocks)
 
-	move.b	#$fe,drv_writ(a2)	; write start signal
+	move.b	d6,drv_writ(a2) 	; "start write" token
 	st	drv_xfer(a2)
 
 ; now write 512 times one byte, 8 bytes a pop
@@ -124,19 +136,17 @@ sendlp
 	move.b	d3,(a2) 		; d3.b =$ff due to dbf
 	st	(a3)
 	move.b	d3,(a2)
-	st	(a3)			; senmd 2 fake CRCs
+	st	(a3)			; send 2 fake CRCs
 	st	(a2)			; dumy write
+
 	sub.w	#drv_writ,a2		; point start port again
+waitlp	st	(a3)
+	cmp.b	#$ff,drv_read(a2)	; still busy?
+	bne.s	waitlp			; yes ->
 
-; wait for reply from card **** possible total blockage if card never replies correctly
-sndlp2
-wct	st	(a3)
-	cmp.b	#$ff,drv_read(a2)
-	bne.s	sndlp2			; not yet
-
-	addq.l	#1,d7			; next sector to read
-	dbf	d2,wrtloop
-	moveq	#0,d0			; done and ok
+	addq.l	#1,d7			; next sector to write
+	dbf	d2,wrtloop		; there should never ba a loop
+hdw_ok	moveq	#0,d0			; done and ok
 hdw_dis clr.b	drv_cs(a2)		; disable the card
 hdw_out movem.l (a7)+,sendreg
 	tst.l	d0			; necessary due to clr.b
@@ -145,5 +155,17 @@ hdw_err
 	moveq	#err.mchk,d0
 	bra.s	hdw_dis
 
-
 	end
+
+
+
+
+
+
+
+
+
+
+
+
+		

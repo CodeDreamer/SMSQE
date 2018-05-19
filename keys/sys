@@ -173,8 +173,12 @@ sys_klnk  equ	$00e8	 long	pointer to keyboard linkage
 *
 * Fixed filing system working area (QL)
 *
-sys_filw equ	$00ee to $0100
-sys_cdiu equ	$00ee	word	Q68 flag for card in use
+sys_filw  equ	$00ee to $0100
+sys_cdiu  equ	$00ee	 byte	Q68 flag for card in use
+sys_q8ct  equ	$00f0	 word	Q68 card type for cards 1 & 2 (a byte each)
+sys..q8un equ	  $80		    undetermined (card unititialized)
+sys..q8sd equ	    9		    simple SD card
+sys..q8hc equ	    0		    SDHC card
 
 *
 * Filing system tables

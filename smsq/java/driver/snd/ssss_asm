@@ -3,6 +3,7 @@
 ; based on
 ; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
 
+; 2.04 better way to get the size of sample in the queue.
 ; 2.03 totally revamped. I don't use the pointer any more, really,
 ;      the data just gets shoved to java
 ; 2.02 2016 Oct 24  better way to kill the sound
@@ -103,7 +104,7 @@ sss_mrts
 sss_add1
 	move.l	ssss_qin(a3),a1
 	move.b	d1,(a1)+		      ; put samples in
-	move.b	d2,(a1)+
+	move.b	d2,(a1)+		      ; fall through
 
 ; add multiple samples
 ; A1 points to end of samples
@@ -122,13 +123,10 @@ sss_kill
 	rts
 
 
-; return length  of samples in queue
-; this queue is never full!
+; return length of samples in queue
 sss_sample
-	move.l	ssss_qend(a3),d0
-	sub.l	ssss_qstart(a3),d0
-sss_sset
-	lsr.l	#1,d0
+	moveq	#jt5.sspl,d0
+	dc.w	jva.trp5
 	rts
 
 

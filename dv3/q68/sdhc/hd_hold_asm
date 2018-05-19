@@ -1,5 +1,7 @@
 ; DV3 QXL Hard Disk Hold / Release controller   1998	  Tony Tebby
 
+; 1.01 adapted for Q68, use sys_cdiu (wl)
+
 	section dv3
 
 	xdef	hd_hold
@@ -22,8 +24,8 @@
 ;	status return 0, err.nc, err.mchk
 ;---
 hd_hold
-	bset	#7,sys_cdiu(a6) 	 ; take the sector transfer buffer
-	bne.s	hdh_nc
+	bset	#7,sys_cdiu(a6) 	 ; take the sector transfer buffer and
+	bne.s	hdh_nc			 ; ... lock access to the card
 	cmp.b	d0,d0
 hdh_rts
 	rts
@@ -44,7 +46,7 @@ hdh_nc
 ;---
 hd_release
 	move.b	hdl_apnd(a3),hdl_actm(a3)   ; ... let it go
-	bclr	#7,sys_cdiu(a6) 	 ; relase the sector transfer buffer
+	bclr	#7,sys_cdiu(a6) 	    ; release the sector xfer buffer & card
 	tst.l	d0
 	rts
 

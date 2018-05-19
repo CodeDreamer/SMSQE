@@ -396,6 +396,7 @@ crd_crea thg_extn {CREA},,creat
 ;	a3 c  p device driver linkage block
 	move.l	#600,d0 		; reserve mem for a sector+ workspace
 	bsr	get_rut 		; a5 becomes param ptr , a1 mem ptr
+
 ; normalise name
 	move.l	a1,a4			; keep mem ptr
 	move.l	(a5),d0 		; size needed
@@ -453,6 +454,7 @@ cr_dolp add.w	#dos.drel,a2		; get next entry in the root dir
 	cmp.l	a0,d2			; did we find an empty slot?
 	beq	errbffl 		; no, error
 	move.l	a0,dirslot(a5)		; keep ptr to dir entry
+
 ; when we get here : name is valid and can be set in main dir
 ; now check FAT for contiguous nbr of clusters free clusters
 ; first get nbr of sectors the file needs
@@ -501,19 +503,15 @@ goodnbr
 	bsr	gt_mpty 		; get first free (= empty) cluster
 fnd_0	bne	crea_er 		; couldn't
 
-
 ; I now have the first entry in the fat which shows an enpty cluster.
 ; on return:
 ; d1  nbr of sects remaining to be read in fat
 ; d3  nbr of clusters needed for file
 ; d5  sector nbr where empty slot was found
-; d6  also nbr of clusters needed for file
+; d6  =d3
 ; a2  pointer to empty slot +4
 
-      
-; I now have the first entry in the fat which shows an empty cluster.
 ; would there be enough space for my clusters?
-;
 chk_ful move.l	d1,d0			; sectors remaining in the FAT
 	lsl.l	#7,d0			; custer entries remaining in the fat
 	move.l	a2,d2			; where we are in current sector
@@ -576,7 +574,6 @@ flloop	addq.l	#1,d4			; next cluster for file
 	beq.s	nxtsect 		; yes
 lpdbf	subq.l	#1,d3
 	bne.s	flloop
-;	 dbf	 d3,flloop
 	bra.s	filldir
 nxtsect move.l	d5,d0
 	jsr	hdl_wsint(a3)		; write this sector back
@@ -594,6 +591,7 @@ nxtsect move.l	d5,d0
 
 ; now fill in the dir entry
 filldir move.l	d0,d4			; last used cluster
+
 	move.l	#d32.eof,d0
 	move.l	d0,(a2) 		; set EOF marker
 	move.l	d5,d0

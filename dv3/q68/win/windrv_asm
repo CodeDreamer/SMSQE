@@ -1,4 +1,5 @@
 ; Q68 WIN_DRIVE & others Extension thing  v. 1.00 (c) W. Lenerz 2017
+; 1.01 removed reference to keys_java and cv_upcas, list clearing optimisation (mk)
 
 	section exten
 
@@ -18,9 +19,6 @@
 
 	xref	gu_achpp
 	xref	gu_rchp
-	xref	cv_upcas
-				
-	include 'dev8_keys_java'
 				
 	include 'dev8_keys_q68'
 	include 'dev8_keys_iod'

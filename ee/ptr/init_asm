@@ -3,13 +3,15 @@
 *	      1.05  modified for new modes (wl)
 * 2006-03-21  1.06  modified for background I/O support (MK)
 * 2006-05-15  1.07  disable new CTRL+C behaviour of common scheduler code (MK)
+* 2018-04-28  1.08  refer to pt_sched_qdos, not pt_sched (MK)
 *
+
 	section driver
 *
 	xdef	pt_init
 *
 	xref	pt_open
-	xref	pt_sched
+	xref	pt_sched_qdos
 	xref	pt_io
 	xref	pt_ioxf
 	xref	pt_close
@@ -180,7 +182,7 @@ openfunny
 *
 *	Now link in our scheduler routine
 *
-	lea	pt_sched(pc),a1 	set scheduler loop driver address
+	lea	pt_sched_qdos(pc),a1	 set scheduler loop driver address
 	move.l	a1,pt_aschd(a5)
 	lea	pt_lschd(a5),a0
 	moveq	#sms.lshd,d0

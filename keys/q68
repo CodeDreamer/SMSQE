@@ -143,7 +143,7 @@ q68.norn	equ	8*q68.cfgb	; offset to normalized names
 ;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
 q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
 q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
-debug		equ	0		; if 1 debug code is included
+debug		equ	1		; if 1 debug code is included
 
 
 ;qcf.mse	 equ	 $16

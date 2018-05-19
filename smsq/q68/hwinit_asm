@@ -111,7 +111,7 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 	
 	  mkcfitem 'O680',code,'I',qcf_card2,,,\
 	  {Initialise card 2 when booting}\
-	  0,N,{Never},2,A,{Always},1,O,{Only if a drive is located there}
+	  0,N,{Never},2,A,{Always},1,O,{Only if a WIN drive is located there}
 
 ;	   mkcfitem 'Q68Z',code,0,q68_mse,,,\
 ;	   {Use mouse from},2,P,{Poll},0,I,{Interrupt}
@@ -178,9 +178,6 @@ t1	move.b	d0,q68_dmode		; set initial screen mode
 	move.l	#q68_screen,a1
 	move.l	a1,a0
 	add.l	#q68.screen-4,a0
-;cls	 move.l  d0,(a1)+
-;	 cmp.l	 a1,a0
-;	 bne.s	 cls			 ; clear upper screen
 
 periok	move.l	#$32000,0
 	move.l	#$904,4
@@ -188,8 +185,7 @@ periok	move.l	#$32000,0
 	beq.s	hwi_mem 		; no->
 nol	rts
 	    
-hwi_mem
-	move.l	(sp)+,a0		; return address
+hwi_mem move.l	(sp)+,a0		; return address
 
 	clr.l	-(sp)			; facilities
 	clr.l	-(sp)			; language

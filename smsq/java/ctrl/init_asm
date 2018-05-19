@@ -15,7 +15,7 @@
 	section exten
 
 	xdef	ctrl_init
-
+	xdef	old_add
 	xref	gu_achpp
 	xref	ctrl_thing
 	xref	ctrl_tname
@@ -48,10 +48,58 @@ ctrl_init
 	jsr	gu_thjmp		; link in thing now
 	bne.s	ctrlout 		; oops
 
+  ;	 bsr.s	 is_extn
+
 	lea	proctab,a1
 	move.w	sb.inipr,a2
 	jmp	(a2)			; link in keywords
 
+is_extn
+; on entry:
+; A5 = job 0 tables
+; a6 = my job table
+	lea	name,a5
+	moveq	#3,d6		; length (adjusted for dbf) into d6
+	moveq	#2,d5
+	move.w	sr,d7		; keep status regs
+	trap	#0		; into supervisor mode!
+
+	moveq	#0,d1
+	move.l	d1,d2
+	moveq	#2,d0
+	trap	#1		; get info an job 0
+
+	movea.l $18(a0),a4	; bv_nbas of job 0
+loop1	cmpa.l	$1c(a0),a4	; did we overshoot top of table?
+	bge.s	s_done	     ; yes, so leave ->...
+	move.w	2(a0,a4.l),a2	; name pointer into name list
+	adda.l	$20(a0),a2	; point to name now
+	add.l	a0,a2
+	addq.l	#8,a4		; point to next entry
+	cmp.b	(a2)+,d6	; same length?
+	bne.s	loop1		; no, so do loop again ->...
+	move.w	d5,d1		; keep length
+	movea.l a5,a1		; point to string
+loop2	move.b	(a2)+,d2	; char into d2
+	bclr	#5,d2		; make into upper case
+	cmp.b	(a1)+,d2	; same as ours?
+	bne.s	loop1		; no, so do loop again ->...
+	dbf	d1,loop2	; do the compare loop
+
+; if we come here, the name was found
+; now test whether it is a machine code extension or not
+	clr.l	d0
+	subq.l	#8,a4		; point to it
+	move.w	(a0,a4.l),d4	; type word
+	sub.w	#$900,d4	; machine code function?
+	bne.s	s_done
+	move.l	4(a0,a4.l),d0
+	addq.l	#8,d0
+	move.l	d0,a0
+	move.w	#$ab11,(a0)
+s_done	move.w	d7,sr		; back into normal mode
+	lea	old_add,a0
+	move.l	d0,(a0)
 ctrlout rts
 
 ; the macros xdef the thing name and the jumps to using it
@@ -132,5 +180,12 @@ proctab
 	proc_ref EMU_NETADDR$ , jvaaddr
 	proc_ref JVA_SOUNDING , jvasndi
 	proc_end
+
+
+old_add dc.l	0
+name	dc.w	'DEG'
+	    
+
+
 
 	end

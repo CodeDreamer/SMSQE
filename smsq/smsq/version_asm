@@ -5,14 +5,29 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.32'
+smsq_vers equ	 '3.33'
 
 	end
 	    
-; #&# note all line starting with #&# are ignored by HTMLizer, so do not appear on website
-; #&# (note WL : for web site insertion: all lines must end with a full stop)
+; #&# note all lines starting with #&# are ignored by HTMLizer, so do not appear on website
+; #&# (note WL : for web site insertion: all lines must end with a full stop, if)
+; #&#  not, the next line is supposed to be a continuation).
 
-   
+; 3.33	Fixed Sbasic "end of program/command line" problems (MK).
+;	Fixed Sbasic "retry-in-floating point" mechanism on overflow (MK).
+;	QL network improvements (MK).
+;	Disable ABC keyboard by default (MK).
+;	Floppy sets step for 4 drives, not 5 (MK).
+;	Improved EE + WMAN for QDOS (MK).
+;	Smaller UC case conversion code (MK).
+;	Incorporate stand-alone TK II sources (MK).
+;	QL-SD Drivers for QLWA & QLW1 container files (MK + wl)
+;	Qx0 compressed ROM (wl).
+;	Qx0 better handling of FAT16 formatted CF cards in ISA adapter (wl).
+;	Q68 better reading of slower cards, reads writes some SD cards (wl).
+;	Q68 better ssss handling (wl).
+;	SMSQmulator new way to get SSSS sample size (wl).
+;
 ; 3.32	Fixed arithmetic stack overflow on long strings (MK).
 ;	All goldcard versions link in external roms (wl).
 ;	SQRT offset in QPC & SMSQmulator patchtables fixed (wl).

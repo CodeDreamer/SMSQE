@@ -215,4 +215,16 @@ fs_deupd equ    $34     update date
 fs_deend equ    $40     end of entry
 fs.desft equ    6
 *
+*
+* Network I/O vector table for split TK2 (ROM/RAM)
+*
+nio_ver   equ   $00
+nio.ver   equ   'NIO1'
+nio_send  equ   $04
+nio_send0 equ   $08
+nio_read  equ   $0c
+nio_read0 equ   $10
+nio_bcast equ   $14
+nio.len   equ   $18
+
         list

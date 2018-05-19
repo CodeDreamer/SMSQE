@@ -1,4 +1,6 @@
-; DV3 Standard Floppy Disk Control Procedures	V3.00	 1993	Tony Tebby
+; DV3 Standard Floppy Disk Control Procedures	V3.01	 1993	Tony Tebby
+;
+; 2018-03-09  3.01  Fixed overflow in fd_step, tried to set 5 drives (MK)
 
 	section exten
 
@@ -104,7 +106,7 @@ fds.reg reg	d1/a0
 	bra.s	fds_ok
 
 fds_all
-	moveq	#4,d0
+	moveq	#3,d0
 fds_loop
 	move.b	d1,(a0)+		 ; set step
 	dbra	d0,fds_loop

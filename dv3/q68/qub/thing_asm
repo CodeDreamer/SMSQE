@@ -1,5 +1,6 @@
 ; DV3 Standard Hard Disk Control Procedures   V1.03    1999   Tony Tebby
 ; adapted for Q68 qubdide driver	       1.03	2017   W. Lenerz
+; 1.01 removed reference to cv_locas (mk)
 
 	section exten
 
@@ -14,8 +15,6 @@
 	xref	thp_wd
 	xref	dv3_usep
 	xref	dv3_acdef
-
-	xref	cv_locas
 
 	include 'dev8_keys_thg'
 	include 'dev8_keys_err'

@@ -1,5 +1,6 @@
 ; DV3 IDE Format   V300    1998  Tony Tebby
 ; slightly modified for Q68
+; 3.01	2018-05-08   if check OK to format fails, release the controller (wl)
 
 	section dv3
 
@@ -7,20 +8,12 @@
 
 	xref	hd_fpart
 	xref	hd_fchk
-;	 xref	 id_ident
 	xref	dv3_slen
 	xref	hd_hold
 	xref	hd_release
 
-	xref	gu_achpp
-	xref	gu_rchp
-
 	include 'dev8_keys_err'
-	include 'dev8_keys_qlwa'
 	include 'dev8_dv3_keys'
-	include 'dev8_dv3_hd_keys'
-	include 'dev8_dv3_hd_ide_keys'
-	include 'dev8_mac_assert'
 
 ;+++
 ; This formats a qxlwin "disk"
@@ -42,7 +35,7 @@ hold	jsr	hd_hold 		; wait until interface is free
 	bne.s	hold
 
 	jsr	hd_fchk 		; check OK to format
-	bne.s	imf_exit
+	bne.s	imf_fnok
 
 	move.b	#ddf.dd,ddf_density(a4) ; set density
 	move.b	#2,ddf_slflag(a4)	; set sector length flag
@@ -91,7 +84,8 @@ imf_exit
 imf_ro
 	moveq	#err.rdo,d0
 	bra.s	imf_exit
-
+imf_fnok
+	jsr	hd_release
 imf_fmtf
 	moveq	#err.fmtf,d0
 	bra.s	imf_exit

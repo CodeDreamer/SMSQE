@@ -1,0 +1,101 @@
+; DV3 QLSD SDHC (WIN) Driver initialisation 1.00  2018 W. Lenerz + M. Kilgus
+;
+; based on
+;
+; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
+;
+; !!! non standard linkage block size
+
+	section dv3
+
+	xdef	win_init		; inits the driver
+	xdef	qsd_wn1
+
+	xref	dv3_link
+	xref	qlsd_1sec
+
+	xref	gu_fopen
+	xref	gu_fclos
+
+	include 'dev8_dv3_qlsd_keys'
+	include 'dev8_dv3_mac'
+	include 'dev8_mac_assert'
+	include 'dev8_mac_basic'
+	include 'dev8_mac_proc'
+	include 'dev8_keys_qlv'
+	include 'dev8_smsq_smsq_base_keys'
+
+;++++++++++++++++++++
+; DV3 QLSD SDHC (WIN) driver initialisation
+;
+;	a3  r	device driver linkage
+;--------------------
+win_init
+	lea	hd_table,a3
+	jsr	dv3_link		; link in driver
+	tst.l	d0
+	bne.s	out			; ooops!
+
+	jsr	qlsd_1sec		; calibrate timing
+	move.l	d0,hdl_1sec(a3) 	; and remember it
+
+; Copy the pre configured name to all drives
+	lea	qlsd_names(a3),a1
+	moveq	#7,d0			; 8 drives
+wi_loop
+	lea	qsd_wn1,a0
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+
+	clr.l	(a1)+			; pad to 16 bytes
+	dbf	d0,wi_loop
+	moveq	#0,d0			; done
+out	rts
+
+hd_table
+	link_table	WIN, '1', qlsd_end, ddf_dtop
+	buffered			; commenting out results in a not working drive
+	sectl		512
+	mtype		ddl.hd
+	msect		255		; this will still use slave blocks for simple reads
+	density 	ddf.dd
+
+	poll		hd_poll_check
+
+	check		qlsd_check
+	direct		hd_direct
+	rsect		hd_rdirect
+	wsect		hd_wdirect
+	slbfill 	hd_slbfill
+	slbupd		hd_slbupd
+	dflush		hd_dflush
+	fflush		hd_fflush
+;;;	fslave		hd_fslave
+	mformat 	hd_mformat
+	status		hd_fstatus
+	done		hd_done
+
+;;	  thing 	  hd_tname,hd_thing
+
+	preset_b	hdl_apnd-1, 0,hdl.apnd
+	preset_b	hdl_maxd, hdl.maxd, 0
+	preset_w	hdl_paus,30
+
+; each preset costs 12 bytes
+;	 preset_b	 hdl_remd,1,1,1,1,1,1,1,1
+	preset_b	hdl_unit,1,2,3,1,1,1,1,1
+;	 preset_b	 hdl_part,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
+
+	preset_v	hdl_rsint,hd_rsint
+	preset_v	hdl_wsint,hd_wsint
+	preset_v	hdl_ckrdy,hd_ckrdy
+	preset_v	hdl_ckwp,hd_ckwp
+	preset_v	hdl_lock,hd_lock
+	preset_v	hdl_unlock,hd_unlock
+	preset_v	hdl_ststp,hd_ststp
+
+	link_end	hdl_buff
+
+qsd_wn1 dc.w	'QXL     WIN'		; normalized name
+
+	end

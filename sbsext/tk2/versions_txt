@@ -1,0 +1,58 @@
+V2.01  First full version.
+
+V2.02  First release version.
+
+V2.03  Patched to prevent MG initialisation problems.
+
+V2.04  (Jeaggi only) network eof problems fixed.
+
+V2.05  Lost channel on OPEN_NEW (file already exists) fixed.
+       EX EW  changed so that owner is current job.
+
+V2.06  EX EW changed for compiled programs:
+       EX jobs owned by 0, EW jobs owned by current job and now wait!
+
+V2.07  (Sandy only) 'bad line' character wrap problem in ED fixed.
+
+V2.08  Empty line in ED problem (introduced in V2.07) fixed.
+       Unset string parameter collapse in PRINT_USING fixed.
+
+V2.09  PUTting randomly positioned bytes over the network should not
+	 now shuffle the contents of a file.
+
+V2.10  RENAME with only one name does not now leave file open.
+       The file system prompts are now sent to #0 rather than channel 0.
+
+V2.11  Initialisation error causing loss of replacement commands (e.g. OPEN)
+	 using JM/AH ROMs and CST QDisc V1.17 and V1.18 fixed.
+
+V2.12  Bad error message return from opening a file name that is too long
+	 changed to return "bad name".
+       "Bad parameter" from special job opening a file specified as a string
+	 in an EX command fixed.
+       "Not complete" from SPL fixed.
+       Last line recall changed to reduce problems due to asynchronous
+	 modification of keyboard queue.
+
+V2.13  Error status returned from SAVE and LIST if drive full or bad or
+	 changed medium during output.
+       Network fixed to prevent serial I/O buffer damage when interleaving
+	 serial I/O with window enquiries while reading from a file.
+
+V2.30  (Marcel Kilgus)
+       Created new TK2 release from latest SMSQ/E source code, which includes
+	 all improvements made for SMSQ/E, like automatically adding the default
+	 "_bas" extension when loadin SuperBasic programs plus all new commands:
+	 EXF, EX_M, FET, FEW, FEX, FEX_M, HGET, HPUT, JOBID, LGET, LPUT, UPUT,
+	 WGET and WPUT
+       Reverse-engineered missing parts like MDV driver extension
+       Removed network file server due to space constraints
+       Removed ALARM/CLOCK commands due to space constraints
+       Removed ALTKEY from ROM version, but kept ALT+ENTER for last line recall
+
+V2.31  (Marcel Kilgus)
+       Fixed CDEC$ that was broken in 2.30
+
+V2.32  (Marcel Kilgus)
+       Added network hardware access code to ROM so LRESPRed server can work
+       Also an alternative ROM full network stack and missing ED command

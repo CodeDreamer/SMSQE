@@ -124,7 +124,7 @@ hdt_ipar4
 	addq.l	#4,sp
 hdt_ipar
 	moveq	#err.ipar,d0
-	bra.s  wd$_exit
+	bra	wd$_exit
 
 
 ;+++
@@ -133,37 +133,56 @@ hdt_ipar
 win_drive$ thg_extn {DRV$},win_drv,hd_wdstr
 	movem.l hdt.reg,-(sp)
 	move.l	(a1)+,d3		; drve nbr
-	ble.s	wd$_ipar
+	ble	wd$_ipar
 	cmp.l	#8,d3
 	bhi.s	wd$_ipar
+	subq.b	#1,d3
 
 	lea	-ddl_thing(a2),a3	; master linkage
 
-	lea	hdl_unit-1(a3),a2	; pointer to logical to phys table
+	lea	hdl_unit(a3),a2 	; pointer to logical to phys table
 	clr.l	d1
 	move.b	(a2,d3.w),d1		; card this is on (-1, 0 or q68_coft)
-	lsl.w	#4,d3			; 16 bytes per entry in drv name tble
+
+	mulu	#16,d3			; 16 bytes per entry in drv name tble
 	move.l	hdl_targ(a3),a2
-	addq.l	#2,d3			; point to entry for this drive
 	add.l	d3,a2			; entry after max length word
 
 	move.w	2(a1),d0		; buffer size
 	move.l	4(a1),a1		; point to buffer
-	move.w	(a2)+,d3		; length of name
-	beq.s	wd$_empty		; no name, done
-	addq.w	#2,d3			; need comma and drv nbr
+	moveq	#14,d3			; max length of name + comma and drv nbr
 	cmp.w	d3,d0			; enough space in buffer?
 	blt.s	wd$_bffl		; no
-	move.w	d3,(a1)+		; name length
-	subq.w	#3,d3			; dbf & 2 more chars
-wd$lp1	move.b (a2)+,(a1)+
-	dbf	d3,wd$lp1
-wd$_cma move.b	#',',(a1)+
+	lea	2(a1),a3		; name
+	clr.w	d0			; name length
+	tst.b	(a2)			; any name there ?
+	beq.s	wd$_len 		; no
+	moveq	#7,d3			; name part is max of 8 chars
+wd$lp1	move.b (a2)+,d2 		; char
+	cmp.b	#' ',d2 		; do not copy spaces
+	beq.s	nmlp
+	move.b	d2,(a3)+
+	addq.b	#1,d0			; one more char in name
+nmlp	dbf	d3,wd$lp1
+	move.b	#'.',(a3)+		; point
+	addq.w	#1,d0
+; now copy extn
+	moveq	#2,d3
+extn	move.b (a2)+,d2
+	cmp.b	#' ',d2 		; do not copy spaces
+	beq.s	extlp
+	move.b	d2,(a3)+
+	addq.b	#1,d0			; one more char in name
+extlp	dbf	d3,extn
+wd$_cma move.b	#',',(a3)+
+	addq.b	#1,d0
 	tst.b	d1
 	blt.s	wd$_non
 	lsr.w	#q68_dshft,d1		; 0 or 1
 	add.w	#$31,d1 		; add 1 and convert to ascii
-wd$_drv move.b	d1,(a1)+
+wd$_drv move.b	d1,(a3)+
+	addq.b	#1,d0
+wd$_len move.w	d0,(a1)
 wd$_done
 	moveq	#0,d0
 wd$_exit
@@ -177,10 +196,8 @@ wd$_ipar
 wd$_bffl
 	moveq	#err.bffl,d0
 	bra.s	wd$_exit
-wd$_empty
-	clr.w	(a1)
-	bra.s	wd$_cma
+
 wd$_non moveq	#'N',d1
-	bra.s	wd$_drv
+	bra.s	wd$_len
 	   
 	end

@@ -9,7 +9,7 @@ dev8_sbsext_ut_impch_rel
 dev8_sbsext_ut_fopen_rel
 dev8_sbsext_ut_opdst_rel
 dev8_sbsext_ut_opex_rel
-dev8_sbsext_ut_opdefx_rel
+dev8_sbsext_utq_opdefx_rel
 dev8_sbsext_utq_fdef_rel
 dev8_sbsext_utq_chan_rel
 dev8_sbsext_utq_chanf_rel

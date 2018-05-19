@@ -1,8 +1,12 @@
-*
-; DV3 Q40 Find Partition (Atari root)	   V3.01    1999  Tony Tebby
-; 2003-01-17  V3.01 Fixed the ICD extension (8 additional partitions in table)	 (JG)
-; 2017 Nov 21 V3.02 LBA access to QXL.WIN files on FAT32 formatted media (wl)
-;
+
+; DV3 Q40 Find Partition (Atari root)	     1999  Tony Tebby
+
+; 2018-02-06  V3.03 fix for *d2d access to fat16 CF cards (wl)
+; 2017-11-21  V3.02 LBA access to QXL.WIN files on FAT32 formatted media (wl)
+; 2003-01-17  V3.01 Fixed the ICD extension (8 additional partitions in table)
+; Note : when using FAT32 formateted sdhc cards, this always sets ddf_psoff to 0
+; and stores the "real" partition offset at ddf_dtop-4(a4)1
+
 	section dv3
 
 	xdef	hd_fpart
@@ -47,19 +51,16 @@ hfp_rootloop
 	move.l	d3,d0			; physical root sector - MBR
 	moveq	#1,d2
 
-; here we use LBA adressing, fortunately, this will return sector 0
-; even on a CHS drive
-
 	jsr	id_diradd		; check
 	bne	hfp_mchk
 	jsr	hdl_rsint(a3)		; read sector
 	bne	hfp_npart		; no partition
-							
+
 	cmp.w	#dos.ftcs,dos_ftcs(a1)	; (unswapped) FAT32 marker present?
 	beq	chk_fat32_normal	; ... yes
 	cmp.w	#dos.ftsw,dos_ftcs(a1)	; (swapped) FAT32 marker present?
 	beq	chk_fat32_switched	; ... yes
-						  
+hfp_atri
 	cmp.w	#$0260,(a1)		; swapped atari type root sector marker ?
 	beq.s	hfp_lpart		; ... yes
 	cmp.w	#art.id,(a1)		; unswapped  atari type root sector ?
@@ -90,7 +91,6 @@ hfp_lpart2
 
 hfp_partloop
 	move.l	d1,d0
-
 	and.l	art_pflg(a1),d0 	 ; partition flag
 	cmp.l	d5,d0			 ; extended?
 	beq.s	hfp_xlink
@@ -156,18 +156,19 @@ chk_fat32_normal			; bytes not switched, swap bytes & words
 common
 	sf	ddf_lba(a4)		; use LBA & switch bytes
 	moveq	#1,d2			; read 1 sector
-	move.l	d0,d4			; keep for later, start of partition
+	move.l	d0,d5			; keep for later, start of partition
 	jsr	hdl_rsint(a3)		; read partition root sector into (a1)
-	bne.s	hfp_fnf 		; ooops
-; I should now have the partition root sector at (a1)
+	bne	nofat32 		; ooops
+; I  should now have the partition root sector at (a1)
 	cmp.l	#'FAT3',dos_f32s(a1)	; check for FAT32 signature
-	bne.s	hfp_fnf 		; ... nope
+	bne	nofat32 		; ... nope
 	cmp.b	#'2',dos_f32s+4(a1)	; continue check for FAT32 signature
-	bne.s	hfp_fnf
+	bne	nofat32
 	cmp.b	#2,dos_sctl+1(a1)	; sector size =512 bytes?
 	bne.s	hfp_fnf 		; I can't handle anything else
 	tst.b	dos_sctl(a1)		; still 512 bytes?
 	bne.s	hfp_fnf 		; ... no
+	move.l	d5,d4			; needs to be here
 
 ; Here I should have what I can consider a valid fat32 partition.
 ; Now find the root dir.
@@ -266,5 +267,15 @@ mul3ok	add.l	d6,d1			; d6 = start sector of my qxl.win file
 	move.l	d1,d0			; all ok
 	movem.l (sp)+,hfp.reg
 	rts
+
+; v. 3.03 fix
+nofat32 st	ddf_lba(a4)		; this is NOT an LBA drive, but CHS
+	move.l	d3,d0			; physical root sector - MBR
+	moveq	#1,d2
+	jsr	id_diradd		; check
+	bne	hfp_mchk
+	jsr	hdl_rsint(a3)		; read sector
+	beq	hfp_atri
+	bra	hfp_npart		; no partition
 
 	end

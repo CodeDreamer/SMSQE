@@ -43,6 +43,7 @@ hfp_sdhc
 ; chk_name: superficial name check of file on card this presumes that names have
 ; been normalized, which in turn means that illegal file names have been
 ; replaced by 0.
+
 	clr.l	d1
 	move.w	d7,d1			; drive nbr
 	subq.w	#1,d1

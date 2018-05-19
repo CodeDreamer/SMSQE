@@ -2,4 +2,4 @@ program dev8_sys_sdp_sdump
 input   dev8_sys_sdp_sdump_rel
 library dev8_sys_sdp_lib
 library dev8_sys_sdp_basic_rel
-library dev8_sbext_ut_lib
+library dev8_sbsext_ut_lib

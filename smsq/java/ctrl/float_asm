@@ -7,6 +7,7 @@
 	xdef	jt_qlfp
 	xdef	qpc_patchfpu
 
+	xref	old_add
 	xref	thp_ostr
 	xref	thp_nul
 	xref	jt_sget 		; next thing extension
@@ -15,19 +16,27 @@
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_java'
 	include 'dev8_mac_thg'
+	include 'dev8_dv3_keys'
 
 jt_qlfp thg_extn QLFP,jt_iefp,thp_nul
+	move.w	#$4eba,d4		 ; JSR
 	lea	qpc_patch2ql,a2 	; routine to jump to
 	bra.s	fp_comn
 
 jt_iefp thg_extn {IEFP},jt_sget,thp_nul
 	lea	qpc_patchfpu,a2
+	move.w	#ib+17,d4		; call java code
 fp_comn move.w	sr,d7
 	trap	#0			; go into supervisor mode
 	move.w	#$2700,sr		; no interrupts
 	jsr	(a2)			; patch vectors
 	move.w	d7,sr			; reset status as it was
-	moveq	#0,d0
+	lea	old_add,a2
+	move.l	(a2),d0 		; address of DEG/RAd routine
+	beq.s	exit			; none
+	move.l	d0,a2
+	move.w	d4,(a2) 		; set new/old instruction
+exit	moveq	#0,d0
 	rts
 
 ; this is a pure copy of the corresponding code in qpc
@@ -46,7 +55,6 @@ qpc_patchloop
 	bne.s	qpc_endpatch		 ; No, just quit patching
 	move.w	(a1)+,(a0,d0.w) 	 ; Patch new code
 	bra.s	qpc_patchloop
-
 qpc_endpatch
 	movem.l (a7)+,a0/a1
 	rts
@@ -73,7 +81,7 @@ qpc_patchtable
 	dc.w	$06bc,$48e7,ib+14	 ; SIN
 	dc.w	$0702,$4eba,ib+15	 ; COT
 	dc.w	$0714,$4eba,ib+16	 ; TAN
-	dc.w	0
+	dc.w	0			 ; 17 is for deg/rad
 
 ; patch old smsq/e routines back in
 
@@ -91,7 +99,6 @@ qpc_patchlp
 	bne.s	qpc_end 		; no, just quit patching
 	move.w	d1,(a0,d0.w)		; patch original code back in
 	bra.s	qpc_patchlp
-
 qpc_end
 	movem.l (a7)+,a0/a1
 	rts

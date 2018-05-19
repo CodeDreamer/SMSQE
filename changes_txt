@@ -1,13 +1,120 @@
   
-SMSQ/E	file(s) 			version
-Version   changed			of file   changes made
+SMSQ/E	 file(s)		       version
+Version  changed		       of file	changes made
+-----------------------------------------------------------------------------
+ 
+(intermediary version)
+
+    Q68 DRIVE BUGFIXES (wl)
+	dv3_q68_sdhc_wsect_asm		1.03	save d6!!!, use sysvars for card type
+	dv3_q68_win_mformat_asm 	3.01	if check OK to format fails, release the controller (wl)
+
+    Q68 BETTER HANDLING OF SD CARDS (wl)
+	keys_sys			.	new keys at sys_filw (Q68 specific)
+	dv3_q68_sdhc_inicrd_asm 	1.02	use sysvars for card type
+	dv3_q68_sdhc_rsect_asm		1.03	use sysvars for card type
+	smsq_q68_driver_dv3_asm 	1.01	preset card type in sysvars
+
+    MISC
+	sys_sdp_link			.	fix call to sbsext_ut_lib (pw+wl)
+	smsq_q68_hwinit_asm		.	(no version change) config text precision: auto init for card 2 only if WIN drive is referenced (wl)
+-----------------------------------------------------------------------------
+ 
+3.33
+
+    SBASIC BUGFIXES (MK)
+	smsq_sbas_retstk_asm		1.01	Fixed "end of program/command line" problem
+	smsq_sbas_iexpr_asm		1.03	Fixed "retry-in-floating point" mechanism on overdlow
+	smsq_sbas_link			.	amended to suit
+   
+    QL NETWORK (MK)
+	dd_qlnd_io_init_asm		0.10	network I/O function-vector initialisation
+	dd_qlnd_io_proxy_asm		0.10	network I/O function-vector proxy
+	dd_nd_keys			.	modified to suit
+	dd_qlnd_phys_asm		2.01	removed reference to nd_break, timings for QL only
+	dd_qlnd_bcast_asm		.	cosmetic changes
+	dd_qlnd_cctx			.	modified to suit
+	dd_qlnd_rept_asm		1.01	moved test for break nd_break to separate file
+	dd_qlnd_break_asm		1.00	new, split off from rept_asm
+
+    GOLD CARD (MK)
+	smsq_gold_hwinit_asm		2.01	disable ABC keyboard as it caused problems
+	smsq_gold_keys			.	renamed sgo_x068 to sgo_scr2
+	sys_gold_keys			.	renamed sgo_x068 to sgo_scr2
+	sys_gold_boot_asm		.	use the above  (no version nbr change)
+
+    MISC (MK)
+	dv3_fd_thing_asm		3.01	fixed overflow in fd_step, tried to set 5 drives
+	dv3_q68_fat_thing_asm		1.01	removed reference to cv_locas
+	dv3_q68_qub_thing_asm		1.01	removed reference to cv_locas
+	dv3_q68_win_windrv_asm		1.01	removed reference to keys_java and cv_upcas, list clearing optimisation (mk)
+	keys_sys			.	sys_netio ($0154) created
+	sbsext_utq_opdefx_asm		new	removed ".sav" extension for QDOS to save some bytes
+	sbsext_utq_cctx 		.	amended to suit
+	smsq_smsq_lang_msg8_asm 	.
+
+    EE + WMAN  BETTER HANDLING OF QDOS (MK)
+	ee_ptr_init_asm 		1.08	refer to pt_sched_qdos, not pt_sched (MK)
+	ee_ptr_sched_asm		1.11	added
+	ee_ptr_cct			.	modified to suit
+	ee_wman_procs_procs_asm 	1.04	mini-optimisations
+	ee_wman_procs_utils_asm 	new	Condensed version of the sbsext utilities to save space
+	ee_wman_procs_cct		new
+	ee_wman_config_asm		new
+	ee_wman_syspal_asm		1.02	Moved config to own file to reduce QDOS binary size
+	ee_wman_link			.	amended to suit
+	smsq_smsq_wman_link		.	amended to suit
+
+    TK2 (MK)
+       sbsext_tk2_xxx			new	files contain MK's TK2 modifications
+
+    QLSD NEW QLWA AND QLW1 DRIVERS (MK, wl)
+	dv3_qlsd_xxx			new	drivers for QL-SD interface
+  
+    Qx0 COMPRESSED ROM (wl)
+	smsq_q40_boot_			.	Dir created
+	smsq_q40_boot_rom_asm		1.00	ROM header for compressed ROM
+	smsq_q40_boot_ungzip_asm	1.00	Public domain software
+	smsq_q40_boot_incl_asm		1.00	End of rom header
+	smsq_q40_boot_gz_link		.	Link file for above
+	smsq_q40_make_bas		.	makes the roms
+	sys_boot_Q40_rom_asm		1.01	New ROM header for normal & compressed ROMs
+	smsq_smsq_base_q40_asm		2.04	Removed junk, don't zero all mem
+	smsq_smsq_q40_link		.	link for above
+
+    Qx0 (wl)
+	dv3_q40_hd_fpart_asm		3.03	fix for *d2d access to fat16 CF cards
+	smsq_q40_hwinit_asm		2.03	new config item, no trap#0 at label 2.02
+
+    Q68 IMPROVED CARD HANDLING	(wl)
+	dv3_q68_sdhc_rsect_asm		1.02	rewritten, multiblock read, leave more time for slower cards, SD card handling
+	dv3_q68_sdhc_sndcmd_asm 	1.01	parameters are handled differently  (inspired by mk's code)
+	dv3_q68_sdhc_wsect_asm		1.02	removed multiblock write - SMSQE doesn't use it, SD card handling
+	dv3_q68_sdhc_inicrd_asm 	1.01	try to detect SD cards as well as SDHC cards
+	dv3_q68_sdhc_normalise_aam	1.01	removed reference to keys_q68
+
+    Q68 IMPROVED SSSS handling
+	smsq_q68_driver_snd_ssss_asm	1.02	better queue & killsound handling  (wl)
+
+    SMSQMULATOR INTERNAL CHANGES
+	smsq_java_driver_snd_ssss_asm	2.04	better way to get the size of sample in the queue (wl).
+    
+    MISC (MK)
+	util_cv_upcas_min_asm		2.00	reduced code size upper case character table/conversion
+	util_gut_pause_asm		.	corrected comment (no version change)
+
+    COSMETIC CHANGES (MK)
+	dd_dev_link
+	dd_rd_link			.	(new)
+	ee_hk_data
+	dv3_q68_sdhc_hd_hold_asm	.	comment
 -----------------------------------------------------------------------------
 
 3.32
 
     BUGFIXES
 	smsq_sbas_getp_asm		1.01	Fixed arithmetic stack overflow on long strings (MK)
-	sbsext_ext_wclook_asm		1.03	correct handling of n8_ in wc_cntsc (wl)
+	sbsext_ext_wclook_asm		1.03	Correct handling of n8_ in wc_cntsc (wl)
 	smsq_qpc_nasty_e2_asm		1.03	Fixed SQRT offset (wl)
 	dv3_dv3_open_asm		3.02	Try to release removable drive after DELETE operation (MK)
 	dv3_qpc_hd_lock_asm		3.01	Allow driver number to only be a byte, not word (MK)
@@ -201,8 +308,6 @@ Version   changed			of file   changes made
 
     Q40 "DISP_MODE" COMMAND
 	iod_con2_q40_procv_asm	       1.01	Added DISP_MODE (wl)
-
-
 -----------------------------------------------------------------------------
 
 3.31
@@ -510,8 +615,8 @@ Version   changed			of file   changes made
 
     WINDOW MOVE WITH TRANSPARENCY
 	iod_con2_ptr_vec_asm		1.04	added pt_cmmblk (wl)
-	keys_con				amended to suit (wl)
-	keys_wman_data				amended to suit (wl)
+	keys_con			.	amended to suit (wl)
+	keys_wman_data			.	amended to suit (wl)
 	iod_con2_qxl16_cmbblk_asm	1.01	implement combine block vector (wl)
 	iod_con2_q4016_cmbblk_asm	1.01	implement combine block vector (wl)
 	iod_con2_aur8_cmbblk_asm	1.01	implement combine block vector (wl)
@@ -573,7 +678,6 @@ Version   changed			of file   changes made
 	ee_wman_move_asm		1.18	check for smsqmulator when ptr move check (wl)
 	keys_sys				added java "machine" for sys.mtyp (wl)
 	keys_java				added file contains keys for SMSQmulator (wl)
-
 	smsq_java				added this subdir contains all the SMSQ/E files specific to SMSQmulator (wl)
 -----------------------------------------------------------------------------
 
@@ -1091,10 +1195,10 @@ Version   changed			of file   changes made
 	iod_con2_ql_sprite_0_asm	updated as well for this
 	iod_con2_ptr_zero_asm		1.00	added
 	iod_con2_16_sprite_move_asm	1.01	requirements change
-	iod_con2_qpc16_cct		modified to suit
-	iod_con2_qxl16_cct
-	iod_con2_q4016_cct
-	iod_con2_goldql_cct		added
+	iod_con2_qpc16_cct		.	modified to suit
+	iod_con2_qxl16_cct		.	modified to suit
+	iod_con2_q4016_cct		.	modified to suit
+	iod_con2_goldql_cct		.	added
 
 	deleted:
 	iod_con2_pc16_sprite_0_asm
@@ -1106,7 +1210,7 @@ Version   changed			of file   changes made
 	ee_hot_init_asm 		2.04	added FEP fn definition
 	ee_hot_exep_asm 		2.01	added FEP function
 	ee_hot_xthid_asm		1.00	support routine
-	ee_hot_cct				changed to suit
+	ee_hot_cct			.	changed to suit
 	sbas_procs_tk2procs_asm 	2.04	added function definitions FET,FEX,FEW,EXF
 	sbsext_ext_exsbas_asm		2.01	added functions FET,FEX,FEW (+wl:EXF)
 
@@ -1132,7 +1236,7 @@ Version   changed			of file   changes made
 	iod_con2_ptr_wspbl_asm		2.01	preserve regs as per documentation (wl)
 
     CHANGES FOR SYSTEM SPRITES (MK)
-	keys_sysspr				new
+	keys_sysspr			.	 new
 	iod_con2_ptr_chkbp_asm		2.02	Added check to handle system sprites
 	iod_con2_ptr_fsprd_asm		1.01	(new) high colour version find sprite defn
 	iod_con2_ptr_fwind_asm		1.07	Adapted for new system sprite routines (MK)
@@ -1142,10 +1246,10 @@ Version   changed			of file   changes made
 	iod_con2_ptr_init_asm		2.01	added call to syssprite initialization
 	iod_con2_ptr_rle_asm		1.00	added
 	iod_con2_ptr_sadd_asm		2.01	return changed
-	iod_con2_sprite_xxx_asm 		all added
+	iod_con2_sprite_xxx_asm 	.	 all added
 	all system sprites put into a separate module (mk + wl)
 	smsq_smsq_sysspr_asm		1.00	module header
-	smsq_q40_sysspr_link			new link file for this
+	smsq_q40_sysspr_link		.	 new link file for this
 	the make & flp progs are amended correspondingly
 
     ADDITIONS FOR CON/PTR VECTORS (MK)
@@ -1156,11 +1260,11 @@ Version   changed			of file   changes made
 	changes in these files are too numerous to list, some examples below
 	keys_colour
 	keys_qdos_io
-	keys_qdos_pt
-	keys_con				added pt_wmpal, pv vectors
-	keys_wstatus				added ws_scach
-	keys_wman				added wm.setsp, wm.getsp, wm.trap3 and wmc.xxx
-	keys_sysspr				new
+	keys_qdos_pt			.
+	keys_con			.	added pt_wmpal, pv vectors
+	keys_wstatus			.	added ws_scach
+	keys_wman			.	added wm.setsp, wm.getsp, wm.trap3 and wmc.xxx
+	keys_sysspr			.	new
 
     MISCELANEOUS CHANGES
 	Created the "New" subdirectory

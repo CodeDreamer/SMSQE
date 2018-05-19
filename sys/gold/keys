@@ -24,7 +24,7 @@ glk.rtca equ   4        rtc address spacing
 glo_rena equ $60        RAM enable
 glo_rdis equ $64        RAM disable
 
-sgo_x068 equ $68        SGC (ref at c03c in ROM)
+sgo_scr2 equ $68        SGC screen 2 disable (write) or enable (read)
 
 glo_poll equ $e0        Frame interrupt bit (bit 7)
 

@@ -1,9 +1,10 @@
-; WMAN colours basic procedures  V1.03		       2002  Marcel Kilgus
+; WMAN colours basic procedures  V1.04		       2002  Marcel Kilgus
 ;
 ; 2003-05-27  1.01  Changed routines to always use sys_clnk to get WMAN vec (MK)
 ;		    Added WM_MOVEMODE (WL/MK)
 ; 2003-09-05  1.02  Fixed WM_BLOCK (GG/MK)
 ; 2013-04-28  1.03  Added WM_MOVEALPHA (wl)
+; 2018-04-08  1.04  Mini-optimisations (mk)
 
 	section wm_ext
 
@@ -108,8 +109,7 @@ wm_block
 	move.l	(a6,a1.l),d1
 	moveq	#-1,d3
 	lea	4(a6,a1.l),a1
-	jsr	wm.trap3(a2)
-	rts
+	jmp	wm.trap3(a2)
 
 ;+++
 ; WM_BORDER (#ch,) width, colour
@@ -125,8 +125,7 @@ wm_border
 	move.l	4(a6,a1.l),d1
 	move.l	(a6,a1.l),d2
 	moveq	#-1,d3
-	jsr	wm.trap3(a2)
-	rts
+	jmp	wm.trap3(a2)
 
 ;+++
 ; WM_MOVEMODE move_type% (0..3)
@@ -173,12 +172,11 @@ spr_nonum
 	moveq	#-1,d2
 	suba.l	a1,a1
 	jsr	wm.getsp(a2)
-	jsr	wm.setsp(a2)
-sp_rts
-	rts
+	jmp	wm.setsp(a2)
 
 wm_ipar
 	moveq	#err.ipar,d0
+sp_rts
 	rts
 
 ;+++
@@ -212,8 +210,7 @@ spg_nonum
 	move.l	4(a6,a1.l),d1
 	move.l	8(a6,a1.l),d2
 	move.l	(a6,a1.l),a1
-	jsr	wm.getsp(a2)
-	rts
+	jmp	wm.getsp(a2)
 
 ;+++
 ; SP_SET (no,) adr, first, count
@@ -233,8 +230,7 @@ sps_nonum
 	move.l	4(a6,a1.l),d1
 	move.l	8(a6,a1.l),d2
 	move.l	(a6,a1.l),a1
-	jsr	wm.setsp(a2)
-	rts
+	jmp	wm.setsp(a2)
 
 ;+++
 ; SP_JOBPAL job id / job name, no
@@ -242,12 +238,11 @@ sps_nonum
 sp_jobpal
 	bsr.s	wm_getwman
 	bsr.s	job_proc
-	bne	sp_rts
+	bne.s	wm_rts2
 
 	move.l	d2,d3
 	suba.l	a1,a1
-	jsr	wm.jbpal(a2)
-	rts
+	jmp	wm.jbpal(a2)
 
 ;+++
 ; SP_JOBOWNPAL job id / job name, ptr to palette
@@ -255,12 +250,11 @@ sp_jobpal
 sp_jobownpal
 	bsr.s	wm_getwman
 	bsr.s	job_proc
-	bne	sp_rts
+	bne.s	wm_rts2
 
 	move.l	d2,a1
 	moveq	#-1,d3
-	jsr	wm.jbpal(a2)
-	rts
+	jmp	wm.jbpal(a2)
 
 ;+++
 ; Get WMAN vector in a2
@@ -272,6 +266,7 @@ wm_getwman
 	move.l	sys_clnk(a0),a2
 	move.l	pt_wman(a2),a2
 	movem.l (sp)+,d1-d3/a0
+wm_rts2
 	rts
 
 ;+++

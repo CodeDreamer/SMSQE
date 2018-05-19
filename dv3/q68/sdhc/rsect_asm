@@ -1,4 +1,8 @@
-; DV3 Q68 SDHC Card Read Sector  1.00	 2016-2017 W. Lenerz
+; DV3 Q68 SDHC Card Read Sector  1.02	 2016-2017 W. Lenerz
+; 1.03	2018-05-09 use sysvars for card type
+; 1.02	try longer at readloop and multiblock read (50 times, for slower cards)
+; 1.01	multiblock read introduced (wl)
+
 
 	section dv3
 
@@ -6,24 +10,23 @@
 	xdef	hd_rsint		; internal read sector
 	xdef	q68_dvstrt		; for copy2mem
 
-
 	xref	hd_hold 		; reserve the interface
 	xref	hd_release		; release the interface
 	xref	snd_cmd 		; send a command to sdhc
-	xref	q68_dvend
+	xref	q68_dvend		; for copy2mem
 
 	include 'dev8_keys_java'
 	include 'DEV8_dv3_keys'
 	include 'DEV8_keys_err'
+	include 'DEV8_keys_sys'
 	include 'DEV8_dv3_hd_keys'
 	include 'dev8_keys_q68'
-
-readreg reg	d1/d2/d3/d7/a1/a2/a3
-
 
 q68_dvstrt				; needed for copy2mem
 	dc.w	hd_rdirect-*
 	dc.w	q68_dvend-*+2
+
+readreg reg	d1-d7/a1-a3
 
 ;+++
 ; This routine reads a sector from an sdhc card, normally for direct sector I/O.
@@ -37,7 +40,7 @@ hd_rdirect
 ; This routine reads a sector from an sdhc card.  The sector number is that of
 ; the absolute sector on the SDHC card.
 ; All normal read accesses to the card go through here.
-; Read is done via background transfer.
+; Read is done via "background transfer".
 ;
 ;	d0 cr	absolute sector (=block) number  / error code
 ;	d1    p
@@ -47,9 +50,10 @@ hd_rdirect
 ;	a3 c  p linkage block
 ;	a4 c  p drive definition
 ;
+;	all other regs preserved
 ;
 ;	status return 0 or ERR.MCHK
-;	The sector number is for sectors 512 bytes long. The QLSD interface needs
+;	The sector number is for sectors 512 bytes long. The interface needs
 ;	a sector (block) position starting from the very first sector.
 ;---
 hdr_inus
@@ -59,63 +63,80 @@ hd_rsint
 	bne.s	hdr_inus		; can't
 	movem.l readreg,-(a7)
 	lea	hdl_unit-1(a3),a2	; point to "unit" = card for this drive
+	clr.l	d4
 	clr.l	d1
 	move.b	(a2,d7.w),d1
 	move.l	#mmc1_cs,a2		; point to card physical addresses
 	add.w	d1,a2			; a2 points to the correct addresses for this drive
-	st	drv_cs(a2)		; enable the card
+
+	divu	#q68.coff,d1
+	add.w	#sys_q8ct,d1
+	move.b	(a6,d1.w),d4		; get card type (and shift amount)
+	blt	hdr_err 		; card isn't initialized
+
+no_l	st	drv_cs(a2)		; enable the card
 		  
-;;;;;  debug code ;;;;;
+;;;;;  debug code ;;;;; -------------------------------
 	genif debug = 1
 	cmp.l	#'gold',q68_jflg	; SMSQ68mulator?
 	bne.s	nojava			; no...->
+	move.l	d4,d1
+	move.l	ddf_psoff(a4),d4
 	move.l	d0,-(a7)		; will be popped up in java
 	tst.w	d7
 	bne.s	ok
 	moveq	#1,d7
 ok	moveq	#jd3.rsec,d0
-	dc.w	jva.trpa		; call SMSQmulator
-	bra   hdr_rts		      ; and continue ok
+	dc.w	jva.trpa		; call SMSQ68mulator
+	bra   hdr_rts			; and continue ok
 nojava
 	endgen
-;;;;; end debug code ;;;;;;
-		 
-	move.l	d0,d7			; sector to get
-	subq.l	#1,d2			; go around d2 times
-; first send command16 ($51) to the card, to determine block to be read
-; ($51, 4 bytes with the address to read from, $ff)
-readloop
-	move.l	d7,d0			; sector nbr to read (0a0b0c0d)
-	moveq	#-1,d1			; ffffffff
-	move.b	d0,d1			; ffffff0d
-	rol.l	#8,d1			; ffff0dff : d1.w = last byte of address , $ff
-	move.b	#$51,d0 		; 0a0b0c51
-	ror.l	#8,d0			; 510a0b0c : $51 and first 3 bytes of address
-	bsr	snd_cmd 		; send command to card
-	bne.s	hdr_rts 		; ooops
-	tst.b	d1			; return must be 0
-	bne	hdr_err 		; ooops again
+;;;;; end debug code ;;;;;; ------------------------------
 
-; wait for reply from card
+	move.l	d0,d7			; sector to get
+	moveq	#17,d6			; single sector read
+	subq.l	#1,d2			; go around d2 times
+	beq.s	send_cmd
+	moveq	#18,d6			: multiple sector read
+
+; first send command17 ($51) or 18($52) to the card, to determine block to be read
+; ($51, 4 bytes with the address to read from, $ff)
+
+send_cmd
+	moveq	#50,d5			; try this 51 times, for slower cards
+rlp1	move.l	d7,d1			; sector nbr to read (0a0b0c0d)
+	tst.w	d4			; is it sd card (need to shift)?
+	beq.s	blk_add 		; ... no
+	lsl.l	d4,d1			; ... yes, block * 512 =address
+blk_add move.l	d6,d0			; command
+	bsr	snd_cmd 		; send command to card
+	bne	hdr_rts 		; ooops
+	tst.b	d1			; return must be 0
+	beq.s	readloop		; ... it is
+	dbf	d5,rlp1 		; ... it is not, try again
+	bne	hdr_err 		; finally give up
+
+; wait for reply from card, should be datablock start token ($fe)
+readloop
+	moveq	#-2,d0			; datablock start token ($fe)
 	moveq	#100,d3 		; outer loop counter
 delay	move.w	#$fff8,d1		; inner loop counter
-waitlp1
-	st	drv_xfer(a2)
-	move.b	drv_read(a2),d0 	; get byte from card
-	cmp.b	#$fe,d0 		; was it $fe (would addq #2,d0 be faster?
-	dbeq	d1,waitlp1		; no, go round again
-	beq.s	go_on			; yes, got correct reply->
+waitlp1 st	drv_xfer(a2)
+	cmp.b	drv_read(a2),d0 	; get byte ; was it $fe ?
+	dbeq	d1,waitlp1		; ... no, go round again
+	beq.s	go_on			; ... yes, got correct reply->
 	dbf	d3,delay		; no correct reply after inner loop done
 	bra.s	hdr_err 		; if we get here, no correct reply, give up
-
-; got a correct answer back from card, it's ready for transfer
-; now read 512 times one byte
-
-go_on
-
-newv	equ	1			; set NEW way of reading
-
-
+				
+;-----------------------------------
+; got a correct token back from then card, it's ready for transfer
+; now read (copy) 512 times one byte
+; the old way of copying this was : read / write in one instruction
+; e.g.
+;
+;	 st	 (a3)			 ; send byte please
+;	 move.b  (a2),(a1)+		 ; got it
+; but curiously, this is slower than this:
 ; The new way of copying this : attempt to interleave read byte from card
 ; with write byte to mem: After signaling to the card that a new byte should be
 ; read ( => st (a3) ), it will take some time to actually get the byte from the
@@ -125,14 +146,13 @@ newv	equ	1			; set NEW way of reading
 ; the idea is to interleave both operations.
 ; So the scheme is :
 ;  signal read readiness		: st (a3)
-;  put previous byte got into memory	: move.b a0,(a1)+
+;  put previous byte got into memory	: move.b d0,(a1)+
 ;  get next byte from card		: move.b (a2),d0
 ;
-; this has not met with the expected success
+;-----------------------------------
 
-    genif   newv = 1
 
-	lea	drv_xfer(a2),a3 	; address to signal readiness to
+go_on	lea	drv_xfer(a2),a3 	; address to signal readiness to
 	st	(a3)			; send byte please
 	add.w	#drv_read,a2		; where to read byte from
 	move.w	#63,d3			; read loop is unrolled 8 times
@@ -174,61 +194,198 @@ getlp					; attempt to interleave read & writes
 	move.b	(a2),d0
 	st	(a3)
 	move.b	(a2),d0 		; forget the 2 CRC bytes
+
 	sub.w	#drv_read,a2
 
-	addq.l	#1,d7			; get possible next block
-rd_dbf	dbf	d2,readloop
+;	 st	 drv_writ(a2)		 ; send -1 (8 clock pulses)
+;	 st	 (a3)			 ; now
+;	 st	 drv_writ(a2)		 ; send -1 (8 clock pulses)
+;	 st	 (a3)			 ; now
 
-    endgen
+rd_dbf	dbf	d2,readloop		; (still used if SD card not sdhc)
 
+	cmp.b	#18,d6			; was it multi-block?
+	bne.s	hdr_ok			; ... no
 
-
-; the old way of copying this : read / write in one instruction
-
-    genif   newv = 0
-    
-	move.w	#63,d3			; read loop is unrolled 8 times
-	lea	drv_xfer(a2),a3 	; address to signal readiness to
-	add.w	#drv_read,a2		; where to read byte from
-getlp
-	st	(a3)			; send byte please
-	move.b	(a2),(a1)+		; got it
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-	st	(a3)
-	move.b	(a2),(a1)+
-
-	dbf	d3,getlp
-			
-	st	(a3)
-	move.b	(a2),d0
-	st	(a3)
-	move.b	(a2),d0 		; forget the 2 CRC bytes
-	sub.w	#drv_read,a2
-
-	addq.l	#1,d7			; get possible next block
-rd_dbf	dbf	d2,readloop
-
-    endgen
+	moveq	#12,d0			; ... yes, send cmd12 = stop reading
+	moveq	#0,d1			; no parameter
+	bsr	snd_cmd 		; send command to card
 
 hdr_ok	moveq	#0,d0
 hdr_rts clr.b	drv_cs(a2)
 	tst.l	d0
 	movem.l (a7)+,readreg
-	jmp	hd_release
-	rts				; will jump to hd_release & test d0
+	jmp	hd_release		; will jump to hd_release & test d0
 hdr_err
 	moveq	#err.mchk,d0		; signal drive wasn't found
 	bra.s	hdr_rts
 
 	end
+
+;----------------------------------------------
+;		 **** multiblock read ****
+;----------------------------------------------
+several tst.w	d4
+	bne	readloop		; don't use multiple with old cards
+;	addq.w	#1,d2			; add what was deducted before
+
+; first send command18 ($52) to the card, to determine block to be read
+; ($52, 4 bytes with the address to read from, $ff)
+	moveq	#50,d3
+det_blk move.l	d7,d0			; sector nbr to read (0a0b0c0d)
+	moveq	#-1,d1			; ffffffff
+	move.b	d0,d1			; ffffff0d
+	rol.l	#8,d1			; ffff0dff : d1.w = last byte of address , $ff
+	move.b	#$52,d0 		; 0a0b0c51
+	ror.l	#8,d0			; 510a0b0c : $51 and first 3 bytes of address
+	bsr	snd_cmd 		; send command to card
+	bne.s	hdr_rts 		; ooops
+	tst.b	d1			; return must be 0
+	beq.s	bglp			; it is, continue
+	dbf	d3,det_blk		; card busy, try again
+	bra	hdr_err 		; busy too long, give up
+
+; wait for reply from card
+bglp	moveq	#100,d3 		; outer loop counter
+delay2	move.w	#$fff8,d1		; inner loop counter
+waitlp2
+	st	drv_xfer(a2)
+	move.b	drv_read(a2),d0 	; get byte from card
+	cmp.b	#$fe,d0 		; was it $fe (would addq #2,d0 be faster?
+	dbeq	d1,waitlp2		; no, go round again
+	beq.s	go_on2			; yes, got correct reply->
+	dbf	d3,delay2		; no correct reply after inner loop done
+	bra	hdr_err 		; if we get here, no correct reply, give up
+
+; got a correct answer back from card, it's ready for transfer
+; now read 512 times one byte
+
+go_on2
+	lea	drv_xfer(a2),a3 	; address to signal readiness to
+	st	(a3)			; send byte please
+	add.w	#drv_read,a2		; where to read byte from
+	move.w	#63,d3			; read loop is unrolled 8 times
+
+getlp2					; attempt to interleave read & writes
+	move.b	(a2),d0 		; get byte
+	st	(a3)			; prepare for next read already
+	move.b	d0,(a1)+		; write byte I just got
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+
+	move.b	(a2),d0
+	st	(a3)
+	move.b	d0,(a1)+
+	
+	dbf	d3,getlp2		; get 64 * 8 bytes
+
+endsec					; read one sector
+	move.b	(a2),d0
+	st	(a3)
+	move.b	(a2),d0 		; forget the 2 CRC bytes
+
+	sub.w	#drv_read,a2
+
+	dbf	d2,bglp 		; wait for $fe again, etc
+
+; send CMD12: stop reading
+	move.l	#$4c000000,d0		; 0a0b0c
+	move.l	#$ff,d1 		; clear bit 31!
+	bsr	snd_cmd 		; send command to card ** special **
+
+	bra	hdr_rts 		; done
+
+	end
+
+; unused code
+	       
+; this is a modified snd_cmd subroutine - get one spurious byte from card
+; before checking correct answer
+snd_cmd3
+	lea	drv_xfer(a2),a3
+	add.w	#drv_writ,a2
+	st	(a2)		; send -1 (8 clock pulses)
+	st	(a3)		; now
+	rol.l	#8,d0
+	move.b	d0,(a2) 	; send first byte
+	st	(a3)
+	rol.l	#8,d0
+	move.b	d0,(a2) 	; send 2nd byte
+	st	(a3)
+	rol.l	#8,d0
+	move.b	d0,(a2) 	; send 3rd byte
+	st	(a3)
+	rol.l	#8,d0
+	move.b	d0,(a2) 	; send 4th byte
+	st	(a3)
+
+	ror.w	#8,d1
+	move.b	d1,(a2) 	; send fifth byte
+	st	(a3)
+	rol.w	#8,d1
+	move.b	d1,(a2) 	; send 6th & last byte
+	st	(a3)
+			 
+	sub.w	#drv_writ,a2
+	st	(a3)		; prepare to read dummy byte
+	move.w	#250,d3 	;
+	move.b	drv_read(a2),d1 ; read dummy byte now
+sdcmdlp st	(a3)
+	move.b	drv_read(a2),d1 ; get reply, which must be <> -1 to be valid
+	cmp.b	#-1,d1		; is it valid?
+	bne.s	got_rply	; ...yes, done
+	dbf	d3,sdcmdlp	; ...no, try again
+	moveq	#err.mchk,d0	; card didn't reply in time
+	rts
+got_rply
+	moveq	#0,d0
+	rts
+
+	end
+	
+; this is too slow
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)
+
+	move.b	(a2),(a1)+
+	st	 (a3)

@@ -1,0 +1,45 @@
+program dev8_dv3_qlsd_driver_bin
+
+section header
+section banner
+section init
+
+section driver
+
+section dv3       ; DV3 drivers
+
+section procs     ; SuperBASIC procedure table
+section cv
+section gen_util
+section config
+
+input dev8_dv3_qlsd_respr_rel
+input dev8_dv3_qlsd_banner_rel
+input dev8_dv3_qlsd_init_rel
+input dev8_dv3_qlsd_addfd_rel
+input dev8_dv3_qlsd_basic_rel
+input dev8_dv3_qlsd_getstr_rel
+input dev8_dv3_qlsd_link_rel
+input dev8_dv3_qlsd_version_rel
+input dev8_dv3_qlsd_open_rel
+input dev8_dv3_qlsd_close_rel
+input dev8_dv3_qlsd_qlf_table_rel
+input dev8_dv3_qlsd_setfd_rel
+input dev8_dv3_qlsd_redef_rel
+input dev8_dv3_qlsd_rename_rel
+input dev8_dv3_qlsd_inicrd_rel
+input dev8_dv3_qlsd_cinvi_rel
+input dev8_dv3_qlsd_cfg_rel
+
+input dev8_util_cv_upcas_min_rel
+input dev8_dv3_qlsd_qlf_drname_rel
+input dev8_dv3_qlsd_qlf_drmake_rel
+input dev8_dv3_qlsd_qlf_umap_rel
+
+library dev8_dv3_qlsd_drv_lib
+library dev8_dv3_qlf_lib
+library dev8_dv3_dv3_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_end_rel

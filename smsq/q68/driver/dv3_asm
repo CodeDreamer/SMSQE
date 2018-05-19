@@ -1,4 +1,6 @@
-; SMSQ Q68 DV3 Main Routine
+;SMSQ Q68 DV3 Main Routine W. Lenerz 2017-2018
+
+; 2018-05-08  1.01 preset card type in sysvars
 
 	section header
 
@@ -24,6 +26,8 @@ nm_end
 
 	section base
 
+	include dev8_keys_sys
+
 	xref	dv3_init
 	xref	win_init
 	xref	dv3_addfd
@@ -35,12 +39,21 @@ dv3_base
 	bra.l	init
 
 	section init
-init
+
+init	moveq	#0,d0
+	trap	#1			; get sysvars into a0
+	move.w	#$80,sys_q8ct(a0)	; preset card 2 to undetermined
+					; I'm presuming here that card 1 will
+					; always be an SDHC card. This is
+					; certainly true on a cold reset; but
+					; not necessarily on a warm reset.
 	jsr	dv3_init		; initialise
 	lea	qw1_table,a1
 	jsr	dv3_addfd
 	jsr	win_init
 	jsr	fat_init
 	jsr	qub_init
+
 	rts
+
 	end

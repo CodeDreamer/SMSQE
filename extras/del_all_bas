@@ -55,215 +55,226 @@
 640   ptrgen
 650   qpc
 660   q68
-670 END DEFine delete_all_targets
-680 :
-690 DEFine PROCedure generic
-700   read_datas CURRENT_LINE
-710   delete_files
-720   DATA "dd_qlnd_new" ,"dd_nd_new","dv3_test",'smsq_sbas_lang','smsq_sbas_control'
-730   DATA "smsq_sbas_procs_x","smsq_smsq_cache","smsq_smsq_cache40c","smsq_smsq_fh_os"
-740   DATA "smsq_smsq_hotkey","smsq_smsq_lang","smsq_smsq_loader","smsq_sbas_lang"
-750   DATA "smsq_smsq_os","smsq_smsq_1mb_os","smsq_smsq_vers","smsq_smsq_wman"
-760   DATA "util_thg_thing",'smsq_home_home','smsq_recent_recent',"smsq_sbas_lang"
-770   DATA "",""
-780 END DEFine generic
-790 :
-800 DEFine PROCedure atari
-810   read_datas CURRENT_LINE
-820   delete_files
-830   DATA "smsq_atari_driver_dv3","smsq_atari_driver_ser","smsq_atari_driver_ql"
-840   DATA "smsq_atari_driver_mono","smsq_atari_hwinit","smsq_atari_nasty"
-850   DATA "smsq_atari_kbd_lang"
-860   DATA "sys_boot_st_host","smsq_atari_sysspr"
-870   DATA "","smsq_atari_SMSQ.PRG",""
-880 END DEFine atari_targets
-890 :
-900 DEFine PROCedure gold
-910   read_datas CURRENT_LINE
-920   delete_files
-930   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd","smsq_gold_driver_8"
-940   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
-950   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
-960   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
-970   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot"
-980   DATA "smsq_gold_sysspr"
-990   data  ""
-1000   data  "smsq_gold_gold8","smsq_gold_gold"
-1010   data  ""
-1020 END DEFine gold
-1030 :
-1040 DEFine PROCedure java
-1050   read_datas CURRENT_LINE
-1060   delete_files
-1070   DATA "smsq_java_driver_most","smsq_java_driver_ql","smsq_java_host","smsq_java_smsq_os"
-1080   DATA "smsq_java_driver_16"
-1090   DATA "smsq_java_driver_8","smsq_java_smsq_1mb_os"
-1100   DATA "smsq_java_driver_nfa_nfa","smsq_java_smsq_os"
-1110   DATA "smsq_java_hwinit","smsq_java_host","smsq_java_sysspr"
-1120   DATA "smsq_java_driver_dv3e","smsq_java_ip_x"
-1130   DATA ""
-1140   DATA "SMSQ_java_java"
-1150   DATA ""
-1160 END DEFine java
-1170 :
-1180 DEFine PROCedure qpc
-1190   read_datas CURRENT_LINE
-1200   delete_files
-1210   DATA 'smsq_qpc_host'
-1220   DATA 'smsq_smsq_qpc_os'
-1230   DATA 'smsq_qpc_hwinit'
-1240   DATA 'smsq_qpc_nasty_e'
-1250   DATA 'smsq_qpc_kbd_lang'
-1260   DATA 'smsq_qpc_driver_most'
-1270   DATA 'smsq_qpc_driver_ql'
-1280   DATA 'smsq_qpc_driver_16'
-1290   DATA 'smsq_qpc_driver_8'
-1300   DATA 'smsq_qpc_sysspr'
-1310   DATA 'smsq_qpc_driver_dv3e'
-1320   DATA 'smsq_qpc_procs_x'
-1330   DATA 'smsq_qpc_cdaudio_x'
-1340   DATA 'smsq_qpc_dos_x'
-1350   DATA 'smsq_qpc_ip_x'
-1360   DATA ""
-1370   DATA "smsq_qpc_smsqe.bin"
-1380   DATA ""
-1390 END DEFine qpc
-1400 :
-1410 DEFine PROCedure aurora
-1420   read_datas CURRENT_LINE
-1430   delete_files
-1440   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd"
-1450   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
-1460   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
-1470   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
-1480   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot"
-1490   DATA "smsq_gold_sysspr","smsq_aurora_driver_8","smsq_aurora_sysspr"
-1500   data ""
-1510   DATA "smsq_aurora_smsqe","smsq_gold_gold","smsq_gold_gold8"
-1520   data ""
-1530 END DEFine aurora
-1540 :
-1550 DEFine PROCedure q40
-1560   read_datas CURRENT_LINE
-1570   delete_files
-1580   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
-1590   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
-1600   DATA "smsq_q40_kbd_lang","smsq_q40_nasty"
-1610   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
-1620   DATA "smsq_q40_sysspr","smsq_q40_cachemode"
-1630   DATA ""
-1640   data "smsq_q40_rom"
-1650   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"
-1660   data ""
-1670 END DEFine q40
-1680 :
-1690 DEFine PROCedure qxl
-1700   read_datas CURRENT_LINE
-1710   delete_files
-1720   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
-1730   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
-1740   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x"
-1750   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e","smsq_qxl_sysspr"
-1760   DATA ""
-1770   data "smsq_qxl_smsqe.exe"
-1780   data ""
-1790 END DEFine qxl
-1800 :
-1810 DEFine PROCedure q68
-1820   read_datas CURRENT_LINE
-1830   delete_files
-1840   DATA "smsq_q68_driver_16","smsq_q68_driver_nd","smsq_q68_driver_most"
-1850   DATA "smsq_q68_driver_ql","smsq_q68_hwinit" ,"smsq_smsq_q68_os"
-1860   DATA "smsq_q68_kbd_lang","smsq_q68_nasty","smsq_q68_sbas_procs_x"
-1870   DATA "smsq_q68_driver_dv3","smsq_q40_sysspr","smsq_q68_driver_8"
-1880   DATA ""
-1890   data "smsq_q68_QL_RAM.BIN","smsq_q68_QL_RAM.BIN3"
-1900   data ""
-1910 END DEFine q68
-1920 :
-1930 DEFine PROCedure ptrgen
-1940   read_datas CURRENT_LINE
-1950   delete_files
-1960   DATA ""
-1970   DATA "ee_wman_wman","ee_ptr_gen","ee_hot_rext_german","ee_hot_rext_french","ee_hot_rext_english",""
-1980 END DEFine ptrgen
-1990 :
-2000 DEFine PROCedure read_datas (line_number)
-2010 REMark this reads the datas as of the line number given as params
-2020 REMark and puts them in the global arrays delete$ and keep$
-2030 LOCal lp%,a$
-2040   DIM delete$(100,60)
-2050   RESTORE line_number                   : REMark start reading from here
-2060   PRINT "restoring : ";line_number
-2070   FOR lp% = 0 TO 100
-2080     READ a$                             : REMark get filename
-2090     IF a$ ="":EXIT lp%                  : REMark finished
-2100     delete$(lp%)=mdev$&a$
-2110   END FOR lp%
-2120   DIM keep$(100,60)
-2130   FOR lp% = 0 TO 100
-2140     READ a$                             : REMark get filename
-2150     IF a$ ="":EXIT lp%                  : REMark finished
-2160     keep$(lp%)=mdev$&a$
-2170   END FOR lp%
-2180 END DEFine read_datas
-2190 :
-2200 DEFine PROCedure delete_files
-2210 REMark delete all files held in delete$
-2220 LOCal stop_here%,lp%
-2230   stop_here%=DIMN(delete$,1)
-2240   FOR lp%=0 TO stop_here%
-2250     IF delete$(lp%)="":EXIT lp%
-2260     DELETE delete$(lp%)
-2270   END FOR lp%
-2280   IF NOT keep%
-2290     stop_here%=DIMN(keep$,1)
-2300     FOR lp%=0 TO stop_here%
-2310       IF keep$(lp%)="":EXIT lp%
-2320       DELETE keep$(lp%)
-2330     END FOR lp%
-2340   END IF
-2350 END DEFine delete_files
-2360 :
-2370 DEFine PROCedure sa
-2380   SAVE_O dev8_extras_del_all_bas
-2390 END DEFine sa
-2400 :
-2410 DEFine PROCedure delete_files_with_extension(ext$,mdir$,ddown%)
-2420 REMark this deletes all files in the dir mdir$ with the extension ext$
-2430 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
-2440 REMark by calling itself recursively
-2450 LOCal chan%,lp%,myfile$,a$,device$,t%,exlen%
-2460   FOR lp%=1 TO 50
-2470     myfile$="ram1_dele_extns"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
-2480     chan%=FOP_OVER (myfile$)            : REMark try to open unique file
-2490     IF chan%>0:EXIT lp%
-2500   END FOR lp%
-2510   IF chan%<0:RETurn                     : REMark ooops!!!!
-2520   exlen%=LEN(ext$)
-2530   device$=mdir$(1 TO 5)
-2540   WDIR#chan%,mdir$                      : REMark dir of this rep in file
-2550   GET#chan%\0                           : REMark reset file pointer to start
-2560   REPeat lp%
-2570     IF EOF(#chan%):EXIT lp%
-2580     INPUT#chan%,a$                      : REMark get filename
-2590     IF a$="":NEXT lp%
-2600     a$=device$&a$
-2610     t%= ' ->' INSTR a$                  : REMark is it a subdir?
-2620     IF t% AND ddown%
-2630       delete_files_with_extension ext$,a$(1 TO t%-1),ddown% : REMark yes, possibly drill down
-2640       NEXT lp%
-2650     END IF
-2660     t%=LEN(a$)
-2670     IF t%<exlen%:NEXT lp%               : REMark filename is shorter than extension
-2680     IF a$(t%-exlen%+1 TO) ==ext$ : DELETE a$
-2690   END REPeat lp%
-2700   CLOSE#chan%
-2710   DELETE myfile$
-2720 END DEFine delete_files_with_extension
-2730 :
-2740 DEFine PROCedure l
-2750   LRESPR "dev8_extras_source_outptr_bin"
-2760   LRESPR "dev8_extras_blinker_bin"
-2770   LRESPR "dev8_extras_cline_bin"
-2780 END DEFine l
+670   qlsd
+680 END DEFine delete_all_targets
+690 :
+700 DEFine PROCedure generic
+710   read_datas CURRENT_LINE
+720   delete_files
+730   DATA "dd_qlnd_new" ,"dd_nd_new","dv3_test",'smsq_sbas_lang','smsq_sbas_control'
+740   DATA "smsq_sbas_procs_x","smsq_smsq_cache","smsq_smsq_cache40c","smsq_smsq_fh_os"
+750   DATA "smsq_smsq_hotkey","smsq_smsq_lang","smsq_smsq_loader","smsq_sbas_lang"
+760   DATA "smsq_smsq_os","smsq_smsq_1mb_os","smsq_smsq_vers","smsq_smsq_wman"
+770   DATA "util_thg_thing",'smsq_home_home','smsq_recent_recent',"smsq_sbas_lang"
+780   DATA "",""
+790 END DEFine generic
+800 :
+810 DEFine PROCedure atari
+820   read_datas CURRENT_LINE
+830   delete_files
+840   DATA "smsq_atari_driver_dv3","smsq_atari_driver_ser","smsq_atari_driver_ql"
+850   DATA "smsq_atari_driver_mono","smsq_atari_hwinit","smsq_atari_nasty"
+860   DATA "smsq_atari_kbd_lang"
+870   DATA "sys_boot_st_host","smsq_atari_sysspr"
+880   DATA "","smsq_atari_SMSQ.PRG",""
+890 END DEFine atari_targets
+900 :
+910 DEFine PROCedure gold
+920   read_datas CURRENT_LINE
+930   delete_files
+940   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd","smsq_gold_driver_8"
+950   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
+960   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
+970   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
+980   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot"
+990   DATA "smsq_gold_sysspr"
+1000   DATA  ""
+1010   DATA  "smsq_gold_gold8","smsq_gold_gold"
+1020   DATA  ""
+1030 END DEFine gold
+1040 :
+1050 DEFine PROCedure java
+1060   read_datas CURRENT_LINE
+1070   delete_files
+1080   DATA "smsq_java_driver_most","smsq_java_driver_ql","smsq_java_host","smsq_java_smsq_os"
+1090   DATA "smsq_java_driver_16"
+1100   DATA "smsq_java_driver_8","smsq_java_smsq_1mb_os"
+1110   DATA "smsq_java_driver_nfa_nfa","smsq_java_smsq_os"
+1120   DATA "smsq_java_hwinit","smsq_java_host","smsq_java_sysspr"
+1130   DATA "smsq_java_driver_dv3e","smsq_java_ip_x"
+1140   DATA ""
+1150   DATA "SMSQ_java_java"
+1160   DATA ""
+1170 END DEFine java
+1180 :
+1190 DEFine PROCedure qpc
+1200   read_datas CURRENT_LINE
+1210   delete_files
+1220   DATA 'smsq_qpc_host'
+1230   DATA 'smsq_smsq_qpc_os'
+1240   DATA 'smsq_qpc_hwinit'
+1250   DATA 'smsq_qpc_nasty_e'
+1260   DATA 'smsq_qpc_kbd_lang'
+1270   DATA 'smsq_qpc_driver_most'
+1280   DATA 'smsq_qpc_driver_ql'
+1290   DATA 'smsq_qpc_driver_16'
+1300   DATA 'smsq_qpc_driver_8'
+1310   DATA 'smsq_qpc_sysspr'
+1320   DATA 'smsq_qpc_driver_dv3e'
+1330   DATA 'smsq_qpc_procs_x'
+1340   DATA 'smsq_qpc_cdaudio_x'
+1350   DATA 'smsq_qpc_dos_x'
+1360   DATA 'smsq_qpc_ip_x'
+1370   DATA ""
+1380   DATA "smsq_qpc_smsqe.bin"
+1390   DATA ""
+1400 END DEFine qpc
+1410 :
+1420 DEFine PROCedure aurora
+1430   read_datas CURRENT_LINE
+1440   delete_files
+1450   DATA "smsq_gold_driver_dv3","smsq_gold_driver_most","smsq_gold_driver_nd"
+1460   DATA "smsq_gold_driver_nds","smsq_gold_driver_ql","smsq_gold_host"
+1470   DATA "smsq_gold_hwinit","smsq_gold_kbd_abc","smsq_gold_kbd_abc_lang"
+1480   DATA "smsq_gold_kbd_lang","smsq_gold_nasty","smsq_gold_nasty_s"
+1490   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot"
+1500   DATA "smsq_gold_sysspr","smsq_aurora_driver_8","smsq_aurora_sysspr"
+1510   DATA ""
+1520   DATA "smsq_aurora_smsqe","smsq_gold_gold","smsq_gold_gold8"
+1530   DATA ""
+1540 END DEFine aurora
+1550 :
+1560 DEFine PROCedure q40
+1570   read_datas CURRENT_LINE
+1580   delete_files
+1590   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
+1600   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
+1610   DATA "smsq_q40_kbd_lang","smsq_q40_nasty"
+1620   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
+1630   DATA "smsq_q40_sysspr","smsq_q40_cachemode"
+1640   DATA ""
+1650   DATA "smsq_q40_rom"
+1660   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"
+1670   DATA "smsq_q40_boot_Q40_gz","smsq_q40_boot_Q40_ROM","smsq_q40_boot_Q40_ROM_HI"
+1680   DATA "smsq_q40_boot_Q40_ROM_LO"
+1690   DATA ""
+1700 END DEFine q40
+1710 :
+1720 DEFine PROCedure qxl
+1730   read_datas CURRENT_LINE
+1740   delete_files
+1750   DATA "smsq_qxl_driver_16","smsq_qxl_driver_nd","smsq_qxl_driver_most"
+1760   DATA "smsq_qxl_ecache","smsq_qxl_driver_ql","smsq_qxl_host","smsq_qxl_hwinit"
+1770   DATA "smsq_qxl_kbd_lang","smsq_qxl_nasty_e","smsq_qxl_procs_x"
+1780   DATA "smsq_qxl_test","smsq_qxl_driver_dv3e","smsq_qxl_sysspr"
+1790   DATA ""
+1800   DATA "smsq_qxl_smsqe.exe"
+1810   DATA ""
+1820 END DEFine qxl
+1830 :
+1840 DEFine PROCedure q68
+1850   read_datas CURRENT_LINE
+1860   delete_files
+1870   DATA "smsq_q68_driver_16","smsq_q68_driver_nd","smsq_q68_driver_most"
+1880   DATA "smsq_q68_driver_ql","smsq_q68_hwinit" ,"smsq_smsq_q68_os"
+1890   DATA "smsq_q68_kbd_lang","smsq_q68_nasty","smsq_q68_sbas_procs_x"
+1900   DATA "smsq_q68_driver_dv3","smsq_q40_sysspr","smsq_q68_driver_8"
+1910   DATA ""
+1920   DATA "smsq_q68_QL_RAM.BIN","smsq_q68_QL_RAM.BIN3"
+1930   DATA ""
+1940 END DEFine q68
+1950 :
+1960 DEFine PROCedure ptrgen
+1970   read_datas CURRENT_LINE
+1980   delete_files
+1990   DATA ""
+2000   DATA "ee_wman_wman","ee_ptr_gen","ee_hot_rext_german","ee_hot_rext_french","ee_hot_rext_english",""
+2010 END DEFine ptrgen
+2020 :
+2030 DEFine PROCedure qlsd
+2040   read_datas CURRENT_LINE
+2050   delete_files
+2060   DATA ""
+2070   DATA "dv3_qlsd_driver_bin","dv3_qlsd_driver_rom", "dv3_qlsd_driverWQ_bin"
+2080   DATA ""
+2090 END DEFine qlsd
+2100 :
+2110 DEFine PROCedure read_datas (line_number)
+2120 REMark this reads the datas as of the line number given as params
+2130 REMark and puts them in the global arrays delete$ and keep$
+2140 LOCal lp%,a$
+2150   DIM delete$(100,60)
+2160   RESTORE line_number                   : REMark start reading from here
+2170   PRINT "restoring : ";line_number
+2180   FOR lp% = 0 TO 100
+2190     READ a$                             : REMark get filename
+2200     IF a$ ="":EXIT lp%                  : REMark finished
+2210     delete$(lp%)=mdev$&a$
+2220   END FOR lp%
+2230   DIM keep$(100,60)
+2240   FOR lp% = 0 TO 100
+2250     READ a$                             : REMark get filename
+2260     IF a$ ="":EXIT lp%                  : REMark finished
+2270     keep$(lp%)=mdev$&a$
+2280   END FOR lp%
+2290 END DEFine read_datas
+2300 :
+2310 DEFine PROCedure delete_files
+2320 REMark delete all files held in delete$
+2330 LOCal stop_here%,lp%
+2340   stop_here%=DIMN(delete$,1)
+2350   FOR lp%=0 TO stop_here%
+2360     IF delete$(lp%)="":EXIT lp%
+2370     DELETE delete$(lp%)
+2380   END FOR lp%
+2390   IF NOT keep%
+2400     stop_here%=DIMN(keep$,1)
+2410     FOR lp%=0 TO stop_here%
+2420       IF keep$(lp%)="":EXIT lp%
+2430       DELETE keep$(lp%)
+2440     END FOR lp%
+2450   END IF
+2460 END DEFine delete_files
+2470 :
+2480 DEFine PROCedure sa
+2490   SAVE_O dev8_extras_del_all_bas
+2500 END DEFine sa
+2510 :
+2520 DEFine PROCedure delete_files_with_extension(ext$,mdir$,ddown%)
+2530 REMark this deletes all files in the dir mdir$ with the extension ext$
+2540 REMark possibly drilling down to all subirs(ddown%<>0) to do the same there
+2550 REMark by calling itself recursively
+2560 LOCal chan%,lp%,myfile$,a$,device$,t%,exlen%
+2570   FOR lp%=1 TO 50
+2580     myfile$="ram1_dele_extns"&RND(1 TO 80)&RND (1 TO 80) & RND (1 TO 50)
+2590     chan%=FOP_OVER (myfile$)            : REMark try to open unique file
+2600     IF chan%>0:EXIT lp%
+2610   END FOR lp%
+2620   IF chan%<0:RETurn                     : REMark ooops!!!!
+2630   exlen%=LEN(ext$)
+2640   device$=mdir$(1 TO 5)
+2650   WDIR#chan%,mdir$                      : REMark dir of this rep in file
+2660   GET#chan%\0                           : REMark reset file pointer to start
+2670   REPeat lp%
+2680     IF EOF(#chan%):EXIT lp%
+2690     INPUT#chan%,a$                      : REMark get filename
+2700     IF a$="":NEXT lp%
+2710     a$=device$&a$
+2720     t%= ' ->' INSTR a$                  : REMark is it a subdir?
+2730     IF t% AND ddown%
+2740       delete_files_with_extension ext$,a$(1 TO t%-1),ddown% : REMark yes, possibly drill down
+2750       NEXT lp%
+2760     END IF
+2770     t%=LEN(a$)
+2780     IF t%<exlen%:NEXT lp%               : REMark filename is shorter than extension
+2790     IF a$(t%-exlen%+1 TO) ==ext$ : DELETE a$
+2800   END REPeat lp%
+2810   CLOSE#chan%
+2820   DELETE myfile$
+2830 END DEFine delete_files_with_extension
+2840 :
+2850 DEFine PROCedure l
+2860   LRESPR "dev8_extras_source_outptr_bin"
+2870   LRESPR "dev8_extras_blinker_bin"
+2880   LRESPR "dev8_extras_cline_bin"
+2890 END DEFine l

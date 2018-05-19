@@ -1,6 +1,7 @@
 dev8_iod_con2_ptr_ptrs_rel
 dev8_ee_ptr_init_rel
 dev8_iod_con2_ptr_ckey_rel
+dev8_ee_ptr_sched_rel
 dev8_iod_con2_ptr_sched_rel
 dev8_iod_con2_ptr_fwind_rel
 dev8_ee_ptr_open_rel

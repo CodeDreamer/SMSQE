@@ -1,10 +1,11 @@
 program dev8_smsq_smsq_wman
 
 section header
-section base	  ; base area for any extension or program
+section base      ; base area for any extension or program
 section version   ; version messages
 
 input dev8_smsq_smsq_wman_rel
+input dev8_ee_wman_config_rel
 input dev8_ee_wman_ersmsq_rel
 input dev8_ee_wman_rnsmsq_rel
 input dev8_ee_wman_trap3_rel

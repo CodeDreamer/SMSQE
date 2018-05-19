@@ -214,7 +214,7 @@ hd_proctab
 
 	mkcfhead {WIN},1
 
-	  mkcfitem 'Q481',string,0,q40_wn1,,ppr,{Filename for WIN1 container file},0
+	 mkcfitem 'Q481',string,0,q40_wn1,,ppr,{Filename for WIN1 container file},0
 
 	mkcfblend
 
@@ -256,7 +256,5 @@ p_ok	moveq	#0,d0
 	rts
 ipar	moveq	#err.inam,d0
 	rts
-
-	end
 
 	end

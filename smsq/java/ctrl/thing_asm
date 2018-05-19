@@ -54,7 +54,7 @@ qpc_null  dc.w 0
 ctrl_tname dc.w   tn2-*-2
 	dc.b	'JAVA Control'
 tn2
-	dc.w	0
+	dc.w	0			: do NOT remove this line!
 ;+++
 ;
 ; This is the Thing with the "control" extensions
@@ -155,7 +155,7 @@ jt_minimize thg_extn {MMIZ},jt_host,thp_nul
 ;---
 jt_host thg_extn {HOST},jt_sndo,thp_rstr
 	moveq	#jt5.host,d0
-	bra.s	dotp5		     ; get name, ; D0 & cc set by java
+	bra.s	do_tp5		      ; get name, ; D0 & cc set by java
 	rts
 
 
@@ -173,11 +173,11 @@ jt_host thg_extn {HOST},jt_sndo,thp_rstr
 ;+++
 ; JVA_SOUNDING
 ; One word return parameter.
-; Gets the status of the menu bar   (0 =hidden, 1 =showing)
+; Gets the status of sond plaing   (0 =hidden, 1 =showing)
 ;---
 jt_sndo thg_extn {SNDO},jt_tmrs,jth_rwrd
 	moveq	#jt5.sndon,d0
-	bra	dotp5
+	bra.s	do_tp5
 		      
 ;+++
 ; JVA_TMRSET
@@ -186,7 +186,7 @@ jt_sndo thg_extn {SNDO},jt_tmrs,jth_rwrd
 ;---
 jt_tmrs thg_extn {TMRS},jt_tmrg,thp_nul
 	moveq	#jt5.sttmr,d0
-dotp5	dc.w	jva.trp5
+do_tp5	dc.w	jva.trp5
 out	rts
 
 
@@ -197,8 +197,7 @@ out	rts
 ;---
 jt_tmrg thg_extn {TMRG},jt_scru,jth_rlng
 	moveq	#jt5.gttmr,d0
-	bra.s	dotp5
-
+	bra.s	do_tp5
 
 
 ;+++
@@ -209,7 +208,7 @@ jt_tmrg thg_extn {TMRG},jt_scru,jth_rlng
 jt_scru thg_extn {SCRU},jt_mbst,thp_wd
 ; set the screen update rate
 	moveq	#jt5.scrup,d0
-	bra.s	dotp5
+	bra.s	do_tp5
 
 ;+++
 ; JVA_MBAR_STATUS
@@ -218,7 +217,7 @@ jt_scru thg_extn {SCRU},jt_mbst,thp_wd
 ;---
 jt_mbst thg_extn {MBST},jt_exit,jth_rwrd
 	moveq	#jt5.jbget,d0
-	bra.s	dotp5
+	bra.s	do_tp5
 
 ;+++
 ; JVA_EXIT
@@ -227,7 +226,7 @@ jt_mbst thg_extn {MBST},jt_exit,jth_rwrd
 ;---
 jt_exit thg_extn {EXIT},jt_qlfp,thp_nul
 	moveq	#jt5.exit,d0
-	bra.s	dotp5
+	bra.s	do_tp5
 
 	
 	end

@@ -35,7 +35,7 @@
 
 drv_led   equ	hdl_freq+1
 ;+++
-; This routine reads sectors from a hard disk for direct sector IO
+; This routine reads sectors from a hard disk for direct sector I/O
 ;
 ;	d0 cr	sector number / error code
 ;	d2 c  p number of sectors
@@ -51,7 +51,6 @@ id_rdirect
 	assert	ddf.drct-1
 	tst.b	ddf_ftype(a4)		 ; real direct access?
 	bge.s	id_rsint		 ; ... no
-
 	jsr	id_diradd		 ; scrumple address for direct sector
 	bne.s	idr_rts
 

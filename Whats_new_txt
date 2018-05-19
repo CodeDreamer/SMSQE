@@ -21,6 +21,18 @@ This here file only contains a short description of the new features.
 What is new in versions :
 
 
+=====
+3.33
+=====
+
+Final bugfix for LRESPR in procedures.
+Better QL networking.
+Gold card is configured not to use ABC keyboard.
+Improvements in standard QL EE.
+Q68 & SMSQmulator better SSSS handling.
+Stand-alone TK II and QL-SD replacement drivers are included in the SMSQ/E sources.
+Qx0 may have a compressed SMSQ/E so newer versions fit in the EPROMs.
+
 
 =====
 3.32
@@ -53,9 +65,9 @@ Q68 version of SMSQE introduced.
 3.31
 =====
 
-RPIXL also works for 8 and 16 bit colour modes
-Bugfix for LRESPR in procedures
-Bugfix for home thing
+RPIXL also works for 8 and 16 bit colour modes.
+Bugfix for LRESPR in procedures.
+Bugfix for home thing.
 
 
 =====
@@ -63,7 +75,7 @@ Bugfix for home thing
 =====
 
 QPC Bugfix for installation slices.
-SMSQmulator links in floppy driver again
+SMSQmulator links in floppy driver again.
 
 
 =====

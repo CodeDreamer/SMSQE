@@ -11,9 +11,11 @@ hkd_id   equ    $0010   ;long    hotkey ID
 hkd.id   equ      'Hot%'
 hkd_vect equ    $0014   ;long    vectors
 
+; These are the legacy entries that may still be referenced by old code,
+; like the HOT_STUFF in the QPTR toolkit
 hkd_sbfp equ    $003a   ;word    set to -1 by old hot_stuff
 hkd_sbfl equ    $003c   ;word    buffer length
-hkd.sbfl equ      $80
+hkd.sbfl equ      $80   ;        hkd_jbid - jkd_sbuf
 hkd_sbfc equ    $003e   ;word    buffer count (string length)
 hkd_sbuf equ    $0040
 

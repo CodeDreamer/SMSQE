@@ -122,13 +122,10 @@
 1310   DATA "dev8_smsq_aurora_SMSQE",    "Aurora_bin"      : REMark aurora 8 bit
 1320   DATA "dev8_smsq_java_java",       "SMSQE"           : REMark Code file for SMSQmulator, ready to be used
 1330   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
-1340   DATA "dev8_smsq_q68_QL_RAM.BIN",  "Q68_SMSQ.SYS"    : REMark ssqe for Q68, standalone
 1350   DATA "nfa1_Q68_SMSQ.WIN",         "Q68_SMSQ.WIN"    : REMark smsqe for Q68, win drive
 1360   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
 1370   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
 1380   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-1390   DATA "DEV8_smsq_q68_QL_RAM.BIN",  "Q68_SMSQ.WIN"    : REMark Code file for Q68 (win file), ready to be used
-1400   DATA "DEV8_smsq_q68_QL_RAM.BIN3", "Q68_RAM.SYS "    : REMark Code file for Q68 ("naked" file), ready to be used
 1410   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
 1420   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
 1430   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used

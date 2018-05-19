@@ -1,5 +1,6 @@
 ; Q68 normalise names : make SMSQE name into 8.3 name
 ;
+; v. 1.01 removed reference to keys_q68
 ; v. 1.00 copyright (C) W. Lenerz 2016
 ;
 	section dv3
@@ -8,7 +9,6 @@
 
 	xref	 cv_upcas
 
-	include 'dev8_keys_q68'
 	include 'dev8_keys_err'
 
 

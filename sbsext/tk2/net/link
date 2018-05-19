@@ -1,0 +1,26 @@
+program dev8_sbsext_tk2_net_bin
+
+gst
+filetype 0
+
+section tk2
+section nd
+
+input dev8_sbsext_tk2_version_rel
+input dev8_sbsext_tk2_net_init_rel
+input dev8_sbsext_ext_english_rel
+input dev8_dd_qlnd_init_rel
+input dev8_dd_qlnd_fopcls_rel
+input dev8_dd_qlnd_fut_rel
+input dev8_dd_qlnd_fio_rel
+input dev8_dd_qlnd_nsv_rel
+input dev8_dd_qlnd_netd_rel
+input dev8_dd_qlnd_rept_rel
+input dev8_dd_qlnd_break_rel
+input dev8_dd_qlnd_io_proxy_rel
+input dev8_dd_qlnd_use_rel
+input dev8_dd_qlnd_server_rel
+library dev8_sbsext_utq_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_uti_lib

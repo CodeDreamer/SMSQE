@@ -1,0 +1,11 @@
+section rd
+section version
+section procs
+program dev8_dd_rd_rext
+input dev8_dd_rd_init_rel
+library dev8_dd_rd_lib
+library dev8_iod_iou_lib
+library dev8_sbsext_ut_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib

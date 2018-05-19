@@ -1,4 +1,5 @@
-; Q68 SMSQ Sampled Sound System  V1.00	  2017 W. Lenerz
+; Q68 SMSQ Sampled Sound System  V1.02	  2017-2018 W. Lenerz
+; 1.02 improved queue handing
 
 ; partially based on
 ; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
@@ -124,15 +125,18 @@ poll_hdr
 
 ssss_poll
 	add.l	#ssss_spec,a3		; point to start of my data ('SSSS')
-;	 tas	 ssss_sema(a3)		 ; test version
-;	bne.s	out
-	move.l	ssss_qout(a3),a2	; next out
-	move.w	#1023,d2		; go around 1024 times max
-	move.l	ssss_qin(a3),a1
+	tst.b	ssss_sema(a3)		; is sound being killed?
+	beq.s	do_snd			; ... no
+	subq.b	#1,ssss_sema(a3)	; avoid sound being killed forever
+	rts
+
+do_snd	move.l	ssss_qout(a3),a2	; next out
+	move.l	#1023,d2		; go around 1024 times max
+	move.l	ssss_qin(a3),a1 	; where next byte inserted goes
 	move.l	ssss_qend(a3),a4
 
 sndlp
-	cmp.l	a2,a1			; any byte left to copy?
+	cmp.l	a2,a1			; any bytes left to copy?
 	beq.s	ssss_done		; ... no, done
 	tst.b	sound_full		; can DAC handle more sound?
 	bne.s	ssss_done		; ... no, done
@@ -160,15 +164,12 @@ sds	moveq	#10,d0
 ;
 ;-------------------------------------------
 setx	move.l	a2,ssss_qout(a3)	; new queue out ptr
-	sf	ssss_sema(a3)
-	move.l	a5,$17e98
 out	rts
 
 ; restart at base
 set_bse
 	lea	ssss_qbase(a3),a2	; end of queue space reached, so...
-	dbf	d2,sndlp		; ... continue at start of space ...
-	bra.s	ssss_done		; ... unles we're done
+	bra.s	sndlp			; start at top
 
 poll_end
 
@@ -190,23 +191,24 @@ ssss_vector
 
 sss_add1
 	move.l	ssss_qin(a3),a1
-	move.b	d1,(a1)+		      ; put samples in
+	cmp.l	ssss_qend(a3),a1		; qin at end?
+	beq.s	sssa_chk			; ... yes, check add possible
+ssss_add
+	move.b	d1,(a1)+			; put samples in
 	move.b	d2,(a1)+
-	cmp.l	ssss_qend(a3),a1	      ; end of queue?
-	bne.s	sssa_updt
-	lea	ssss_qbase(a3),a1
 sssa_updt
-	cmp.l	ssss_qout(a3),a1	      ; queue full?
-	beq.s	sssa_rts		      ; ... yes
-	move.l	a1,ssss_qin(a3) 	      ; ... no, update in pointer
-sssa_rts
-	rts
+	move.l	a1,ssss_qin(a3) 		; update in pointer
+sssa_rs rts
+sssa_chk					; qin is at end
+	cmp.l	ssss_qout(a3),a1		; is qout there, too?
+	bne.s	sssa_rs 			; ... no, so I can't add!
+	move.l	ssss_qstart(a3),a1		; .... yes, start at top
+	bra.s	ssss_add
+
 
 ; set up to add multiple samples
-
+; on return a1 pointo to where bytes may be inserted, up to a2
 sss_setm
-;	 tas	 ssss_sema(a3)			 ; test
-;	 bne.s	 occupied
 	move.l	ssss_qin(a3),a1 		; next in
 	move.l	ssss_qout(a3),a2		; next out
 	cmp.l	a1,a2				; queue empty?
@@ -216,11 +218,9 @@ sss_setm
 	move.l	ssss_qend(a3),a2		; always copy to end of buffer
 	cmp.l	a2,a1				; were in/out at end aleady?
 	beq.s	ssss1				; yes, need to wrap, the whole buffer is available again
-ssssx	sf	ssss_sema(a3)
-	rts
+ssssx	rts
 ; here both in and out were at end of buffer; reset in to start of buffer
 ssss1	move.l	ssss_qstart(a3),a1		; the whole buffer is available again
-	sf	ssss_sema(a3)
 	rts
 
 ; check whether we're wrapped or not
@@ -237,11 +237,9 @@ ck_wrap bgt.s	ssss2				; we were wrapped ->
 
 ; here we are wrapped around, the free space is from in to out-2
 ssss2	subq.l	#2,a2				;
-	sf	ssss_sema(a3)
 	rts
  
 ssss3	move.l	ssss_qend(a3),a2		; always copy to end of buffer
-	sf	ssss_sema(a3)
 	rts
 
 occupied
@@ -249,32 +247,41 @@ occupied
 	move.l	a1,a2				; are the same, don't copy!!!!!
 	rts
 
+
 ; add multiple samples (new qin ptr)
 
 sss_addm
-;	 cmp.l	 ssss_qend(a3),a1	       ; end of queue
-;	 blt.s	 sss_aset		       ; ... no
-;	 move.l  ssss_qstart(a3),ssss_qin(a3)  ; ... back to beginning
-;	 rts
+	cmp.l	ssss_qend(a3),a1	      ; end of queue
+	blt.s	sss_aset		      ; ... no
+	move.l	ssss_qend(a3),ssss_qin(a3)  ; ... back to beginning
+	rts
 sss_aset
 	move.l	a1,ssss_qin(a3)
 	rts
 
+
 ; kill the sound
 
 sss_kill
-	movem.l d1/d2/a1/a2,-(sp)
-	move.l	ssss_qin(a3),a2    ; the bytes will go here
-
-	moveq	#$ffffff80,d1
-	moveq	#$ffffff80,d2
-sss_kloop
-	bsr	sss_add1	   ; add zero
-	beq.s	sss_kloop	   ; keep on until queue is not full
-
-	move.l	a2,ssss_qout(a3)   ; one sample only in queue
-	movem.l (sp)+,d1/d2/a1/a2
+	st	ssss_sema(a3)			; show the sound is being killed
+	move.l	ssss_qstart(a3),ssss_qin(a3)
+	move.l	ssss_qstart(a3),ssss_qout(a3)
+	sf	ssss_sema(a3)
 	rts
+
+;	 movem.l d1/d2/a1/a2,-(sp)
+;	 move.l  ssss_qin(a3),a2    ; the bytes will go here
+;
+;	 moveq	 #$ffffff80,d1
+;	 moveq	 #$ffffff80,d2
+;sss_kloop
+;	 bsr	 sss_add1	    ; add zero
+;	 beq.s	 sss_kloop	    ; keep on until queue is not full
+;
+;	 move.l  a2,ssss_qout(a3)   ; one sample only in queue
+;	 movem.l (sp)+,d1/d2/a1/a2
+;	 rts
+
 
 ; return length  of samples in queue
 

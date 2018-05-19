@@ -1,0 +1,16 @@
+program dev8_sbsext_tk2_ed_bin
+
+gst
+filetype 0
+
+section tk2
+section ed
+
+input dev8_sbsext_tk2_ed_init_rel
+input dev8_sbsext_tk2_version_rel
+library dev8_sbsext_tk2_ed_lib
+library dev8_sbsext_tk2_hotstuff_rel
+library dev8_sbsext_utq_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib
+library dev8_uti_lib

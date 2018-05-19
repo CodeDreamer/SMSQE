@@ -27,7 +27,7 @@ glk.rtca equ   4        rtc address spacing
 glo_rena equ $60        RAM enable
 glo_rdis equ $64        RAM disable
 
-sgo_x068 equ $68        SGC (ref at c03c in sgc ROM)
+sgo_scr2 equ $68        SGC screen 2 disable (write) or enable (read)
 
 glo_pdat equ $70        PAR port data reg
 glo_pstb equ $78        PAR port strobe ST to set, TST to clear

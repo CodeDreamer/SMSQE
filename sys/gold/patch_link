@@ -6,7 +6,7 @@ library dev8_dd_dev_lib
 library dev8_iod_iou_lib
 library dev8_util_gut_lib
 library dev8_util_cv_lib
-library dev8_sbext_ut_lib
+library dev8_sbsext_utq_lib
 library dev8_sys_gold_sgcp1_rel
 library dev8_sys_gold_xbasic_rel
 library dev8_sys_gold_par_rel

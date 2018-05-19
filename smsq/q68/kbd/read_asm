@@ -31,10 +31,10 @@ kbd_read
 	endgen			      |
 ;				      |
 ;!!!!!!!!!!!!!!!!!		  ----|
-	
-	moveq	#0,D0
+		     
 	btst	#kbd.rcv,kbd_status	; any keyboard data?
 	beq.s	kbdi_exit		; ... no
+	moveq	#0,D0
 	move.b	kbd_code,d0		; IBM keycode
 	st	kbd_unlock		; acknowledge key receipt
 					; this should clear the kbd.rcv bit in kbd_status
@@ -44,7 +44,7 @@ kbd_read
 kbd	bsr	kbd_at102cvt		; process key code
 
 kbdi_exit
-	jmp	kbd_poll		; handle keytroke
+	jmp	kbd_poll		; handle keystroke
 
 ;!!!!!!!!!!!DEBUG		  ----|
 	genif debug = 0

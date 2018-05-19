@@ -356,8 +356,11 @@
 *
 *	V2.05
 *	A few fixes for QDOS (MK)
+*
+*	V2.06
+*	Fixed mode changing on QDOS (MK)
 
-pt.vers equ	'2.05'
+pt.vers equ	'2.06'
 pt_vers equ	pt.vers
 	dc.l	pt.vers
 

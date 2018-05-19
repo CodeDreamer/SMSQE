@@ -1,4 +1,7 @@
 ; SMSQ Q40 Hardware Initialisation V3
+;
+; 2003-09-27  2.00  Added OSPS config item (wl)
+; 2018-03-08  2.01  Disable ABC keyboard as it caused problems (MK)
 
 ; Called with a7 a valid, safe stack
 ;	      d4 the host (QDOS) version number
@@ -14,8 +17,6 @@
 ;			    zero in d6
 ;			    top of RAM in d7
 ;
-* 2003-09-27	      v.2.00 (?)	added OSPS config item (wl)
-
 
 	section hwinit
 
@@ -104,7 +105,7 @@ glc.conf  equ	*-glc_cx
 				
 	mkcfend
 
-glc_abck dc.b	1
+glc_abck dc.b	0
 	ds.w	0
 
 glc_wbase

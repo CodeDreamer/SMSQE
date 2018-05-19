@@ -1,107 +1,107 @@
 ; Keys for Things
-        nolist
+	nolist
 
 ; Thing linkage block: down to ;-------- these are filled in by LTHG
 
-th_nxtth equ    $00     ; long    link to NeXT THing
-th_usage equ    $04     ; long    thing's USAGE list
-th_frfre equ    $08     ; long    address of "close" routine for FoRced FREe
-th_frzap equ    $0c     ; long    address of "close" routine for FoRced ZAP
+th_nxtth equ	$00	; long	  link to NeXT THing
+th_usage equ	$04	; long	  thing's USAGE list
+th_frfre equ	$08	; long	  address of "close" routine for FoRced FREe
+th_frzap equ	$0c	; long	  address of "close" routine for FoRced ZAP
 ;---------
-th_thing equ    $10     ; long    pointer to THING itself
-th_use   equ    $14     ; long    code to USE a thing
-th_free  equ    $18     ; long    code to FREE a thing
-th_ffree equ    $1c     ; long    code to Force FREE a thing
-th_remov equ    $20     ; long    code to tidy before REMOVing thing
-th_nshar equ    $24     ; byte    Non-SHAReable Thing if top bit set
-th_check equ    $25     ; byte    CHECK byte --- set by LTHG
-th_verid equ    $26     ; long    version ID
-th_name  equ    $2a     ; string  name of thing
-th.len   equ      $2c   ;         basic length of thing linkage
+th_thing equ	$10	; long	  pointer to THING itself
+th_use	 equ	$14	; long	  code to USE a thing
+th_free  equ	$18	; long	  code to FREE a thing
+th_ffree equ	$1c	; long	  code to Force FREE a thing
+th_remov equ	$20	; long	  code to tidy before REMOVing thing
+th_nshar equ	$24	; byte	  Non-SHAReable Thing if top bit set
+th_check equ	$25	; byte	  CHECK byte --- set by LTHG
+th_verid equ	$26	; long	  version ID
+th_name  equ	$2a	; string  name of thing
+th.len	 equ	  $2c	;	  basic length of thing linkage
 
-;       Usage list header/entry
+;	Usage list header/entry
 
-thu_link equ    $10     ; long    link to first/next usage block
-;               $1c     ; long    pointer to "close" routine
-thu.ulnk equ      $20   ;         size of usage list header/entry
+thu_link equ	$10	; long	  link to first/next usage block
+;		$1c	; long	  pointer to "close" routine
+thu.ulnk equ	  $20	;	  size of usage list header/entry
 
-;       Standard Thing header (offsets are relative to thh_flag)
+;	Standard Thing header (offsets are relative to thh_flag)
 
-thh_flag equ    $00     ; long    Thing haeder flag
-thh.flag equ      'THG%'  ;       standard value of thing header flag
-thh_type equ    $04     ; long    type of thing
-tht..lst equ      24      ;       bit set for list of things
-tht.util equ    $00000000 ;       utility thing
-tht.exec equ    $00000001 ;       executable thing
-tht.data equ    $00000002 ;       shared data
-tht.extn equ    $01000003 ;       extensions (user mode)
-tht.exts equ    $01000004 ;       extensions for system (supervisor mode)
+thh_flag equ	$00	; long	  Thing header flag
+thh.flag equ	  'THG%'  ;	  standard value of thing header flag
+thh_type equ	$04	; long	  type of thing
+tht..lst equ	  24	  ;	  bit set for list of things
+tht.util equ	$00000000 ;	  utility thing
+tht.exec equ	$00000001 ;	  executable thing
+tht.data equ	$00000002 ;	  shared data
+tht.extn equ	$01000003 ;	  extensions (user mode)
+tht.exts equ	$01000004 ;	  extensions for system (supervisor mode)
 
-;       Thing Itself Header
+;	Thing Itself Header
 
-thh_entr equ    $08       ;       Thing ENTRy routine
-thh_exec equ    $0c       ;       Thing EXEC routine
+thh_entr equ	$08	  ;	  Thing ENTRy routine
+thh_exec equ	$0c	  ;	  Thing EXEC routine
 
-;       List of Things header
+;	List of Things header
 
-thh_next equ    $08     ; long    offset of next (or 0)
-thh_exid equ    $0c     ; long    extra ID
+thh_next equ	$08	; long	  offset of next (or 0)
+thh_exid equ	$0c	; long	  extra ID
 
-;       Executable Thing header extension
+;	Executable Thing header extension
 
-thh_hdrs equ    $08     ; long    offset of start of header
-thh_hdrl equ    $0c     ; long    length of header
-thh_data equ    $10     ; long    size of data area required
-thh_strt equ    $14     ; long    offset of start of code (0 to start at header)
+thh_hdrs equ	$08	; long	  offset of start of header
+thh_hdrl equ	$0c	; long	  length of header
+thh_data equ	$10	; long	  size of data area required
+thh_strt equ	$14	; long	  offset of start of code (0 to start at header)
 
-;       Extension Thing Header
+;	Extension Thing Header
 
-thh_pdef equ    $10     ; long    offset of parameter definitions or 0
-thh_pdes equ    $14     ; long    offset of parameter descriptions or 0
-thh_code equ    $18     ;         start of code
+thh_pdef equ	$10	; long	  offset of parameter definitions or 0
+thh_pdes equ	$14	; long	  offset of parameter descriptions or 0
+thh_code equ	$18	;	  start of code
 
 ; parameter definitions
 
-thp.rep  equ    $ffff           ; start and end delimiter for repeated group
+thp.rep  equ	$ffff		; start and end delimiter for repeated group
 
 ; bits for parameters
 
-thp..ptr equ       15           ; bit set for pointer parameter
-thp..cal equ       14           ; bit set for call parameter
-thp..ret equ       13           ; bit set for return paramter
-thp..opt equ       12           ; bit set if parameter is optional
-thp..nnl equ       11           ; bit set if negative for null - NOT thp..ptr
-thp..arr equ       11           ; bit set for array - thp..ptr
+thp..ptr equ	   15		; bit set for pointer parameter
+thp..cal equ	   14		; bit set for call parameter
+thp..ret equ	   13		; bit set for return paramter
+thp..opt equ	   12		; bit set if parameter is optional
+thp..nnl equ	   11		; bit set if negative for null - NOT thp..ptr
+thp..arr equ	   11		; bit set for array - thp..ptr
 
-thp..sgn equ        1           ; bit set if value is signed
-thp..chr equ        2           ; bit set if character allowed
-thp..byt equ        3           ; bit set if byte value allowed/required
-thp..wrd equ        4           ; bit set if word value allowed/required
-thp..lng equ        5           ; bit set if long value allowed/required
-thp..cid equ        6           ; bit set for channel ID
-thp..fp8 equ        7           ; bit set for eight byte floating point
+thp..sgn equ	    1		; bit set if value is signed
+thp..chr equ	    2		; bit set if character allowed
+thp..byt equ	    3		; bit set if byte value allowed/required
+thp..wrd equ	    4		; bit set if word value allowed/required
+thp..lng equ	    5		; bit set if long value allowed/required
+thp..cid equ	    6		; bit set for channel ID
+thp..fp8 equ	    7		; bit set for eight byte floating point
 
-        ; the following bits are only allowed for pointer parameters
+	; the following bits are only allowed for pointer parameters
 
-thp..str equ        8           ; standard string
-thp..sst equ        9           ; sub-string
+thp..str equ	    8		; standard string
+thp..sst equ	    9		; sub-string
 
-thp.char equ    $0004           ; character
-thp.ubyt equ    $0008           ; unsigned byte
-thp.sbyt equ    $000a           ; signed byte
-thp.uwrd equ    $0010           ; unsigned word
-thp.swrd equ    $0012           ; signed word
-thp.ulng equ    $0020           ; unsigned long
-thp.slng equ    $0022           ; signed long
-thp.chid equ    $0040           ; channel ID
-thp.fp8  equ    $0082           ; eight byte floating point
-thp.str  equ    $0100           ; string
-thp.sstr equ    $0200           ; sub-string
-thp.nnul equ    1<<thp..nnl     ; negative null (-1)
-thp.arr  equ    1<<thp..arr     ; array
-thp.opt  equ    1<<thp..opt     ; optional
-thp.upd  equ    1<<thp..ptr+1<<thp..cal+1<<thp..ret ; updated parameter
-thp.call equ    1<<thp..ptr+1<<thp..cal             ; call parameter
-thp.ret  equ    1<<thp..ptr+1<<thp..ret             ; return parameter
-thp.ptr  equ    1<<thp..ptr                         ; call or return parameter
-        list
+thp.char equ	$0004		; character
+thp.ubyt equ	$0008		; unsigned byte
+thp.sbyt equ	$000a		; signed byte
+thp.uwrd equ	$0010		; unsigned word
+thp.swrd equ	$0012		; signed word
+thp.ulng equ	$0020		; unsigned long
+thp.slng equ	$0022		; signed long
+thp.chid equ	$0040		; channel ID
+thp.fp8  equ	$0082		; eight byte floating point
+thp.str  equ	$0100		; string
+thp.sstr equ	$0200		; sub-string
+thp.nnul equ	1<<thp..nnl	; negative null (-1)
+thp.arr  equ	1<<thp..arr	; array
+thp.opt  equ	1<<thp..opt	; optional
+thp.upd  equ	1<<thp..ptr+1<<thp..cal+1<<thp..ret ; updated parameter
+thp.call equ	1<<thp..ptr+1<<thp..cal 	    ; call parameter
+thp.ret  equ	1<<thp..ptr+1<<thp..ret 	    ; return parameter
+thp.ptr  equ	1<<thp..ptr			    ; call or return parameter
+	list

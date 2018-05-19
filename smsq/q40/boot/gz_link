@@ -1,0 +1,9 @@
+program dev8_smsq_q40_boot_compr_rom
+
+section base
+section unpack
+section data
+
+input dev8_smsq_q40_boot_rom_rel
+input dev8_smsq_q40_boot_ungzip_rel
+input dev8_smsq_q40_boot_incl_rel

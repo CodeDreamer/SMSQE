@@ -1,5 +1,7 @@
-; Q68 Initilaise an SHDC card (via bit-banging)      1.00 (C) W. Lenerz 2017
-;
+; Q68 Initilaise an SHDC card (via bit-banging)      1.01 (C) W. Lenerz 2017
+; 1.02	2018-05-08 card type is set in sysvars.
+; 1.01	try to detect SD cards as well.
+
 	section dv3
 
 	xdef	inicrd
@@ -7,15 +9,15 @@
 	include 'dev8_keys_java'
 	include 'DEV8_dv3_keys'
 	include 'DEV8_keys_err'
+	include 'DEV8_keys_sys'
 	include 'DEV8_dv3_hd_keys'
 	include 'dev8_keys_q68'
 
-inireg reg     d1/d2/d3/a2
+inireg reg     d1-d4/a0/a2
 
 ; algo :
 ; put into spi mode
 ; cmd0
-; cmd55
 ; acmd41
 ; cmd58
 
@@ -33,6 +35,12 @@ inicrd	movem.l inireg,-(a7)
 	move.l	#mmc1_cs,a2		; point to card physical addresses
 	add.w	d1,a2			; a2 points to the correct addresses for this drive
 	sf	drv_cs(a2)
+	divu	#q68.coff,d1
+	move.w	d1,d4			; is 0 or 1
+	add.w	#sys_q8ct,d4		; point card in sysvars
+	moveq	#0,d0
+	trap	#1			; ptr to sysvars into A0
+	sf	(a0,d4.w)		; preset that card is SDHC
 
 ;;;;;  debug code ;;;;;---------------------------------
 	genif debug = 1
@@ -70,37 +78,25 @@ lp2dbf	dbf	d2,inilp2		; ... no, try again
 	bra	ini_err 		; if we get here, no correct answer from card
 
 ; here I got a valid reply , so cmd0 was successful
-; now try to send command 8
+; now try to send command8
 reply1
 	move.l	#$48000001,d0		; prepare cmd8
 	move.w	#$aa87,d1
 	bsr	snd_cmd 		; send command 8, return 1 + 4 more bytes
-	bne	ini_err 		; ooos
+	bne	ini_old 		; tx error, could be old card
 	cmp.b	#1,d1			; correct response?
-	bne	ini_err 		; no
+	bne	ini_old 		; no, could be old card, sd v. 1
 	bsr	readbyte		; 2
 	bsr	readbyte		; 3
 	bsr	readbyte		; 4
 	move.b	d0,d2			; keep 4th response byte
-	bsr.s	readbyte		; 5
+	bsr	readbyte		; 5
 	cmp.b	#1,d2			; 4th response byte must be 1
 	bne.s	ini_err 		; but it isn't
 	cmp.b	#$aa,d0 		; 5th response byte must be $aa
 	bne.s	ini_err 		; but is isn't
 
-; here I got a correct reply from command 8, now do command58
-	move.l	#$7a000000,d0
-	move.w	#$87,d1
-
-	bsr.s	snd_cmd 		; send command 58, 0 + 4 more bytes
-	bne.s	ini_err 		; oops on send command
-
-	bsr.s	readbyte		; 2
-	bsr.s	readbyte		; 3
-	bsr.s	readbyte		; 4
-	bsr.s	readbyte		; 5
-
-; now do cmd55 followed by acmd41
+; now do cmd55 followed by cmd41  (acmd41)
 	move.w	#$9fff,d2		; should be enough on a slow machine
 
 inilp3	move.l	#$77000000,d0		; send command 55 (special command to follow)
@@ -126,17 +122,25 @@ reply2
 	bsr.s	readbyte		; 3
 	bsr.s	readbyte		; 4
 	andi.b	#$40,d2 		; is this an SDHC card?
-	beq.s	ini_err 		; no! -->
-	moveq	#0,d0
-ini_out clr.b	drv_cs(a2)
+	bne.s	ini_ok			; ... yes, done
+
+blk_sz	move.l	#$50000002,d0		; ... no, try to set block size
+	move.w	#$ff,d1
+	bsr.s	snd_cmd 		; set block size
+	cmp.b	#0,d1			; correct reply?
+	bne.s	ini_err
+	move.b	#sys..q8sd,(a0,d4.w)	; card is SD card, in byte mode
+     
+ini_ok	moveq	#0,d0
+ini_out clr.b	drv_cs(a2)		; unselect drive
 out	movem.l (a7)+,inireg
 	tst.l	d0
 	rts
 		
-ini_err moveq	#err.mchk,d0
+ini_err st	(a0,d4.w)		; card type remains undetermined
+	moveq	#err.mchk,d0
 	bra.s	ini_out
 	
-
 ;+++
 ; This routine reads a byte from an sdhc card through bit-banging.
 ; A byte is read bit by bit, the MSB comes first.
@@ -207,7 +211,7 @@ got_rply
 	rts
 
 
-;+++++++++++++++++++++++
+;++++
 ; This routine sends a byte to an sdhc card through bit-banging.
 ; A byte is sent bit by bit, the MSb comes first.
 ;
@@ -216,7 +220,7 @@ got_rply
 ;      a2 c  p	pointer to interface base for the selected card
 ;
 ;      no error return
-;+++++++++++++++++++++++
+;++++
 
 sendbyte
 	moveq	#7,d1			; dbf for 8 bits
@@ -231,8 +235,43 @@ common	clr.b	drv_clk(a2)		; clock low
 	dbf	d1,sb_lp		; do for all bits
 	rts
 
+;++++++++++++++++++++++++++++++
+;
+; try to init a v.1 card
+;
+;++++++++++++++++++++++++++++++
+
+ini_old 				; do acmd41
+	move.w	#$9fff,d2		; should be enough on a slow machine
+inilp4	move.l	#$77000000,d0		; send command 55 (special command to follow)
+	move.w	#$87,d1
+	bsr.s	snd_cmd
+	bne	ini_err 		; pb on send command
+	move.l	#$69400000,d0		; send acmd41 (sd_send_op_cond)
+	move.w	#$87,d1
+	bsr.s	snd_cmd 		; reply will be 0 if success
+	bne	ini_err 		; if not, real problem
+	tst.b	d1			; check for correct reply from card
+	beq	blk_sz			; got correct reply, set block size
+	dbf	d2,inilp4		; didn't, so try again
+	bra	ini_err 		; if we get here, reply never was 0
 
 	end
+	      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;; debug
 

@@ -1,6 +1,8 @@
 ; SBAS_IEXPR - Interpreter Expression Evaluation     1992 Tony Tebby
 ;
-; 2006-04-01  1.01  Fixed return of 'date$()(20)', i.e. index of last char (MK)
+; 2006-04-01  1.01  Fixed return of 'date$()(20)', i.e. index of last char  (MK)
+; 2017-01-06  !!! abandoned change !!! 1.02  Check x is valid for a$(x to) and date$()(x to)	     (MK)
+; 2017-12-30  1.03  Fixed "retry-in-floating point" mechanism on overflow   (MK)
 
 	section sbas
 
@@ -999,7 +1001,7 @@ bof_ov
 	jsr	qa_lfloat		 ; float both
 	move.w	(a1)+,d2
 	move.l	(a1)+,d1
-	jmp	6(a2)			 ; do original op with floats
+	jmp	8(a2)			 ; do original op with floats
 
 ;--------------------------------
 bo_sub				 ; subtract

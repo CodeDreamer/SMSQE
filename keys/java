@@ -76,6 +76,7 @@ jt5.xorbk	equ	  34		;   set colours from stipple & xor block, mode 32
 jt5.xbkbm	equ	  35		;   xor block but don't set colours mode 32 or 16
 jt5.vers	equ	  36		;   get smsqmulator version
 jt5.wtit	equ	  37		;   set windowtitle
+jt5.sspl	equ	  38		;   get SSSS sample size
 
 jva.trp6	equ	$a006		; position pointer in java screen
 

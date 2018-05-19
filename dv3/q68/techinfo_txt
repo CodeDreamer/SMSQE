@@ -34,15 +34,9 @@ high memory
 
 
 
-
-
-
-
-
 low memory
 
 
 
- problems
-							       THESE 8 BYTES
-ATTENTION HDL_TARGET IS USED AS A BUFFER DO  NOT STAOR INFO IN
+							
+ATTENTION HDL_TARGET IS USED AS A BUFFER DO NOT STORE INFO IN THESE 8 BYTES

@@ -39,7 +39,7 @@ setup
 	move.w	#$2700,sr		 ; ... no, reset to normal
 	moveq	#9,d0
 	dc.l	$4e7b0002		 ; clear and enable cache
-	sf	sgo_x068(a6)		 ; do something
+	sf	sgo_scr2(a6)		 ; disable second screen
 	movem.l sgo_x200(a6),d0/d1/d2/d3/d4/d5/d6/d7 ; keep hitting this reg
 	move.l	#$28480,sp
 	moveq	#$20,d6 		 ; 68020?

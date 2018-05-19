@@ -1,72 +1,191 @@
-Different filing systems
 
+A small description of DV3 drivers
 
-Most DV3 device drivers are split into at least three parts
+For many device filing system device drivers, SMSQE uses DV3 compliant drivers.
+These drivers may offer a certain number of facilities through well established,
+and already existing (and coded!) mechanisms, thus immensely reducing the amount
+of coding a device driver writer will have to do. In many cases, a device driver
+writer would only have to care for the physical routines.
 
-From lower to higher level, these are :
+1 -  Basic structure
+
+DV3 device drivers are normally split into four parts.	From lower to higher
+level, these are :
 
 1 - The physical routines
-2 - the filesystem related routines
-3 - The i/o and related routine
-
-Mostly, the
-
-
-1 - The physical routines
-These are the routines that allow physical access to a drive, the most
-important ones being those that allow read/writing one sector. SMSQE accesses
-all read/write operations to the disk through 2 single routines: Read one
-sector (dv3_xxx_rsect_asm) and write one sector (dv3_xxx_wsect_asm).
-So every operation, even if only for a single byte will, in the end, always
-result in one sector being read/written.
-
-Other physical routines are :
-The routine to format a disk (xxx_mformat_asm), to check whether a disk is
-write protected (xxx_ckwp) or ready, to start/stop a drive and some others.
-
-It goes without saying that these routines are strictly dependent on the
-actual hardware (real or emulated).
-
-
 2 - The filesystem related routines
+3 - The I/O and other OS calls related routines
+4 - A control thing also used by the basic interface for certain device related
+    commands
+
+The important thing here to realise for a DV3 compliant device driver writer is
+that he doesn't need to care about levels 2 and 3. The routines for them already
+exist and can be used automatically.
+
+1.1 -  The physical routines
+These are the routines that allow physical access to a drive, the most important
+ones being those that allow read/writing one sector. SMSQE accesses all common
+read/write operations to the disk through 2 single routines: Read sectors
+(dv3_xxx_rsect_asm) and write sectors (dv3_xxx_wsect_asm).
+
+So every operation, even if only for a single byte, will, in the end, always
+result in one sector being read/written. The advantage is that a driver writer
+has to implement only these two routines to get, nearly automatically, a fully
+blown device driver.
+
+There are some other physical routines:
+The routine to format a disk (xxx_mformat_asm), to check whether a disk is
+write protected (xxx_ckwp), whether it is ready (e.g. to check that a drive door
+is closed), to start/stop a drive and some others. Most of these could be
+(safely) ignored, in which case the facility provided simply isn't there - for
+example, it wouldn't be possible to format a drive
+
+It goes without saying that these routines are strictly dependent on the actual
+hardware to be used (real or emulated).
+
+The files for the physical routines are usually placed in the dv3_ directory,
+making an appropriate subdirectory for each machine (e.g. dv3_gold_, dv3_atari,
+dv3_q40, dv3_qpc_ etc.).
+
+1.2 -  The filesystem related routines
 These are the routines that pertain to a specific file system. They contain
-info about the type of file system, and routines to handle file system
-specific tasks, such a figuring out which entry in a fat would belong to what
-file, how the root sector is to be handled, where sectors should be read from
-and written to etc.
+information about the type of file system, and routines to handle file system
+specific tasks, such a figuring out how a disk should be laid out, which entry
+in a FAT would belong to what file, how the root sector is laid out and to be
+handled, where sectors should be read from and written to etc.
+
+1.3 -  The I/O and other channel related routines
+These are the TRAP#2 and TRAP#3 channel and I/O routines. These are the routines
+that handle all I/O calls: opening and closing channels, all I/O calls to them
+(except for formatting), slave blocks, etc. These routines are there and they
+work  a device driver writer doesnt need to (re)write them. Most of the I/O
+routines are handled through a single point of entry contained in dv3_io_asm,
+channel opening and closing are handled elsewhere.
+
+1.4 -  The Control Thing
+The Control Thing implements the routines for the various basic commands usually
+associated with a DV3 device, notably XXX_USE. The keywords then use the Control
+Thing, through the mechanism provided by the sbsext_ut_proc_asm file. The
+Control Thing is an extension thing, it can thus also be called from machine
+code or other high level languages which have a mechanism for calling
+(extension) things.
+
+The Control Thing is usually called XXX Control, where XXX is the device name,
+e.g. WIN Control.
+
+A template Control Thing can be found in dv3_hd_thing_asm implementing many of
+the keywords. Here one picks and chooses. Some keywords (such as WIN_USE) will
+make sense for a device, others (such as WIN_SLUG) may not.
 
 
-Currently handled file systems
+2 -  File systems
 
-There are currently 3 groups of filesystems SMSQE knows about:
+2.1 -  Known file systems
+The dv3 driver considers that each disk is divided into sectors that are 512
+bytes long, and each device may use a different file system. There are currently
+3 groups of file systems SMSQE knows about:
 
-1 - QL5A/QL5B/QLWA
-This is the standard Qdos filesystem, used in floppies (QL5A/QL5B) and in
-hard disks (QLWA), be they real ones (Atari, Qx0) or qxl.win type container
-files.
-The files for this can be found in the dv3_qlf_ subdirectory.
+2.1.1	QL5A/QL5B/QLWA
+This is the standard QDOS file system, used in floppies (QL5A/QL5B) and in hard
+disks (QLWA). The latter may be actual physical drives (Atari, Qx0) or qxl.win
+type container files. The files for this file system can be found in the
+dv3_qlf_ subdirectory.
 
-2 - MSDOS
-This is the filesystem that can handle MSDOS Fat drives. For the time being,
-only FAT12 or FAT16 can be handled.
-There are two filesystems here:
+2.1.2	MSDOS
+This is the filesystem that can handle MSDOS type FAT drives (including Atari type hard disk partitions). For the time being, only FAT12 or FAT16 formatted disks can be handled.
+
+There are two file systems here:
+
+--  Fat12 and small Fat16
 The files that are in the  dv3_msd_ subdirectory can handle FAT12 and small
 FAT16 drives (not more that 32 MiB) - mostly used, I believe, to read DOS
-floppy disks.
+floppy disks and perhaps "small" native partitions on Atari and Qx0 (remember,
+at the time SMSQE came out, 32 MiB were pretty huge!).
 
-The files that are in the  dv3_msd16_ subdirectory can handle larger
-FAT16 drives but this is still limited : the FAT16 partition must be bigger than
-32 MiB and smaller then 256 MiB.
+--  Medium sized Fat16
+The files that are in the  dv3_msd16_ subdirectory can handle larger FAT16
+drives - but this is still limited: the FAT16 partition must be bigger than 32
+MiB and smaller then 256 MiB. Actually, this should be a FAT16 partition
+formatted with 512 byte sectors, each cluster holding 8 sectors.
 
+2.1.3	QUBIDE (experimental)
+This will handle the first partition of a Qubide formatted disk, either a real
+one or a container file. The files for this are in the dv3_qw1_ subdirectory.
 
-The system should automatically recongnize what format a drive is for.
+2.2 -  Using the file systems
+The file system is basically independent of the physical drives. SMSQE should
+automatically recognize what file system (format) a drive is for, without further input from the device driver writer. For this, each filing system contains a "table" :
 
-For this each filing system contains a "table", e.g dv3_qlf_table_asm.
-This refers to the msd_table, so that a chain of tables exist.
+    " qlf_table to be found in dv3_qlf_table_asm for QDOS QLWA drives;
+    " qw1_table to be found in dv3_qw1_table_asm for Qubide QLW1 drives;
+    " msd_table to be found in dv3_msd_table_asm for MSDOS FAT12 and FAT16 (small) drives;
+    " msd_table to be found in dv3_msd16_table_asm for MSDOS FAT16 (medium) drives.
+(Note that the last two are mutually exclusive).
 
+If a device driver writer wants his device to recognize a specific format, the corresponding table should be specifically included, like so :
+	lea	qlf_table,a1
+	jmp	dv3_addfd
+For an example, look at smsq_atari_driver_dv3_asm.
 
+The tables are chained tables, so, for example, the qw1_table refers to  the qlf_table which in turn refers to the msd_table. By linking in the first, all three are linked in. If only the qlf  table is wanted, without the msd table, make a copy of the qlf_table file, delete the link to the msd table in there and include that in the compilation.
 
+Each filing system should contain a check routine, to check whether a certain device is, indeed, formatted to this file system	see, e.g. dev3_qlf_check_asm. If the check routine doesnt recognise that the device is formatted for it, it should return ddf.unrec (=2) in D0.
+3 -  Writing a DV3 device driver
+Writing a DV3 device driver using an existing file system thus mainly involves writing the necessary physical routines and the initialisation routine for the driver, and then lining them with all the rest of the DV3 system. 
+
+As an example for the linking part, look at smsq_gold_dv3_asm and ...link.
+
+The initialisation is done via an init routine which uses a pretty standard approach. Templates for this mechanism can be found in dv3_gold_init_asm (for floppies), dv3_q40_hd_init_asm or dv3_qpc_hd_init_asm for hard disks. These contain standard tables which a device driver writer can just copy/adapt.
+
+DV3 device drives also depend on the device definition block being set up in a standard way, and containing information in a standard way at standard offsets. The structure of that can be found in dv3_keys in general, dv3_hd_keys for additional offsets for device definition blocks for hard disks, and dv3_fd_keys for  device definition blocks for floppy disks.
+4 -  Slave blocks
+4.1 -  Mechanism
+As mentioned above, all actual read/write to the disk go through two single routines, one for reading (xxx_rsect_asm) sectors and one for writing sectors (xxx_wsect_asm). On entry to these routines, a register (D2) contains an unsigned byte with the number of (contiguous!) sectors that should be read (from 1 to 255), and the start sector.
+
+Thus, for example to read a single byte somewhere in a file, the system will first identify the sector on the disk containing that byte, read that entire sector in by calling the sector read routine, and return the byte from the sector just read to the programme having made the I/O call.
+
+Considering this scheme, it makes sense to keep this sector in memory as long as possible or needed, so that, if another byte is to be read from the same sector, it can be read directly from the copy in memory instead of the disk. This is the idea behind slave blocks, which are nothing other than buffers for sectors on the disk + a header containing information about the slave block itself.
+
+Likewise, if a byte is to be written to the disk, the system checks whether the sector in question is already buffered in a slave block and if so, writes to the slave block. If not, the corresponding sector is read in, or, if this write operation would extend the size of the file, a new slave block is created. Each slave block that was written to is marked as dirty, and will be written back to te disk in regular intervals in an interrupt routine.
+4.2 -  Memory used by slave blocks
+SMSQE basically uses all available memory for slave blocks. If memory is needed for other uses and occupied by slave blocks, then slave blocks are freed, and, if dirty, written back to the disk.
+
+This unfortunately also means that, on systems with lots of memory, searching through the list of slave blocks for a particular slave block may take quite some time, which is why on those systems SMSQE uses a special mechanism to limit the amount of slave blocks it will use (see smsq_mem_1mb_asm).
+5 -  Bulk reading and writing
+The disadvantage of the slave block scheme as described above is that when reading large consecutive parts of the file, for each sector first a slave block must be created, the sector then read into the slave block and the content of the slave block then copied to the final destination. This is counter-productive if no further operation on the file itself is made. For example, when EXECuting a fil, or LRESPRing it, generally all one wants is to load the file as quickly as possible into memory. The slave block mechanism slows this down.
+
+To get around this, a special mechanisms exists for certain operations (only one at present), which does not use slave blocks (!) and works as follows:
+
+First of all, each device driver can tell the system how many consecutive sectors it can read in one go - up to 255. This is the meaning of the macro called "msect" in the xxx_init_asm" files (e.g. dv3_q68_ win_init_asm)  when a device driver is being set up via the "dv3_link" routine contained in dv3_dv3_link_asm.
+
+So, if a device driver sets that if can read, say, 10 sectors in one operation, SMSQE can tell it so read 10 sectors at once (provided the sectors are contiguous), which means that instead of calling the sector read routine 10 times, it is called only once, but fills in 10 sectors. This is itself already speeds up the operation. Now one must simply circumvent the use of slave blocks, and copy the ata directly into the destination memory.
+
+When a drive (not device) is set up, a certain number of pointers to different routines are filled out in the drive definition block (the keys for this can be found in dv3_keys). For example, these are pointers to routines used to make directories, or format a drive etc... Some of these routines are format dependant, which means that they depend on the file system that is being used: formatting drive to MSDOS format isn't the same as formatting it to QDOS format, other are not.
+
+Two of these letter routines are those for reading/writing an entire file (not just part of it), corresponding to TRAP#3, with D0= iof.load ($48) to load an entire file, and iof.save ($49) to save it.
+
+As all I/O operations for DV3 devices are all handled through dv3_io_asm, there you can find the labels:
+
+io_load
+    jmp    ddf_sload(a4)     (for iof.load)
+io_save
+    jmp    ddf_ssave(a4)     (for iof.save)
+
+with A4 pointing to the drive definition block
+
+These I/O operation thus jump to routines set up in the drive definition block. These are set up in "dv3_dv3_link_asm" using the "vectors" dv3_sload and dv3_ssave. These in turn are set up in dv3_dv3_buff_asm (which uses slave blocks and is thus not faster.) - but they may be replaced by routines specific to each file system..
+
+Thus, for standard QDOS file systems, dv3_sload is defined in dv3_qlf_ldwa_asm (for QLWA). That routine actually does not use slave blocks but identifies (from the FAT) contiguous sectors for a file and then calls the sector read routine indicating to read as many sectors as possible/needed. The content of these sectors is copied directly into the final destination, not into slave blocks.
+
+Unfortunately, this is not true for the corresponding dv3_ssave: there is no replacement routine in for this in the QLWA file system, so this save operation will always be slower, as first slave blocks are created, the content of the file copied to them and the slave blocks then written out one by one (!) to the disk.
+
+Moreover, to my knowledge, the standard QDOS file systems are the only ones containing a replacement dv3_sload routine, neither MSDOS nor QLW1 file systems contain something similar.
 
 
 W. Lenerz
-June 2017
+May 2018
+
+
+NB. This document is probably not exempt from error. If you find any, please point them out to me, so that I can correct them.
+
+Todo : explain the format of the init table and how this is all tied together

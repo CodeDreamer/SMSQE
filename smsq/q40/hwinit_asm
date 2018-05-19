@@ -24,6 +24,8 @@
 * 2003-09-27	v. 2.00 (?)	added OSPS config item
 * 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
 * 2005-11-12	V. 2.02 	better cache handling (TG)
+* 2018-03-30	V. 2.03 	new config tem (boot from floppy?)
+*				don't use trap#0 at 2.02
 
 
 	section hwinit
@@ -31,7 +33,6 @@
 	xdef	sms_wbase
 
 	xref	q40_prtype
-
 	xref	smsq_end
 
 	include 'dev8_keys_q40'
@@ -97,6 +98,10 @@ qcf_bgio	dc.b	0	; 1f
        {Set up MMU for QLiberator}\
 	0,N,{No},$ff,Y,{Yes}
 
+	mkcfitem 'OSPF',code,'M',qcf_bflp,,,\
+       {Try to boot from floppy}\
+	0,N,{No},$1,Y,{Yes}
+      
 	mkcfitem 'OSPK',word,'L',qcf_mlan,,,\
        {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
@@ -257,12 +262,11 @@ hwi_ram_check
 hwi_ram_over
 	jsr	q40_prtype		; determine processor type (d6)
 	btst	#25,d6			; Q40? . .  **** NEW
-	beq	hwi_q40 		; . . yes   **** NEW
-
+	beq.s	hwi_q40 		; . . yes   **** NEW
 
 ; 2.02
 	move.w	sr,d2			; save current state (supervisor/user mode)
-	trap	#0			; go to supervisor mode if not already in it.
+;	 trap	 #0			 ; go to supervisor mode if not already in it.
 
 	gcreg	pcr,d0			; get the configuration register value.
 	move.w	d0,d1
@@ -279,7 +283,6 @@ not_buggy
 
 ; end 2.02
 hwi_q40 				; **** NEW
-
 	move.b	qcf_mmu,d0		; set up MMU?
 	beq.s	hwi_setRAM
 	assert	sys.immu,1
@@ -309,7 +312,6 @@ hwi_setRAM
 	lea	mod_table,a4		; module table
 	lea	sms_wbase,a3		; write to base
 	lea	qcf_cx,a2		; config block
-
 	jmp	(a0)
 
 ; smsq write to base area routine
@@ -330,7 +332,7 @@ mod_table
 mmu.ptr  equ	%11+%01000		; resident + used
 mmu.cpmode equ	%11+%11000+%0100000	; resident + used and modified + copyback
 
-hwi_mmuset
+hwi_mmuset ;  bra.s	 *
 	lea	mmu.ptr(a4),a1
 	move.l	#$04000000+mmu.cpmode,a0 ; 64 Mbyte limit
 	move.w	#$04000000/$2000-1,d0	; 8k pages (8k entries)

@@ -1,0 +1,112 @@
+Making compressed ROMS for the Qx0.
+
+
+Later versions	of SMSQ/E are too large to  fit into the 256 KiB EPROMs
+for the Qx0. Up to recently, this didn't bother me very much, as I just
+LRESPR'd the latest version from the hard disk.
+
+However, version 3.32 of SMSQ/E introduced the possibility to use disks
+containing  QXL.WIN  style  container  files  as  "hard  disks".  This,
+combined with a suitable adapter, allowed me to use SDHC cards with the
+Qx0, and  I wanted a machine  that no longer used  the old rotating IDE
+hard disks at all, using, instead, only memory cards.
+
+However, this  was a typical  chicken and egg  problem : how  do I load
+SMSQ/E	from an SDHC Card if the driver  for that is only in the SMSQ/E
+that is to be loaded? I could make a boot floppy, but even for the Qx0,
+this is pretty antiquated.
+
+The  best thing would be to burn the  new SMSQ/E into EPROMs - but that
+wouldn't  work with the standard EPROMs... So the solution is to make a
+compressed  version of SMSQ/E  with a special  header that decompresses
+SMSQ/E on reset.
+
+This is the result.
+
+
+How to proceed:
+
+
+Basically, the steps required to produce valid EPROMs with a compressed
+SMSQ/E are as follows:
+
+- use the latest normal Qx0 SMSQ/E file (the single file, not the split
+up EPROM files),
+- configure it to your taste,
+- compress it with gzip (not zip),
+- add  a special ROM  header in front  of the compressed  file and POKE
+some value into it,
+- split up the resulting file into two EPROM files.
+
+
+I  made a small  Basic program that  automates this process.  It can be
+found in "smsq_q40_boot_make_bas" in the SMSQ/E sources.
+
+
+Requirements:
+
+You will  need the SMSQ/E sources and  the standard compiled binary for
+the Qx0 version of SMSQ/E. Both can be obtained from wlenerz.com/smsqe.
+The  sources should be on a device  called "dev8_" the usual device for
+the  SMSQ/e sources. Copy the latest version of the Qx0 SMSQ/E binaries
+to "dev8_smsq_q40_rom".
+ 
+In addition to the SMSQ/E files, you will need a program called "gzip".
+This can  be obtained from  Dilwyn Jones' site  (archivers section). If
+you want to auto-configure the rom,  you  will	also  need  the  LATEST
+version of  menuconfig (i.e. version  3.36). Please do	not use earlier
+versions if you want to use the supplied basic program.
+
+Install these  two programs  in your  program directory before starting
+operations.
+
+Then proceed  to configure the latest  "dev8_smsq_q40_rom" ONCE to your
+liking	with  menuconfig.  Leave  menuconfig,  and,  when  leaving  the
+menuconfig  program,  please allow  it to UPDATE  menuconf_inf. This is
+important as later configurations will use that configuration info. You
+only have to do this once, not every time you make the EPROMs, not even
+with a new version of SMSQ/E that comes out..
+
+
+Using make_bas
+ 
+- Make sure that you have met the requirements set out above.
+
+- Run  the "dev8_smsq_q40_boot_make_bas"  SBasic program.  It assumes
+that all the necessary SMSQ/E files lie on "dev8_".
+
+ - The programs  asks you whether  you wish to	assemble SMSQ/E first
+(y/n). There should be no reason for this.
+
+- The  programs asks  you whether  you wish  to configure  SMSQ/E now
+(y/n). This presumes that you have configured it once as set out above.
+If you	say yes, SMSQ/E  will be automatically	configured, without any
+further need for intervention by you.
+
+-  The program now compresses  the file. Hit enter  when the the gzip
+program is finished - unfortunately it doesn't leave by itself.
+
+- The program now  makes the  two (HI  and LO)	EPROMs. It  tells you
+where is made them.
+
+Now you're done - burn the Eproms and insert them into the Qx0.
+
+
+Doing it by hand.
+IF you don't want to use the make program, here are some pointers:
+
+Compress the resulting file with Gzip.
+Compression must  be made  with the  '-n' option.  I use  the following
+command  line : ex gzip;"-f -n  dev8_smsq_q40_rom". Note that this does
+not  keep  the	original   file.   The	 resulting   file   is	 called
+"dev8_smsq_q40_rom_gz".
+
+The   special	header	  for	the    compressed   file    is	 called
+"DEV8_smsq_q40_boot_compr_rom".
+
+Have a	look at the mk_file procedure in  the basic program - make sure
+you poke the required values where they need to be.
+
+
+Have fun!
+W. Lenerz
