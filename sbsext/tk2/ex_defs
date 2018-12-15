@@ -1,0 +1,12 @@
+* ex stack definitions
+*
+*
+ex_frame equ	$1c
+job_wait equ	$1a
+parm_st  equ	$16
+opt_ptr  equ	$12
+pipe_end equ	$0e
+pipe_in  equ	$0c
+pipe_out equ	$08
+top_id	 equ	$04
+job_id	 equ	$00

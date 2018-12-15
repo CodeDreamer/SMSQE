@@ -1,6 +1,5 @@
 program dev8_sbsext_tk2_rom_net
 
-gst
 filetype 0
 
 section header

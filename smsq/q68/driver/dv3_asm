@@ -47,6 +47,7 @@ init	moveq	#0,d0
 					; always be an SDHC card. This is
 					; certainly true on a cold reset; but
 					; not necessarily on a warm reset.
+
 	jsr	dv3_init		; initialise
 	lea	qw1_table,a1
 	jsr	dv3_addfd

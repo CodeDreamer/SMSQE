@@ -6,6 +6,8 @@
 ; 2004-05-15	2.06	Added keyword EX_M (wl)
 ; 2006-01-10	2.07	Added function JOBID (pjw)
 ; 2014-06-08	2.08	Added function FEX_M (pjw)
+; 2018-11-22	2.09	Added keyword SUSJB (pjw)
+
 
 	section procs
 
@@ -82,6 +84,7 @@ sb_tk2procs
 	proc_def JOBS			; job control
 	proc_def RJOB
 	proc_def SPJOB
+	proc_def SUSJB
 	proc_def AJOB
 	proc_def RECHP			; common heap handling
 	proc_def CLCHP

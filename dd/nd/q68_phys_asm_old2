@@ -46,7 +46,7 @@ nd_read
 	bsr.l	ndt_wact
 	bne.s	nd_e2_nc
 *
-* Gap found, look for scout for 20ms (50us active)
+* Gap found, look for scout for 20ms =20000 °s	(50us active) =20000 °s
 *
 	moveq	#ndt_lsct,d0		wait 20ms
 	bsr.l	ndt_wact

@@ -129,6 +129,7 @@ dem_start
 	moveq	#0,d2
 	move.w	(sp)+,d2		 ; memory space * 65536
 	swap	d2
+   trap #14
 	lsr.l	#6,d2			 ; ... * 1024
 	move.l	(sp)+,d4		 ; Psion job ID
 	sub.l	d2,d1			 ; spare space

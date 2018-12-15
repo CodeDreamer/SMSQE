@@ -1,9 +1,8 @@
 program dev8_sbsext_tk2_rom
 
 ; Pad ROM to 16kb
-ex win1_sbsext_tk2_rom_pad_bas
+ex dev8_sbsext_tk2_rom_pad_bas
 
-gst
 filetype 0
 
 section header

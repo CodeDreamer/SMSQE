@@ -1,12 +1,14 @@
 ; DV3 QLSD SDHC Card Read Sector  1.01	  2016-2018 W. Lenerz	& Marcel Kilgus
 ;
-; 1.01 Added multiblock read
+;	      1.01  Added multiblock read
+; 2018-06-12  1.02  Added hd_rscard_api (MK)
 
 	section dv3
 
 	xdef	hd_rdirect		; direct read sector
 	xdef	hd_rsint		; internal read sector
 	xdef	hd_rscard		; read card sector
+	xdef	hd_rscard_api		; read card sector (external)
 	xdef	hd_ckroot		; read root sector
 
 	xref	hd_hold 		; reserve the interface
@@ -22,28 +24,48 @@
 readreg reg	d1/d2/d3/d6/d7/a1/a2/a4
 
 ;+++
-; This routine reads a sector from an sdhc card.  The sector number is that of
-; the absolute sector on the SDHC card.
+; External API for reading absolute sectors from a SD card.
+;
+;	d0 cr	sector number (abs or rel to partition) / error code
+;	d2 c  p number of sectors to read (1 = 1 sector, 2 = 2 sects etc)
+;	d7 c  p card number (1 to 3)
+;	a1 c  p address to read into, MUST be large enough to hold the total nbr of sectors requested
+;	a3 c  p linkage block
+;
+;	status return 0 or ERR.MCHK
+;---
+hd_rscard_api
+	andi.w	#3,d7
+	beq.s	err_ipar
+	bset	#7,d7			; mark as "card number" for card_select
+	bra.s	hd_rscard
+
+err_ipar
+	moveq	#err.ipar,d0
+hdr_exit
+	rts
+
+;+++
+; This routine reads a sector from an sdhc card.
+;
+; For hd_rscard the sector number is absolute to the SD card, all other take
+; a sector number relative to the mounted partition file.
+;
 ; All normal read accesses to the card go through here.
 ; Read is done via background transfer.
 ;
-;	d0 cr	absolute sector (=block) number  / error code
+;	d0 cr	sector number (abs or rel to partition) / error code
 ;	d1    p
 ;	d2 c  p number of sectors to read (1 = 1 sector, 2 = 2 sects etc)
 ;	d7 c  p drive ID / number  (from 1 to 8)
-;	a1 c  p address to read into , MUST be large enough to hold the total nbr of sectors requested
+;	a1 c  p address to read into, MUST be large enough to hold the total nbr of sectors requested
 ;	a3 c  p linkage block
 ;	a4 c  p drive definition (not for hd_rscard)
 ;
 ;
 ;	status return 0 or ERR.MCHK
-;	The sector number is for sectors 512 bytes long. The QLSD interface needs
-;	a sector (block) position starting from the very first sector.
+;	The sector number is for sectors 512 bytes long.
 ;---
-hdr_exit
-	rts
-
-
 hd_ckroot
 	moveq	#0,d0			; root sector
 	moveq	#1,d2			; one sector only
@@ -58,6 +80,7 @@ hd_rscard
 	movem.l readreg,-(a7)
 
 	move.l	d0,d6			; sector to get
+
 	bsr	card_select		; select the card. Sets a2/a4!
 	bne.s	hdr_rts 		; ...didn't work
 

@@ -1,4 +1,6 @@
-; QLSD init code 1.00				 W. Lenerz + M. Kilgus 2018
+; QLSD init code 1.01				 W. Lenerz + M. Kilgus 2018
+;
+; 2018-29-05  1.01  Output the recognised hardware revison (MK)
 
 	section init
 
@@ -43,10 +45,42 @@ set_os	move.b	d0,qlsd_os(a3)
 
 	moveq	#1,d5			; init drive 1
 	jsr	inicrd
-	lea	txt.nf(pc),a1
+	move.l	d0,d7			; remember error for later
+
+; Output hardware version information
+	move.l	ini.a0(sp),a0		; channel ID
+	move.w	ut.wtext,a2
+	lea	txt.hw(pc),a1		; "QLSD"
+	jsr	(a2)
+
+	lea	if_base,a1
+	move.b	if_enable(a1),d1	; Reference ROM byte
+	move.b	if_version(a1),d0	; Read hardware version register
+	lea	txt.v1(pc),a1		; "v1"
+	cmp.b	d0,d1			; v1 has ROM at if_version...
+	beq.s	write_hw		; ... so it should match if_enable
+	andi.b	#if.ver_mask+if.io_mode,d0
+
+	lea	txt.sw(pc),a1		; "v2 (switch)"
+	cmp.b	#if.ver_v2+if.io_mode,d0
+	beq.s	write_hw
+
+	lea	txt.sp(pc),a1		; "v2 (SPI)"
+	cmp.b	#if.ver_v2,d0
+	beq.s	write_hw
+
+	lea	txt.un(pc),a1		; "unknown"
+write_hw
+	jsr	(a2)			; HW revision
+
+	lea	txt.c1(pc),a1		; "card 1"
+	jsr	(a2)
+
+	lea	txt.nf(pc),a1		; "not found"
+	tst.l	d7
 	bne.s	write_msg		; no card, don't mess with driver name
 
-	lea	txt.in(pc),a1
+	lea	txt.in(pc),a1		; "initialised"
 	tst.l	ini.d7(sp)		; ROM start?
 	bne.s	write_msg		; ... no, don't fake MDV name
 
@@ -57,8 +91,6 @@ set_os	move.b	d0,qlsd_os(a3)
 	move.l	#'MDV0',ddl_dnuse+2(a3) ; Fake MDV name so we can auto-boot
 	st	qlsd_fake(a3)		; Remember that we faked it
 write_msg
-	move.l	ini.a0(sp),a0		; channel ID
-	move.w	ut.wtext,a2
 	jsr	(a2)
 
 	movem.l (a7)+,inirgs
@@ -75,7 +107,13 @@ procs
 	proc_stt
 	proc_end
 
-txt.nf	mkstr	{Card 1 not found\}
-txt.in	mkstr	{Card 1 initialised\}
+txt.hw	mkstr	{H/W }
+txt.v1	mkstr	{v1}
+txt.sw	mkstr	{v2 (Sw)}
+txt.sp	mkstr	{v2 (SPI)}
+txt.un	mkstr	{unknown}
+txt.c1	mkstr	{: Card 1 }
+txt.nf	mkstr	{not found\}
+txt.in	mkstr	{initialised\}
 
 	end

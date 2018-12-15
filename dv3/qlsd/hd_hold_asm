@@ -1,4 +1,6 @@
 ; DV3 QLSD Hold / Release controller				 2018 M. Kilgus
+;
+; 2018-06-10  1.01  Mark card as recently used on release (MK)
 
 	section dv3
 
@@ -40,6 +42,12 @@ hdh_nc
 ;	status return accoding to d0
 ;---
 hd_release
+	movem.l d7/a2,-(sp)
+	lea	hdl_unit-1(a3),a2	    ; offset >8 bit, so explicit lea
+	move.b	(a2,d7.w),d7		    ; card nbr (1...3)
+	bset	d7,qlsd_crdused(a3)	    ; mark card as used
+	movem.l (sp)+,d7/a2
+
 	move.b	hdl_apnd(a3),hdl_actm(a3)   ; ... let it go
 	bclr	#7,qlsd_lock(a3)	    ; release device
 	tst.l	d0

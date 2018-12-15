@@ -1,4 +1,6 @@
-; QLSD Send a command to an SDHC   1.00 	 2018 W. Lenerz + M. Kilgus
+; QLSD Send a command to an SDHC   1.01         2018 W. Lenerz + M. Kilgus
+;
+; 2018-06-10  1.01  card_select optionally takes a card number (MK)
 
 	section dv3
 
@@ -14,15 +16,17 @@
 ;+++
 ; Select card
 ;
-;	d7 cr	drive number 1..8 / card number 1..3
+;	d7 cr	drive number 1..8 or card nmbr+128 / card number 1..3
 ;	a2  r	pointer to interface base
 ;	a3 c  p pointer to DDB
 ;	a4  r	pointer to spi_xfer
 ;---
 card_select
+	bclr	#7,d7
+	bne.s	was_card_number
 	lea	hdl_unit-1(a3),a2
 	move.b	(a2,d7.w),d7		; card nbr (1...3)
-
+was_card_number
 	move.l	#if_base,a2
 	move.l	#spi_xfer,a4
 	tst.b	spi_select0(a2,d7.w)	; select the card

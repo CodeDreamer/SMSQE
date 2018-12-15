@@ -1,4 +1,6 @@
 ; DV3 QLSD Check Ready Drive					 2018 M. Kilgus
+;
+; 2018-06-10  1.01  Use new qlsd_crdused flags instead of hdl_actm (MK)
 
 	section dv3
 
@@ -27,8 +29,9 @@
 reg.ckrdy reg	d2/d5/a1/a2
 hd_ckrdy
 	movem.l reg.ckrdy,-(sp)
-
-	tst.b	hdl_actm(a3)		; was there action recently ( <2s )
+	lea	hdl_unit-1(a3),a1
+	move.b	(a1,d7.w),d5		; card nbr (1...3)
+	btst	d5,qlsd_crdused(a3)	; was card recently in use ( <2s )
 	bne.s	hcrw_ok 		; ... yes, don't check for card change
 
 ; Check if update count in root sector has changed
@@ -37,8 +40,6 @@ hd_ckrdy
 	beq.s	hcrw_check		; ... success, check if changed
 
 ; Read failed, try to initialise card
-	lea	hdl_unit-1(a3),a1
-	move.b	(a1,d7.w),d5		; card nbr (1...3)
 	jsr	inicrd
 	bne.s	hcrw_err		; defective or missing card
 

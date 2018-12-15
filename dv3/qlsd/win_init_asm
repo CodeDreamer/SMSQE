@@ -1,4 +1,6 @@
-; DV3 QLSD SDHC (WIN) Driver initialisation 1.00  2018 W. Lenerz + M. Kilgus
+; DV3 QLSD SDHC (WIN) Driver initialisation 1.01  2018 W. Lenerz + M. Kilgus
+;
+;	1.01	refer to new vectors (after hdl_ststp) (mk)
 ;
 ; based on
 ;
@@ -13,6 +15,7 @@
 
 	xref	dv3_link
 	xref	qlsd_1sec
+	xref.l	qlsd_vers
 
 	xref	gu_fopen
 	xref	gu_fclos
@@ -93,6 +96,12 @@ hd_table
 	preset_v	hdl_lock,hd_lock
 	preset_v	hdl_unlock,hd_unlock
 	preset_v	hdl_ststp,hd_ststp
+
+	preset_l	qlsd_magic,qlsd.magic
+	preset_l	qlsd_version,qlsd_vers
+	preset_v	qlsd_rscard,hd_rscard_api
+	preset_v	qlsd_wscard,hd_wscard_api
+	preset_v	qlsd_inicard,inicrd
 
 	link_end	hdl_buff
 

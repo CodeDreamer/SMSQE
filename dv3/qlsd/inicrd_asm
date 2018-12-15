@@ -1,5 +1,7 @@
 ; QLSD Initilaise an SHDC card (via bit-banging)      1.00 (C) W. Lenerz 2017
 ;
+; 2018-06-11  1.01  Take the QLSD hardware lock before initialising card (MK)
+
 	section procs
 
 	xdef	inicrd
@@ -7,9 +9,6 @@
 	include 'dev8_dv3_qlsd_keys'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_err'
-
-
-inireg reg     d1/d2/d3/a2
 
 ; algo :
 ; put into spi mode
@@ -19,22 +18,40 @@ inireg reg     d1/d2/d3/a2
 ; cmd55
 ; cmd58
 
+inireg	reg	d1/d2/d3/d5/a2
 
 ;+++
 ; This routine initialises an sdhc card
 ; *** read/write via bit bang
 ;
 ;	d5 c  p card number (1...3)
+;	a3 c  p driver linkage block
 ;
-;	status return 0 or ERR.MCHK
+;	status return 0, ERR.MCHK or ERR.FDIU
 ;---
-inicrd	movem.l inireg,-(a7)
+inicrd	andi.w	#3,d5
+	beq.s	err_ipar
+	movem.l inireg,-(a7)
+	move.l	hdl_1sec(a3),d0 	; something like one second timeout
+lock_wait
+	bset	#7,qlsd_lock(a3)	; prevent poll from accessing device
+	beq.s	lock_ok 		; got the lock, proceed
+	subq.l	#3,d0
+	bgt.s	lock_wait
+	movem.l (a7)+,inireg
+	moveq	#err.fdiu,d0		; still in use, give up
+	rts
+
+err_ipar
+	moveq	#err.ipar,d0
+	rts
+
+lock_ok
 	move.w	#SPI_SELECT0,d3
 	add.w	d5,d3
 	move.l	#IF_BASE,a2		; point to card physical addresses
 
 ; set interface to a known state
-
 	tst.b	IF_RESET(a2)		; reset the IF
 	tst.b	IF_ENABLE(a2)		; enable it
 	tst.b	SPI_SELECT0(a2) 	; deselect all
@@ -78,7 +95,7 @@ reply1
 	move.b	d0,d2			; keep 4th response byte
 	bsr	readbyte		; 5
 	cmp.b	#1,d2			; 4th response byte must be 1
-	bne.s	ini_err 		; but it isn't
+	bne	ini_err 		; but it isn't
 	cmp.b	#$aa,d0 		; 5th response byte must be $aa
 	bne.s	ini_err 		; but is isn't
 
@@ -121,11 +138,12 @@ reply2
 	bsr.s	readbyte		; 4
 	andi.b	#$40,d2 		; is this an SDHC card?
 	beq.s	ini_err 		; no! -->
-	tst.b	SPI_XFER_FAST(a2)	; yes, allgood, set fast commo mode
+	tst.b	SPI_XFER_FAST(a2)	; yes, all good, set fast commo mode
 	moveq	#0,d0
 ini_out move.w	(a7)+,sr
 	tst.b	SPI_SELECT0(a2) 	; deselect all
-out	movem.l (a7)+,inireg
+ini_rts movem.l (a7)+,inireg
+	bclr	#7,qlsd_lock(a3)	; release device
 	tst.l	d0
 	rts
 		

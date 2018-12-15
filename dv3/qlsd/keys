@@ -5,28 +5,44 @@
         include 'dev8_dv3_keys'
         include 'dev8_dv3_hd_keys'
 
+qlsd.maxcard    equ     3               ; We support up to 3 cards
+
 ; Extended driver definition block
-.q              equ     hdl_end
-qlsd_lock       equ     .q+$00            ; Lock poll from writing cache
-qlsd_fake       equ     .q+$01            ; Remember if we faked MDV for auto boot
-qlsd_os         equ     .q+$02            ; Detected operating system
-qlsd.smsq       equ     0                 ; zero
-qlsd.minerva    equ     1                 ; positive
-qlsd.qdos       equ     -1                ; negative
-qlsd_names      equ     .q+$04            ; 8 * space for QXL.WIN filenames
+.q             equ     hdl_end
+qlsd.magic      equ     'QLSD'          ; ID for 3rd party software
+qlsd_magic      equ     .q+$00
+qlsd_version    equ     .q+$04          ; Driver version
+qlsd_rscard     equ     .q+$08          ; Read card sector
+qlsd_wscard     equ     .q+$0E          ; Write card sector
+qlsd_inicard    equ     .q+$14          ; Initialise card
+qlsd_lock       equ     .q+$1A          ; Lock poll from writing cache
+qlsd_os         equ     .q+$1B          ; Detected operating system
+qlsd.smsq       equ     0               ; zero
+qlsd.minerva    equ     1               ; positive
+qlsd.qdos       equ     -1              ; negative
+qlsd_crdused    equ     .q+$1C          ; bits set for cards recently used
+qlsd_fake       equ     .q+$1F          ; Remember if we faked MDV for auto boot
+qlsd_names      equ     .q+$20          ; 8 * space for QXL.WIN filenames
 qlsd_end        equ     qlsd_names+8*16
 
 ; Extended physical definition block
-sdf_partoffset  equ     ..+$00            ; LBA block address of container file
+sdf_partoffset  equ     ..+$00          ; LBA block address of container file
 
 ; Hardware keys. We only support the current hardware version
 if_base         equ     $fee0
 spi_xfer        equ     $ff00
-spi_bg_read     equ     $00ff             ; offset to spi_xfer
+spi_bg_read     equ     $00ff           ; offset to spi_xfer
 
 if_enable       equ     $00
 if_disable      equ     $01
 if_reset        equ     $02
+if_version      equ     $03             ; Hardware revision bit register
+if.ver_mask     equ     $0F             ; Version mask
+if.ver_v2       equ     $01             ; V2 version
+if.io_mode      equ     $10             ; 0 = 3rd SPI channel, 1 = switch version
+if.io_pin4      equ     $20             ; 0 = 48kb ROM space disabled
+if.io_pin2      equ     $40             ; State of PIN IO2
+if.io_pin1      equ     $80             ; State of PIN IO1
 spi_read        equ     $04
 spi_xfer_fast   equ     $06
 spi_xfer_slow   equ     $08

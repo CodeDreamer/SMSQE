@@ -1,4 +1,4 @@
-100 REMark   THIS PROGRAMS MAKES THE HTML FILE ""NFA2_versions.html" "
+100 REMark   THIS PROGRAM MAKES THE HTML FILE ""NFA2_versions.html" "
 110 REMark   USED ON THE SMSQE WEBSITE.
 120 :
 130 REMark   THE RESULTING FILES ARE COPIED TO NFA2_
@@ -9,7 +9,7 @@
 180 :
 190 REMark   THE INFO IS TAKEN FROM THE "dev8_smsq_smsq_version_asm" FILE.
 200 :
-210 REMark   THIS PROGRAM IS COPYRIGHT (C) W. LENERZ 2004-2013
+210 REMark   THIS PROGRAM IS COPYRIGHT (C) W. LENERZ 2004-2018
 220 REMark   ALL RIGHTS RESERVED.
 230 :
 240 p
@@ -111,8 +111,8 @@
 1200 END DEFine ginput$
 1210 :
 1220 DEFine PROCedure p
-1230   make_into_html  "dev8_smsq_smsq_version_asm";"NFA2_versions.html"
-1240   PRINT "done"\\"copied to NFA2_versions.html"
+1230   make_into_html  "dev8_smsq_smsq_version_asm";"NFA8_html_versions.html"
+1240   PRINT "done"\\"copied to NFA8_html_versions.html"
 1250   IF "quit" instr cmd$:QUIT
 1260 END DEFine p
 1270 :

@@ -1,7 +1,9 @@
-; Q68 Interrupt server	V1.01  (c) W. Lenerz 2016
+; Q68 Interrupt server	V1.02  (c) W. Lenerz 2016
 ;
 ; based on
 ; SMSQmulator Interrupt server	V1.00  (c) W. Lenerz 2012
+;
+; 2018-11-22	1.02  correct nbr of ticks (49, not 50) for clock counter (wl)
 
 	section qd
 
@@ -50,12 +52,11 @@ check
 	moveq	#pc.intrf,d7
 	and.b	pc_intr,d7		; interrupt from general interrupt reg
 	beq.s	do_lexi 		; it's not a frame interrupt ->
-; bsr do_lexi2
 
 ; adjust clock
 frame	subq.w	#1,sys_rtcf(a6) 	; 50 Hz counter
 	bpl.s	shd_poll		; ... ok
-	move.w	#50,sys_rtcf(a6)	; and count down again
+	move.w	#49,sys_rtcf(a6)	; and count down again (1.02, was #50 before)
 	addq.l	#1,sys_rtc(a6)		; another second gone
 
 shd_poll

@@ -1,4 +1,6 @@
-; Interrupt 2 handler	V2.10	 1999	Tony Tebby
+; Interrupt 2 handler	V2.11	 1999	Tony Tebby
+;
+; 2018-11-22 v. 2.11 correct nbr of ticks (49, not 50) for clock counter (wl)
 
 	section int
 
@@ -74,7 +76,7 @@ int2_poll
 	st	q40_fack		 ;  clear frame interrupt
 	subq.w	#1,sys_rtcf(a6) 	 ; 50 Hz counter
 	bpl.s	int2_dopoll		 ; ... ok
-	move.w	#50,sys_rtcf(a6)	 ; and count down again
+	move.w	#49,sys_rtcf(a6)	 ; and count down again
 	addq.l	#1,sys_rtc(a6)		 ; another second gone
 
 int2_dopoll

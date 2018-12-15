@@ -1,14 +1,18 @@
-* Job control procedures V0.5	    1984/1985	Tony Tebby  QJUMP
+* Job control procedures V0.6	    1984/1985	Tony Tebby  QJUMP
+*
+* 22-11-2018  0.6  added SUSJOB (pjw)
 *
 *	JOBS [#n]			lists the current jobs
 *	RJOB nr,tag,error		removes a job
 *	SPJOB nr,tag,priority		sets a job's priority
+*	SUSJB nr,tag,timeout		suspends a job +ve ticks, -1 forever
 *	AJOB nr,tag,priority		activates a job
 *
 	section exten
 *
 	xdef	rjob
 	xdef	spjob
+	xdef	susjb
 	xdef	ajob
 	xdef	jobs
 	xdef	job_gid
@@ -40,7 +44,14 @@ spjob
 	bne.s	job_rts
 	moveq	#mt.prior,d0		set priority
 	bra.s	job_trap
-ajob 
+susjb
+	bsr.s	job_proc		2/3 arguments
+	bne.s	job_rts
+	move.w	d2,d3
+	suba.l	a1,a1			no flag byte
+	moveq	#mt.susjb,d0		suspend job
+	bra.s	job_trap
+ajob
 	bsr.s	job_proc		2/3 arguments
 	bne.s	job_rts
 	moveq	#mt.activ,d0		activate (d3 zero)
@@ -136,7 +147,7 @@ job_wrinf
 	move.l	a0,-(sp)		... and the job address
 	move.l	d3,-(sp)
 *
-	move.l	bv_bfbas(a6),a1 	we will use the basic buffer 
+	move.l	bv_bfbas(a6),a1 	we will use the basic buffer
 	addq.l	#2,a1			leave a little bit of room at the bottom
 	move.l	a1,a0
 	move.l	a0,a5			and set our field pointer

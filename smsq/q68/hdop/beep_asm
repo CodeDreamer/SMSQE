@@ -1,5 +1,5 @@
-; Q68 SMSQ BEEP emulation  1.00   2016 W. Lenerz
-
+; Q68 SMSQ BEEP emulation  1.01   2016 W. Lenerz
+; 2018-06-28	1.01 save A2! (wl)
 ; based on
 ; Q40 SMSQ BEEP emulation    1988  Tony Tebby
 
@@ -18,9 +18,9 @@
 	include 'dev8_keys_sss'
 	include 'dev8_smsq_q40_hdop_data'
 
-hob.rege reg	 d1-d3/a0/a1
+hob.rege reg	 d1-d3/a0-a2
 hdop_beep
-hob.regx reg	 d1-d3/a0/a1/a3
+hob.regx reg	 d1-d3/a0-a3
 	movem.l hob.rege,-(sp)
 	move.b	q68_slug,-(sp)
 	sf	q68_slug

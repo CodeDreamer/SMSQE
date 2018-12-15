@@ -149,7 +149,7 @@
 1580   delete_files
 1590   DATA "smsq_q40_driver_dv3","smsq_q40_driver_16","smsq_q40_cache"
 1600   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
-1610   DATA "smsq_q40_kbd_lang","smsq_q40_nasty"
+1610   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_os"
 1620   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
 1630   DATA "smsq_q40_sysspr","smsq_q40_cachemode"
 1640   DATA ""

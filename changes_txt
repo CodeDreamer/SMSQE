@@ -3,7 +3,11 @@ SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
  
-(intermediary version)
+3.34
+
+    SBASIC (PJW)
+	sbsext_ext_jobs_asm		0.60	added SSJOB, JOB_NAME also handles compiled programs (pjw)
+	smsq_sbas_procs_tk2procs_asm	2.09	amended to suit
 
     Q68 DRIVE BUGFIXES (wl)
 	dv3_q68_sdhc_wsect_asm		1.03	save d6!!!, use sysvars for card type
@@ -15,9 +19,41 @@ Version  changed		       of file	changes made
 	dv3_q68_sdhc_rsect_asm		1.03	use sysvars for card type
 	smsq_q68_driver_dv3_asm 	1.01	preset card type in sysvars
 
+    QLSD IMPROVEMENTS (MK)
+	dv3_qlsd_hd_ckrdy_asm		1.01	use new qlsd_crdused flags instead of hdl_actm
+	dv3_qlsd_basic_asm		.
+	dv3_qlsd_hd_holdWQ_asm		1.02	mark card as recently used on release (wl+mk)
+	dv3_qlsd_hd_hold_asm		1.01	mark card as recently used on release
+	dv3_qlsd_hd_poll_check_asm	1.01	Clear new crdused flag on timeout
+	dv3_qlsd_inicrd_asm		1.01	Take the QLSD hardware lock before initialising card
+	dv3_qlsd_init_asm		1.01	Output the recognised hardware revison
+	dv3_qlsd_keys			.	amended to suit
+	dv3_qlsd_rsect_asm		1.02	added hd_rscard_api
+	dv3_qlsd_sndcmd_asm		1.01	card_select optionally takes a card number
+	dv3_qlsd_version_asm		.
+	dv3_qlsd_win_init_asm		1.01	refer to new vectors (after hdl_ststp)
+	dv3_qlsd_wsect_asm		1.02	added hw_wscard/hw_wscard_api
+
+    TKII
+	keys_bv 			.	(old) basic interpreter keys (MK)
+	sbsext_tk2_ex_defs		.	ex stack definitions (MK)
+	sbsext_tk2_procs_respr_asm	.	definitions/linker file (RESPR) (MK)
+	sbsext_tk2_procs_rom_asm	.	definitions/linker file (ROM) (MK)
+	sbsext_tk2_procs_rom_net_asm	.	definitions/linker file (ROM/NET) (MK)
+	sbsext_tk2_rom_pad_bas		.	added (MK)
+	sbsext_tk2_rom_net_link 	.	removed "gst" from link files, replaced win1_ with dev8_ (wl)
+	sbsext_tk2_link 		.	same (wl)
+	sbsext_tk2_net_link		.	same (wl)
+	sbsext_tk2_ed_link		.	same (wl)
+	sbsext_tk2_rom_link		.	same (wl)
+
     MISC
 	sys_sdp_link			.	fix call to sbsext_ut_lib (pw+wl)
 	smsq_q68_hwinit_asm		.	(no version change) config text precision: auto init for card 2 only if WIN drive is referenced (wl)
+	smsq_q68_int_asm		1.02	correct nbr of ticks (49, not 50) for clock counter (wl)
+	smsq_q40_int2_asm		2.11	same
+	various 			.	created some new subdirs (no files were renamed)
+	smsq_q68_hdop_beep_asm		1.01	save A2
 -----------------------------------------------------------------------------
  
 3.33
@@ -206,7 +242,7 @@ Version  changed		       of file	changes made
 	smsq_q68_spp_sendser_asm	1.00
 	smsq_q68_spp_ser_asm		1.00
 	smsq_q68_spp_thing_asm		1.00
-	smsq_q68_test_			.	misc tes routines, not part of the code
+	smsq_q68_test_			.	misc test routines, not part of the code
 					
 	iod_con2_q68_blob_drop_asm	1.00	CON drivers for Q68
 	iod_con2_q68_disp_size_asm	1.00

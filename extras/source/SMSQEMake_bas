@@ -473,7 +473,7 @@
 4730   DATA 'smsq_q68_driver_ql_link'
 4740   DATA 'smsq_q68_driver_16_link'
 4750   DATA 'smsq_q68_driver_8_link'
-4760   DATA 'smsq_q68_driver_nd_link'
+4760 rem  DATA 'smsq_q68_driver_nd_link'
 4770   DATA 'smsq_q68_kbd_lang_link'
 4780   DATA 'smsq_smsq_q68_link'
 4790   DATA 'smsq_q40_sysspr_link',''

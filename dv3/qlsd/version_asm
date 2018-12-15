@@ -24,7 +24,11 @@
 ; 1.04	Added command WIN_CHECK to check if container on SD is fragmented
 ;	Fixed QDOS compatibility (tested MGG and JS)
 ;	Added workaround for double-ROM init on JS rom
+;
+; 1.05	Output hardware revision on start
+;	Extended driver definition block for 3rd party software
+;	Fixed card-change detection when using two drives simultaneously
 
-qlsd_vers equ  '1.04'
+qlsd_vers equ  '1.05'
 
 	end
