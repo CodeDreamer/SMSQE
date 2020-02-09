@@ -41,11 +41,11 @@ hd_ckrdy
 
 ; Read failed, try to initialise card
 	jsr	inicrd
-	bne.s	hcrw_err		; defective or missing card
+	bne.s	hcrw_exit		; defective or missing card
 
 	lea	hdl_buff(a3),a1
 	jsr	hd_ckroot		; try to read root sector again
-	bne.s	hcrw_err
+	bne.s	hcrw_exit
 
 hcrw_check
 ; We cannot use the generic QLF/QW1 check format routine because that will try

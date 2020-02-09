@@ -36,7 +36,8 @@ input dev8_dv3_qlsd_qlf_drname_rel
 input dev8_dv3_qlsd_qlf_drmake_rel
 input dev8_dv3_qlsd_qlf_umap_rel
 
-library dev8_dv3_qlsd_drvWQ_lib
+input dev8_dv3_qlsd_qub_init_rel
+library dev8_dv3_qlsd_drv_lib
 library dev8_dv3_qw1_lib
 library dev8_dv3_qlf_lib
 

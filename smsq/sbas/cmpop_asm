@@ -1,4 +1,5 @@
 ; SBAS_CMPOP - Convert Compiler Tokens to Operations  V2.00  1994 Tony Tebby
+; 2.01 2019.09.10 string variable cannot be REPeat variable  (wl)
 
 	section sbas
 
@@ -563,9 +564,17 @@ scof_badn
 
 ;--------------------------------------------
 sco_rep
+
+; v .2.01 ---
+	bsr.l	sbc_vtype		 ; get variable type
+	subq.b	#nt.st,d2		 ; string ?
+	beq	scof_badn		 ; ... yes, not allowed
+	subq.w	#2,a3			 : a3 was increased in sbc_vtype
+; ---
 	move.w	#bo.rep,(a0)+		 ; standard repeat
 	bsr.s	scof_link		 ; link in
-sco_snindx
+
+sco_snindx				 ; label also called from somewhere else
 	move.w	(a3)+,d1		 ;
 	lsl.w	#nt.ishft,d1
 	move.w	d1,(a0)+		 ; and index

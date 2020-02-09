@@ -17,7 +17,7 @@ debut
 	JMP	(A2)		; link in new keywords
     
 
-procs	DC.W	0,0,1
+procs	DC.W	0,0,2		; pretend there are 2 keywords as name too long
 	kwrd	CURRENT_LINE
 	dc.l	0
 

@@ -22,6 +22,7 @@ c.mfill   equ     sp.titlebg                   ; main area fill
 c.mvert   equ     sp.vertfill                  ; vertical area fill
 c.mshade  equ     sp.shaded                    ; shaded
 c.moutl   equ     sp.infwinbd                  ; and outline
+c.lines   equ     sp.separator                 ; separator lines etc.
 *
 c.stfill  equ     sp.subtitbg                  ; sub title fill
 c.stback  equ     sp.subtittxtbg               ; sub title text background
@@ -76,4 +77,15 @@ c.wbars   equ     sp.scrbarsec
 
 c.erpap   equ     sp.errbg                     ; error paper
 c.erink   equ     sp.errfg                     ; error ink
+
+        ; help tooltip colours
+
+c.hbord   equ     sp.hintbd
+c.hink    equ     sp.hintfg
+c.hback   equ     sp.hintbg
+
+        ; menu index
+c.mipap   equ     sp.mindexbg                   ; menu index background
+c.miink   equ     sp.mindexfg                   ; menu index foreground
+
           list

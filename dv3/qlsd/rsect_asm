@@ -38,7 +38,11 @@ hd_rscard_api
 	andi.w	#3,d7
 	beq.s	err_ipar
 	bset	#7,d7			; mark as "card number" for card_select
-	bra.s	hd_rscard
+	move.l	a6,-(sp)
+	move.l	qlsd_sysvars(a3),a6	; so caller doesn't have to provide it
+	bsr.s	hd_rscard
+	move.l	(sp)+,a6
+	rts
 
 err_ipar
 	moveq	#err.ipar,d0
@@ -61,7 +65,7 @@ hdr_exit
 ;	a1 c  p address to read into, MUST be large enough to hold the total nbr of sectors requested
 ;	a3 c  p linkage block
 ;	a4 c  p drive definition (not for hd_rscard)
-;
+;	a6 c  p system variables
 ;
 ;	status return 0 or ERR.MCHK
 ;	The sector number is for sectors 512 bytes long.

@@ -1,11 +1,13 @@
-* File maintenance   V1.3     1985   Tony Tebby   QJUMP
+* File maintenance   V1.4     1985   Tony Tebby   QJUMP
 *
 * 2002-05-09  1.3  STAT now calculates big drives correctly (MK)
+* 2018-07-24  1.4  Added FDEL (pjw)
 
 	section exten
 *
 *	STAT [#channel,] [name] 		print drive statistics
 *	DELETE name				delete file
+*	FDEL name				delete file (error return)
 *	COPY name [TO name]			copy (optional header)
 *	COPY_O name [TO name]			as copy but overwrites
 *	COPY_N name [TO name]			copy no header
@@ -16,6 +18,7 @@
 	xdef	stat_do
 	xdef	stat_dos
 	xdef	delete
+	xdef	fdel
 	xdef	copy
 	xdef	copy_o
 	xdef	copy_n
@@ -38,6 +41,7 @@
 	xref	ut_messg		write message
 	xref	ut_wrtst		write string of bytes
 	xref	ut_trp3r		trap #3 relative
+	xref	ut_rtfd1
 *
 	include dev8_sbsext_ext_keys
 	include dev8_sbsext_ut_opdefx_keys
@@ -191,10 +195,7 @@ mnt_clos
 	bra.l	ut_fclos		close file
 *
 delete
-	bsr.l	ut_par1 		check just one parameter
-	moveq	#0,d3			set delete flag
-	not.w	d3
-	bsr.l	ut_fopnp		and open data default
+	bsr.s	do_delete
 	moveq	#err.nf,d4		is it error not found?
 	cmp.l	d0,d4
 	bne.s	mnt_rts 		... no
@@ -202,6 +203,20 @@ mnt_ok
 	moveq	#0,d0
 mnt_rts
 	rts
+
+fdel
+     ;	 pea	 ut_rtfd1		 ... return error code
+do_delete
+	bsr.l	ut_par1 		check just one parameter
+	moveq	#0,d3			set delete flag
+	not.w	d3
+	move.l	d0,d1			set error code (for fdel)
+	bsr.l	ut_fopnp		and open data default
+	move.l	d0,d1
+	jmp	ut_rtfd1
+
+
+
 *
 * various COPYs
 *

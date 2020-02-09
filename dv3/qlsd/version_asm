@@ -28,7 +28,15 @@
 ; 1.05	Output hardware revision on start
 ;	Extended driver definition block for 3rd party software
 ;	Fixed card-change detection when using two drives simultaneously
+;
+; 1.06	Fixed WIN_CHECK for all drives other than WIN1
+;	Changed WIN defaults:
+;	  WIN1: QXL.WIN (card1)
+;	  WIN2: QXL.WIN (card2)
+;	  WIN3..8: QXL3.WIN, QXL4.WIN, QXL5.WIN... (card1)
+;
+; 1.07	Fixed compatibility with DEV device under Minerva
 
-qlsd_vers equ  '1.05'
+qlsd_vers equ  '1.07'
 
 	end

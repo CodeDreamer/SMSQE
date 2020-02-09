@@ -31,6 +31,8 @@ init	movem.l inirgs,-(a7)
 
 	moveq	#sms.info,d0
 	trap	#1
+	move.l	a0,qlsd_sysvars(a3)	; save so we don't need sms.info again
+
 	assert	qlsd.smsq,0		; so we can reuse d0=0
 	cmp.l	#sysid.sq,(a0)		; SMSQ/E
 	beq.s	set_os

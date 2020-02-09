@@ -151,7 +151,7 @@
 1600   DATA "smsq_q40_driver_ser","smsq_q40_driver_ser","smsq_q40_hwinit"
 1610   DATA "smsq_q40_kbd_lang","smsq_q40_nasty","smsq_q40_os"
 1620   DATA "smsq_q40_driver_ql","smsq_sbas_procs_x_q60"
-1630   DATA "smsq_q40_sysspr","smsq_q40_cachemode"
+1630   DATA "smsq_q40_sysspr","smsq_q40_cachemode","smsq_smsq_q40_os"
 1640   DATA ""
 1650   DATA "smsq_q40_rom"
 1660   DATA "smsq_q40_rom_lo","smsq_q40_rom_hi"

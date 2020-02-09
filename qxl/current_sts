@@ -1,0 +1,15 @@
+[shared-]
+	pmark=
+	version=2
+[debug-]
+	target="c:\develo~1\os1\qxl2\smsqe.exe"
+	genericbp='E 0x181F:0x005A
+[cv]
+	wndstate=0 1 0 1 0 0 0 2 0 1 254
+	tilestate=1 24 0 80 0 0 0 67 0 5 0 0 0 0 18 0 0 254
+	command=use auto
+	command=n10
+	command=s1
+	command=oc+
+	command=of+
+	command=o3-

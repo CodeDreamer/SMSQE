@@ -1,6 +1,9 @@
-; DV3 open routines		  V3.01 	  1992 Tony Tebby
+; DV3 open routines		  V3.03 	  1992 Tony Tebby
 ;
 ; QDOS compatible version
+;
+; 2018-06-24  3.02  Keep error code from ddl_check (MK)
+; 2018-07-30  3.03  Fixed Minerva workaround in case of open through DEV (MK)
 
 	section dv3
 
@@ -18,6 +21,7 @@
 	include 'dev8_keys_err'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_qlv'
+	include 'dev8_keys_chn'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_mac_assert'
 
@@ -192,7 +196,8 @@ dop_dflush
 
 dop_check
 	jsr	ddl_check(a3)		 ; check the medium
-	blt.s	dop_fdnf		 ; ... oops, bad medium
+;;;	   blt.s   dop_fdnf		    ; ... oops, bad medium
+	blt.s	dop_ex1 		 ; keep error code from check
 
 	assert	ddf.wprot,$ff
 	tst.b	ddf_wprot(a4)		 ; write protected?
@@ -451,25 +456,39 @@ dop_exit
 
 dop_rchn
 	exg	a0,a5
-	movem.l a3/a6,-(sp)		 ; for QDOS compatibility...
+	movem.l a0/a3/a6,-(sp)		 ; for QDOS compatibility...
 	move.w	mem.rchp,a2
 	jsr	(a2)			 ; return old channel
-	movem.l (sp)+,a3/a6
-
-	move.l	a5,a0
+	movem.l (sp)+,a0/a3/a6
+	exg	a0,a5
 
 	assert	qlsd.minerva,1
 	tst.b	qlsd_os(a3)		; Minerva?
 	ble.s	dop_set_err		; ... no
 ; Only Minerva doesn't let us change the address in a0 as it "helpfully"
 ; restores it from the stack. In this case we need to be naughty and mess
-; with the caller stack
-	moveq	#$18,d0
-	add.l	a0,d0
-	move.l	d0,4(a7)		 ; set this channel ID!!!!!
+; with the caller stack. Problem is, we MIGHT have been called through the
+; DEV or another redirection device, so we don't know the exact stack location!
+;
+; Fortunately Minerva saves a0 with an offset, so we can stop once we find
+; this pointer and not be irritated by other copies in between (which in the
+; case of DEV will be fixed by DEV itself)
+	moveq	#chn_end,d0		; Minerva saves a0 with this offset
+	add.l	d0,a5			; original value
+	add.l	a0,d0			; new value
 
+	move.l	a7,a2			; scan stack
+	moveq	#$30/2-1,d2		; scan this deep (DEV adds about $20)
+dop_stack_scan
+	cmp.l	(a2),a5 		; original value here?
+	bne.s	dop_stack_next		; ... no, try next word
+	move.l	d0,(a2) 		; set new channel ID!
+	bra.s	dop_set_err
+dop_stack_next
+	addq.l	#2,a2
+	dbf	d2,dop_stack_scan
 dop_set_err
-	move.l	d4,d0			 ; set error
+	move.l	d4,d0			; set error
 dop_rts
 	rts
 	end

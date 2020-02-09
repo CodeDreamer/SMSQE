@@ -57,7 +57,7 @@ nd_read
 	moveq	#ndt_csct,d0	     test 4*7.7=30us; 10*4; 13*3.06 = 40us
 	bsr.l	ndt_wina
 nd_e3_nc
-	beq    nd_e1_nc 	       not a scout
+	beq.s	nd_e1_nc		not a scout
 *
 	move.w	ndt_esct(a3),d0 	198*2.4; 582*.83; 758*.64 = 475;485us
 	dbra	d0,*		18    ; 10    = 2.4;0.64us until end of scout
@@ -191,6 +191,7 @@ nds_chead
 	bne.s	nd_unset		... net active return +ve
 *
 	move.w	ndt_tsct(a3),d2 	timer constant
+
 nds_sscout
 	moveq	#2,d0		08    ; 04     wait loop counter
 	move.b	d6,d3		08    ; 04     get tmode (shifted)
@@ -221,6 +222,7 @@ nds_nxts
 *
 *					511/515 cycles = 32us loop
 *					gives scout 480 us + waits (Gold16)
+
 	tst.b	nd_dest(a0)		was it broadcast?
 	bne.s	nds_header		... no, send header
 	move.w	ndt_xsct(a3),d0 	... yes, wait 2083*2.4 7812*.64 = 5ms
@@ -241,6 +243,7 @@ nds_header
 	moveq	#ndt_back,d0		wait 65*7.7; 125*4; 164*3.06us = 500us
 	bsr.s	ndt_wact		look for active
 	beq.s	nd_ex_nc		... no acknowledge
+
 	moveq	#ndt_bace,d0		2600*7.7; 5000*4; 6560*3.06us = 20ms
 	bsr.s	ndt_wina		look for inactive
 *
@@ -346,7 +349,6 @@ nd_netset
 * Send half a packet (byte count d2, address a1)
 *
 nds_half
-    st $1c00c
 	bsr.s	nds_bytes		send bytes
 	tst.b	nd_dest(a0)		is it b/cast?
 	beq.s	nds_rts 		... yes, done
@@ -374,13 +376,10 @@ nds_ack
 nds_bytes
 	move.w	ndt_paus(a3),d0 	pause (QL overhead = 20/40us to here)
 	dbra	d0,*	      50*2.4 = 120us; 162*0.83 = 135us; 219*.64 = 140us
-
 *
 	move.w	ndt_send(a3),d0 	send loop timer
 	moveq	#-1,d3			preset send byte to 1s
 *
-;	 move.l  #$aabbccdd,(a1)
-;	 move.l  (a1),$17e90
 nds_byloop
 	move.b	(a1)+,d3		get byte
 nds_1byte

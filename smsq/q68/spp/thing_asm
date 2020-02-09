@@ -2,7 +2,7 @@
 ;
 ; 2003-09-24  2.11  prt_use$ bug fixed (wl)
 ; 2003-10-06  2.12  Some fixes for non-QPC I had sent TT 2 years ago (MK)
-
+; 2020-02-08  2.13  Use ser par prt as thing name, not ser_prt
 
 	section exten
 
@@ -22,12 +22,13 @@
 	include 'dev8_mac_thg'
 	include 'dev8_mac_assert'
 
-spp_tnam dc.w	7
-	dc.b 'Ser_Prt',$a
-
+spp_tnam dc.w tnam2-*-2
+	dc.b 'Ser_Par_Prt',$a
+tnam2
 ptp_chr  dc.w  thp.opt+thp.ulng  ; unsigned long
 	 dc.w  thp.char 	 ; compulsory character
 	 dc.w  0
+
 
 ptp_3olw dc.w  thp.opt+thp.ulng+thp.nnul ; optional long word (second size)
 ptp_2olw dc.w  thp.opt+thp.ulng+thp.nnul ; optional long word (size, time)
@@ -35,7 +36,7 @@ ptp_olw  dc.w  thp.opt+thp.ulng+thp.nnul ; optional long word (port number)
 ptp_nul  dc.w  0
 
 ;+++
-; This is the Thing with all the SER PAR PRT extensions
+; This is the Thing with all the SER PRT extensions
 ;
 ;	a1 c  p parameter stack pointer
 ;	a2 c  p thing linkage block

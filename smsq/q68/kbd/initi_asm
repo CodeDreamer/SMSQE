@@ -2,8 +2,9 @@
 ;			     2016  W. Lenerz
 
 ; Version without interrupt install
-; amended for q68 : do not setup kbd_poll as polling routine, but kbd_read
-; (which then calls kbd_poll).
+; 2019 Jan 06	1.01	save kbr read address in q68_kradd
+;		1.00	amended for q68 : do not setup kbd_poll as polling
+;			routine, but kbd_read (which then calls kbd_poll).
 
 	section kbd
 
@@ -91,6 +92,8 @@ kbd_inits
 
 	lea	kbd_read,a4
 	move.l	a4,iod_plad(a3) 	 ; set polling server address
+	move.l	a4,q68_kradd		 ; keep vector
+	move.l	a3,q68_kradd+4		 ; and linkage
 	lea	iod_pllk(a3),a0
 	moveq	#sms.lpol,d0
 	trap	#do.smsq

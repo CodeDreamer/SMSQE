@@ -15,20 +15,20 @@ qlsd_version    equ     .q+$04          ; Driver version
 qlsd_rscard     equ     .q+$08          ; Read card sector
 qlsd_wscard     equ     .q+$0E          ; Write card sector
 qlsd_inicard    equ     .q+$14          ; Initialise card
-qlsd_lock       equ     .q+$1A          ; Lock poll from writing cache
 qlsd_os         equ     .q+$1B          ; Detected operating system
 qlsd.smsq       equ     0               ; zero
 qlsd.minerva    equ     1               ; positive
 qlsd.qdos       equ     -1              ; negative
 qlsd_crdused    equ     .q+$1C          ; bits set for cards recently used
 qlsd_fake       equ     .q+$1F          ; Remember if we faked MDV for auto boot
-qlsd_names      equ     .q+$20          ; 8 * space for QXL.WIN filenames
+qlsd_sysvars    equ     .q+$20          ; Address of system variables
+qlsd_names      equ     .q+$24          ; 8 * space for QXL.WIN filenames
 qlsd_end        equ     qlsd_names+8*16
 
 ; Extended physical definition block
 sdf_partoffset  equ     ..+$00          ; LBA block address of container file
 
-; Hardware keys. We only support the current hardware version
+; Hardware keys. We only support the hardware versions with base $FEE0
 if_base         equ     $fee0
 spi_xfer        equ     $ff00
 spi_bg_read     equ     $00ff           ; offset to spi_xfer

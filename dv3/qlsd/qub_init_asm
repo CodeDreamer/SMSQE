@@ -1,4 +1,4 @@
-; DV3 qls QUBIDE Driver initialisation 1.00  W. Lenerz 2016
+; DV3 QLSD QUBIDE Driver initialisation 1.00  W. Lenerz 2016
 ;
 ; based on
 ;
@@ -14,6 +14,7 @@
 	xref	gu_fopen
 	xref	gu_fclos
 
+	xref.l	qlsd_vers
 	xref	norm_nm
 	xref	qlsd_1sec
 			
@@ -26,9 +27,9 @@
 	include 'dev8_mac_MultiConfig02'
 
 ;+++
-; DV3 qls Qubide driver initialisation
+; DV3 QLSD Qubide driver initialisation
 ;
-;	a3  r	device driver linkage
+;	a4  r	device driver linkage
 ;---
 qub.rev equ	'1'
 
@@ -38,11 +39,13 @@ qub_init
 
 	lea	qub_table,a3
 	jsr	dv3_link		; link in driver
+	tst.l	d0
+	bne.s	out			; ooops!
 
 	jsr	qlsd_1sec		; calibrate timing
 	move.l	d0,hdl_1sec(a3) 	; and remember it
 
-qub_set lea	qcf_qubu,a2
+	lea	qcf_qubu,a2
 	lea	hdl_unit(a3),a1
 	move.l	(a2)+,(a1)+
 	move.l	(a2)+,(a1)+		; set configured units (cards)
@@ -59,14 +62,9 @@ norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
 	add.l	d2,d6
 	move.l	d6,a1
 	dbf	d7,norm_lp
-	move.l	(a7),a1 		; this is the old A3 (ie WIN driver)
-	sf	hdl_err(a1)		; just to be sure
-	lea	qlsd_lock(a1),a1	; this is where the lock is
-	move.l	a1,qlsd_end(a3) 	; store it
-	st	hdl_err(a3)		; set flag
 	moveq	#0,d0
 	move.l	a3,a4
-	movem.l (a7)+,qub_reg		; get old a3 back
+out	movem.l (a7)+,qub_reg		; get old a3 back
 	rts
 
 
@@ -141,24 +139,11 @@ qls_wn7 dc.w   13,11
 qls_wn8 dc.w   13,11
 	dc.w   'QL_BDI8.BIN'
 			
-; these two data areas must be right one after the other.
-; now follows a table of 8*16 bytes, for the normalized names of the drives
-qub_drvs
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-	dc.l	0,0,0,0
-
 qcf_qubu	dc.b	 1,2,1,1,1,1,1,1 ; the card the file is on
 
-qub_vers equ '1.00'
 	mkcfstart
 
-	mkcfhead {QUB drives settings},{qub_vers}
+	mkcfhead {QUB drives settings},{qlsd_vers}
 
 	  mkcfitem 'qls1',string,0,qls_wn1,,ppr,{Filename for QUB1},0
 	  mkcfitem 'qls2',string,0,qls_wn2,,ppr,{QUB2},0
@@ -181,10 +166,10 @@ qub_vers equ '1.00'
 	  {Qub5_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
 	  mkcfitem 'qlsO',code,0,qcf_qubu+5,,,\
 	  {Qub6_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
-	  mkcfitem 'qlsP',code,0,qcf_qubu+4,,,\
-	  {Qub5_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
-	  mkcfitem 'qlsQ',code,0,qcf_qubu+5,,,\
-	  {Qub6_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
+	  mkcfitem 'qlsP',code,0,qcf_qubu+6,,,\
+	  {Qub7_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
+	  mkcfitem 'qlsQ',code,0,qcf_qubu+7,,,\
+	  {Qub8_ is on card},1,1,{1},2,2,{2},$ff,N,{None}
   
 	mkcfblend
 

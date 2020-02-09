@@ -23,8 +23,8 @@ section utils     ; SuperBASIC extension utilities
 input   dev8_smsq_q68_driver_nd_rel
 input   dev8_dd_nd_q68_rel
 input   dev8_dd_nd_q68_phys_rel
-input   dev8_dd_nd_rept_rel
-library dev8_dd_nd_lib
+input   dev8_dd_nd_q68_rept_rel
+library dev8_dd_nd_q68_lib
 library dev8_sbsext_ext_lib
 library dev8_sbsext_ut_lib
 library dev8_util_gut_lib

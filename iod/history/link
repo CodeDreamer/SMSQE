@@ -1,0 +1,15 @@
+program dev8_iod_history_rext
+
+section history
+section version
+
+input dev8_iod_history_init_rel
+input dev8_iod_history_io_rel
+input dev8_iod_history_open_rel
+input dev8_iod_history_close_rel
+input dev8_iod_history_cnam_rel
+input dev8_iod_history_version_rel
+
+library dev8_iod_iou_lib
+library dev8_util_gut_lib
+library dev8_util_cv_lib

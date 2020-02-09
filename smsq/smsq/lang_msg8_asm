@@ -91,7 +91,7 @@ deu_ovrw mkstr	{OK zum ‡berschreiben}
 deu_scts mkstr	{ Sektoren\}
 deu_jobh mkstr	{Job Tag Besitzer Priorit€t\}
 deu_nabt mkstr	{Net abgebrochen\}
-deu_infl mkstr	{K im Dataien\}
+deu_infl mkstr	{K in Dateien\}
 
 msg_fra dc.w	33
 	dc.w	fra_fmtq-msg_fra

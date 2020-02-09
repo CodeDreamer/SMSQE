@@ -1,0 +1,1096 @@
+* Network physical layer - Sinclair std+  V2.0 for gold card	     Tony Tebby
+*
+* v2.6 - Added a (non-re-entrant!) debug dump area between debug_bt - debug_tp
+* v2.4 - adopted WL's more elegant suggestion for manipulating the SSP...
+* v2.3 - Following independent timer-testing, appears that the access to the SSP might be hurting the timing constancy
+*	   The SSP is thus now being relocated in to Fast SRAM during the time-sensitive routines.
+* v2.2 (debug) - First attempt to debug...
+* - Found double-use of d7 during Send Scout and ndt_delay - adjusted ndt_delay to leave d7 alone
+* - Realised that the offsets to our new LW Timer constants extend beyond $80
+*    and we were using moveq to load the offset in to d0 before each Timer primitive,
+*    which would fail for the constants that fell at $80 and later (ndt_rtmo through ndt_rept).
+*    Silly ol'me...
+*    Switched to move.w #<timer_constant>,d0 in place of moveq to avoid neg. sign-extension
+*
+* v2.1 - for Q68, using its funky HW timer at $1c060
+*	 New timer primitives, with some adjustments to the register usage of the original SGC version
+*	 to standardise on d0 as the time-delay (and d7 as the end_time when needed - see below)
+*      - TODO: re-write to leverage the Q68's Static-RAM
+*
+       section nd
+*
+	xdef	    nd_send	    send a packet
+	xdef	    nd_send0	    send a packet (server protocol)
+	xdef	    nd_read	    read a packet
+	xdef	    nd_read0	    read a packet (server protocol)
+	xdef	    nd_bcast	    read a broadcast
+
+	xdef	    nds_bytes	    patch
+	xdef	    ndr_1byte	    patch
+	xdef	    nds_sscout	    patch
+
+	xdef	    ndt_delay	    Used in dd_nd_rept
+
+	xdef	    debug_bt
+*
+	xref	    nd_break	    read break keys
+*
+	include dev8_keys_q68
+	include dev8_dd_nd_keys_q68
+	include dev8_mac_assert
+*
+* v2.6 - Debug dump area (64x4=256 bytes)
+*
+debug_bt dcb.l	    16,0
+debug_tp
+
+*
+* Allocate 16x LWs storage for our temporary SSP - the idea being that this too should reside in the Q68's Fast SRAM area
+*
+ssp_tbot dcb.l	    16,0
+ssp_ttop
+
+*
+*	 d6    p copy of tmode for pc
+* - No longer using d7 for the direct input-bit
+*	 a0 c  p channel definition / $40(a0) header / $48(a0) data block
+*	 a3 c  p linkage block (with ndt_* timings at $50 through $94)
+*
+nd_sbuf
+	bsr.s	     nd_srpnt	     get pointer to data block
+	move.l	     a1,nd_epnt(a0)  set end pointer
+	rts
+nd_srpnt
+	lea	     nd_data(a0),a1  get pointer to data block
+	move.l	     a1,nd_rpnt(a0)  reset running pointer (absolute/long)
+	rts
+	page
+*
+* Network read packet
+*
+nd_read0
+*
+	clr.w	     nd_blkl(a0)     clear block number
+nd_read
+* DEBUG
+*
+*	 trap	      #15	      We particularly want to review a0 and a3 in QMON - BEFORE interrupts are disabled
+*	 dc.w	      $4afb
+
+	bsr.l	     nd_setup	     setup registers etc.
+	bsr.s	     nd_sbuf	     set buffer pointers
+
+; wl add
+
+	move.l	a1,-(a7)
+	lea	ssp_tbot,a1
+	move.b	(a1),d0
+	addq.b	#1,d0
+	move.b	d0,(a1)
+	move.l	(a7)+,a1		; on every second call ...
+	bne	nd_ex_nc		; ... simulate packet not read correctly
+
+
+  
+
+*
+* check there's a gap at least 200us long
+*
+* Delay-type 2a: WAIT for ACTive (for ndt_wgap: 200us) - Expecting silence, so if goes ACTive within ndt_wgap (d0)
+* - exit with error if we see ACTive within timeout
+
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_wgap,d0    test 26*7.7; 50*4; 66*3.06us = 200us
+; wl	   bsr.l	ndt_wac2	invoke our HW-timer based replacement for ndt_wact
+; wl	   bne.s	nd_e2_nc
+
+
+*
+* Gap found, look for scout for 20ms (50us active)
+*
+* Delay-type 2a: WAIT for ACTive (timeout ndt_lsct:20,000us) - starts at INACTive, wait up to ndt_lsct for ACTive (d0)
+* - error if timeout without seeing ACTive
+
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_lsct,d0    wait 2600*7.7; 5000*4; 6560*3.06us = 20ms
+; wl	    bsr.l	 ndt_wac2	 invoke our HW-timer based replacement for ndt_wact
+; wl	    beq.s	 nd_e3_nc	 ... no
+*
+* Delay-type 2b: WAIT for INACTive (timeout ndt_csct:30/40us) - starts ACTive (d0)
+* - if we go INACTive before timeot, exit with error
+
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+; wl	    move.w	 #ndt_csct,d0	 test 4*7.7=30us; 10*4; 13*3.06 = 40us
+; wl	    bsr.l	 ndt_win2	 invoke our HW-timer based replacement for ndt_wina
+nd_e3_nc
+; wl	    beq.s	 nd_e1_nc	 not a scout
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_esct:485us
+
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+; wl	    move.w	 #ndt_esct,d0	  load INDEX for ndt_esct (SCOUT)
+; wl	    bsr 	 ndt_delay	  invoke our HW-timer based replacement for simple dbra delay loops
+*
+* Scout found and skipped, read header
+*
+	bsr.l	     ndr_headr	     read header
+nd_e2_nc
+	bne.s	     nd_e1_nc	     ... oops
+	move.b	     (a1)+,d0	     get destination from packet header
+	cmp.b	     nd_self(a0),d0  is it for me?
+; wl	   bne.s	nd_e1_nc	... no
+	move.b	     (a1)+,d1	     get source from packet header
+	cmp.b	     nd_dest(a0),d1  is from my preferred source?
+	beq.s	     ndr_for_me      ... yes
+	cmp.b	     nd_dest(a0),d0  will I accept an offer from anybody?
+; wl	    bne.s	 nd_e1_nc	 ... no
+	move.b	     d1,nd_dest(a0)  ... yes, from now on I talk to you only!!
+*
+ndr_for_me
+	move.w	     (a1)+,d5	     get block/byte (or checksum)
+	sub.w	     nd_blkl(a0),d5  and compare against required
+*
+
+; wl added
+	move.l	#$00ff0000,(a1)     ; pretend we'll get a 255 bytes packet, chksum = 0, type= receive
+; wl end added
+	
+	move.l	     (a1),nd_type(a0) set type, number of bytes and checksum
+	moveq	     #0,d4	      set number of bytes to read
+	move.b	     nd_nbyt(a0),d4
+	addq.b	     #-nf.sblk,(a1)  is it send large block?
+	bne.s	     ndr_ackh	     ... no
+	lsl.w	     #2,d4	     ... yes, get 4* as many
+*
+ndr_ackh
+	bsr.l	     nds_ack	     acknowledge header
+	move.w	     d4,d2	     and set number of bytes to read
+	bsr.l	     ndr_bytes
+	bne.s	     nd_bad_block    ... oops
+
+; wl	    cmp.b	 nd_dchk(a0),d4  was checksum ok?
+; wl	    bne.s	 nd_bad_block
+; wl	    tst.b	 nd_dest(a0)	 was it file server transaction?
+; wl	    blt.s	 ndr_wchk	 ... yes
+; wl	    tst.b	 nd_self(a0)
+; wl	    bge.s	 ndr_ack	 ... no, acknowledge
+ndr_wchk
+; wl	    cmp.w	 d5,d4		 ... yes, check whole checksum
+; wl	    bne.s	 nd_bad_block	 ... ... oops
+	clr.w	     d5
+ndr_ack
+	bsr.l	     nds_ack	     send acknowledge
+*
+	tst.w	     d5 	     was this the right block?
+	bne.s	     nd_e1_nc	     ... no, leave eof flag
+	move.l	     a1,nd_epnt(a0)  ... yes, set end pointer
+	bsr.s	     nd_nextb	     move to next block
+; wl added
+      ;   dc.w $a000
+	clr.b	nd_type(a0)
+; wl end added
+
+	bra.l	     nd_ex_ok	     done
+*
+nd_bad_block
+	sf	     nd_type(a0)     clear type
+nd_e1_nc
+	bra.l	     nd_ex_nc	     not complete
+*
+* move to next block
+*
+nd_nextb
+	addq.b	     #1,nd_blkl(a0)  move block low on one
+	bcc.s	     nd_nx_rts
+	addq.b	     #1,nd_blkh(a0)  carry, so move block high on
+nd_nx_rts
+	rts
+	page
+*
+* Network send packet
+*
+* Create checksum
+*
+nd_csum
+	moveq	     #0,d4	  clear checksum
+	moveq	     #0,d2
+nd_csloop
+	move.b	     (a1)+,d2	  12	    get byte
+	add.w	     d2,d4	  08	    add byte
+	subq.w	     #1,d1	  08	    next byte
+	bne.s	     nd_csloop	  18	    46 cycles 6.13us  * (255+7) max = 1.6ms
+	rts
+*
+* Send a packet - if net busy, give up
+*
+* - We use both d0 and d7 for our delay counters in SEND
+*
+nd_send0
+nd_send
+	bsr.l	     nd_setup	     set net mode and registers
+*
+* Now do all the checksum rubbish so we can go straight on from the scout
+*
+	moveq	     #0,d5	  length of data block
+	move.b	     nd_nbyt(a0),d5
+	cmp.b	     #nf.sblk,nd_type(a0) is it remote file block?
+	bne.s	     nds_cdata	  ... no, create data checksum
+	lsl.w	     #2,d5	  ... yes, 4* as many bytes
+nds_cdata
+	move.w	     d5,d1	  create checksum
+	lea	     nd_data(a0),a1	  of data
+	bsr.s	     nd_csum
+	move.b	     d4,nd_dchk(a0) in data checksum loc
+	tst.b	     nd_self(a0)  is it server
+	blt.s	     nds_wchk	  ... yes
+	tst.b	     nd_dest(a0)
+	bge.s	     nds_chead	  ... no, just create header checksum
+nds_wchk
+	move.w	     d4,nd_blkl(a0) ... yes, set word checksum in block number
+nds_chead
+	moveq	     #7,d1	  create checksum
+	lea	     nd_hedr(a0),a1	of header
+	bsr.s	     nd_csum
+	move.b	     d4,(a1)	  in header checksum loc at end of header
+*
+	subq.l	     #7,a1	  backspace to start of header
+*
+* Now send a scout, checking if anyone else is
+*
+	moveq	     #-1,d3	  preset 1s
+	move.w	     nd_dest(a0),d3 get destination and self
+*				  11111111.11111111.D0dddddd.S0ssssss
+	lsl.b	     #3,d3	  11111111.11111111.D0dddddd.sssss000
+	addq.b	     #3,d3	  11111111.11111111.D0dddddd.sssss011
+	lsl.w	     #2,d3	  11111111.11111111.ddddddss.sss01100
+	lsl.l	     #6,d3	  11111111.11dddddd.sssss011.00000000
+	moveq	     #14,d1	  send 15 bits 110sssssdddddd1
+*
+* Wait at least 3 ms for any other scout
+*
+* Delay-type 2a: WAIT for ACTive (for ndt_wsct:3,000us) - unknown NET state, error if ACTive occurs within timeout (d0)
+* - unusual +ve RETurn on error - which the Access layer must treat the same as ERR.NC
+*
+	assert	     err.nc,-1
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_wsct,d0
+	bsr.l	     ndt_wac2
+	bne.s	     nd_ex_nc	  ... net detected as ACTive - return +ve (!)
+
+nds_sscout
+*
+* Switched d7 with d0 (sample-count during SCOUT) here, so we can standardise on d0 as the HW timer
+* - we don't need d7 any longer as the direct input-bit
+*
+	moveq	     #2,d7	  3x samples per bit (only during INACTive)
+	move.b	     d6,d3	  08	; 04	 get tmode (shifted)
+	lsr.l	     #1,d3	  14	; 10	 get next bit into tmode
+	move.b	     d3,(a4)	  13	; 15	 send the bit
+	blt.s	     nds_sact	  18 12 ; 10 08  ... net is inactive
+
+nds_tact
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_tsct:31us
+*
+nds_paus1
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_tsct,d0	 ;;;;;	 Reload timer INDEX constant (ndt_tsct)
+	bsr.l	     ndt_delay
+
+* Using d7 here as an implicit =0 for the BTST will need addressing
+* - using immediate #0 here will cost an extra word/cycle
+
+	btst	     #0,(a5)	    3*12;	 3*15  ) loop 48;108;150
+	
+* Switched d0 with d7
+	dbne	     d7,nds_tact  152 ;   454 3*18+8;	     3*10+4 ) 6.4;9.0;9.4 us
+	bra.s	     nds_nxts	  18 ;	  10
+
+* d7 is free for use, again.
+
+nds_sact
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_tsct:31us
+*
+nds_paus2
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_tsct,d0 ;;;;;   Reload timer INDEX constant (ndt_tsct)
+	bsr.l	     ndt_delay
+
+* Using d7 here as an implicit =0 for the BTST will need addressing
+* - switched to using explicit/immediate #0
+
+	btst	     #0,(a5)	  3*12;        3*15  ) loop 48;108;150
+
+* Switched d0 with d7
+	dbra	     d7,nds_sact   152	  ;454	  3*18+8;	 3*10+4 ) 6.4;9.0;9.4 us
+	moveq	     #0,d0
+
+nds_nxts
+	dbne	     d1,nds_sscout 18	 ; 10	15x bits, Z-bit reset (NE) if we saw NET state NOT what we are sending...
+	bne.s	     nd_ex_nc
+
+*	 239/243 (+21) cycles = 32 to 35us loop
+*	 gives scout 478 to 528us (QL)
+*
+*	 385/389 cycles = 32us loop
+*	 gives scout 480 us + waits (Gold12)
+*
+*	 511/515 cycles = 32us loop
+*	 gives scout 480 us + waits (Gold16)
+
+	tst.b	     nd_dest(a0)  was it broadcast?
+	bne.s	     nds_header   ... no, send header right away (NET still ACTive)
+
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_xsct:5,000us
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_xsct,d0
+	bsr.l	     ndt_delay
+
+nds_header
+	moveq	     #8,d2	  send eight bytes from header
+	bsr.l	     nds_half	  (half a packets worth - the 8x byte HDR)
+	bne.s	     nd_ex_nc	  ... oops
+*
+* NB During NET BCast, we do NOT wait for an ACKnowledge byte (0x01) immediately following the HDR
+*
+	move.w	     d5,d2	  length of data block
+	bsr.l	     nds_half	  (the other half of the packet - the Nx byte PACket)
+	bne.s	     nd_ex_nc	  ... oops
+*
+	tst.b	     nd_dest(a0)  was it broadcast?
+	bne.s	     nds_done	  ... no, done
+*
+* If we get here, then we've just sent the HDR + PACket of a Broadcast (DST=0)
+* - We use a different scheme to verify reception...
+*
+* a) Wait for up to 500us for a BACK (5ms of ACTIve)
+* b) If none received in that time, then we assume a failed transmission (or no one listening) so try again later
+* c) If we do detact ACTive in that time, then we wait until the line goes quiet again, for up to 20ms and
+* d) Then wait to see if anyone else out there follows-up with a NACK (another 5ms ACTIve) for up to 500us
+* e) If line remains silent during that time, we're good and prepare to send the next Block
+* f) But if we see ACTive again within that additional 500us, someone else is complaining, so we plan to retry next time
+*
+* The RECV protocol is such that, if we see a 'repeated' Block, we graciously accept/ACK it
+*   and wait for the next one we actually want. Its only an error if the Block Number recieved is > the one we want
+*   indicating that we missed one down the line, in which case we can't proceed anyway and terminate the RECV.
+*
+* From the reception side:
+* a) If packet recieved OK, we send a BACK within 200us and exit successfully (we expect Block+1 next time)
+* b) If not received OK, we wait until the line goes quiet long enough to tell if anyone else is trying to send a positive BACK
+* c) If it stays quiet, then we know the sender will detect that as a failed transmission (no one has replied with a BACK)
+*     so we exit with failure and expect a re-transmission of the same Block.
+* d) If it does go ACTive in that time, someone else was lucky enough to have successfuly received the last packet and
+*     is sending a BACK - we must wait for that to pass first.
+* e) Once the other station(s) has completed their BACK, we wait a further short period then send our NACK
+*
+
+* Delay-type 2a: WAIT for ACTive (for ndt_back:500us) - Wait for start of Broadcast ACK BACK (d0)
+* - if none detected, exit with error
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_back,d0 wait 65*7.7; 125*4; 164*3.06us = 500us
+	bsr	     ndt_wac2	  look for active
+	beq.s	     nd_ex_nc	  ... no acknowledge
+*
+* Delay-type 2b: WAIT for INACTive (for ndt_bace:20,000us) - Wait for silence following BACK (d0) - no error
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_bace,d0 2600*7.7; 5000*4; 6560*3.06us = 20ms
+	bsr	     ndt_win2	  look for inactive
+*
+* Delay-type 2a: WAIT for ACTive (for ndt_back:500us) - Wait for a Broadcast NACK (d0) - if detected, exit with error
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_back,d0 wait 65*7.7; 125*4; 164*3.06us = 500us
+	bsr	     ndt_wac2	  look for active
+	bne.s	     nd_ex_nc	  ... nack
+nds_done
+	bsr.l	     nd_nextb	  Update Block (Hi/Lo) for next iteration, before returning OK
+	page
+*
+* Exits
+*
+nd_ex_ok
+	moveq	     #0,d0	  OK
+	bra.s	     nd_unset
+nd_ex_nc
+	moveq	     #err.nc,d0   not complete - quite normal - IOSS will retry on scheduler-loop
+nd_unset
+*
+* v2.3 - Restore the original SSP, now that we no longer require contention-free program-flow.
+* v2.4 - adopted WL's more elegant suggestion for SSP manipulation...
+*
+	move.l	     (a7)+,a7	  ; get old stack pointer back (was the first to be pushed on the NEW stack)
+	addq.l	     #4,a7	  ; and jump over old a6 as it was already restored in nd_netset
+
+	move.b	     sv_tmode(a6),(a4) reset transmit mode
+nd_exit
+
+*
+* v2.3 - switch-off the Q68 LED
+*
+	move.b	     #0,led
+
+	movem.l      (sp)+,d1-d7/a1/a2/a4/a5 pop regs - we include a2 which we used for the Q68 HW timer
+
+; test whether we're reading file header, if yes, send bogus header
+; nb might also be used at end of file
+	cmp.w	#15,d2			; trying to read fle header?
+	bne.s	endadd			  ; no, fill with white pixels
+	move.l	 a1,-(a7)
+	lea	nd_data(a0),a1
+hdrlp	move.l	#$ff000080,(a1)+	; "file size" 32 Kib
+	clr.l	(a1)+
+	clr.l	(a1)+
+	clr.l	(a1)
+	move.l	(a7)+,a1
+
+endadd
+
+
+	and.w	     #$f8ff,sr	  reenable interrupts
+
+*
+* DEBUG
+*
+*	 trap	      #15
+*	 dc.w	      $4afb
+	
+	tst.l	     d0
+	rts			  Finally - we can go home...
+
+*
+* v2.3 - as we skip the MDV check during nd_netset, we no longer need this return point
+*
+*nd_ex_mdv
+*	 moveq	      #err.nc,d0
+*	 bra.s	      nd_exit
+*
+* setup d6 shifted transmit mode
+* - No longer using d7 as the direct input-bit
+*	 a4 transmit mode register address (pc_tctrl=$18002 nom.)
+*	 a5 network read address (pc_netrd=$18020 nom.)
+*
+nd_setup
+	move.l	     (sp)+,d0	  pop return address
+*	 movem.l d1-d7/a1/a4/a5,-(sp) save regs
+	movem.l d1-d7/a1/a2/a4/a5,-(sp) save regs - include a2 (we'll use for q68_timer)
+
+	move.l	     d0,a1	  ... return is jmp (a1)
+*
+* v2.2 (debug) - skip MDV check on Q68 (but load sv_tmode in to d6)
+*
+*	 moveq	      #pc.mdvmd,d0 check the microdrive mode bit
+	move.b	     sv_tmode(a6),d6
+*	 and.b	      d6,d0
+*	 bne.s	      nd_ex_mdv    can't do ought about mdv
+*
+	lea	     pc_tctrl,a4  set transmit control reg
+	lea	     pc_netrd-pc_tctrl(a4),a5 ... and network read reg pc_netrd
+
+	or.w	     #$0700,sr	  disable interrupts
+*
+* v2.2 (debug) - skip SER check
+
+* v2.3 - Re-instate SER check for Q68
+*
+*	 bra.s	      nd_netset
+
+	cmp.l	     #'SMSQ',(a6) SMSQ?
+	beq.s	     timo_smsq
+	move.w	     sv_timo(a6),d0 get RS232 timeout, QL style (.W)
+	ble.s	     nd_netset	  ... none
+	clr.w	     sv_timo(a6)
+	bra.s	     timo
+timo_smsq
+	move.b	     sv_timo(a6),d0 get RS232 timeour, SMSQE style (.B)
+	ble.s	     nd_netset	  ... none
+	clr.b	     sv_timo(a6)
+*
+* timo_loop is invoked if a non-zero/positive SER timeout is currently active - i.e a byte is currently in transit
+* - we count-down as many Frame interrupts needed to clear the SER timeout, and thus to be sure that any pending byte
+*   has been safely transmitted, before we proceed with NET activity.
+*
+timo
+timo_loop
+	moveq	     #pc.intrf,d1
+	and.b	     pc_intr,d1   ; frame interrupt?
+	beq.s	     timo_loop	  ; ... no
+	or.b	     sv_pcint(a6),d1 ; clear interrupt flag value
+	move.b	     d1,pc_intr   ; clear interrupt bit
+	subq.b	     #1,d0	  ; one gone
+	bge.s	     timo_loop
+*
+nd_netset
+	or.b	     #pc.netmd,d6 set the network mode bits (%00011000)
+	move.b	     d6,(a4)	  and set pc_tctrl (do not bother about sv)
+*
+	lsl.b	     #1,d6	  get rid of direct output bit
+	assert	     pc..diri,0   ; **** code NO LONGER assumes d7=0
+
+*	 moveq	      #pc..diri,d7 set direct input bit (direct out is msb)
+
+*
+* Load a2 with the Q68 HW timer address (we've added a2 to the saved register-list)
+*
+	lea	     q68_timer,a2
+
+*
+* v2.3 - Preserve then switch the a7/SSP to point to our (local) reserved space in Fast SRAM
+*	  to enjoy the benefits of contention-free program-flow.
+*	 We need a spare LW register to preserve the current SSP and, whilst it feels uncomfortable to do so,
+*	  we'll use a6 (SYSVARS) as the very last almost-free register and then unravel it all again in nd_unset
+* v2.4 - adopted WL's more elegant suggestion for SSP manipulation...
+*
+	move.l	     a6,-(a7)	     ; keep a6 safe on the OLD stack
+	move.l	     a7,a6	     ; a6 = old stack pointer (pointing back at original a6, then RTS back to Access-layer)
+	lea	     ssp_ttop,a7     ; new stack pointer
+	move.l	     a6,-(a7)	     ; keep old stack pointer safe ON OUR NEW stack
+	move.l	     (a6),a6	     ; get old value of a6 back  <----- !
+*
+* v2.3 - Switch-on the Q68 LED
+*
+	move.b	     #1,led
+
+	jmp	     (a1)
+	page
+*
+* Send procedures
+*
+* Send half a packet (byte count d2, address a1)
+*
+nds_half
+	bsr.s	     nds_bytes	  send bytes
+	tst.b	     nd_dest(a0)  is it b/cast?
+	beq.s	     nds_rts	  ... yes, done
+	moveq	     #1,d2	  receive one byte reply
+	lea	     nd_data-1(a0),a1 put into header checksum
+	bsr.s	     ndr_1byte	      
+	subq.b	     #1,d4	  result should be 1
+nds_rts
+	rts
+*
+* Send acknowledge
+*
+nds_ack
+	moveq	     #1,d2	  send one byte
+	move.l	     a1,-(sp)
+	move.b	     d2,-(sp)
+
+	move.l	     sp,a1	  a1 -> ACK byte 0x01 - nds_bytes will pick-up this byte and send it
+       
+	bsr.s	     nds_bytes
+	addq.w	     #2,sp	  Remove the stacked ACK byte
+	move.l	     (sp)+,a1
+	rts
+*
+* Send bytes
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_paus:140us
+* - (LEADIn - NET still ACTive from nds_half <- nds_header <- nds_sscout)
+*
+nds_bytes
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+; wl	    move.w	 #ndt_paus,d0
+; wl	    bsr.l	 ndt_delay
+; wl	    move.l	 d0,d7
+*
+	moveq	     #-1,d3	  preset send byte to 1s
+*
+nds_byloop
+	move.b	     (a1)+,d3	  get byte
+nds_1byte
+	lsl.w	     #1,d3	  set zero start bit
+	rol.l	     #2,d3	  preceded by two stop bits
+	lsl.l	     #8,d3	  in msbyte (and beyond) of word
+	moveq	     #13,d1	  send 14 bits altogether (157us)
+
+	cmp.w	     #1,d2	  Is this the last (or only) byte to send?
+	bne.s	     nds_bit_loop
+	
+	subq.w	     #1,d1	  send 13 bits on this last byte (124us)
+*
+nds_bit_loop
+	move.b	     d6,d3	  08; 04; 04  get shifted tmode
+	asr.l	     #1,d3	  14; 10; 10  get next bit
+	move.b	     d3,(a4)	  13; 13; 15  ... set tmode
+*
+* Delay-type 4: INCremental DELAY, ignoring NET state for ndt_send:11.2us
+* - Here, we could use an INCREMENTAL timing method, to track each successive bit-time between bits
+*   rather than discreet 'progressive' delays. I.e. remember original start-time,
+*   and measure each bit-time against bitX * ndt_send
+*
+nds_pause
+*
+* Switch d0 for d7, after re-loading with INDEX of timeout (ndt_send)
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_send,d0
+; wl	    bsr 	 ndt_dinc
+	move.l	     d0,d7	  New start_time is old end_time
+
+nds_ebit
+	dbra	     d1,nds_bit_loop 18; 10; 10  83; 131/133; 173/175 (84; 134; 179)
+*	 ; 55/57 cycles with zero rot
+
+	subq.w	     #1,d2	  next byte
+	bne.s	     nds_byloop
+*
+	move.b	     d6,d3	  get mode
+	lsr.b	     #1,d3	  inactive
+	move.b	     d3,(a4)	  and set it
+
+	rts
+	page
+*
+* Read procedures
+* - Unlike for SEND which used d0, here delay counters are held in both d3 and d7,
+*   with d0.HW and LW used as reset counters for the d3 loops
+*
+* Read header
+*
+ndr_headr
+	moveq	     #8,d2	  read eight bytes
+	bsr.s	     ndr_bytes
+	bne.s	     ndrh_rts	  ... oops
+	sub.b	     -(a1),d4	  take last byte away from checksum
+	sub.b	     (a1),d4	  is it ok?
+
+; wl added
+	clr.b	d4
+; wl end added
+
+	subq.l	     #7,a1	  and backspace pointer
+
+ndrh_rts
+	rts
+*
+* Read bytes (byte count d2, checksum d4, address a1)
+*
+ndr_bytes
+	move.l	      nd_rpnt(a0),a1 read multiple bytes into data buffer
+	
+*
+* d3 is an outer loop timer (first ndt_rtmo then ndt_rbto)
+* - timeout waiting for start of next byte (first 2.5ms, then 80us)
+*
+ndr_1byte
+*
+* Switched d6.W for d3.W (we won't need d6 again until nds_bytes)
+*
+	swap	     d6 	  Get the pc_tctrl/sv_tmode shifted-mask out of harm's way...
+	
+	move.w	     #ndt_rtmo,d6 Load INDEX of ndt_rtmo in to d6.LW
+	moveq	     #0,d4	  checksum
+
+ndr_byloop
+	assert	     ndt_rdly+4,ndt_rbit
+*
+* Switched d3 for d0 (effectively swapping current usage)
+*
+	move.w	     #ndt_rbit,d3 set up timer INDEXes
+	swap	     d3 	  Now, d3.HW = ndt_rbit
+	move.w	     #ndt_rdly,d3 ...and d3.LW = ndt_rdly, which we'll use first
+	moveq	     #7,d1	  eight bits per byte
+*
+ndr_active
+*
+* Delay-type 2a: WAIT for ACTive (for ndt_rtmo then ndt_rbto) - Wait for start/LEADIn of next byte (d0)
+* - if not detected, exit with error
+* - We need to remember initial timer between this delay and next
+* - We'll use d7.L to store start_time between calls (ndt_wac2 then ndt_winc)
+*
+	move.w	     d6,d0	   d0.LW will now contain INDEX of either ndt_rtmo (first) or ndt_rbto (subsequent) bytes
+; wl	    bsr 	 ndt_wac2
+; wl	    beq.s	 ndr_nc        ... oops, loss of comms
+*
+ndr_start
+*
+* Delay-type 2b: WAIT for INACTive (for ndt_rtmo then ndt_rbto) - Wait for START bit (d0)
+* - if not detected, exit with error
+* - We need to use the initial timer from previous delay, and continue from there
+* - We've used d7.L to store start_time between calls...
+* - d7 is still holding start_time from last invocation of ndt_wac2
+*
+	move.w	     d6,d0	  d0.LW reloaded with either INDEX of ndt_rtmo (first) or ndt_rbto (subsequent) bytes
+; wl	    bsr 	 ndt_winc
+; wl	    bne.s	 ndr_nc       12    ; 08    ; 08     ... oops, loss of comms
+*
+* Now, in ndt_winc, we conveniently captured in d7 the time that INACTive was first detected
+* - i.e. the leading-edge of START-bit
+* - we'll use this as a start_time reference for the bit-loops that follow.
+*
+* Let's try something different here, currently:
+*  - paus1: we wait for a full bit-time (ndt_rdly), to reach the start of bit-0, before entering the bit-loop
+*  - bit-loop
+*    - paus2: then we wait half a bit-time (now swapped with ndt_rbit) to reach the centre of bit-(0..7)
+*    - sample NETIN, thus:
+*      move.b (a5),d3
+*      ror.w  #1,d3
+*    - paus3: wait another half a bit-time (still ndt_rbit)
+*    - re-iterate bit-loop
+*  - persist the collated bits (in d3.HB)
+*  - reload d3 with ndt_rbto and go back for next byte at ndr_byloop
+
+* Instead, the 'QXL' approach (and my favourite)
+* - NB use of d6 in place of d3 for collating NETIN samples:
+* - paus1: we wait for a HALF bit-time (ndt_rdly), to reach mid START bit, before entering the bit-loop
+* - (optional: Check START bit is still INACTive - err_nc otherwise)
+* - bit-loop
+*    - paus2: then we wait FULL bit-time (now swapped with ndt_rbit) to reach the centre of bit-(0..7)
+*    - sample NETIN, as before:
+*      move.b (a5),d6
+*      ror.w  #1,d6
+*    - re-iterate bit-loop
+*  - persist the collated bits (in d6.HB)
+*  - (optiona) Pause again FULL bit-time and resample what should be the ACTive STOP bit
+*  - reload d6 with ndt_rbto and go back for next byte at ndr_byloop
+
+*
+*	 pause to center bit reads at
+*	 84+42 cycles nom less 8 for read/write
+*	 cycle difference of 2 per bit; 118 cycles
+*	 required (104 to 133) (issue 6)
+*	 84+42 cycles nom less 4 for read/write
+*	 cycle difference of 1 per bit; 122 cycles
+*	 required (104 to 139) (issue 5)
+*	 134+77+8 (loop can be 4 cycles ave too
+*	 quick) cycles nom 219 cycles Gold12
+*	 178+89 cycles nom 267 cycles Gold16
+*	 46+23 cycles nom 69 4xgold
+*
+
+ndr_paus1	 ;;;;
+*
+* Delay-type 1b: INCremental DELAY, ignoring NET state for ndt_rdly
+* - Here, we move to half-way through the START bit
+* - We remember the intial HW timer value, and measure each bit-time INCREMENTALLY from the leading-edge of the START bit
+*
+* From the last ndt_winc, we left d7 holding the leading-edge time of the START bit
+* - d0 has been updated to reflect the new end_time - we'll use this as the new start_time (d7)
+*
+	move.w	     d3,d0	  Load INDEX of ndt_rdly back in to d0
+; wl	    bsr 	 ndt_dinc
+	move.l	     d0,d7	  New start_time is old end_time
+
+	swap	     d3 	  08; 04; 04	Now, d3.HW = ndt_rdly, d3.LW = ndt_rbit
+
+ndr_bit_loop
+ndr_paus2	 ;;;;
+*
+* Delay-type 1b: INCremental DELAY, ignoring NET state for ndt_rbit
+* - Here, we are skipping an entire bit-time, to the middle of the next bit, before sampling NETIN - LSBit of (a5)
+*
+	move.w	     d3,d0	  Load d0 with INDEX of ndt_rbit from d3.LW
+; wl	   bsr		ndt_dinc     Pause to the centre of the next bit-time
+	move.l	     d0,d7	  Again, new start_time is old end_time
+*
+* We use d6 now to compile the NETIN bits as under the new register arrangement, d3 is busy holding both halves of the bit-timer
+*
+	move.b	     (a5),d6	  12; 13; 15  (104/139; 199/225; 247/273 + con) xxxxxxxN
+; wl added
+	move.b	#1,d6		;wl all bytes will be $ff
+; wl end added
+	ror.w	     #1,d6	  12; 08; 08  into msbyte of word      Nxxxxxxx xxxxxxxx
+
+ndr_paus3	 ;;;;
+*
+* Delay no longer needed here...
+*
+	dbra	     d1,ndr_bit_loop 18; 10; 10  84; 129/131; 175/177 8x bit cycle loop
+
+*
+* We use d6 now to compile the NETIN bits as under the new register arrangement, d3 is busy holding both halves of the bit-timer
+*
+	lsr.w	     #8,d6	  get byte into low end
+	move.b	     d6,(a1)+	  put into buffer (safe now, as we are about to re-use d3 for ndt_rbto)
+	add.w	     d6,d4	  and add to checksum
+
+	move.w	     #ndt_rbto,d6 20*4; 42*1.9; 50*1.6 = 80us = 7 bits - Reload, with ndt_rbto (80us)
+
+	subq.w	     #1,d2	  next byte
+	bne.s	     ndr_byloop
+
+	swap	     d6 	  Restore d6.LW (actually, we only need a byte) with pc_tctrl/sv_tmode shifted mask
+	moveq	     #0,d0	  Not really needed, nor impactful, but we need to reset Z on RTS, to be detected as successful!
+	rts
+ndr_nc
+	swap	     d6 	  Restore d6.LW (actually, we only need a byte) with pc_tctrl/sv_tmode shifted mask
+	moveq	     #err.nc,d0
+
+	rts
+
+*	 d6 c  p size of buffer extension / copy of tmode for pc
+*	 d7    p direct input bit number
+*	 a0 c  p channel definition / $40(a0) header / $48(a0) data block
+*
+* Network Broadcast (READ - send is instead handled as an extension in standard nds_send*)
+* - Fortunately, all the timeouts in Broadcast recv are the standard sort (ndt_wact/ndt_wina) based on d0.w
+*
+nd_bcast
+	bsr.l	     nd_sbuf	  set buffer pointers
+	add.l	     d6,nd_epnt(a0) and extend the buffer
+	bsr.l	     nd_setup	  setup registers etc.
+ndb_check	 
+	move.l	     nd_rpnt(a0),a1 get running pointer
+	cmp.l	     nd_epnt(a0),a1 check for end of buffer
+	bgt.s	     ndb_abort
+*
+* Wait for continuous activity for minimum 500 us
+*
+ndb_start
+	bsr.l	     nd_break	  check for break
+	beq.s	     ndb_wscout   not pressed, look for scout
+*
+ndb_abort
+	move.b	     #1,nd_type(a0) ... set eof
+	bra.s	     ndb_eof
+*
+ndb_wscout
+*
+* Delay-type 2b: WAIT for INACTive (for ndt_bsct:5,000us) - Check for the BROADCAST extended SCOUT LEAD of 5ms (d0)
+* - Restart the broadcast receive if we see INACTive within the timeout
+*   NB - NO error return - we stay within the atomic Broadacst receive call
+*
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_bsct,d0 500 us of continuous activity
+	bsr.l	     ndt_win2	  wait for inactive
+	beq.s	     ndb_start	  ... yes, restart
+*
+	bsr.l	     ndr_headr	  read bytes
+	bne.s	     ndb_nack	  ... oops
+	tst.b	     (a1)	  was it broadcast? I.e. DST @ 0(a1) =0
+	bne.s	     ndb_nack	  ... it must have been!!!
+*
+	addq.l	     #2,a1	  look at block/byte (skipping check for SRC - we don't care for a bcast)
+	move.b	     (a1)+,d5
+	lsl.w	     #8,d5
+	move.b	     (a1)+,d5
+	sub.w	     nd_blkl(a0),d5 and compare against required
+
+	move.b	     (a1)+,nd_type(a0) set type
+	move.b	     (a1)+,d2	  number of bytes
+	move.b	     (a1)+,nd_dchk(a0) ... and checksum
+*
+	bsr.l	     ndr_bytes
+	bne.s	     ndb_nack	  ... oops
+	cmp.b	     nd_dchk(a0),d4 was checksum OK?
+	bne.s	     ndb_nack
+*
+	bsr.s	     ndb_active   send acknowledgement
+
+	tst.w	     d5 	  was it the correct block?
+	bne.s	     ndb_eof
+	bsr.l	     nd_nextb	  move to next block
+	move.l	     a1,nd_rpnt(a0)
+ndb_eof
+	tst.b	     nd_type(a0)  was it eof?
+	beq.s	     ndb_check	  ... no, check if buffer full and continue (falls in to ndb_start)
+*
+	move.l	     a1,nd_epnt(a0) ... yes, set end pointer
+	bsr.l	     nd_srpnt	  ... and reset running pointer
+	bra.l	     nd_ex_ok
+*
+ndb_nack
+*
+* Delay-type 2a: WAIT for ACTive (for ndt_wgap:200us) - Check for idle following a (failed) HDR or PACket Broadcast receive (d0)
+* - if idle detected, restart Broadcast receive (we expect the sender to detect no BACK and thus re-try later)
+*   NB - NO error return...
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_wgap,d0 wait for 200us inactive
+	bsr.s	     ndt_wac2
+	beq.s	     ndb_start	  network is idle - restart (meaning that no one else sent a +ive BACK)
+*
+* We get here because we detected an error in the HDR (checksum?), but some other station started to reply
+*  with what looks like a +ive BACK (tbc)
+* - if we don't take action now, the sender will interpret the other statsion response
+*    and assume that they can move on to the next packet which is no good for us.
+* - In TK2 style, we send an active (as opposed to passive) NACK.
+* - Start by waiting for the BACK (tbc) to end...
+*
+ndb_nact
+*
+* Delay-type 2b: WAIT for INACTive (for ndt_back:500us) - Skip over the positive BACK from another station (d0)
+* - If timeout reached (ACTive for < 500us), then this was a 'spurious' ACTive,
+*    and would not be interpreted as a positive BACK by the sender
+*   NB - NO direct error return, but we send our active NACK to confirm that we didn't recieve a valid HDR/PACket
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_back,d0 check for 500us active (remainder of someone else's +ive BACK)
+	bsr.s	     ndt_win2
+	beq.s	     ndb_nack	  not a full BACK, try again (sender will NOT have interpreted the short ACTive as BACK)
+
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_bnak:200us
+* - Add a gap between the (valid) BACK from another station,
+*    before going ahead and sending our active NACK (we weren't so lucky...)
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_bnak,d0 wait 83*2.4; 240*.83; 312*.64 = 200 us
+	bsr.s	     ndt_delay
+*
+	bsr.s	     ndb_active   send a 5ms ACTive NACK
+	bra.s	     ndb_start	  and restart
+*
+ndb_active
+	moveq	     #-1,d3	  active bit
+	move.b	     d6,d3	  mode
+	lsr.w	     #1,d3	  shifted
+	move.b	     d3,(a4)	  set active
+*
+* Delay-type 1a: Simple DELAY, ignoring NET state for ndt_xack:5,000us
+* - this is our 5ms active NACK pulse, following a suitable delay for any earlier BACKs from other stations (luckier than us...)
+*
+* v2.2 - switch moveq to move.w - some of the offsets are > $80 causing sign-extension to a negative LW !!!
+*
+	move.w	     #ndt_xack,d0 5000us active
+	bsr.s	     ndt_delay
+*
+	bclr	     #7,d3	  set inactive
+	move.b	     d3,(a4) 
+	rts
+*
+* Revised delay sub-routine primitives, based on HW tick-time in Q68 (q68_timer @ $1c060 in a2)
+*
+
+*
+* ndt_wac2: ndt_wact replacement - Delay-type 2a: WAIT for ACTive, timeout INDEX in d0.L
+* - The approach adopted here is to explicitly ADD the timeout to the HW timer at entry (start-time) and
+*   then test against the timer reaching the calculated end-time.
+* - To match original ACT/INACTive delay-rotines, returns with Z-bit reflecting last sampled NETIN state
+*   To achieve this, we must (clumsily) re-test NETIN just before leaving the delay-primitive
+* - We must take account of the possibility that the addition of the timeout to the HW timer will overflow
+*   the 32-bit, 25ns tick count (every 107sec), so we check for this explicitly and, if needed
+*   split the timer-test loop between two distinct checks for signed (ndt_wals/ndt_wils),
+*   then fall-through to standard unsigned testing (ndt_walu/ndt_wilu)
+* - On entry:
+*     d0.W=INDEX to ndt_ctab offset from a3 (typically loaded with a move.w #<offset>,d0)
+*     a3.L=PDB linkage for NET driver - contains the ndt_ctab
+*     a5.L=pc_netrd ($18020) - NETIN in bit-0
+*     a2.L=q68_timer ($1c060)
+*     
+* - On exit:
+*     d0.L=end-time: (a2) + timeout looked-up from d0 and ndt_ctab
+*     d7.l smashed - updated with time of entry to delay (start_time)
+*     CCR - Z set according to last NETIN sample
+*     Everything else preserved
+*
+ndt_wac2
+	move.l	     (a2),d7	  Persist current HW timer in d7
+	move.l	     (a3,d0.w),d0
+	add.l	     d7,d0
+	bcc.s	     ndt_walu	  No 32-bit roll-over - go straight to testing using unsigned logic
+
+ndt_wals
+	btst	     #0,(a5)
+	bne.s	     ndt_ret
+
+	tst.l	     (a2)	  Only N or Z is affected
+	bmi.s	     ndt_wals	  Signed test (N is tested)
+*
+* If/when we get here, the HW timer has rolled-over from -ive (treating timer as signed) to zero
+* - we can now just continue the timing with the standard (unsigned) timer test-loop
+*
+ndt_walu
+	btst	     #0,(a5)
+	bne.s	     ndt_ret
+
+	cmp.l	     (a2),d0
+	bcc.s	     ndt_walu	  Unsigned test (only C is tested)
+
+	btst	     #0,(a5)	  Final, clumsy, retest of NETIN to set Z accordingly (should be 0 here anyway)
+ndt_ret
+	rts
+
+*
+* ndt_win2: ndt_wina replacement - Delay-type 2b: WAIT for INACTive, timeout INDEX in d0.W
+* ndt_winc: ndt_wina incremental - uses the (previous) timer value as passed in d7, rather than current timer value
+* - d7 is updated with time of leading-edge of INACTive (e.g. START bit)
+*
+ndt_win2
+	move.l	     (a2),d7
+ndt_winc
+	move.l	     (a3,d0.w),d0
+	add.l	     d7,d0	  Retrieve timer - might be current or that persisted previously in d7
+	bcc.s	     ndt_wilu	  No 32-bit roll-over - go straight to testing using unsigned logic
+
+ndt_wils
+	btst	     #0,(a5)
+	beq.s	     ndt_rets
+
+	tst.l	     (a2)	  Only N or Z is affected
+	bmi.s	     ndt_wils	  Signed test (N is tested)
+
+ndt_wilu
+	btst	     #0,(a5)
+	beq.s	     ndt_rets
+
+	cmp.l	     (a2),d0
+	bcc.s	     ndt_wilu	  Unsigned test (C is tested)
+
+ndt_rets
+	move.l	     (a2),d7	  Store the actual timer at point of detecting the INACTive transition (START bit in some cases)
+	btst	     #0,(a5)	  Final, clumsy, retest of NETIN to set Z accordingly
+
+	rts
+
+*
+* ndt_delay: DBRA delay-loop replacement - Delay-type 1a: Simple DELAY, ignoring NET state 
+* ndt_dinc: DRBA delay-loop, incremental - Delay-type 1b: INCremental DELAY, ignoring NET state
+*   for d0 referenced to _previous_ end_time expected in d7, rather than from 'now'.
+* - In either case, d0 on exit holds the latest end_time
+*
+* v2.2 (debug) - ndt_delay now no longer hammers d7 - only ndt_dinc still uses d7
+*
+ndt_delay
+	move.l	     (a3,d0.w),d0
+	add.l	     (a2),d0
+	bra.s	     ndt_dely2
+
+ndt_dinc
+	move.l	     (a3,d0.w),d0
+	add.l	     d7,d0
+ndt_dely2
+	bcc.s	     ndt_delu
+
+ndt_dels
+	tst.l	     (a2)	  Only N or Z is affected
+	bmi.s	     ndt_dels	  Signed test (N is tested)
+
+ndt_delu
+	cmp.l	     (a2),d0
+	bcc.s	     ndt_delu	  Unsigned test (C is tested)
+
+	rts
+
+	end

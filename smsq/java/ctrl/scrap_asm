@@ -110,7 +110,10 @@ jss_spt movem.l mregs,-(a7)
 
 
 ;+++
-; JVA_SYNCSCRAP   this is a blatant copy of MK's QPC code!
+; JVA_SYNCSCRAP
+; sync the scrap and the clopboard
+;
+; this is a blatant copy of MK's corresponding QPC code!
 ;---
 jt_sync thg_extn {SYNC},jt_stop,thp_nul
 	movem.l mregs,-(sp)
@@ -129,9 +132,9 @@ jt_sync thg_extn {SYNC},jt_stop,thp_nul
 
 jva_snojb
 	move.l	#'INFO',d2		; test whether SCRAP is installed
-	jsr	ut_usscp
+	jsr	ut_usscp		; by using it
 	tst.l	d0
-	bne.s	jva_sscpf
+	bne.s	jva_sscpf		; scrap doesn't exist ->...
 	jsr	ut_frscp		; we don't need it now, release it
 
 	moveq	#sms.crjb,d0
@@ -146,13 +149,13 @@ jva_snojb
 	lea	jss_job,a1		; addresss of job code
 	move.w	#$4ef9,(a0)+		; JMP.L
 	move.l	a1,(a0)+		; to start address
-	move.w	#$4afb,(a0)+
+	move.w	#$4afb,(a0)+		; SMSQE job special flag
 	lea	jss_name,a3		; job name
 	move.w	(a3)+,d0
 	move.w	d0,(a0)+
 jva_cpyjbh
 	move.b	(a3)+,(a0)+
-	dbf	d0,jva_cpyjbh
+	dbf	d0,jva_cpyjbh		; set name
 
 	moveq	#sms.acjb,d0		; activate job
 	moveq	#127,d2 		; with high priority
@@ -255,7 +258,7 @@ jt_stop thg_extn {SSTP},,thp_nul
 	move.l	(a0),d1 		; get it
 	bne.s	jss_stop		; job exists
 
-	moveq	#jtd.stop,d0		 ; stop java thread just in case
+	moveq	#jtd.stop,d0		; stop java thread just in case
 	dc.w	jva.trpd
 	rts
 

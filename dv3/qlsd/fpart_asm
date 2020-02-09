@@ -1,5 +1,7 @@
-; DV3 QLSD Find "Partition" (= container file)	V1.00	 2018 W.Lenerz
+; DV3 QLSD Find "Partition" (= container file)	V1.01	 2018 W.Lenerz
 ;
+; 2018-06-25  1.01  Keep error codes from sector read calls (MK)
+
 	section dv3
 
 	xdef	hd_fpart
@@ -95,7 +97,7 @@ hd_fpart_internal
 	moveq	#1,d2
 	clr.l	d0			; I want to read sector 0
 	jsr	hd_rscard		; read this sector
-	bne	hfp_fnf 		; ooops card doesn't exist at all or
+	bne	hfp_rts 		; ooops card doesn't exist at all or
 					; isn't initialized
 
 	move.b	dos_vmbr(a1),d0 	; check for valid MBR
@@ -112,7 +114,7 @@ hfp_mbr cmp.w	#dos.ftcs,dos_ftcs(a1)	; marker present?
 	xlong	d0			; as block (=512 bytes sector) number
 	move.l	d0,d4			; keep for later, start of partition
 	jsr	hd_rscard		; read partition sector into (a1)
-	bne	hfp_fnf 		; ooops
+	bne	hfp_rts 		; ooops
 	cmp.l	#'FAT3',dos_f32s(a1)	; check for FAT32 signature
 	bne	hfp_fnf
 	cmp.b	#'2',dos_f32s+4(a1)	; continue check for FAT32 signature
@@ -159,7 +161,7 @@ hfp_mbr cmp.w	#dos.ftcs,dos_ftcs(a1)	; marker present?
 
 	add.l	d6,d0			; root dir start = data start + root dir sect
 	jsr	hd_rscard		; read root dir 1st sector
-	bne.s	hfp_fnf
+	bne.s	hfp_rts
 ; check the first 16 entries in the root dir for my file
 	moveq	#15,d1			; check first 16 entries in root dir
 	move.l	a2,d0			; normalized name we're looking for
@@ -181,7 +183,7 @@ nxtsrch add.w	#dos.drel,a0		; get next entry in the root dir
 fndlp	dbf	d1,srchlp1
 	move.l	d5,a3			; get my pointer back
 hfp_fnf moveq	#err.fdnf,d0		; card or file not found
-	rts
+hfp_rts rts
 
 ; here the dir entry for the image file is found at (a0), get to 1st sector of it
 found

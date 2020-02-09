@@ -9,6 +9,7 @@
 	include 'dev8_dv3_qlsd_keys'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_err'
+	include 'dev8_keys_sys'
 
 ; algo :
 ; put into spi mode
@@ -18,7 +19,7 @@
 ; cmd55
 ; cmd58
 
-inireg	reg	d1/d2/d3/d5/a2
+inireg	reg	d1/d2/d3/d5/a2/a6
 
 ;+++
 ; This routine initialises an sdhc card
@@ -32,9 +33,10 @@ inireg	reg	d1/d2/d3/d5/a2
 inicrd	andi.w	#3,d5
 	beq.s	err_ipar
 	movem.l inireg,-(a7)
+	move.l	qlsd_sysvars(a3),a6	; so caller doesn't have to provide it
 	move.l	hdl_1sec(a3),d0 	; something like one second timeout
 lock_wait
-	bset	#7,qlsd_lock(a3)	; prevent poll from accessing device
+	bset	#7,sys_qlsd(a6) 	; prevent poll from accessing device
 	beq.s	lock_ok 		; got the lock, proceed
 	subq.l	#3,d0
 	bgt.s	lock_wait
@@ -142,8 +144,8 @@ reply2
 	moveq	#0,d0
 ini_out move.w	(a7)+,sr
 	tst.b	SPI_SELECT0(a2) 	; deselect all
-ini_rts movem.l (a7)+,inireg
-	bclr	#7,qlsd_lock(a3)	; release device
+ini_rts bclr	#7,sys_qlsd(a6) 	; release device
+	movem.l (a7)+,inireg
 	tst.l	d0
 	rts
 		

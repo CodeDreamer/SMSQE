@@ -225,7 +225,7 @@ nd_self  equ    $41     my net station number
 nd_blkl  equ    $42     block number (low)
 nd_blkh  equ    $43     block number (high)
 nd_type  equ    $44     1 recv eof, 0 recv ok, -1 xmit
-nd_nbyt  equ    $45     1 to 255 (what about 0??)
+nd_nbyt  equ    $45     1 to 255 (what about 0??) - else 4-1020, for a Server packet
 nd_dchk  equ    $46     data checksum
 nd_hchk  equ    $47     header checksum
 *

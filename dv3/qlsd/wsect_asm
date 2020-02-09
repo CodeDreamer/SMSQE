@@ -38,7 +38,11 @@ hd_wscard_api
 	andi.w	#3,d7
 	beq.s	err_ipar
 	bset	#7,d7			; mark as "card number" for card_select
-	bra.s	hd_wscard
+	move.l	a6,-(sp)
+	move.l	qlsd_sysvars(a3),a6	; so caller doesn't have to provide it
+	bsr.s	hd_wscard
+	move.l	(sp)+,a6
+	rts
 
 err_ipar
 	moveq	#err.ipar,d0

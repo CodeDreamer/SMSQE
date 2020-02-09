@@ -12,6 +12,7 @@
 ;		    Moved generic code to ptr_spcch_asm (MK)
 ; 2004-03-23  2.15  Correct QL mode 8 routine (MK)
 ; 2016-03-13  2.16  do not clr.l odd address (wl)
+; 2019-12-18  2.17    "   "    "     "	   " not even for mode 64! (wl)
 	section driver
 
 	xdef	ptc_convert
@@ -461,7 +462,12 @@ ptc24_long
 	move.b	d3,(a4)+
 	subq.w	#1,d6
 	bgt.s	ptc24_long
-	clr.l	(a4)
+
+	clr.b	(a4)
+	clr.b	1(a4)
+	clr.b	2(a4)
+	clr.b	3(a4)
+;	 clr.l	 (a4)		; a4 could be odd
 	add.w	d5,a4			; skip extra bytes
 ptc24_emake
 	dbra	d2,ptc24_make

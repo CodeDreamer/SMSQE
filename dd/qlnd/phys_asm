@@ -1,6 +1,7 @@
-* Network physical layer - Sinclair standard +	V2.01	 1985	Tony Tebby  QJUMP
+* Network physical layer - Sinclair standard +	V2.02	 1985	Tony Tebby  QJUMP
 *
 * 2017-03-28  2.01  Removed reference to nd_break (MK)
+* 2018-11-25  2.02  Fixed crash in nd_setup when network is not available (MK)
 
 	section nd
 *
@@ -270,10 +271,15 @@ nd_ex_nc
 	moveq	#err.nc,d0		not complete - quite normal
 nd_unset
 	move.b	sv_tmode(a6),(a4)	reset transmit mode
+nd_exit
 	movem.l (sp)+,d1-d7/a1/a4/a5	pop regs
 	and.w	#$f8ff,sr		reenable interrupts
 	tst.l	d0
 	rts
+nd_ex_mdv
+	moveq	#err.nc,d0
+	bra.s	nd_exit
+
 *
 * setup d6 shifted transmit mode
 *	d7 netin bit (0)
@@ -288,7 +294,7 @@ nd_setup
 	moveq	#pc.mdvmd,d0		check the microdrive mode bit
 	move.b	sv_tmode(a6),d6
 	and.b	d6,d0
-	bne.s	nd_ex_nc		can't do ought about mdv
+	bne.s	nd_ex_mdv		can't do ought about mdv
 *
 	lea	pc_tctrl,a4		set transmit control reg
 	lea	pc_netrd-pc_tctrl(a4),a5 ... and network read reg

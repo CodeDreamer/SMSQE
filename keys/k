@@ -97,6 +97,13 @@ k..rdn   equ    3               bit set for right and down
 
 k.odds   equ    $ffffffe0       above cursor keys
 k.caps   equ    $ffffffe0
+k.acaps  equ    $ffffffe1
+k.ccaps  equ    $ffffffe2
+k.accaps equ    $ffffffe3
+k.scaps  equ    $ffffffe4
+k.ascaps equ    $ffffffe5
+k.cscaps equ    $ffffffe6
+k.acscaps equ   $ffffffe7
 
 k.f1     equ    $ffffffe8
 k.cf1    equ    $ffffffe9

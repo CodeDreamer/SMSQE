@@ -52,7 +52,7 @@ nxtjob
 	bra.s	killsnd 		; ob not found
 killjob moveq	#sms.frjb,d0
 	clr.l	d3
-	move.l	d4,d1			; kil this job
+	move.l	d4,d1			; kill this job
 	trap	#1			; kill job now
 
 killsnd move.l	exv_i4,a3		; point to Interrupt level 4

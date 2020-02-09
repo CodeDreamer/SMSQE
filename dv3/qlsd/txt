@@ -5,8 +5,8 @@ This  is a small  driver for the  QL-SD interface which  enables you to
 read standard QXL.WIN  type container files  that you may  place on the
 SDHC card. It was written  by  myself  and  extensively  rewritten  and
 improved by Marcel Kilgus. It  is  supposed  to  replace  the  existing
-Qubide driver. Like that driver, it  will  not  work  reliably  with  a
-GoldCard or SuperGoldCard,  unless the  CPLD chip  of the  interface is
+Qubide driver. Like that driver, it  will  not	work  reliably	with  a
+GoldCard or SuperGoldCard,  unless the	CPLD chip  of the  interface is
 reprogrammed.
 
 ATTENTION, this will (most probably) only work with SMSQ/E, MINERVA and
@@ -14,10 +14,10 @@ selected QL ROMs (JS, MG).
 
 I - Loading the driver
 There are three  versions of  the drivers,  one to  be loaded  as EPROM
-("driver_rom")  and the second to be loaded with the LRESPR command, or
+("driver_rom")	and the second to be loaded with the LRESPR command, or
 the RESPR/LBYTES/CALL combination ("driver_bin").  The third version of
-the driver also incorporates a  driver  for  reading  Qubide  formatted
-container files. It  is called  "driverWQ_bin" and  can only  be loaded
+the driver also incorporates a	driver	for  reading  Qubide  formatted
+container files. It  is called	"driverWQ_bin" and  can only  be loaded
 with the  LRESPR command, or the  RESPR/LBYTES/CALL combination. If you
 wish too  use this driver,  please also read  section IX at  the end of
 this document.
@@ -25,7 +25,7 @@ this document.
 
 II - Device name
 The normal  device name is WIN. When the  driver is in EPROM, opening a
-channel to mdv1_boot for the  first  time  (as  the  QL  will  do  when
+channel to mdv1_boot for the  first  time  (as	the  QL  will  do  when
 booting) will be re-routed to win1_boot instead.
 
 
@@ -69,16 +69,16 @@ where:
 one card, so the parameter would be 1.
 
      - file_name$ is the name of the container file. The file name MUST
-be in  "8.3" format, i.e.  a name of  one to 8  characters, an optional
+be in  "8.3" format, i.e.  a name of  one to 8	characters, an optional
 decimal point followed by an optional extension of up to three letters.
 The  extension, if present, must be separated from the name by a period
 (".").
 
-Please  note that this command does not check that the file is actually
+Please	note that this command does not check that the file is actually
 present and readable on the card.
 
 The  WIN_DRIVE command has  an intended side-effect:  all open channels
-corresponding to  files  on  that  drive  are  closed,  and  the  drive
+corresponding to  files  on  that  drive  are  closed,	and  the  drive
 definition  block for that drive is  removed, thus starting afresh with
 the new drive. So do not use this for a drive that is still being used.
 
@@ -94,8 +94,8 @@ that this does not happen. If not, data loss WILL (not can) occur!
 
 
 3 - CARD_INIT
-If you  have changed or  inserted a card,  you should first  of all use
-this command  to initialize the  card. This is  done automatically when
+If you	have changed or  inserted a card,  you should first  of all use
+this command  to initialize the  card. This is	done automatically when
 the driver is loaded.
 This is done automatically for card nbr. 1 when the driver is loaded.
 
@@ -116,7 +116,7 @@ that is still being used.
 
 4 - WIN_CHECK
 This  command checks whether a WIN container file on the card is indeed
-in contiguous sectors on the  card  (see  below  avoid  container  file
+in contiguous sectors on the  card  (see  below  avoid	container  file
 fragmentation).
 
 Syntax:
@@ -124,7 +124,7 @@ Syntax:
 WIN_CHECK drive
 
 where drive is the container file containing the WIN drive in question.
-If   the  command  does  not  return   an  error,  the  container  file
+If   the  command  does  not  return   an  error,  the	container  file
 corresponding to the drive is OK. 
 
 
@@ -134,8 +134,8 @@ If  you have burned  the driver into  the EPROM, you  should insert the
 card into the  interface before booting  the machine. The  card is then
 initialized when booting. 
 
-If you  load the driver via  (L)RESPR, the card should  be in the drive
-when you  (L)RESPR the driver. I would  would strongly suggest that you
+If you	load the driver via  (L)RESPR, the card should	be in the drive
+when you  (L)RESPR the driver. I would	would strongly suggest that you
 then only use the new driver, not the original one.
 
 Whether by  EPROM or when (L)RESPR'd, at  that stage the driver doesn't
@@ -150,9 +150,9 @@ with the QL-SD.
 
 VII - Container file names
 As is  the case with the original driver,  the file name of a container
-file on  the SDHC card MUST be  in "8.3" format, i.e. a  name of 1 to 8
+file on  the SDHC card MUST be	in "8.3" format, i.e. a  name of 1 to 8
 characters,  possibly followed by a decimal point and a (at most) three
-letter  extension. Missing letters are filled  up with spaces. The name
+letter	extension. Missing letters are filled  up with spaces. The name
 and extension must be in upper case and the extension, if present, must
 be separated from the name by a period (".").
 
@@ -160,9 +160,9 @@ Please only use plain  ASCII characters  for the  name and  no accented
 characters, i.e. the letters A-Z and numbers 0-9.
 
 In  all commands (e.g. WIN_DRIVE) or configuration items where you must
-give or configure a name, he driver  tries  to  help  you  as  much  as
+give or configure a name, the driver tries  to	help  you  as  much  as
 possible.  Names  are  automatically  converted  into  upper  case  and
-correctly  formatted,   so  that  "qlwa.win"   would  automatically  be
+correctly  formatted,	so  that  "qlwa.win"   would  automatically  be
 converted to "QLWA    .WIN". However, a "_" is not converted to a "." .
 
 
@@ -171,7 +171,7 @@ As is the case with the original QL-SD driver, this driver expects that
 all container files (i.e. files  for  WIN  drives)  lie  in  contiguous
 sectors  on the SDHC card. If this is not the case, the file is said to
 be  fragmented. Whether for this driver or the original one, fragmented
-files are deadly. The driver  assumes  that,  once  it  has  found  the
+files are deadly. The driver  assumes  that,  once  it	has  found  the
 beginning  of a container file, the rest  of that contaner file lies in
 contiguous sectors on the card, and it will cheerfully write into those
 contiguous sectors which it  deems still  belong to  that file.  If the
@@ -180,12 +180,12 @@ to another file, which will thus be irretrievably corrupted.
 
 So,  special precautions must be taken when writing the container files
 themselves to the card. The best and recommended way to achieve this is
-to make  sure that,  before writing  the container  files, the  card is
+to make  sure that,  before writing  the container  files, the	card is
 freshly formatted. Then, one after the other, write each container file
 to the card immediately after formatting the card. 
 
 
-Hence,  you should dedicate a  card solely for the  purpose of using it
+Hence,	you should dedicate a  card solely for the  purpose of using it
 with QL-SD. 
 
 Note : practise has shown that in most cases it may not be necessary to
@@ -196,20 +196,20 @@ file allocation  table and this  lead to fragmented  files (see below).
 However,  the recommendation still is to format th card and not just to
 delete all files from it.
 
-When copying several  files to  the freshly  formatted card,  make sure
+When copying several  files to	the freshly  formatted card,  make sure
 that  the copy process of  each file is finished  before you start that
 for the  next file. If not,  it may happen that  the two copy processes
 write concurrently  to the card, which could  mean that the sectors for
 the  two files might be interleaved.  Depending on the operating system
 you use (Linux, Windows, Macos) if you drag several fies to the card at
-once,  several concurrent copy  processes might be  started which might
+once,  several concurrent copy	processes might be  started which might
 lead  to file fragmentation. So, to avoid  this, just drag the files to
 copy one after the other.
 
-Moreover,  never just delete a  single file -be it  a container file or
-any  other file-   from the  card, but  always format  it (or  at least
+Moreover,  never just delete a	single file -be it  a container file or
+any  other file-   from the  card, but	always format  it (or  at least
 delete ALL  files from the card), and then  write the files to the card
-again: If you delete a single  file  from  the  card  and  later  write
+again: If you delete a single  file  from  the	card  and  later  write
 another, bigger,  container file to the card,  it is possible that part
 of this container  file will lie  in the sectors  previously ocupied by
 the  deleted file, and the rest  in previously unoccupied sectors. This
@@ -225,17 +225,17 @@ and other files on the card might also be irrecoverably damaged!
 IX  - How to copy the content from a Qubide container file to a qxl.win
 container file
 
-As  this driver is supposed to replace  the original one, you will want
+As  this driver is supposed to replace	the original one, you will want
 to copy the content of the Qubide container file to a QXL.WIN container
 file. For this:
-- either  use a program called  QXLWINReader. It can be  used on any PC
+- either  use a program called	QXLWINReader. It can be  used on any PC
 with Linux,  Macos or Windows that has Java  on it. This program can be
 downloaded from www.wlenerz.com/qlstuff.
 - or use the driver version which can also read Qubide format disks. If
 you  (L)RESPR this version, you will  have an additional device, called
 "QUB" with 8 drives (QUB1_ to Qub8_).
 
-You must  configure this driver first,  so as to give  the names of the
+You must  configure this driver first,	so as to give  the names of the
 container files. There is no QUB_USE command or similar.
 
 

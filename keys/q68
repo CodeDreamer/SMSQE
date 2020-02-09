@@ -116,12 +116,33 @@ i2c_scl 	equ	$1c00c		; ?
 i2c_sda 	equ	$1c00e		; ?
 q68_card2	equ	$c		; card init item in config block
 ;q68_msecf	 equ	 $d		 ; config item for mouse in config block
-			      
+
 q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
 					; (nb 0-5 are the same)
 q68_reset	equ	$1c024
 q68_timer	equ	$1c060
 
+
+; network related variables
+q68_netvec	equ	$17d10		; net vectors pointer
+q68_kradd	equ	$17d14		; address of keyboard read routine
+q68_klnk	equ	$17d18		; kbd linkage area
+q68_test	equ	$17d1c		; 4 bytes for whatever you want
+
+; debug
+;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
+q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
+q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
+debug		equ	1		; if 1 debug code is included
+
+
+;qcf.mse	 equ	 $16
+
+
+; the following scheme is no longer used. Drive infos are stored in the
+; config block for each device.
+
+; -------------------------- UNUSED ----------------------------
 ; part of the info in the config block is copied to a fixed memory address
 ; (in addition to the standard config info block)
 ; at addres q68_cfgb the following info is stored:
@@ -135,17 +156,10 @@ q68_timer	equ	$1c060
 ;     the table are also spaced q68.cfgb bytes.
 ;     This table is created by dv3_q68_qlsd_init_asm.
 ;
-q68_cfgb	equ	$17D0C		; base of info on drive config
-q68.cfgb	equ	16		; spacing between drive names DONT CHANGE
-q68.norn	equ	8*q68.cfgb	; offset to normalized names
+;q68_cfgb	 equ	 $17D0C 	 ; base of info on drive config
+;q68.cfgb	 equ	 16		 ; spacing between drive names DONT CHANGE
+;q68.norn	 equ	 8*q68.cfgb	 ; offset to normalized names
+	    
 
-; debug
-;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
-q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
-q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
-debug		equ	1		; if 1 debug code is included
-
-
-;qcf.mse	 equ	 $16
 
 	list

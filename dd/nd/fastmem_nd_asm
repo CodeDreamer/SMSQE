@@ -1,0 +1,85 @@
+* Find and Allocate Fast Memory (FMEM) to sort of mimic SMS.ACHP
+* v1.1 - based on WL's original SBAS routines, but for use outside of SBASIC
+* - Used by dd_nd_init_q68/initb to allocate the NET device linkage block in FMEM instead of the Common Heap
+*
+; FREE_FMFM AND ALFM keywords 1.00 (c) W. Lenerz 2017
+
+        section procs
+
+        xdef    alfm_nd
+        xdef    ffmem_nd
+
+*        xref    ut_rtfd1
+*        xref    ut_gxin1
+
+        include dev8_keys_q68
+        include dev8_keys_err
+        
+        include dev8_keys_chp
+        include dev8_keys_hpm
+
+ffmem_nd
+ffmem2
+        move.l  #q68_sramb,a2           ; pointer to first free mem in fast ram
+        move.l  #q68_sramt,d1           ; top of ram
+        move.l  (a2),d3
+*
+* Now, the current fastmem_asm code doesn't seem to care about odd-base addresses/allocations
+* - but we do! So, we'll force it even before proceeding.
+*
+        addq.l  #1,d3
+        bclr.l  #0,d3
+        move.l  d3,(a2)                 Make it right (perhaps is was already?)...
+
+        sub.l   d3,d1
+        subq.l  #4,d1                   ; remaining free mem
+        bge.s   ok
+        clr.l   d1                      ; nothing remains
+ok	rts
+
+
+alfm_nd
+        bsr.s   ffmem2                  ; check how much mem is free (in d1)
+        ble.s   oom
+
+        moveq   #chp.len,d2
+        add.l   d2,d0                   Add CHP-like header length ($10)
+        
+        moveq   #hpm.almn-1,d2          Minimum heap entry length - 1 (8-1=7)
+        add.l   d2,d0                   ...and round-up
+        not.l   d2
+        and.l   d2,d0
+
+        sub.l   d0,d1                   ; we need this much mem (d0)
+        blt.s   oom                     ; but there's not enough remaining
+
+        move.l  d3,d1                   ; preserve ponter to free mem
+        add.l   d0,d3                   ; new base of free mem
+        move.l  d3,(a2)                 Store new base back in q68_sramb ($19000)
+
+        movea.l d1,a0                   Start of allocated base
+
+        movea.l a0,a2                   Take a copy of base (for zero'ing the allocated space)
+        move.l  d0,d1                   ...and take a copy of the allocated length (multiple of hpm.almn=8)
+        lsr.l   #2,d1                   ...adjust for LW's (reduce by factor of 4)
+        subq.l  #1,d1                   ...and again for DBRA
+
+clr_lp
+        clr.l  (a2)+                    clear memory
+        dbra    d1,clr_lp
+
+        move.l  d0,chp_len(a0)          Store allocated length in first LW of allocated space (ala SMS.ACHP)
+
+        moveq   #chp.len,d2
+        adda.l  d2,a0                   Base of USABLE area (following CHP-like header)
+
+        sub.l   d2,d0
+        move.l  d0,d1                   Actual USABLE space
+*                                        (request in d0 + 16 for header)rounded-up - 16
+        clr.l   d0
+        bra.s   ok
+
+oom     moveq   #err.imem,d0
+        rts
+
+        end

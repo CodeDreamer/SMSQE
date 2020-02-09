@@ -1,13 +1,13 @@
 * Job control procedures V0.6	    1984/1985	Tony Tebby  QJUMP
 *
-* 22-11-2018  0.6  added SUSJOB (pjw)
-*
 *	JOBS [#n]			lists the current jobs
 *	RJOB nr,tag,error		removes a job
 *	SPJOB nr,tag,priority		sets a job's priority
 *	SUSJB nr,tag,timeout		suspends a job +ve ticks, -1 forever
 *	AJOB nr,tag,priority		activates a job
 *
+* 2018-07-24  0.6  Added SUSJB (pjw)
+
 	section exten
 *
 	xdef	rjob
@@ -34,27 +34,31 @@
 	include dev8_sbsext_ext_keys
 *
 rjob
-	bsr.s	job_proc		2/3 arguments
-	bne.s	job_rts
-	moveq	#mt.frjob,d0		force remove job
-	move.l	d2,d3			error code in d3
-	bra.s	job_trap
-spjob
-	bsr.s	job_proc		2/3 arguments
-	bne.s	job_rts
-	moveq	#mt.prior,d0		set priority
-	bra.s	job_trap
+	moveq	#mt.frjob,d7		force remove job
+	bra.s	job_jb
+
 susjb
-	bsr.s	job_proc		2/3 arguments
-	bne.s	job_rts
-	move.w	d2,d3
-	suba.l	a1,a1			no flag byte
-	moveq	#mt.susjb,d0		suspend job
-	bra.s	job_trap
+	moveq	#mt.susjb,d7		suspend job
+	bra.s	job_jb
+
+spjob
+	moveq	#mt.prior,d7		set priority
+	bra.s	job_jb
+
 ajob
+	moveq	#mt.activ,d7		activate
+
+job_jb
 	bsr.s	job_proc		2/3 arguments
 	bne.s	job_rts
-	moveq	#mt.activ,d0		activate (d3 zero)
+
+	move.l	d7,d0			set trap
+
+	cmp.b	#mt.activ,d7
+	beq.s	job_trap		(d3 = zero)
+
+	move.l	d2,d3			d3 = timeout (susjb) or error (rjob)
+	suba.l	a1,a1			no flag byte (susjb)
 job_trap
 	trap	#1
 job_rts

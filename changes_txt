@@ -2,16 +2,81 @@
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
- 
+
+3.35
+
+    QLSD (MK)
+	dv3_qlsd_basic_asm		1.01	Fixed WIN_CHECK for everything other than WIN1
+	dv3_qlsd_cfg_asm		.	(misc)
+	dv3_qlsd_fpart_asm		1.01	Keep error codes from sector read calls
+	dv3_qlsd_hd_ckrdy_asm		1.01	Use new qlsd_crdused flags instead of hdl_actm
+	dv3_qlsd_hd_hold_asm		1.01	Mark card as recently used on release
+	dv3_qlsd_hd_poll_check_asm	1.01	Clear new crdused flag on timeout
+	dv3_qlsd_inicrd_asm		1.01	Take the QLSD hardware lock before initialising card
+	dv3_qlsd_initwq_asm		1.01	Output the recognised hardware revison
+	dv3_qlsd_init_asm		1.01	Output the recognised hardware revison
+	dv3_qlsd_keys			.	changed to suit
+	dv3_qlsd_open_asm		3.03	Keep error code from ddl_check, fixed Minerva workaround in case of open through DEV
+	dv3_qlsd_qub_init_asm		?
+	dv3_qlsd_rsect_asm		1.02	Added hd_rscard_api, multisector read
+	dv3_qlsd_wsect_asm		1.02	Added hw_wscard/hw_wscard_api, multisector write
+	dv3_qlsd_drv_cct		.	changed to suit
+	dv3_qlsd_txt			.	changed to suit
+	dv3_qlsd_doc			.	changed to suit
+	dv3_qlsd_resprWQ_link		.	changed to suit
+	dv3_qlsd_respr_link		.	changed to suit
+	dv3_qlsd_rom_link		.	changed to suit
+	dv3_qlsd_version_asm		.	changed to suit
+
+    HISTORY (MK)
+	iod_history_link		.	added
+
+    NETWORK (MK)
+	dd_qlnd_phys_asm		2.02	Fixed crash in nd_setup when network is not available
+	dd_nd_fopcls_asm		0.50	Changed add.w #io.open to add.l, like it is in GC ROM
+	dd_dev_link			.	changed to suit
+	dd_rd_link			.	changed to suit
+		 
+    SBASIC
+	sbsext_ext_maint_asm		1.40	added FDEL keyword, same as DELETE but as a function (returns 0 if delete was OK) (PW)
+	sbsext_ext_jobs_asm		0.60	added SUSJB again (PW)
+	smsq_sbas_procs_tk2procs_asm	2.10	added FDEL + SUSJB (PW)
+	smsq_sbas_cmpop_asm		2.01	string variable cannot be REPeat variable  (wl)
+	sbsext_utq_opdefx_asm		1.02	Fixed crash introduced in 1.01 (MK)
+
+    MISC (MK)
+	keys_colour			.	additions/modifications
+	keys_k				.	additions/modifications
+	keys_sys			.	additions/modifications
+	smsq_smsq_lang_msg8_asm 	.	german spelling corrected
+	util_gut_pause_asm		.	corrected comment
+
+    TKII
+	sbsext_tk2_jobs_asm		0.60	Added SUSJB (PW)
+	sbsext_tk2_procs_asm		3.01	Added SUSJB, FDEL (PW)
+	sbsext_tk2_version_asm		.	amended to suit (MK)
+	sbsext_tk2_versions_txt 	.	amended to suit (MK)
+		 
+    Q68 (wl)
+	smsq_q68_driver_fastmem_asm	1.01	make sure mem request is even
+	smsq_q68_kbd_initi_asm		1.01	save kbr read address in q68_kradd
+	smsq_q68_sbas_fastmem_asm	.	deleted - was same as in ..._driver
+
+    SMSQMULATOR (wl)
+	iod_con2_java8_spcch_asm	2.17	don't clr.l odd address (2.16 wasn't enough)
+	iod_con2_java8_sprite_drop_asm	1.13	faster code, eliminated some dead code
+   
+-----------------------------------------------------------------------------
+							
 3.34
 
-    SBASIC (PJW)
-	sbsext_ext_jobs_asm		0.60	added SSJOB, JOB_NAME also handles compiled programs (pjw)
+    SBASIC (PW)
+	sbsext_ext_jobs_asm		0.60	added SSJOB, JOB_NAME also handles compiled programs (PW)
 	smsq_sbas_procs_tk2procs_asm	2.09	amended to suit
 
     Q68 DRIVE BUGFIXES (wl)
 	dv3_q68_sdhc_wsect_asm		1.03	save d6!!!, use sysvars for card type
-	dv3_q68_win_mformat_asm 	3.01	if check OK to format fails, release the controller (wl)
+	dv3_q68_win_mformat_asm 	3.01	if check OK to format fails, release the controller
 
     Q68 BETTER HANDLING OF SD CARDS (wl)
 	keys_sys			.	new keys at sys_filw (Q68 specific)
@@ -494,8 +559,8 @@ Version  changed		       of file	changes made
 	iod_con2_java8_sprite_save_asm	.	do not move.l into odd address
 	iod_con2_java8_sprite_drop_asm	.	do not move.l into odd address
 	
-    COSMETIC CHANGES FOR PJW's SMSQEWEB
-	keys_atari_scc			.	keys - make sure list & nolist directives are in the right place (pjw)
+    COSMETIC CHANGES FOR PW's SMSQEWEB
+	keys_atari_scc			.	keys - make sure list & nolist directives are in the right place (pw)
 	keys_aurora			.
 	keys_cmp			.
 	keys_colour			.
@@ -522,7 +587,7 @@ Version  changed		       of file	changes made
 	smsq_smsq_base_keys		.
 	smsq_smsq_config_keys		.
 
-	mac_assert			.	macro files:  also remove expands (pjw)
+	mac_assert			.	macro files:  also remove expands (pw)
 	mac_qdos			.
 	mac_text			.
 	mac_thg 			.
@@ -546,10 +611,10 @@ Version  changed		       of file	changes made
 	uti_EXFILTER_list		.	file removed
 	qmon				.	directory removed
 
-	smsq_q40_preloader_link 	.	remove excess line feeds (pjw)
+	smsq_q40_preloader_link 	.	remove excess line feeds (pw)
 	smsq_q40_cache_link		.	  "      "	"     "
 
-	ee_wman_move_asm		.	all : adjust head comment (pjw)
+	ee_wman_move_asm		.	all : adjust head comment (pw)
 	sys_gold_pdummy_asm		.
 	sys_gold_privv_asm		.
 	uti_chkext_asm			.
@@ -587,7 +652,7 @@ Version  changed		       of file	changes made
 	smsq_java_driver_most_asm	1.03	integrated the rtc routines  & removed <rtc module (wl)
 
     NEW KEYWORD FEX_M
-	sbsext_ext_exsbas_asm		2.06	added FEX_M routine  (pjw)
+	sbsext_ext_exsbas_asm		2.06	added FEX_M routine  (pw)
 	smsq_sbas_procs_tk2procs_asm	2.08	FEX_M linked in  (wl)
 
 	smsq_smsq_config_keys		.	config key sms_ieee for smsqmulator

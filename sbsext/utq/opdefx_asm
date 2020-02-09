@@ -1,6 +1,7 @@
 ; Utility open a file using name, default and extension  1994 Tony Tebby
 ;
 ; 2018-01-10  1.01  Removed ".sav" extension for QDOS to save some bytes (MK)
+; 2019-02-10  1.02  Fixed crash introduced in 1.01 (MK)
 
 	section utils
 
@@ -72,10 +73,10 @@ utx_rts0
 	moveq	#0,d0
 	rts
 
-ut_null
 uxt_bopt dc.w	0
 	 dc.w	uxt.bas-*
 	 dc.w	uxt..bas-*
+ut_null  dc.w	0
 
 uxt.bas  dc.l	 '_bas'
 uxt..bas dc.l	 '.bas'

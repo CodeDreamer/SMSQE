@@ -580,7 +580,7 @@ GD2 colour sprite:
 B - Sprite control byte:
 ------------------------
 The sprite control bit is formatted as follows
-
+	 16368421
 	%mpao0xcc
 
 	cc
