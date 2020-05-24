@@ -28,6 +28,7 @@
 	include 'dev8_keys_iod'
 	include 'dev8_keys_con'
 	include 'dev8_keys_chn'
+	include 'dev8_keys_java'
 	include 'dev8_smsq_smsq_base_keys'
 	include 'dev8_mac_assert'
 	include 'dev8_mac_proc'
@@ -78,9 +79,12 @@ hdop_ithg
 	lea	iod_pllk(a3),a0
 	moveq	#sms.lpol,d0
 	trap	#do.sms2
-
 	move.l	a3,sys_klnk(a6) 	 ; set pointer to linkage  (v. 1.01)
-
+	lea	kbd_read,a0
+	move.l	jva_lkptr,d0
+	beq.s	hdop_rts
+	move.l	d0,a3
+	move.l	a0,jva_kbrd(a3)
 hdop_rts
 	rts
 

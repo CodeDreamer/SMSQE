@@ -1,5 +1,5 @@
 ; DV3 QLSD Find "Partition" (= container file)	V1.00	 2017 W. Lenerz
-;
+; 2020 Mar 29	1.01 better multiply (use MK's routine)  (wl)
 	section dv3
 
 	xdef	hfp_sdhc
@@ -99,12 +99,14 @@ hfp_mbr cmp.w	#dos.ftcs,dos_ftcs(a1)	; marker present?
 	clr.l	d5
 	move.b	dos_fats(a1),d5 	; nbr of fats
 	beq	hfp_fnf 		; what ????
-	subq.w	#2,d5			; dbf for primitive multiply
-	bgt	hfp_fnf
-	blt.s	mul1ok			; we're done for this calculation
-mul1lp	add.l	d0,d6			; calculate nbr of fats * sectors per fat
-	dbf	d5,mul1lp		; at the end d6=old d6*d5
-mul1ok	add.l	d4,d6			; add start of partition
+					; now use MK's mutiply routine
+	mulu	d5,d6			; lower 16 bit * number of fats
+	swap	d0
+	mulu	d5,d0			; upper 16 bit * number of fats
+	swap	d0
+	add.l	d0,d6			; combine
+
+	add.l	d4,d6			; add start of partition
 	clr.l	d0
 	move.w	dos_ress(a1),d0
 	rol.w	#8,d0			; res sector count
@@ -113,15 +115,14 @@ mul1ok	add.l	d4,d6			; add start of partition
 	move.l	dos_rdir(a1),d1 	; root dir cluster
 	xlong	d1
 	subq.l	#2,d1			; always starts at 2 less!
-	move.l	d1,d0			; keep root dir cluster
 
-; another primitive multiply		; root dir cluster * sectors per cluster
-	move.w	d3,d5			; sectors per cluster, can't be  0
-	subq.w	#2,d5			;
-	blt.s	mul2ok			; done with multiplying
-mul2lp	add.l	d1,d0
-	dbf	d5,mul2lp		; at the end d0 = root dir sector
-mul2ok
+; root dir cluster * sectors per cluster (MK)
+	move.l	d1,d0			; keep root dir cluster
+	mulu	d3,d1			; lower 16 bit * sectors per cluster
+	swap	d0
+	mulu	d3,d0			; upper 16 bit * sectors per cluster
+	swap	d0
+	add.l	d1,d0			; combine
 	add.l	d6,d0			; root dir start = data start + root dir sect
 	jsr	hdl_rsint(a3)		; read root dir 1st sector
 	bne	hfp_fnf
@@ -159,11 +160,12 @@ found
 	move.w	d1,d0			; d0 = 1rst cluster of file
 	subq.l	#2,d0			; !!! -2 !!!
 	move.l	d0,d1			; keep for multiply
-	subq.w	#2,d3			; sectors per cluster
-	blt.s	mul3ok
-mul3lp	add.l	d0,d1
-	dbf	d3,mul3lp
-mul3ok	add.l	d6,d1			; d6 = start sector of my qxl.win file
+	mulu	d3,d1			; lower 16 bit * sectors per cluster
+	swap	d0
+	mulu	d3,d0			; upper 16 bit * sectors per cluster
+	swap	d0
+	add.l	d0,d1			; combine
+	add.l	d6,d1			; d1 = start sector of my qxl.win file
 	move.l	d5,a3			; get my pointer back
 
 ; D1 is the start position of my container, as a sector number ( one sector =

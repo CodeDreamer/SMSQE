@@ -1,7 +1,8 @@
-* File maintenance   V1.4     1985   Tony Tebby   QJUMP
+* File maintenance   V1.5     1985   Tony Tebby   QJUMP
 *
 * 2002-05-09  1.3  STAT now calculates big drives correctly (MK)
 * 2018-07-24  1.4  Added FDEL (pjw)
+* 2020-03-07  1.5  correct FDEL
 
 	section exten
 *
@@ -187,6 +188,10 @@ stat_cne
 	movem.l (sp)+,d4-d7
 	rts
 
+; this is put here instead of further down to keep the bra in line 266 (just above rename) short
+fdel	bsr.s	do_delete
+	move.l	d0,d1			(d1 gets changed by ut_fopnp ->ut_opdefx)
+	bra.l	ut_rtfd1		... return error code
 
 *
 mnt_cla3
@@ -203,20 +208,12 @@ mnt_ok
 	moveq	#0,d0
 mnt_rts
 	rts
-
-fdel
-     ;	 pea	 ut_rtfd1		 ... return error code
+	      
 do_delete
 	bsr.l	ut_par1 		check just one parameter
 	moveq	#0,d3			set delete flag
 	not.w	d3
-	move.l	d0,d1			set error code (for fdel)
-	bsr.l	ut_fopnp		and open data default
-	move.l	d0,d1
-	jmp	ut_rtfd1
-
-
-
+	bra.l	ut_fopnp		and open data default
 *
 * various COPYs
 *

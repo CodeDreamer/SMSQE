@@ -2,7 +2,7 @@
 ;
 ; 2003-09-24  2.11  prt_use$ bug fixed (wl)
 ; 2003-10-06  2.12  Some fixes for non-QPC I had sent TT 2 years ago (MK)
-; 2020-02-08  2.13  Use ser par prt as thing name, not ser_prt
+; 2020-02-08  2.13  Use ser par prt as thing name, not ser_prt, some branches made short
 
 	section exten
 
@@ -352,8 +352,8 @@ prtc_chk
 prtc.reg reg	d0/d7/a0/a1/a2/a3
 	movem.l prtc.reg,-(sp)
 	bsr	prt_port
-	bge.l	prtc_do
-	bra.l	prtc_exit
+	bge.s	prtc_do
+	bra.s	prtc_exit
 
 
 ser_clear thg_extn SERC,ser_abt,ptp_olw

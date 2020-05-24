@@ -1,4 +1,4 @@
-; DV3 java HD inititilization
+; DV3 java HDD inititilization	 1.00 @ W. Lenerz 2020
 ;
 ; based on
 ;
@@ -46,7 +46,7 @@ hdi_rts
 	rts
 
 hd_table
-	link_table	WHN, hd.rev, hdl_end, ddf_dtop
+	link_table	HDD, hd.rev, hdl_end, ddf_dtop
 	buffered
 	sectl		512
 	mtype		ddl.hd
@@ -75,7 +75,8 @@ hd_table
 	preset_w	hdl_paus,30
 
 	preset_b	hdl_part,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-	preset_b	hdl_remd,1,1,1,1,1,1,1,1
+	preset_b	hdl_remd,0,0,0,0,0,0,0,0
+;	 preset_b	 hdl_remd,1,1,1,1,1,1,1,1
 
 	preset_v	hdl_rsint,hd_rsint
 	preset_v	hdl_wsint,hd_wsint
@@ -89,37 +90,35 @@ hd_table
 
 	section exten
 
-	proc_thg {WIN Control}
-	fun40_thg {WIN Control}
+	proc_thg {HDD Control}
+	fun_thg {HDD Control}
 
-WHN_use   proc	{USE }
-WHN_drive proc	{DRIV}
-WHN_start proc	{STRT}
-WHN_stop  proc	{STOP}
-WHN_remv  proc	{REMV}
-WHN_wp	  proc	{WPRT}
-WHN_format proc {FRMT}
-WHN_slug  proc	{SLUG}
+HDD_use   proc	{USE }
+HDD_drive proc	{DRIV}
+;HDD_start proc  {STRT}
+;HDD_stop  proc  {STOP}
+HDD_remv  proc	{REMV}
+HDD_wp	  proc	{WPRT}
+HDD_format proc {FRMT}
+;HDD_slug  proc  {SLUG}
 
-;WHN_drive$ fun40 {DRV$}
-WHN_drive$  move.l  #260,d7
-;	     bsr.s   fun_thg
-	    dc.l    'DRV$'
+
+HDD_drive$
+	move.l	#260,d7
+	bsr.s	fun_thg
+	dc.l	'DRV$'
 
 
 hd_proctab
 	proc_stt
-	proc_ref WHN_USE
-	proc_ref WHN_DRIVE
-	proc_ref WHN_START
-	proc_ref WHN_STOP
-	proc_ref WHN_REMV
-	proc_ref WHN_WP
-	proc_ref WHN_FORMAT
-	proc_ref WHN_SLUG
+	proc_ref HDD_USE
+	proc_ref HDD_DRIVE
+	proc_ref HDD_REMV
+	proc_ref HDD_WP
+	proc_ref HDD_FORMAT
 	proc_end
 	proc_stt
-	proc_ref WHN_DRIVE$
+	proc_ref HDD_DRIVE$
 	proc_end
 
 	end

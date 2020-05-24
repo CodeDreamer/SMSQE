@@ -1,217 +1,146 @@
-; SUPER GOLD CARD PATCHES
+; (Super)GoldCard initialisation. Deciphered by Marcel Kilgus
 
 	section sgc
 
-	xdef	sgc_p22
-	xdef	sgc_p2a
-	xdef	sgc_p2c
-	xdef	sgc_p30
-	xdef	gl_xdate
-	xdef	gl_fdate
+	xdef	gl_init
+	xdef	gl_rtc_status
+	xdef	gl_rtc_fail
 
 	xref	gl_proc
 
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_sys'
 	include 'dev8_sys_gold_keys'
 
-sp22_cont
-	movem.l (a7)+,d0/d1/d2/d3/d4/d5/d6/d7/a0/a1/a2/a3/a4/a5/a6   A64C
-	addq.l	#4,a7
-	jmp	$12345678
-sgc_p22
-	subq.l	#4,a7
-	movem.l d0/d1/d2/d3/d4/d5/d6/d7/a0/a1/a2/a3/a4/a5/a6,-(a7)
-	moveq	#$9,d0
-	dc.l	$4e7b0002
-	move.l	usp,a0
-	move.l	a0,$3c(a7)					      A666
-	move.l	$42(a7),a0
-	move.w	(a0)+,d0
-	moveq	#$ffffffc0,d2
-	and.w	d0,d2
-	subi.w	#$40c0,d2
-	bne.s	sp22_cont
-	subi.w	#$40c0,d0
-	lsl.w	#2,d0						       A67E
-	moveq	#$1c,d1
-	cmp.w	d1,d0
-	bgt.s	sp22_do
-	lea	$2(a7,d0.w),a1
-sp22_a1
-	move.w	$40(a7),$0(a1,d2.w)
-	move.l	a0,$42(a7)
-	move.l	$3c(a7),a0
-	move	a0,usp							A698
-	tst.b	sgo_cache+sgx_work
-	bne.s	sp22_rte
-	moveq	#$0,d0
-	dc.l	$4e7b0002
-sp22_rte
-	movem.l (a7)+,d0/d1/d2/d3/d4/d5/d6/d7/a0/a1/a2/a3/a4/a5/a6
-	addq.l	 #4,a7
-	rte							       A6AE
-
-sp22_do
-	cmpi.w	#$e0,d0
-	blt.s	sp22_6c0
-	beq.s	sp22_6bc
-	move.l	(a0)+,a1
-	bra.s	sp22_a1
-sp22_6bc
-	move.w	(a0)+,a1
-	bra.s	sp22_a1
-sp22_6c0
-	and.w	d0,d1						       A6C0
-	move.l	$20(a7,d1.w),a1
-	sub.b	d1,d0
-	bpl.s	sp22_6ee
-	lsl.b	#1,d0
-	beq.s	sp22_6f8
-	move.w	(a0)+,d2
-	tst.b	d0
-	bpl.s	sp22_a1 					       A6D2
-	move.w	d2,d1
-	ext.w	d2
-	lsr.w	#8,d1
-	lsr.b	#2,d1
-	bclr	#$1,d1
-	bne.s	sp22_6e8
-	adda.w	$2(a7,d1.w),a1
-	bra.s	sp22_a1 					       A6E6
-sp22_6e8
-	adda.l	$0(a7,d1.w),a1
-	bra.s	sp22_a1
-sp22_6ee
-	lsl.b	#2,d0
-	bpl.s	sp22_a1
-	addq.l	#2,$20(a7,d1.w)
-	bra.s	sp22_a1
-sp22_6f8
-	subq.l	#2,a1
-	move.l	a1,$20(a7,d1.w) 				      A6FA
-	bra.s	sp22_a1
-
-sgc_p2a
-	move.b	d7,$1(a0)
-	move	(a7)+,sr
-	rts
-sgc_p2c
-	move	sr,-(a7)
-	ori.w	#$700,sr
-	pea	sp28_rte
-	move.l	$6(a7),-(a7)					      A712
-	rts
-sp28_rte
-	move	(a7)+,sr
-	addq.l	#4,a7
-	rts
-
+; Output text on boot screen
 smul_0
 	suba.l	a0,a0
-	moveq	#7,d0
+	moveq	#iob.smul,d0
 	moveq	#-1,d3
-	trap	#3						       A724
+	trap	#3
 	rts
 
-sgc_p30
-	move.w	glk.time+sgx_ptch,d7
-	bne.s	a738
-	lea	super,a1
+; (Super)GoldCard initialisation. Called by QDOS extension ROM code
+gl_init
+	move.w	glx_ptch+glk.card,d7	; card type
+	bne.s	ini_banner		; ... Gold Card
+	lea	super,a1		; "Super"
 	moveq	#6,d2
 	bsr.s	smul_0
-a738
-	lea	$1000a,a1
-	moveq	#$12,d2 					       A73E
-	bsr.s	smul_0
-	lea	$1c106,a0
-	bsr.l	gl_xdate
-	bne.s	a768
-	sf	$1c104
-	moveq	#$13,d0
-	trap	#$1
-	moveq	#$14,d0 					       A758
+ini_banner
+	lea	$1000a,a1		; "Gold Card  Vx.xx",$0A
+	moveq	#18,d2
+	bsr.s	smul_0			; output ROM banner
+
+	lea	sgx_work+sgo_rtcs,a0
+	bsr.l	gl_rtc_status		; RTC status ok?
+	bne.s	ini_rtc_fail		; ... no
+
+	sf	sgx_work+sgo_prtc	; make sure we write to RTC (unprotected)
+	moveq	#sms.rrtc,d0
 	trap	#1
-	lea	$1c106,a0
-	bsr.l	gl_xdate
-	beq.s	a776
-a768
-	lea	tc_fail,a1
+	moveq	#sms.srtc,d0		; set RTC again
+	trap	#1
+
+	lea	sgx_work+sgo_rtcs,a0
+	bsr.l	gl_rtc_status		; RTC still ok?
+	beq.s	ini_rtc_ok		; ... yes, get config out of it
+
+ini_rtc_fail
+	lea	rtc_fail,a1		; output RTC problem
 	move.w	(a1)+,d2
 	bsr.s	smul_0
-	trap	#0						       A770
-	moveq	#0,d0
-	bra.s	a7b4
+	trap	#0
+	moveq	#0,d0			; default is all config bits off
+	bra.s	ini_config
 
-a776
-	move.l	$1c200,a2
-	trap	#$0
+; RTC is ok, read configuration out of it
+ini_rtc_ok
+	move.l	glx_ptch+glk.base,a2	; get hardware base address
+	trap	#0
 	ori.w	#$700,sr
+	tst.w	d7			; card type
+	bne.s	ini_rtc_gc
+
+; Super Gold Card read RTC interrupt register. We use it for config storage!
+	sf	glo_rtcc(a2)		; SGC RTC write sequence
+	sf	glo_dow(a2)
+	sf	glo_d01(a2)
+	move.b	#$30,glo_rtcc(a2)	; enable interrupt register
+	move.b	glo_rtcs(a2),d0 	; read interrupt register
+	sf	glo_rtcc(a2)		; SGC RTC write sequence
+	sf	glo_dow(a2)
+	sf	glo_d01(a2)
+	move.b	#$10,glo_rtcc(a2)	; disable interrupt register
+	bra.s	ini_config
+
+; Gold Card read RTC interrupt register. We use it for config storage!
+ini_rtc_gc
+	move.b	#$30,glo_rtcc(a2)	; enable interrupt register
+	move.b	glo_rtcs(a2),d0 	; read interrupt register
+	move.b	#$10,(a2)		; disable interrupt register
+ini_config
+	lea	sgx_work+sgo_confg,a0	; configuration bits
+	moveq	#3,d1			; 4 bits of config
+ini_sloop
+	lsl.b	#1,d0			; translate the bits into config bytes
+	scs	(a0)+
+	dbf	d1,ini_sloop
+
 	tst.w	d7
-	bne.s	a7a8
-	sf	(a2)						      A786
-	sf	$38(a2)
-	sf	$20(a2)
-	move.b	#$30,(a2)
-	move.b	$3c(a2),d0
-	sf	(a2)
-	sf	$38(a2)
-	sf	$20(a2)
-	move.b	#$10,(a2)					      A7A2
-	bra.s	a7b4
-a7a8
-	move.b	#$30,(a2)
-	move.b	$3c(a2),d0
-	move.b	#$10,(a2)
-a7b4
-	lea	$1c108,a0
-	moveq	#$3,d1
-glx_sloop
-	lsl.b	#1,d0
-	scs	(a0)+							 A7BE
-	dbf	d1,glx_sloop
-	tst.w	d7
-	bne.s	glx_xdone
-	subq.l	#2,a0
+	bne.s	ini_xdone		; for GC we're done here
+
+	subq.l	#2,a0			; sgo_cscr2
 	tst.b	(a0)
-	beq.s	glx_tst
-	sf	$68(a2)
-	bra.s	glx_sf						       A7D2
-glx_tst
-	tst.b	$68(a2)
-glx_sf
-	sf	$1c10c
-glx_xdone
+	beq.s	ini_scr2
+	sf	sgo_scr2(a2)		; disable SCR2
+	bra.s	ini_cache
+ini_scr2
+	tst.b	sgo_scr2(a2)		; enable SCR2
+
+ini_cache
+	sf	sgx_work+sgo_cache	; disable cache
+ini_xdone
 	andi.w	#$d8ff,sr
-	moveq	#0,d0
-	trap	#$1
-	move.b	gl_proc,$a1(a0)
-	cmpi.l	#$40000,$20(a0)
-	bne.s	glx_nslug					      A7F4
-	st	$1c104
-	rts
-glx_nslug
-	move.l	#$ffff0000,$1c100
+	moveq	#sms.info,d0
+	trap	#1
+	move.b	gl_proc,sys_ptyp(a0)
+	cmpi.l	#$40000,sys_ramt(a0)	; 128KB RAM ("QL mode")?
+	bne.s	ini_nslug		; ... no
+	st	sgx_work+sgo_prtc	; ... yes, protect RTC in this case
 	rts
 
-gl_xdate
+ini_nslug
+	move.l	#sgo.slugd,sgx_work+sgo_slug ; disable SLUG
+	rts
+
+gl_rtc_status
 	move.l	d0,-(a7)
 	move.b	(a0),d0
 	not.b	d0
-	cmp.b	$1(a0),d0					       A810
+	cmp.b	1(a0),d0
 	movem.l (a7)+,d0
-	bne.s	glxd_ff00
-	tst.b	$1(a0)
+	bne.s	gl_rtc_ok		; invalid value found, default to "ok"?
+	tst.b	1(a0)			; $ff in case of failure
 	rts
 
-glxd_ff00
-	move.w	#$ff00,(a0)
+gl_rtc_ok
+	move.w	#rtc.ok,(a0)
 	cmp.b	d0,d0
 	rts
 
-gl_fdate
-	move.w	#$ff,(a0)					      A828
+gl_rtc_fail
+	move.w	#rtc.fail,(a0)
 	rts
-super	dc.w	'Super '
-tc_fail
-	dc.b	0,24,'Real time clock failure',$a
+
+; Prefix for ROM banner text in case of the SGC
+super
+	dc.w	'Super '
+
+; RTC failed
+rtc_fail
+	dc.w	24
+	dc.b	'Real time clock failure',$a
 
 	end

@@ -1,5 +1,7 @@
-; SBAS_LANG  Language Dependent Modules  V2.0   1994  Tony Tebby
-; 2005-04-12	2.01	some german text corrected (wl)
+; SBAS_LANG  Language Dependent Modules  V2.02	 1994	Tony Tebby
+;
+; 2005-04-12  2.01  Some german text corrected (wl)
+; 2020-04-13  2.02  Added Spanish messages (MK)
 
 	xref	smsq_end
 
@@ -45,8 +47,12 @@ sbas_err4
 	dc.l	msg_fra-*
 
 	dc.w	ldm.msgt,4,39	 ; Italian
-	dc.w	0
+	dc.w	6
 	dc.l	msg_ita-*
+
+	dc.w	ldm.msgt,4,34	 ; Spanish
+	dc.w	0
+	dc.l	msg_esp-*
 
 ; message  tables
 
@@ -437,5 +443,104 @@ ita_wher mkstr	{durante il processo\}
 ita_pfcl mkstr	{PROC/FN inizializzata\}
 ita_atln mkstr	{Alla linea }
 ita_fatl mkstr	{Errore fatale nell'interprete SBASIC\}
+
+msg_esp dc.w	34
+	dc.w	esp_iexp-msg_esp
+	dc.w	esp_lpar-msg_esp
+	dc.w	esp_rpar-msg_esp
+	dc.w	esp_lno-msg_esp
+	dc.w	esp_bstr-msg_esp
+	dc.w	esp_edef-msg_esp
+	dc.w	esp_idef-msg_esp
+	dc.w	esp_bdef-msg_esp
+	dc.w	esp_bedf-msg_esp
+	dc.w	esp_bloc-msg_esp
+	dc.w	esp_bret-msg_esp
+	dc.w	esp_rcwh-msg_esp
+	dc.w	esp_endw-msg_esp
+	dc.w	esp_else-msg_esp
+	dc.w	esp_endi-msg_esp
+	dc.w	esp_xstr-msg_esp
+	dc.w	esp_inif-msg_esp
+	dc.w	esp_insl-msg_esp
+	dc.w	esp_indf-msg_esp
+	dc.w	esp_inwh-msg_esp
+	dc.w	esp_bfor-msg_esp
+	dc.w	esp_unlp-msg_esp
+	dc.w	esp_blvr-msg_esp
+	dc.w	esp_bsel-msg_esp
+	dc.w	esp_ends-msg_esp
+	dc.w	esp_dtcl-msg_esp
+	dc.w	esp_brds-msg_esp
+	dc.w	esp_recr-msg_esp
+	dc.w	esp_eod-msg_esp
+	dc.w	esp_bprc-msg_esp
+	dc.w	esp_bref-msg_esp
+	dc.w	esp_bdim-msg_esp
+	dc.w	esp_pdim-msg_esp
+	dc.w	esp_dmng-msg_esp
+	dc.w	esp_dmov-msg_esp
+	dc.w	esp_eind-msg_esp
+	dc.w	esp_xind-msg_esp
+	dc.w	esp_asar-msg_esp
+	dc.w	esp_iind-msg_esp
+	dc.w	esp_inor-msg_esp
+	dc.w	esp_narr-msg_esp
+	dc.w	esp_basg-msg_esp
+	dc.w	esp_mist-msg_esp
+	dc.w	esp_wher-msg_esp
+	dc.w	esp_pfcl-msg_esp
+	dc.w	esp_atln-msg_esp
+	dc.w	esp_fatl-msg_esp
+
+esp_iexp mkstr	{error de sintaxis en expresiñn\}
+esp_lpar mkstr	{falta abrir parÉntesis\}
+esp_rpar mkstr	{falta cerrar parÉntesis\}
+esp_lno  mkstr	{error en nômero de lìnea\}
+esp_bstr mkstr	{cadena malformada: falta delimitador\}
+esp_edef mkstr	{definiciñn de procedimiento o funciñn incorrecta\}
+esp_idef mkstr	{definiciñn de procedimiento o funciñn no permitida aquì\}
+esp_bdef mkstr	{DEFine no puede estar dentro de otras clåusulas\}
+esp_bedf mkstr	{END DEFine mal situado\}
+esp_bloc mkstr	{LOCal mal situado\}
+esp_bret mkstr	{RETurn no estå en procedimiento o funciñn\}
+esp_rcwh mkstr	{clåusula WHEN no puede estar anidada\}
+esp_endw mkstr	{END WHEN mal situado\}
+esp_else mkstr	{ELSE mal situado\}
+esp_endi mkstr	{END IF mal situado\}
+esp_xstr mkstr	{estructuras de programa anidadas demasiado profundamente\}
+esp_inif mkstr	{clåusula IF incompleta\}
+esp_insl mkstr	{clåusula SELect incompleta\}
+esp_indf mkstr	{DEFine incompleto\}
+esp_inwh mkstr	{clåusula WHEN incompleta\}
+esp_bfor mkstr	{variable de bucle inaceptable\}
+esp_unlp mkstr	{incapaz de encontrar un bucle abierto\}
+esp_blvr mkstr	{variable de control de bucle no definida\}
+esp_bsel mkstr	{clåusula SELect estructurada incorrectamente\}
+esp_ends mkstr	{END SELect mal situado\}
+esp_dtcl mkstr	{DATA no tiene significado en la lìnea de comandos\}
+esp_brds mkstr	{paråmetros para READ inaceptables\}
+esp_recr mkstr	{SBASIC no puede realizar READ dentro de expresiones DATA\}
+esp_eod  mkstr	{fin de DATA\}
+esp_bprc mkstr	{procedimiento desconocido\}
+esp_bref mkstr	{funciñn o matriz desconocida\}
+esp_bdim mkstr	{sñlo las matrices pueden ser dimensionadas\}
+esp_pdim mkstr	{los paråmetros de procedimientos y funciones no pueden ser dimensionados\}
+esp_dmng mkstr	{SBASIC no puede trabajar con dimensiones negativas\}
+esp_dmov mkstr	{desbordamiento dimensional\}
+esp_eind mkstr	{error en lista de ìndices\}
+esp_xind mkstr	{demasiados ìndices\}
+esp_asar mkstr	{imposible asignar a sub-matriz\}
+esp_iind mkstr	{lista de ìndices de la matriz inaceptable\}
+esp_inor mkstr	{ìndice de matriz fuera de rango\}
+esp_narr mkstr	{sñlo matrices o cadenas pueden tener ìndice\}
+esp_basg mkstr	{la asignaciñn sñlo es posible a una variable o elemento de una matriz\}
+esp_mist mkstr	{lìnea mal formada (MISTake) en programa\}
+esp_wher mkstr	{durante proceso de WHEN\}
+esp_pfcl mkstr	{estado interno PROC/FN inicializado\}
+esp_atln mkstr	{En la lìnea }
+esp_fatl mkstr	{error fatal en el intÉrprete SBASIC\}                                          
+
 	 ds.w	 0
+
 	end

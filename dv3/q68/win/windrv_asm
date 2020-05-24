@@ -1,4 +1,6 @@
-; Q68 WIN_DRIVE & others Extension thing  v. 1.00 (c) W. Lenerz 2017
+; Q68 WIN_DRIVE & others Extension thing  v. 1.02 (c) W. Lenerz 2017
+;
+; 1.02 2020-03-30 no need to read card when setting drive via win_drive
 ; 1.01 removed reference to keys_java and cv_upcas, list clearing optimisation (mk)
 
 	section exten
@@ -57,7 +59,7 @@ wr_exit rts
 
 win_drv thg_extn {DRIV},win_safe,hd_drv
 hdt.reg reg	d1-d7/a0-a5
-	
+
 	movem.l hdt.reg,-(sp)
 	bsr.l	hdt_doact		; call following code as device driver
 
@@ -73,33 +75,19 @@ hdt.reg reg	d1-d7/a0-a5
 
 	move.l	(a1)+,d1		; card (1 or 2)
 	subq.w	#1,d1
-	blt	err_crd 		; wrong card nbr
+	blt.s	err_crd 		; wrong card nbr
 	cmp.w	#1,d1			; if it isn't 0 must be 1
-	bgt	err_crd 		; but it isn't
+	bgt.s	err_crd 		; but it isn't
 	lsl.l	#q68_dshft,d1
 	move.l	d0,d4			; keep
 goodnbr lea	$10(a1),a1
 	move.l	a1,d6			; keep parameter pointer
 	move.w	(a1),d2 		; is there a name?
-	blt	err_crd 		; ???????
-	beq.s	sdc_fnd 		; there isn't erase the current one, then
+	blt.s	err_crd 		; ???????
+	beq.s	sdc_fnd 		; there isn't so erase the current one
 	cmp.w	#12,d2			; an 8.3 name?
-	bgt	hdt_badp		; no, error
-; check whether I can read the first sector of the card
-	move.l	#512,d0 		; reserve mem
-	jsr	gu_achpp
-	bne.s	wr_exit
-	move.l	a0,a1
-	move.b	d1,hdl_unit-1(a3)	; pretend it's here (last byte of hdl_target)
-	move.w	d7,-(a7)
-	moveq	#0,d7			; pretend I'm drive 0 (!!!!!)
-	moveq	#1,d2
-	clr.l	d0
-	jsr	hdl_rsint(a3)		; read sector 0 of card
-	movem.w (a7)+,d7		; dont disturb cond codes
-	bne.s	no_card 		; can't read, so card doesn't exist or ...
+	bgt.s	hdt_badp		; no, error
 
-; if we get here, the SDHC card is in the drive and can be accessed
 sdc_fnd tst.l	d4			; is there a drive definition?
 	bne.s	fndend			; no, so this is fine right now
 	tst.b	ddf_nropen(a4)		; files open on this drive?
@@ -126,7 +114,7 @@ fndend
 	lea	hdl_unit-1(a3),a2
 	move.b	d1,(a2,d7.w)		; this drive is on that card
 	move.l	a1,d6
-	move.l	hdl_targ(a3),a1 	; point to name Strings
+	move.l	hdl_targ(a3),a1 	; point to name strings
 	move.w	d7,d1			; drive number
 	subq.l	#1,d1
 	lsl.w	#4,d1			; offset in drive name table
@@ -134,6 +122,7 @@ fndend
 	bsr	norm_nm 		; copy and normalize name
 	move.l	d6,a1
 	moveq	#0,d0
+	rts
 wr_out	move.l	a1,a0
 	jmp	gu_rchp
 
@@ -156,12 +145,9 @@ hdt_badp
 ; this card, and if so, delete their drive defn block and show drive as not
 ; being assigned in device definition block list.
 
-no_card
 ; check whether a drive is on that card
 ; D1 = card (0 or q68_coff)
 ; d7 = drive (1...8)
-	bsr.s	nocrd2
-	bra	fndend			; and set name now
 
 nocrd2	moveq	#1,d3			; first drive number to check
 chklp1	lea	hdl_unit-1(a3),a2
@@ -371,13 +357,10 @@ card_init thg_extn {INIT},win_chk,hd_byte
 	beq	wr_out			; ok, rel. mem, card already initialised
 	move.l	a1,a0
 	jsr	gu_rchp 		; release mem
-	jsr	hd_hold 		; take the card controller
-	bne.s	ci_inus 		; can't
 
 	bsr	nocrd2			; close all channels, delete defn blks
 					; for all drives on this card
-	jsr	inicrd			; try to init drive
-	jmp	hd_release
+	jmp	inicrd			; try to init drive
 
 bad_crd moveq	#err.orng,d0
 ci_exit jmp	hd_release

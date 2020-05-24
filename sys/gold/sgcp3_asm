@@ -1,116 +1,39 @@
-; SUPER GOLD CARD PATCHES
+; (Super)GoldCard patches. Deciphered by Marcel Kilgus
 
 	section sgc
 
-	xdef	sgc_p84
-	xdef	sgc_p86
-	xdef	sgc_p88
-	xdef	sgc_p8a
-	xdef	sgc_p8c
-	xdef	sgc_p94
-	xdef	sgc_p96
+	xdef	gl_f1f2
+	xdef	gl_bvchnt
 
 	include 'dev8_sys_gold_keys'
+	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_sbasic'
+	include 'dev8_keys_sys'
 
-sgc_p84
-b0e8	 moveq	 #-1,d3
-b0ea	 moveq	 #$ffffffe8,d1
-b0ec	 cmpi.w  #$ffff,$1c108
-b0f4	 beq.s	 b110
-b0f6	 cmpi.w  #$ff00,$1c108
-b0fe	 beq.s	 b110
-b100	 moveq	 #$ffffffec,d1
-b102	 cmpi.w  #$ff,$1c108
-b10a	 beq.s	 b110
-b10c	 moveq	 #$1,d0
-b10e	 trap	 #$3
-b110	 moveq	 #$0,d0
-b112	 rts
+; F1/F2 auto boot
+gl_f1f2
+	moveq	#-1,d3
+	moveq	#$ffffffe8,d1		; F1
+	cmpi.w	#sgo.autoh,sgo_f1f2+sgx_work	; reserved for HIRES setting
+	beq.s	gl_f1f2_end
+	cmpi.w	#sgo.auto1,sgo_f1f2+sgx_work
+	beq.s	gl_f1f2_end
+	moveq	#$ffffffec,d1		; F2
+	cmpi.w	#sgo.auto2,sgo_f1f2+sgx_work
+	beq.s	gl_f1f2_end
+	moveq	#iob.fbyt,d0		; No auto F1/F2, read key
+	trap	#$3
+gl_f1f2_end
+	moveq	#$0,d0
+	rts
 
-sgc_p86
-b114	 movem.l d1/d2/d3,-(sp)
-b118	 jsr	 $12345678
-b11e	 movem.l (sp)+,d1/d2/d3
-b122	 move.l  $1c(a6),a3
-b126	 move.b  #$2,$0(a6,a3.l)
-b12c	 rts
-
-sgc_p88
-b12e	 move.l  #$4e0000,a6
-b134	 move.w  #$7fff,d0
-b138	 clr.l	 (a6)+
-b13a	 dbf	 d0,b138
-b13e	 rts
-
-sgc_p8a
-b140	 move.l  #$4e0000,a1
-b146	 move.w  #$7fff,d0
-b14a	 clr.l	 (a1)+
-b14c	 dbf	 d0,b14a
-b150	 rts
-
-sgc_p8c
-b152	 dc.w	$3c
-	 move.l  d0,-(sp)
-b156	 cmpi.b  #$9,d0
-b15a	 bne.s	 b186
-b15c	 movem.l a2/a3,-(sp)
-b160	 lea	 b1a4(pc),a3
-b164	 move.l  a3,d0
-b166	 lea	 b194(pc),a3
-b16a	 sub.l	 a3,d0
-b16c	 lsr.l	 #1,d0
-b16e	 subq.l  #2,d0
-b170	 cmpm.w  (a2)+,(a3)+
-b172	 dbne	 d0,b170
-b176	 bne.s	 b182
-b178	 addq.l  #4,a2
-b17a	 lea	 b1a6(pc),a3
-b17e	 move.l  a3,d1
-b180	 move.l  a2,(sp)
-b182	 movem.l (sp)+,a2/a3
-b186	 moveq	 #$9,d0
-b188	 dc.l	 $4e7b0002
-b18a	 move.l  (sp)+,d0
-b18e	 jmp	 $12345678
-
-b194	 lea	 $5c(a3),a3
-b198	 moveq	 #$fffffff7,d0
-b19a	 and.b	 $34(a6),d0
-b19e	 bne.s	 b1a4
-b1a0	 lea	 b194(pc),a3
-b1a4	 move.l  a3,d1
-
-b1a6	 dc.w	 $004e
-	 dc.w	 $0000
-	 dc.w	 $0002
-	 dc.w	 $0000
-	 dc.w	 $0100
-	 dc.w	 $0400
-	 dc.w	 $0200
-
-sgc_p94
-b1b4	 move.l  #$4e0000,a3
-b1ba	 move.l  #$8000,d0
-b1c0	 clr.l	 (a3)+
-b1c2	 subq.l  #1,d0
-b1c4	 bne.s	 b1c0
-b1c6	 moveq	 #$0,d0
-b1c8	 moveq	 #-1,d1
-b1ca	 moveq	 #-1,d7
-b1cc	 rts
-
-b1ce	 jmp	 $12345678
-
-sgc_p96
-b1d4	 dc.w	$1a
-	 move.l #$4e0000,a0
-b1dc	 move.l  #$8000,d0
-b1e2	 clr.l	 (a0)+
-b1e4	 subq.l  #1,d0
-b1e6	 bne.s	 b1e2
-b1e8	 cmpa.l  $5c,a5
-b1ec	 beq.s	 b1ce
-b1ee	 jmp	 $12345678
+; Some name table fix (reserve additional space)
+gl_bvchnt
+	movem.l d1/d2/d3,-(sp)
+	jsr	$12345678		; will be patched to bv_chnt
+	movem.l (sp)+,d1/d2/d3
+	move.l	sb_nmtbp(a6),a3 	; code that was overwritten by patch
+	move.b	#nt.var,nt_nvalp(a6,a3.l)
+	rts
 
 	end

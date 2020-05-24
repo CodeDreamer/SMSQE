@@ -1,9 +1,0 @@
-The purpose of this program is to make a list of all the rel and lib files
-that are used by all of the make files - this enables me to see which files
-in the SMSQ/E sources are no longer used.
-
-
-
-Please note that this program needs the "outptr_bin"  extensions to be loaded.
-
-They can be found in the exe_source directory

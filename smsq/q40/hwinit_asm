@@ -69,7 +69,7 @@ qcf_mmu 	dc.b	 -1	; 00
 qcf_par 	dc.b	 0	;
 qcf_ser1	dc.b	 0	; 02
 qcf_ser2	dc.b	 0	;
-qcf_bflp	dc.b	 1	; 04
+qcf_bflp	dc.b	 0	; 04
 qcf_bwin	dc.b	 1	;
 qcf_lang	dc.w	 44	; 06
 qcf_targ	dc.b	 0	; 08
@@ -171,7 +171,7 @@ hwinit					; soft reset
 	dtt1	#$00ffe020		; set DTT1 for all cached copyback
 ;	dtt1	#$00ffe000		; set DTT1 for all cached write through
 
-; NB the tranparent translation is changed is the MMU is set
+; NB the tranparent translation is changed if the MMU is set
 
 	endgen
 

@@ -1,4 +1,4 @@
-; SUPER GOLD PAR DRIVER
+; SuperGoldCard PAR driver. Deciphered by Marcel Kilgus
 
 	section sgc
 
@@ -7,237 +7,317 @@
 	xref	ut_gtnam
 
 	include 'dev8_sys_gold_keys'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_sys'
+
+ddb_ssio  equ	$28			; iou.ssio function block
+ddb_ssi   equ	$2c			; byte fetch
+ddb_sso   equ	$30			; byte send
+ddb_rts   equ	$34			; RTS
+ddb_open  equ	$36			; set if already open
+ddb_clch  equ	$37			; character on close
+ddb_magic equ	$38			; PAR% marker
+ddb_buff  equ	$3d			; 3 byte buffer
+ddb_ptr   equ	$40			; buffer pointer
+ddb_code  equ	$44			; PAR open code
+ddb.cname equ	$14			; po_name - par_open
+ddb_name  equ	ddb_code+ddb.cname
+ddb.csize equ	$4c			; par_opdo - par_open
+ddb_end   equ	ddb_code+ddb.csize
+
+chn_crlf  equ	$18			; LF -> CRLF translation flags
+chn_clch  equ	$19			; character on close
+chn_tra   equ	$1a
 
 par_init
-ab18	 tst.w	 $1c204
-ab1e	 bne.s	 ab9a
-ab20	 move.l  #$90,d1
-ab26	 moveq	 #$0,d2
-ab28	 moveq	 #$18,d0
-ab2a	 trap	 #$1
-ab2c	 tst.l	 d0
-ab2e	 bne.s	 ab9a
-ab30	 move.l  a0,a4
-ab32	 lea	 $1c(a4),a3
-ab36	 lea	 par_io,a2
-ab3a	 move.l  a2,(a3)+
-ab3c	 move.l  a3,a1
-ab3e	 addq.l  #4,a3
-ab40	 lea	 par_close,a2
-ab44	 move.l  a2,(a3)+
-ab46	 lea	 par_bp,a2
-ab4a	 move.l  a2,(a3)+
-ab4c	 move.l  a2,(a3)+
-ab4e	 lea	 par_pbyt,a2
-ab52	 move.l  a2,(a3)+
-ab54	 move.w  par_rts,(a3)+
-ab58	 clr.w	 (a3)+
-ab5a	 move.l  #'PAR%',(a3)+
-ab60	 addq.l  #4,a3
-ab62	 move.l  a3,(a3)+
-ab64	 move.l  a3,(a1)
-ab66	 lea	 par_open,a2
-ab6a	 lea	 par_opdo,a1
-ab6e	 move.w  (a2)+,(a3)+
-ab70	 cmpa.l  a1,a2
-ab72	 blt.s	 ab6e
-ab74	 move.l  a2,-(a3)
+	tst.w	glx_ptch+glk.card
+	bne.s	par_rts 		; skip for GC
 
-ab76	 lea	 par_sched,a2
-ab7a	 move.l  a2,$14(a4)
-ab7e	 lea	 $10(a4),a0
-ab82	 moveq	 #$1e,d0
-ab84	 trap	 #$1
+	move.l	#ddb_end,d1
+	moveq	#0,d2
+	moveq	#sms.achp,d0
+	trap	#1
+	tst.l	d0
+	bne.s	par_rts
 
-ab86	 lea	 $18(a4),a0
-ab8a	 moveq	 #$20,d0
-ab8c	 trap	 #$1
+	move.l	a0,a4
+	lea	iod_ioad(a4),a3
+	lea	par_io,a2
+	move.l	a2,(a3)+		; I/O
+	move.l	a3,a1
+	addq.l	#4,a3			; skip open
+	lea	par_close,a2
+	move.l	a2,(a3)+		; close
+	lea	par_bp,a2
+	move.l	a2,(a3)+		; ddb_ssio - byte test not implemented
+	move.l	a2,(a3)+		; ddb_ssi - byte fetch not implemented
+	lea	par_pbyt,a2
+	move.l	a2,(a3)+		; ddb_sso - byte send
+	move.w	par_rts,(a3)+		; ddb_rts
+	clr.w	(a3)+			; ddb_open/ddb_clch
+	move.l	#'PAR%',(a3)+		; ddb_magic
+	addq.l	#4,a3			; ddb_buff
+	move.l	a3,(a3)+		; ddb_ptr. Point to selve -> empty
+	move.l	a3,(a1) 		; open
 
-ab8e	 lea	 par_procs,a1
-ab92	 move.w  $110,a2
-ab96	 jsr	 (a2)
-ab98	 moveq	 #$0,d0
+	lea	par_open,a2		; copy code so we can alter the name
+	lea	par_opdo,a1
+par_copy
+	move.w	(a2)+,(a3)+
+	cmpa.l	a1,a2
+	blt.s	par_copy
+	move.l	a2,-(a3)		; patch par_opdo into jmp
+
+	lea	par_sched,a2
+	move.l	a2,iod_shad(a4)
+	lea	iod_shlk(a4),a0
+	moveq	#sms.lshd,d0
+	trap	#1
+
+	lea	iod_iolk(a4),a0
+	moveq	#sms.liod,d0
+	trap	#1
+
+	lea	par_procs,a1
+	move.w	sb.inipr,a2
+	jsr	(a2)
+	moveq	#0,d0
 par_rts
-ab9a	 rts
+	rts
+
 par_procs
 	 dc.w	1
 	 dc.w	par_use-*
 	 dc.b	7,'PAR_USE'
 	 dc.w	0,0,0
 
+; PAR_USE
 par_use
-abae	 move.l  #'PAR0',d4
-abb4	 moveq	 #8,d0
-abb6	 add.l	 a3,d0
-abb8	 sub.l	 a5,d0
-abba	 bge.s	 abc0
+	move.l	#'PAR0',d4
+	moveq	#8,d0
+	add.l	a3,d0
+	sub.l	a5,d0
+	bge.s	par_use_param
 par_bp
-abbc	 moveq	 #-15,d0
-abbe	 rts
-abc0	 bgt.s	 abda
-abc2	 bsr.l	 ut_gtnam
-abc6	 bne.s	 abbc
-abc8	 cmpi.w  #$3,$0(a6,a1.l)
-abce	 bne.s	 abbc
-abd0	 move.l  $2(a6,a1.l),d4
-abd4	 andi.l  #$dfdfdfdf,d4
-abda	 moveq	 #$0,d0
-abdc	 trap	 #$1
-abde	 move.l  $44(a0),a0
-abe2	 move.l  #'PAR%',d2
-abe8	 cmp.l	 $20(a0),d2
-abec	 beq.s	 abf8
-abee	 move.l  (a0),d0
-abf0	 move.l  d0,a0
-abf2	 bne.s	 abe8
-abf4	 moveq	 #-7,d0
-abf6	 rts
+	moveq	#-15,d0
+	rts
 
-abf8	 move.l  d4,$42(a0)
-abfc	 moveq	 #$0,d0
-abfe	 rts
+par_use_param
+	bgt.s	par_use_find
+	bsr.l	ut_gtnam
+	bne.s	par_bp
+	cmpi.w	#3,(a6,a1.l)		; must be 3 letters long
+	bne.s	par_bp
+	move.l	2(a6,a1.l),d4
+	andi.l	#$dfdfdfdf,d4		; uppercase
 
+par_use_find
+	moveq	#sms.info,d0
+	trap	#1
+	move.l	sys_iodl(a0),a0 	; list of I/O drivers
+	move.l	#'PAR%',d2
+par_use_next
+	cmp.l	ddb_magic-iod_iolk(a0),d2
+	beq.s	par_use_set
+	move.l	(a0),d0
+	move.l	d0,a0
+	bne.s	par_use_next
+
+	moveq	#-7,d0
+	rts
+
+par_use_set
+	move.l	d4,ddb_name-iod_iolk+2(a0)
+	moveq	#0,d0
+	rts
+
+; The following code will be copied to the DDB
 par_open
-ac00	 move.l  a3,a4
-ac02	 lea	 -$10(sp),sp
-ac06	 move.l  a7,a3
-ac08	 move.w  $122,a2
-ac0c	 jsr	 (a2)
-ac0e	 bra.s	 ac40
-ac10	 bra.s	 ac40
-ac12	 bra.s	 ac46
-	 dc.w	3,'PAR'
-	 dc.w	8
-	 dc.w	-1,1
-	 dc.w	4,'OEMS'
-	 dc.w	2,'IH'
-	 dc.w	3,'RCA'
-	 dc.w	2,'TD'
-	 dc.w	2,'FZ'
-	 dc.w	' _',0
-	 dc.w	1,'K'
+	move.l	a3,a4			; 0000
+	lea	-8*2(sp),sp		; 0002
+	move.l	a7,a3			; 0006
+	move.w	iou.dnam,a2		; 0008
+	jsr	(a2)			; 000c
+	bra.s	po_exit 		; 000e
+	bra.s	po_exit 		; 0010
+	bra.s	po_do			; 0012
+po_name
+	dc.w	3,'PAR' 		; 0014 ddb.cname
+	dc.w	8			; 001a
+	dc.w	-1,1			; 001c
+	dc.w	4,'OEMS'		; 0020
+	dc.w	2,'IH'			; 0026
+	dc.w	3,'RCA' 		; 002a
+	dc.w	2,'TD'			; 0030
+	dc.w	2,'FZ'			; 0034
+	dc.w	' _',0			; 0038
+	dc.w	1,'K'			; 003c
+po_exit
+	lea	8*2(sp),sp		; 0040
+	rts				; 0044
+po_do
+	jmp	$12345678		; 0046
 
-ac40	 lea	 $10(sp),sp
-ac44	 rts
-ac46	 jmp	 $12345678
+par_opdo				; 004c ddb.csize
+	moveq	#-9,d0
+	tas	ddb_open(a4)
+	bne.s	po_rts
 
-par_opdo
-ac4c	 moveq	 #-9,d0
-ac4e	 tas	 $36(a4)
-ac52	 bne.s	 ac82
-ac54	 moveq	 #$1c,d1
-ac56	 move.w  $c0,a2
-ac5a	 jsr	 (a2)
-ac5c	 bne.s	 ac82
-ac5e	 movem.w (sp),d0/d1/d2/d3/d4/d5/d6/d7
-ac62	 tst.w	 d5
-ac64	 beq.s	 ac70
-ac66	 subq.w  #1,d5
-ac68	 beq.s	 ac6e
-ac6a	 moveq	 #$1a,d5
-ac6c	 bra.s	 ac70
-ac6e	 moveq	 #$c,d5
-ac70	 move.b  d5,$19(a0)
-ac74	 subq.w  #2,d3
-ac76	 move.b  d3,$18(a0)
-ac7a	 subq.w  #2,d4
-ac7c	 slt	 $1a(a0)
-ac80	 moveq	 #$0,d0
-ac82	 lea	 $10(sp),sp
-ac86	 rts
+	moveq	#$1c,d1
+	move.w	mem.achp,a2
+	jsr	(a2)
+	bne.s	po_rts
 
+	movem.w (sp),d0/d1/d2/d3/d4/d5/d6/d7	; parameters
+	tst.w	d5
+	beq.s	po_cl_set		; no char on close
+
+	subq.w	#1,d5
+	beq.s	po_ff			; send FORM FEED on close
+
+	moveq	#26,d5			; send CTRL+Z on close
+	bra.s	po_cl_set
+po_ff
+	moveq	#12,d5			; send FORM FEED on close
+po_cl_set
+	move.b	d5,chn_clch(a0)
+
+	subq.w	#2,d3			; <0 = no, 0 = CR, >0 = CRLF
+	move.b	d3,chn_crlf(a0)
+
+	subq.w	#2,d4
+	slt	chn_tra(a0)		; >0 = TRA
+
+	moveq	#0,d0
+po_rts
+	lea	8*2(sp),sp
+	rts
+
+; Close
 par_close
-ac88	 tst.b	 $37(a3)
-ac8c	 bne.s	 ac94
-ac8e	 move.b  $19(a0),$37(a3)
-ac94	 sf	 $36(a3)
-ac98	 move.w  $c2,a2
-ac9c	 jmp	 (a2)
+	tst.b	ddb_clch(a3)
+	bne.s	pc_busy
+	move.b	chn_clch(a0),ddb_clch(a3)
+pc_busy
+	sf	ddb_open(a3)
+	move.w	mem.rchp,a2
+	jmp	(a2)
 
 par_io
-ac9e	 tst.b	 $37(a3)
-aca2	 bne.s	 acde
-aca4	 pea	 $28(a3)
-aca8	 move.w  $ea,a2
-acac	 jmp	 (a2)
+	tst.b	ddb_clch(a3)
+	bne.s	pio_nc
+	pea	ddb_ssio(a3)
+	move.w	iou.ssio,a2
+	jmp	(a2)
 
+; Send PAR byte
 par_pbyt
-acae	 lea	 $40(a3),a2
-acb2	 cmpa.l  $40(a3),a2
-acb6	 bne.s	 acde
-acb8	 move.l  $1c200,a2
-acbe	 tst.b	 $e0(a2)
-acc2	 bpl.s	 acde
-acc4	 cmpi.b  #$a,d1
-acc8	 bne.s	 ace4
-acca	 tst.b	 $18(a0)
-acce	 bmi.s	 ace4
-acd0	 beq.s	 ace2
-acd2	 bchg	 #$1,$18(a0)
-acd8	 bne.s	 ace4
-acda	 bsr.s	 ace2
-acdc	 moveq	 #$a,d1
-acde	 moveq	 #-1,d0
-ace0	 rts
-ace2	 moveq	 #$d,d1
-ace4	 tst.b	 $1a(a0)
-ace8	 beq.s	 ad30
-acea	 tst.b	 $144(a6)
-acee	 beq.s	 ad30
-acf0	 move.l  $146(a6),a4
-acf4	 adda.w  $2(a4),a4
-acf8	 andi.w  #$ff,d1
-acfc	 beq.s	 ad30
-acfe	 move.b  $0(a4,d1.w),d0
-ad02	 beq.s	 ad08
-ad04	 move.b  d0,d1
-ad06	 bra.s	 ad30
-ad08	 move.l  $146(a6),a4
-ad0c	 adda.w  $4(a4),a4
-ad10	 move.b  (a4)+,d0
-ad12	 beq.s	 ad5c
-ad14	 cmp.b	 (a4)+,d1
-ad16	 beq.s	 ad1e
-ad18	 addq.l  #3,a4
-ad1a	 subq.b  #1,d0
-ad1c	 bra.s	 ad12
-ad1e	 lea	 $3d(a3),a2
-ad22	 move.b  (a4)+,(a2)+
-ad24	 move.b  (a4)+,(a2)+
-ad26	 move.b  (a4),(a2)
-ad28	 subq.l  #2,a2
-ad2a	 move.l  a2,$40(a3)
-ad2e	 bra.s	 ad5c
-ad30	 move.b  d1,$70(a2)
-ad34	 st	 $78(a2)
-ad38	 tst.l	 $18000
-ad3e	 tst.b	 $78(a2)
-ad42	 move.w  #$64,d0
-ad46	 tst.b	 $e0(a2)
-ad4a	 dbpl	 d0,ad46
-ad4e	 bmi.s	 ad5c
-ad50	 move.w  #$2710,d0
-ad54	 tst.b	 $e0(a2)
-ad58	 dbmi	 d0,ad54
-ad5c	 moveq	 #$0,d0
-ad5e	 move.b  d0,$70(a2)
-ad62	 rts
+	lea	ddb_ptr(a3),a2
+	cmpa.l	ddb_ptr(a3),a2
+	bne.s	pio_nc
 
+	move.l	glx_ptch+glk.base,a2	; hardware base
+	tst.b	glo_pbusy(a2)
+	bpl.s	pio_nc			; printer busy
+
+	cmpi.b	#$a,d1			; LF?
+	bne.s	pio_tra
+
+	tst.b	chn_crlf(a0)
+	bmi.s	pio_tra
+	beq.s	pio_cr
+
+	bchg	#$1,chn_crlf(a0)
+	bne.s	pio_tra
+	bsr.s	pio_cr			; send CR first
+	moveq	#$a,d1			; try LF next time
+pio_nc
+	moveq	#-1,d0
+	rts
+
+pio_cr
+	moveq	#$d,d1
+pio_tra
+	tst.b	chn_tra(a0)
+	beq.s	pio_send
+	tst.b	sys_xact(a6)		; TRA active?
+	beq.s	pio_send		; ... no
+
+	move.l	sys_xtab(a6),a4 	; TRA table
+	adda.w	2(a4),a4		; try table 1
+	andi.w	#$ff,d1
+	beq.s	pio_send
+
+	move.b	(a4,d1.w),d0		; get translates character
+	beq.s	pio_tra2
+	move.b	d0,d1
+	bra.s	pio_send
+
+pio_tra2
+	move.l	sys_xtab(a6),a4
+	adda.w	4(a4),a4		; try table 2
+	move.b	(a4)+,d0		; entry count
+pio_tra_loop
+	beq.s	pio_ok			; end of table
+
+	cmp.b	(a4)+,d1		; this it?
+	beq.s	pio_tra_buffer
+	addq.l	#3,a4			; next sequence
+	subq.b	#1,d0
+	bra.s	pio_tra_loop
+
+pio_tra_buffer
+	lea	ddb_buff(a3),a2
+	move.b	(a4)+,(a2)+
+	move.b	(a4)+,(a2)+
+	move.b	(a4),(a2)
+	subq.l	#2,a2
+	move.l	a2,ddb_ptr(a3)		; buffer byte sequence
+	bra.s	pio_ok
+
+pio_send
+	move.b	d1,glo_pbyt(a2)
+	st	glo_pstb(a2)		; set data strobe
+	tst.l	$18000			; wait
+	tst.b	glo_pstb(a2)		; reset data strobe
+
+	move.w	#100,d0
+pio_busy1
+	tst.b	glo_pbusy(a2)		; wait while BUSY
+	dbpl	d0,pio_busy1
+	bmi.s	pio_ok			; not BUSY anymore, remove data
+
+	move.w	#10000,d0
+pio_busy2
+	tst.b	glo_pbusy(a2)		; wait as long as BUSY is not set
+	dbmi	d0,pio_busy2		; (for devices that don't "do" busy?)
+pio_ok
+	moveq	#$0,d0
+	move.b	d0,glo_pbyt(a2) 	; reset data line
+pio_rts
+	rts
+
+; PAR scheduler loop task
 par_sched
-ad64	 move.l  $1c200,a2
-ad6a	 tst.b	 $e0(a2)
-ad6e	 bpl.s	 ad62
-ad70	 lea	 $40(a3),a0
-ad74	 cmpa.l  $40(a3),a0
-ad78	 beq.s	 ad84
-ad7a	 move.l  (a0),a0
-ad7c	 move.b  (a0)+,d1
-ad7e	 move.l  a0,$40(a3)
-ad82	 bra.s	 ad30
-ad84	 move.b  $37(a3),d1
-ad88	 beq.s	 ad62
-ad8a	 sf	 $37(a3)
-ad8e	 bra.l	 ace4
+	move.l	glx_ptch+glk.base,a2	; hardware base
+	tst.b	glo_pbusy(a2)
+	bpl.s	pio_rts 		; busy, exit
 
+	lea	ddb_ptr(a3),a0
+	cmpa.l	ddb_ptr(a3),a0		; anything in TRA buffer?
+	beq.s	psch_chk_clch
+
+	move.l	(a0),a0
+	move.b	(a0)+,d1
+	move.l	a0,ddb_ptr(a3)
+	bra.s	pio_send
+
+psch_chk_clch
+	move.b	ddb_clch(a3),d1
+	beq.s	pio_rts
+	sf	ddb_clch(a3)
+	bra.l	pio_tra
 
 	end

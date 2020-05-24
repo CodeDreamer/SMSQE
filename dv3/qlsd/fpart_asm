@@ -1,6 +1,7 @@
-; DV3 QLSD Find "Partition" (= container file)	V1.01	 2018 W.Lenerz
+; DV3 QLSD Find "Partition" (= container file)	V1.02	 2018 W.Lenerz
 ;
 ; 2018-06-25  1.01  Keep error codes from sector read calls (MK)
+; 2020-01-16  1.02  Allow direct QLWA format (MK)
 
 	section dv3
 
@@ -56,6 +57,7 @@ hd_fpart
 ; D1 is the start position of my container, as a sector number (one sector =
 ; 512 bytes). The rest of the container must necessarily be contained in
 ; contiguous sectors from there on. (Perhaps in later versions it needn't be).
+hdf_d1
 	move.l	d1,sdf_partoffset(a4)
 	moveq	#0,d1			; will go into ddf_psoff
 	moveq	#-1,d2			; partition length unknown
@@ -100,6 +102,16 @@ hd_fpart_internal
 	bne	hfp_rts 		; ooops card doesn't exist at all or
 					; isn't initialized
 
+	cmp.l	#'QLWA',(a1)		; Special, is SD directly QLWA?
+	bne.s	hfp_check_mbr
+; SD is not formatted with FAT but directly with QLWA
+hfp_qlwa
+	moveq	#2,d1			; Because there is an subq.l #2 later
+	moveq	#0,d6			; No offset
+;	 moveq	 #0,d0			; Should still be 0 from hd_rscard
+	rts
+
+hfp_check_mbr
 	move.b	dos_vmbr(a1),d0 	; check for valid MBR
 	beq.s	hfp_mbr 		; seems to be ok so far
 	cmp.b	#$80,d0 		; and this could be an ok value, too
@@ -195,6 +207,7 @@ found
 	swap	d1
 	move.w	$1a(a0),d1		; low word of 1st cluster of file
 	rol.w	#8,d1			; d1 = 1st cluster of file
+hfp_ok
 	moveq	#0,d0			; all ok!
 	rts
 

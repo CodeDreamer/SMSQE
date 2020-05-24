@@ -74,7 +74,7 @@ hwinit_name
 	dc.l	'SMSQ'
 	dc.l	'XqXq'
 	dc.l	'3.35'
-	dc.l	'0001'
+	dc.l	'0002'
 glc_cx	 dc.b	-1
 glcxcpar dc.b	-1
 glc_sqr  dc.b	0
@@ -151,6 +151,7 @@ hwinit	tst.l	d7			; soft or hard reset?
 	dc.w	jva.trp5		; reset CPU, (do hard reset)
 hwinit2 move.l	a7,d7			; top of ram
 	sub.l	#jva.ssp,d7		; minus space for ssp = new ramptop
+
 	move.l	 #sys.java+sys.mqlc,d6	; 68000 / java + disp type
 	move.w	#$2700,sr		; stop interrupts
 hwi_comms

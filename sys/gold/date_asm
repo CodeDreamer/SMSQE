@@ -1,4 +1,4 @@
-; Gold card date read / set / adjust
+; (Super)Gold card date read / set / adjust
 
 	section patch
 
@@ -6,14 +6,13 @@
 	xdef	gl_sdate
 	xdef	gl_adate
 
-	xdef	gl_ssdate
-
-	xref	gl_xdate
-	xref	gl_fdate
+	xref	gl_rtc_status
+	xref	gl_rtc_fail
 
 	include 'dev8_sys_gold_keys'
 	include 'dev8_keys_err'
 	include 'dev8_mac_assert'
+
 ;+++
 ; Read date taking the Year Month Day Hour Minute and Second from the RTC
 ;
@@ -21,11 +20,11 @@
 ;	status return 0 or err.nc
 ;---
 gl_rdate
-	lea	sgo_x06+sgx_work,a0
-	bsr.l	gl_xdate
-	bne.s	grd_ql
-	tst.b	sgo_prtc+sgx_work	; protected date?
-	beq.s	grd_do			; ... no
+	lea	sgx_work+sgo_rtcs,a0
+	bsr.l	gl_rtc_status		; RTC ok?
+	bne.s	grd_ql			; ... no, read QL date
+	tst.b	sgx_work+sgo_prtc	; protected date?
+	beq.s	grd_do			; ... no, read RTC date
 grd_ql
 	move.l	ql_clock,d0		; date
 	move.l	ql_clock,d1		; and again
@@ -101,7 +100,7 @@ grd.reg  reg	d2/d3/d4/d5/d6/d7/a1
 	movem.l grd.reg,-(sp)
 	moveq	#10,d6			; try lots of times
 grd_loop
-	move.l	glk.base+sgx_ptch,a1
+	move.l	glk.base+glx_ptch,a1
 	move.w	glo_rtcs(a1),d7
 	swap	d7			 ; am / pm
 
@@ -195,11 +194,11 @@ gsd_sqel
 	moveq	#0,d0
 	tst.b	sgo_prtc+sgx_work	 ; protect the clock?
 	bne.l	gsd_exit
-	tst.w	glk.time+sgx_ptch	 ; type of clock
-	beq.l	gsd_sgc
+	tst.w	glk.card+glx_ptch	 ; type of card
+	beq.l	gsd_sgc 		 ; ... SGC
 	moveq	#10,d6			 ; try several times
 gsd_rtry
-	move.l	glk.base+sgx_ptch,a2
+	move.l	glk.base+glx_ptch,a2	 ; hardware base $1c000
 
 	move.b	#glk.rtcs,glo_rtcc(a2)	 ; stop the clock
 	lea	glo_s01(a2),a1
@@ -329,10 +328,10 @@ gsd_putl
 	beq.s	gsd_putx
 	swap	d4
 	dbra	d4,gsd_putl
-	lea	sgo_x06+sgx_work,a0
-	bsr.l	gl_fdate
+	lea	sgx_work+sgo_rtcs,a0
+	bsr.l	gl_rtc_fail
 gsd_putx
-	addq.l	#glk.rtca,a1
+	addq.l	#glk.rtca,a1		 ; next time/date register
 	clr.w	d1			 ; we've used this bit
 	rts
 
@@ -341,11 +340,11 @@ gsd_oops
 	divu	#365,d1 		 ; days
 	bra.l	gsd_doop
 
-gl_ssdate
+; ***** SGC version of set date code
 gsd_sgc
 	moveq	#10,d6
 gss_rtry
-	move.l	glk.base+sgx_ptch,a2
+	move.l	glk.base+glx_ptch,a2
 	or.w	#$0700,sr
 	sf	glo_rtcc(a2)
 	sf	glo_dow(a2)
@@ -459,49 +458,48 @@ gss_putd
 gss_divp
 	swap	d1
 	divu	#10,d1
-	bsr.s	gss_putm		 ; next nibble is 0-9
+	bsr.s	gss_putm		; next nibble is 0-9
 	swap	d1
-	divu	d2,d1			 ; get 10s
+	divu	d2,d1			; get 10s
 
 gss_putm
 	swap	d1
 gss_put
 	moveq	#8,d4
 	lsl.b	#4,d1
-	and.b	#$f0,d1 		 ;!!!!!!
+	and.b	#$f0,d1 		;!!!!!!
 gss_putl
-	or.w	#$0700,sr
-	sf	glo_rtcc(a2)
-	sf	glo_dow(a2)
-	sf	glo_d01(a2)
-	move.b	d1,(a1)
+	or.w	#$0700,sr		; RTC write protection on SGC
+	sf	glo_rtcc(a2)		; write $1c000
+	sf	glo_dow(a2)		; write $1c038
+	sf	glo_d01(a2)		; write $1c020
+	move.b	d1,(a1) 		; write data byte
 	not.b	d1
 	sf	glo_rtcc(a2)
 	sf	glo_dow(a2)
 	sf	glo_d01(a2)
-	move.b	d1,4(a2)
+	move.b	d1,glo_ten(a2)		; $1c004. This is read-only, so ???
 	and.w	#$f8ff,sr
 	not.b	d1
 	swap	d4
 	move.b	#$f0,d4
-	and.w	(a1),d4
+	and.w	(a1),d4 		; write successful?
 	cmp.b	d4,d1
-	beq.s	gss_putx
+	beq.s	gss_putx		; ... yes
 	swap	d4
-	dbra	d4,gss_putl
-	lea	sgo_x06+sgx_work,a0
-	bsr.l	gl_fdate
+	dbra	d4,gss_putl		; ... no, try again
+
+	lea	sgx_work+sgo_rtcs,a0	; RTC setting failed!
+	bsr.l	gl_rtc_fail
 
 gss_putx
-	addq.l	#glk.rtca,a1
-	clr.w	d1			 ; we've used this bit
+	addq.l	#glk.rtca,a1		; next register
+	clr.w	d1			; we've used this bit
 	rts
 
 gss_oops
 	ext.l	d1
-	divu	#365,d1 		 ; days
+	divu	#365,d1 		; days
 	bra.l	gss_doop
-
-
 
 	end

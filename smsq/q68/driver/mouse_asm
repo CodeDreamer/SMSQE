@@ -61,6 +61,7 @@ mse_intr
 	move.b	mouse_status,d3
 	btst	#m.rcv,d3		; any mouse activity?
 	beq.s	mse_done		; no, must have been another int ->
+  addq.l	#1,$17d34
 	move.l	sys_clnk(a6),d0 	; get kbd/pointer linkage
 	beq.s	mse_done		; there is none?! ->
 	move.l	d0,a5			; keep

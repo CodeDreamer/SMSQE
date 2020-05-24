@@ -20,6 +20,16 @@ This here file only contains a short description of the new features.
 
 What is new in versions :
 
+=====
+3.36
+=====
+Spanish keyboard and system messages are handled.
+Better handling of drive names via  iof.xinf.
+Q68, cards need not be initilized for normal access.
+Qx0 can read contaziner files from the first four partitions.
+WIN drives made removale for SMsQmulator
+
+
 
 =====
 3.33

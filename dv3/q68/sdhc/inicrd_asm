@@ -1,4 +1,6 @@
-; Q68 Initilaise an SHDC card (via bit-banging)      1.01 (C) W. Lenerz 2017
+; Q68 Initilaise an SHDC card (via bit-banging)      1.03 (C) W. Lenerz 2017-2020
+;
+; 1.03	2020-03-29 get sysvars from sms base, use delay loop  (adapted from MK's code for qlsd)
 ; 1.02	2018-05-08 card type is set in sysvars.
 ; 1.01	try to detect SD cards as well.
 
@@ -12,8 +14,9 @@
 	include 'DEV8_keys_sys'
 	include 'DEV8_dv3_hd_keys'
 	include 'dev8_keys_q68'
+	include 'dev8_smsq_smsq_base_keys'
 
-inireg reg     d1-d4/a0/a2
+inireg reg     d1-d4/a2/a6
 
 ; algo :
 ; put into spi mode
@@ -32,15 +35,29 @@ inireg reg     d1-d4/a0/a2
 ;	status return 0 or ERR.MCHK
 ;---
 inicrd	movem.l inireg,-(a7)
+	move.l	sms.sysb,a6		; a6 = sysvars
+	move.l	#q68_timer,a2		; point to Q68 40 MHz timer
+	move.l	#q68_1sec,d0		; one second timeout
+	move.l	(a2),d3 		; current time
+lock_wait
+	bset	#7,sys_cdiu(a6) 	; prevent poll from accessing device
+	beq.s	lock_ok 		; got the lock, proceed
+	move.l	(a2),d2 		; current time
+	sub.l	d3,d2			; difference
+	cmp.l	d0,d3			; time expired ?
+	blt.s	lock_wait		; no
+	movem.l (a7)+,inireg
+	moveq	#err.fdiu,d0		; yes, device is still being used
+	rts
+lock_ok
 	move.l	#mmc1_cs,a2		; point to card physical addresses
 	add.w	d1,a2			; a2 points to the correct addresses for this drive
 	sf	drv_cs(a2)
-	divu	#q68.coff,d1
-	move.w	d1,d4			; is 0 or 1
-	add.w	#sys_q8ct,d4		; point card in sysvars
-	moveq	#0,d0
-	trap	#1			; ptr to sysvars into A0
-	sf	(a0,d4.w)		; preset that card is SDHC
+	move.l	d1,d4
+	beq.s	set_typ
+	moveq	#1,d4
+set_typ add.w	#sys_q8ct,d4		; point card in sysvars
+	sf	(a6,d4.w)		; preset that card is SDHC
 
 ;;;;;  debug code ;;;;;---------------------------------
 	genif debug = 1
@@ -101,7 +118,7 @@ reply1
 
 inilp3	move.l	#$77000000,d0		; send command 55 (special command to follow)
 	move.w	#$87,d1
-	bsr.s	snd_cmd
+	bsr	snd_cmd
 	bne.s	ini_err 		; pb on send command
 	move.l	#$69400000,d0		; send acmd41 (sd_send_op_cond)
 	move.w	#$87,d1
@@ -129,15 +146,16 @@ blk_sz	move.l	#$50000002,d0		; ... no, try to set block size
 	bsr.s	snd_cmd 		; set block size
 	cmp.b	#0,d1			; correct reply?
 	bne.s	ini_err
-	move.b	#sys..q8sd,(a0,d4.w)	; card is SD card, in byte mode
+	move.b	#sys..q8sd,(a6,d4.w)	; card is SD card, in byte mode
      
 ini_ok	moveq	#0,d0
 ini_out clr.b	drv_cs(a2)		; unselect drive
 out	movem.l (a7)+,inireg
+	bclr	#7,sys_cdiu(a6) 	; release the sector xfer buffer & card
 	tst.l	d0
 	rts
 		
-ini_err st	(a0,d4.w)		; card type remains undetermined
+ini_err st	(a6,d4.w)		; card type remains undetermined
 	moveq	#err.mchk,d0
 	bra.s	ini_out
 	

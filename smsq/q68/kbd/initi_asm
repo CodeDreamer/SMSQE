@@ -2,14 +2,14 @@
 ;			     2016  W. Lenerz
 
 ; Version without interrupt install
+;
 ; 2019 Jan 06	1.01	save kbr read address in q68_kradd
 ;		1.00	amended for q68 : do not setup kbd_poll as polling
 ;			routine, but kbd_read (which then calls kbd_poll).
 
 	section kbd
 
-	xdef	kbd_initi
-	xdef	kbd_inits
+	xdef	kbd_initiq68
 
 	xref	kbd_read
 	xref	kbd_sett
@@ -44,9 +44,9 @@ kbd_procs
 ;
 ;	a3  r	base of keyboard linkage
 ;---
-kbd_initi
+kbd_initiq68
 	sub.l	a0,a0			 ; no special initialisation
-kbd_inits
+
 	lea	kbd_procs,a1
 	jsr	ut_procdef
 

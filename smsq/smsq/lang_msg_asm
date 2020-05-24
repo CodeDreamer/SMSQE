@@ -1,4 +1,6 @@
-; SMSQ_LANG_MSG  Message Tables   V2.0	 1994	Tony Tebby
+; SMSQ_LANG_MSG  Message Tables   V2.1	 1994	Tony Tebby
+;
+; 2020-04-13  2.1  Added Spanish messages (MK)
 
 	section language
 
@@ -25,9 +27,12 @@ smsq_msg
 	dc.l	msg_ita-*
 
 	dc.w	ldm.msgt,0,33	 ; French
-	dc.w	smsq_msg8-*
+	dc.w	6
 	dc.l	msg_fra-*
 
+	dc.w	ldm.msgt,0,34	 ; Spanish
+	dc.w	smsq_msg8-*
+	dc.l	msg_esp-*
 
 ; message  tables
 
@@ -226,5 +231,56 @@ ita_rdo  mkstr	{Protetto in scrittura\}
 ita_isyn mkstr	{Sintassi invalida\}
 ita_noms mkstr	{Messaggio sconosciuto\}
 ita_accd mkstr	{Accesso negato\}
+
+msg_esp dc.w	34
+	dc.w	esp_nc-msg_esp
+	dc.w	esp_ijob-msg_esp
+	dc.w	esp_imem-msg_esp
+	dc.w	esp_orng-msg_esp
+	dc.w	esp_bffl-msg_esp
+	dc.w	esp_ichn-msg_esp
+	dc.w	esp_fdnf-msg_esp
+	dc.w	esp_fex-msg_esp
+	dc.w	esp_fdiu-msg_esp
+	dc.w	esp_eof-msg_esp
+	dc.w	esp_drfl-msg_esp
+	dc.w	esp_inam-msg_esp
+	dc.w	esp_trns-msg_esp
+	dc.w	esp_fmtf-msg_esp
+	dc.w	esp_ipar-msg_esp
+	dc.w	esp_mchk-msg_esp
+	dc.w	esp_iexp-msg_esp
+	dc.w	esp_ovfl-msg_esp
+	dc.w	esp_nimp-msg_esp
+	dc.w	esp_rdo-msg_esp
+	dc.w	esp_isyn-msg_esp
+	dc.w	esp_noms-msg_esp
+	dc.w	esp_accd-msg_esp
+
+esp_nc	 mkstr	{no completado\}
+esp_ijob mkstr	{tarea invålida\}
+esp_imem mkstr	{sin memoria\}
+esp_orng mkstr	{fuera de rango\}
+esp_bffl mkstr	{memoria intermedia llena\}
+esp_ichn mkstr	{canal no abierto\}
+esp_fdnf mkstr	{no encontrado\}
+esp_fex  mkstr	{ya existe\}                 
+esp_fdiu mkstr	{en uso\}
+esp_eof  mkstr	{fin de fichero\}
+esp_drfl mkstr	{medio lleno\}
+esp_inam mkstr	{nombre invålido\}
+esp_trns mkstr	{error de transmisiñn\}
+esp_fmtf mkstr	{fallo en formateo\}
+esp_ipar mkstr	{paråmetro invålido\}
+esp_mchk mkstr	{medio incorrecto\}
+esp_iexp mkstr	{expresiñn errñnea\}
+esp_ovfl mkstr	{desbordamiento aritmÉtico\}
+esp_nimp mkstr	{no implementado\}
+esp_rdo  mkstr	{sñlo lectura\}
+esp_isyn mkstr	{error de sintaxis\}
+esp_noms mkstr	{mensaje desconocido\}
+esp_accd mkstr	{acceso denegado\}
+
 	ds.w	0
+
 	end

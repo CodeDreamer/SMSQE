@@ -1,14 +1,14 @@
-; SMSQmulator WIN Driver initialisation  V1.01 (c) W.Lenerz 2012-2016
+; SMSQmulator WIN Driver initialisation  V1.03 (c) W.Lenerz 2012-2020
 
 ; This handles linking in the driver into the OS.
 ;
-; copyright (C) w. Lenerz 2012-2017 published under the SMSQE licence
+; copyright (C) w. Lenerz 2012-2020 published under the SMSQE licence
+; v. 1.03 added WIN_REMV
 ; v. 1.02 data/prog defaults are set
 ; v. 1.01 implement win_drive & win_drive$
 ; v. 1.00 device is called WIN
 ; v. 0.01 functional
 ; v. 0.00 stub
-
 ; based on:
 ; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
 
@@ -186,30 +186,19 @@ null	dc.w	0		; external interrupt server (none)
 	dc.w	0		; write sector
 	dc.w	-1
 
-; the basic procedures
+; the basic procedures (in driver_nfa_use and driver_nfa_useq)
 	section procs
 
 proctab
 	proc_stt
 	proc_def WIN_USE
 	proc_def WIN_DRIVE
+	proc_def WIN_REMV
 	proc_end
 	proc_stt
 	proc_def WIN_USE$ , win_useq
 	proc_def WIN_DRIVE$ , win_useq
 	proc_end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

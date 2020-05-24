@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.35'
+smsq_vers equ	 '3.36'
 
 	end
 	    
@@ -14,6 +14,19 @@ smsq_vers equ	 '3.35'
 ; #&#  not, the next line is supposed to be a continuation).
 
 
+; 3.36	QL-SD allows direct formatted cards (MK).
+;	Ibm keyboard : key to generate "¼" added(MK+wl).
+;	Better handling of iof_xinf (for dmedium_name$) (MK+wl).
+;	SMSQmulator better keyboard read (wl).
+;	Fixed FDEL (wl).
+;	Q68 fixed spp_par thing (wl).
+;	Q68 better card handling, CARD_INIT no longer needed (wl, inspired by MK).
+;	Q68 may use interrupt for kbd read (needs new FPGA programming) (wl).
+;	Q40 correct handling of direct QLWA formatted CF cards (wl).
+;	Q40 can use container files on partitions 0-3 (wl).
+;	Q40 WIN_CHECK, CARD_DIR, CARD_CRUSH commands added (wl).
+;	Spanish keyboard tables and messages added (MK).
+;
 ; 3.35	QL-SD modified driver (MK).
 ;	Fixed crash in network driver (MK).
 ;	Added SUSJB and FDEL keywords (PJW).

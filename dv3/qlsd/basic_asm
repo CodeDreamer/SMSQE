@@ -1,5 +1,6 @@
-*** QL-SD Driver basic interface	   v1.01   2018 W. Lenerz + M. Kilgus
+*** QL-SD Driver basic interface	   v1.02   2018 W. Lenerz + M. Kilgus
 
+; 2020-04-05  1.02  Removed CARD_INIT (wl)
 ; 2018-07-18  1.01  Fixed WIN_CHECK for everything other than WIN1 (MK)
 
 	section procs
@@ -7,7 +8,6 @@
 	xdef	win_drive
 	xdef	win_use
 	xdef	win_check
-	xdef	card_init
 
 	xref	inicrd
 	xref	hd_fpart_internal
@@ -227,47 +227,6 @@ wchk_loop
 	bne.s	do_rts
 	moveq	#0,d5			; now start from first cluster in sector
 	bra.s	wchk_loop
-
-;***************
-;
-; CARD_INIT card
-;
-;***************
-card_init
-	move.w	sb.gtint,a2
-	jsr	(a2)
-	moveq	#1,d5			; default to card 1
-	subq.w	#1,d3
-	bmi.s	ci_default
-	bne	err_bp
-	move.w	(a6,a1.l),d5		; card nbr (1...3)
-ci_default
-	bsr	get_linkage
-	bne	do_rts
-
-; first go super
-	move.w	sr,d0
-	trap	#0
-	move.w	d0,-(a7)
-; try to find a drive definition that points to this device
-; and delete it and close all channels open to it
-	lea	sys_fsdd(a5),a2
-	moveq	#$f,d7			; there are 16 drv defn blks
-	clr.l	d4
-	lea	ddl_ddlk(a3),a1 	; ddf_ddlk pointers have this offset
-ddb_lp	move.l	(a2)+,d0		; check another drv defn block
-	beq.s	ddb_do			; there is none here
-	move.l	d0,a4
-	cmp.l	ddf_ddlk(a4),a1 	; is this a drive on my device?
-	bne.s	ddb_do			; ... no
-	move.b	ddf_dnum(a4),d4 	; drive nbr
-	add.w	#hdl_unit-1,d4
-	cmp.b	(a3,d4.w),d5		; card nbr for this drive ?
-	bne.s	ddb_do			; no
-	bsr.s	del_ddb 		; yes, close all chans, delete blk
-ddb_do	dbf	d7,ddb_lp		; try next drive
-	move.w	(a7)+,sr
-	bra	inicrd			; try to init card
 
 ;+++
 ; Delete all channels for a specific drive and free drive definition block

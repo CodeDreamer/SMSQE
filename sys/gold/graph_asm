@@ -1,63 +1,63 @@
 ; Gold card MG Graphics patch
 
-        section patch
+	section patch
 
-        xdef    gl_graph
+	xdef	gl_graph
 
 
 ;+++
 ; Patch for MG Graphics
 ;---
 gl_graph
-        clr.w   (a7)                     ; return was here!
-        bra.s   glg_loop                 ; new instruction
+	clr.w	(a7)			 ; return was here!
+	bra.s	glg_loop		 ; new instruction
 glg_point
-        subq.w  #1,(sp)
-        beq.s   glg_last
-        jsr     $2384
+	subq.w	#1,(sp)
+	beq.s	glg_last
+	jsr	$2384
 glg_loop
-        MOVE.W  A4,D4
-        BLT.S   glg_last
-        SUBQ.W  #2,D4
-        BGT.S   glg_td7
-        MOVE.L  D1,D4
-        SUB.L   $ffffFFE8(A6),D4
-        BGE.S   glg_dd4
-        NEG.L   D4
+	move.w	a4,d4
+	blt.s	glg_last
+	subq.w	#2,d4
+	bgt.s	glg_td7
+	move.l	d1,d4
+	sub.l	$ffffffe8(a6),d4
+	bge.s	glg_dd4
+	neg.l	d4
 glg_dd4
-        SUBQ.L  #1,D4
-        BGT.S   glg_td7
-        MOVE.L  D0,D4
-        SUB.L   $ffffFFEC(A6),D4
-        BGE.S   glg_tmode
-        NEG.L   D4
+	subq.l	#1,d4
+	bgt.s	glg_td7
+	move.l	d0,d4
+	sub.l	$ffffffec(a6),d4
+	bge.s	glg_tmode
+	neg.l	d4
 glg_tmode
-        BTST    #$3,$28034
-        BEQ.S   glg_d1d4
-        SUBQ.L  #1,D4
+	btst	#$3,$28034
+	beq.s	glg_d1d4
+	subq.l	#1,d4
 glg_d1d4
-        SUBQ.L  #1,D4
-        BLE.S   glg_last
+	subq.l	#1,d4
+	ble.s	glg_last
 glg_td7
-        TST.L   D7
-        BNE.S   glg_2364
-        TST.L   D6
-        BEQ.S   glg_last
+	tst.l	d7
+	bne.s	glg_2364
+	tst.l	d6
+	beq.s	glg_last
 glg_2364
-        BGE.S   glg_2372
-        TST.B   $ffffFFDC(A6)
-        BGT.S   glg_2372
-        jsr     $23E8
-        BRA.S   glg_loop
+	bge.s	glg_2372
+	tst.b	$ffffffdc(a6)
+	bgt.s	glg_2372
+	jsr	$23e8
+	bra.s	glg_loop
 glg_2372
-        TST.L   D6
-        BGE.S   glg_point
-        TST.B   $ffffFFDC(A6)
-        BLT.S   glg_point
-        jsr     $242E
-        BRA.S   glg_loop
+	tst.l	d6
+	bge.s	glg_point
+	tst.b	$ffffffdc(a6)
+	blt.s	glg_point
+	jsr	$242e
+	bra.s	glg_loop
 glg_last
-        ADDQ.l  #4,A7
-        jmp     $2384
+	addq.l	#4,a7
+	jmp	$2384
 
-        end
+	end

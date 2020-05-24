@@ -1,5 +1,10 @@
+; DV3 Q68  Hold / Release sector transfer buffer  1.02	 2017 - 2020 W. Lenerz
+
+; based on
+
 ; DV3 QXL Hard Disk Hold / Release controller   1998	  Tony Tebby
 
+; 1.02 mark card as recently used (adapted from MK's code for qlsd)
 ; 1.01 adapted for Q68, use sys_cdiu (wl)
 
 	section dv3
@@ -35,7 +40,7 @@ hdh_nc
 	rts
 
 ;+++
-; This routine is called to release the disk controller
+; This routine is called to release the card controller
 ;
 ;	d0 c  p
 ;	d7 c  p drive ID / number
@@ -45,8 +50,20 @@ hdh_nc
 ;	status return accoding to d0
 ;---
 hd_release
-	move.b	hdl_apnd(a3),hdl_actm(a3)   ; ... let it go
-	bclr	#7,sys_cdiu(a6) 	    ; release the sector xfer buffer & card
+	tst.l	d0				; error?
+	bne.s	 release			; yes, don't mark card as used
+
+	movem.l d7/a2,-(sp)
+	lea	hdl_unit-1(a3),a2		; card nbrs for drives
+	move.b	(a2,d7.w),d7			; card nbr (1 or 2))
+	beq.s	crdset				; card 0
+	moveq	#1,d7				; card 1
+crdset	bset	d7,ddl_rcnt(a3) 		; mark card as recently used
+	movem.l (sp)+,d7/a2
+
+
+release move.b	hdl_apnd(a3),hdl_actm(a3)	; ... let it go
+	bclr	#7,sys_cdiu(a6) 		; release the sector xfer buffer & card
 	tst.l	d0
 	rts
 

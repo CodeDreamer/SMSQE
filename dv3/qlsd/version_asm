@@ -36,7 +36,9 @@
 ;	  WIN3..8: QXL3.WIN, QXL4.WIN, QXL5.WIN... (card1)
 ;
 ; 1.07	Fixed compatibility with DEV device under Minerva
+;
+; 1.08	Allow SDs with QLWA images on sector 0 (mount .WIN as virtual SD)
 
-qlsd_vers equ  '1.07'
+qlsd_vers equ  '1.08'
 
 	end

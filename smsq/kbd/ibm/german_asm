@@ -1,6 +1,7 @@
 ; IBM QDOS KBD German tables    1988  Tony Tebby   QJUMP
 ;
 ; 2006-04-03  1.01  CTRL+SHIFT+Y and CTRL+SHIFT+Z were swapped. Fixed (MK)
+; 2019-03-27  1.02  CTRL+SHIFT+2 = arrow left
 
 	section kbd_lang
 
@@ -67,7 +68,7 @@ kbdd_tab
 *
 * control shift
 *
-	dc.b	$ff,$1f,'Å','{','É','\','Ö','æ' $00
+	dc.b	$ff,$1f,'Å','º','É','\','Ö','æ' $00
 	dc.b	'Ü','ä','à','â','ø','ã',$c6,$fd
 	dc.b	'±','∑','•','≤','¥','∫','µ','©' $10
 	dc.b	'Ø','∞','\','ª',$fe,000,'°','≥'

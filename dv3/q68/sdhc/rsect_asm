@@ -1,4 +1,5 @@
-; DV3 Q68 SDHC Card Read Sector  1.02	 2016-2017 W. Lenerz
+; DV3 Q68 SDHC Card Read Sector  1.04	 2016-2017 W. Lenerz
+; 1.04	add hd_rdsect label
 ; 1.03	2018-05-09 use sysvars for card type
 ; 1.02	try longer at readloop and multiblock read (50 times, for slower cards)
 ; 1.01	multiblock read introduced (wl)
@@ -6,6 +7,7 @@
 
 	section dv3
 
+	xdef	hd_rdsect	       ; direct read sector
 	xdef	hd_rdirect		; direct read sector
 	xdef	hd_rsint		; internal read sector
 	xdef	q68_dvstrt		; for copy2mem
@@ -34,6 +36,7 @@ readreg reg	d1-d7/a1-a3
 hd_rdirect
 	tst.w	ddf_ftype(a4)		; really direct sector I/O?
 	bge.s	hd_rsint		; ... no ->...
+hd_rdsect
 	add.l	ddf_psoff(a4),d0	; ... yes, add "partition start"
 	bra.s	hd_rsint
 ;+++

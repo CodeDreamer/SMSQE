@@ -73,6 +73,8 @@ norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
 	move.l	d6,a1
 	dbf	d7,norm_lp
 
+	bra.s	done
+
 ; check whether card2 should be initialised
 	move.b	sms.conf+q68_card2,d0	; config item for card2
 	beq.s	done			; never init card
@@ -125,7 +127,7 @@ hd_table
 	preset_v	hdl_ckwp,hd_ckwp
 	preset_v	hdl_lock,hd_lock
 	preset_v	hdl_unlock,hd_unlock
-	preset_v	hdl_ststp,hd_ststp
+	preset_v	hdl_ststp,inicrd
 
 	link_end	hdl_buff
 

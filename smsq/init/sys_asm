@@ -29,8 +29,6 @@
 ;---
 init_sys
 
-;  jsr	 $3ffc00
-
 	clr.b	$18063			 ; MAGIC!!!
 
 	lea	shd_poll,a0
@@ -43,10 +41,8 @@ init_sys
 
 	move.l	sms.sysb,a6
   
-;  jsr	 $3ffc00
 	jsr	mem_init
  
-;  jsr	 $3ffc00
 	move.l	#sysid.sq,(a6)		 ; set sysvar id
 	addq.w	#7,sys_rand(a6) 	 ; set random number
 	addq.b	#1,sys_nnnr(a6) 	 ; network node number
@@ -65,13 +61,7 @@ init_sys
 
 	move.w	#$7fff,sys_iopr(a6)	 ; io priority
   
-  
-;  jsr	 $3ffc00
-     
 	st	sys_castt(a6)		 ; caches off
-
-  
-;  jsr	 $3ffc00
      
 	move.l	#smsq_vers,sys_vers(a6)  ; version
 
@@ -96,9 +86,6 @@ th.entry equ	th.len+6
 	lea	th_exec,a0
 	move.l	a0,(a2)+		 ; th_exec
  
-  
-;  jsr	 $3ffc00
-     
 ; add language dependent list and message table
 
 	moveq	#$40,d0 		 ; initial allocation
@@ -128,9 +115,6 @@ th.entry equ	th.len+6
 	lea	dest_ddd(pc),a1
 	bsr.s	set_def 		destination default
  
-
-;  jsr	 $3ffc00
-     
 	moveq	#0,d0
 	rts
 

@@ -19,7 +19,7 @@ ddl_chname  equ $0030	; long	  channel name routine
 ddl_format  equ $0034	; long	  format routine address
 ddl_ddlen   equ $0038	; long	  drive definition block LENgth
 ddl_dnuse   equ $003c	; string  drive name (current usage)
-ddl_dname   equ $0042	; string  drive name
+ddl_dname   equ $0042	; string  drive name (max 4 chars)
 
 ddl_rev     equ $0048	; byte	  driver revision number
 ddl_buff    equ $0049	; byte	  set if buffered driver
@@ -59,6 +59,7 @@ ddl_vtop    equ $00d0		; top of vector table
 ddl_master  equ $00d0	; long	  pointer to master device driver
 ddl_slave   equ $00d4	; long	  pointer to (next) slave
 ddl_inus    equ $00d8	; byte	  msb Sector transfer in use (cf sys_stiu)
+ddl_rcnt    equ $00d9	; byte	  bit set for each drive if recently used
 
 ddl_thhdr   equ $00e0		; embedded Thing header
 ddl_thing   equ $00f0		; embedded Thing
@@ -73,7 +74,7 @@ ddl_drive   equ $0140		; drive specific part of linkage
 ddf_ddlk    equ $0010	; long	  ptr master device driver link (ddl_ddlk, QDOS)
 ddf_dnum    equ $0014	; byte	  drive number
 ddf_drid    equ $0015	; byte	  drive ID
-ddf_mname   equ $0016	; chars   medium name (up to 10 chars + 2 rnd long)
+ddf_spare   equ $0016	; 12 bytes spare
 ddf_nropen  equ $0022	; byte	  number of files open on this medium
 ddf_wprot   equ $0023	; byte	  set if write protected
 ddf.wprot     equ $ff
@@ -110,7 +111,7 @@ ddf.sd	      equ   0		; single density
 ddf.dd	      equ   1		; double density
 ddf.hd	      equ   2		; high density
 ddf.ed	      equ   3		; extra high
-ddf_slflag  equ $002b	; byte	  sector length flag
+ddf_slflag  equ $002b	; byte	  sector length flag (128 * 2^flag)
 ddf.128       equ 0
 ddf.256       equ 1
 ddf.512       equ 2
@@ -203,8 +204,10 @@ ddf_slbl    equ $0128	; long	  slave block range low (-ve if not set)
 ddf_slbh    equ $012c	; long	  slave block range high
 ddf_mupd    equ $0130	; byte	  set if map updated, cleared by umap (1st call)
 ddf_slld    equ $0131	; bytes   set if slaved load preferred to scatter
-ddf_drive   equ $0140		; drive specific status area
-ddf_dtop    equ $0180
+ddf_mname   equ $0140	; 22 bytes medium name standard string max 20 chars
+ddf.mnlen   equ 20
+ddf_drive   equ $0160		; drive specific status area
+ddf_dtop    equ $01a0		; must be a multiple of 4!
 
 ; Device Driver Linkage Initilisation Table
 

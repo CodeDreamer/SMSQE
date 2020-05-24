@@ -1,21 +1,31 @@
-; DV3 QLSD SDHC (WIN) Driver initialisation 1.01  2018 W. Lenerz + M. Kilgus
-;
-;	1.01	refer to new vectors (after hdl_ststp) (mk)
+; DV3 QLSD SDHC (WIN) Driver initialisation 1.02  2018 W. Lenerz + M. Kilgus
 ;
 ; based on
 ;
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
 ;
 ; !!! non standard linkage block size
+;
+; 2018-06-07  1.01  Added new qlsd_* vectors (MK)
+; 2018-07-18  1.02  New default filenames for WIN1..8 (MK)
 
 	section dv3
 
 	xdef	win_init		; inits the driver
-	xdef	qsd_wn1
+	xdef	qsd_cf1
+	xdef	qsd_cf2
+	xdef	qsd_cf3
+	xdef	qsd_cf4
+	xdef	qsd_cf5
+	xdef	qsd_cf6
+	xdef	qsd_cf7
+	xdef	qsd_cf8
+	xdef	qsd_crd
 
 	xref	dv3_link
 	xref	qlsd_1sec
 	xref.l	qlsd_vers
+	xref	norm_nm
 
 	xref	gu_fopen
 	xref	gu_fclos
@@ -33,7 +43,9 @@
 ;
 ;	a3  r	device driver linkage
 ;--------------------
+win_reg reg	d4-d7
 win_init
+	movem.l win_reg,-(sp)
 	lea	hd_table,a3
 	jsr	dv3_link		; link in driver
 	tst.l	d0
@@ -42,18 +54,28 @@ win_init
 	jsr	qlsd_1sec		; calibrate timing
 	move.l	d0,hdl_1sec(a3) 	; and remember it
 
-; Copy the pre configured name to all drives
-	lea	qlsd_names(a3),a1
-	moveq	#7,d0			; 8 drives
-wi_loop
-	lea	qsd_wn1,a0
+; Copy the drive->card mappings
+	lea	hdl_unit(a3),a1
+	lea	qsd_crd,a0
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	clr.l	(a1)+			; pad to 16 bytes
-	dbf	d0,wi_loop
+
+; Normalize the configured names into our working copy
+	lea	qsd_cf1+2,a0		; point first drive name
+	move.l	a0,d5
+	lea	qlsd_names(a3),a1	; point space for normalized names
+	move.l	a1,d6
+	moveq	#16,d2			; offset from one name to the other
+	moveq	#7,d7
+norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
+	add.l	d2,d5
+	move.l	d5,a0
+	add.l	d2,d6
+	move.l	d6,a1
+	dbf	d7,norm_lp
 	moveq	#0,d0			; done
-out	rts
+out	movem.l (sp)+,win_reg
+	rts
 
 hd_table
 	link_table	WIN, '1', qlsd_end, ddf_dtop
@@ -86,7 +108,7 @@ hd_table
 
 ; each preset costs 12 bytes
 ;	 preset_b	 hdl_remd,1,1,1,1,1,1,1,1
-	preset_b	hdl_unit,1,2,3,1,1,1,1,1
+;	 preset_b	 hdl_unit,1,2,1,2,1,2,1,2
 ;	 preset_b	 hdl_part,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
 
 	preset_v	hdl_rsint,hd_rsint
@@ -105,6 +127,17 @@ hd_table
 
 	link_end	hdl_buff
 
-qsd_wn1 dc.w	'QXL     WIN'		; normalized name
+; Card numbers
+qsd_crd dc.b	1,2,1,1,1,1,1,1
+
+; Configured names. Spacing must be 16 bytes
+qsd_cf1 dc.w	13,7,'QXL.WIN',0,0
+qsd_cf2 dc.w	13,7,'QXL.WIN',0,0
+qsd_cf3 dc.w	13,8,'QXL3.WIN',0,0
+qsd_cf4 dc.w	13,8,'QXL4.WIN',0,0
+qsd_cf5 dc.w	13,8,'QXL5.WIN',0,0
+qsd_cf6 dc.w	13,8,'QXL6.WIN',0,0
+qsd_cf7 dc.w	13,8,'QXL7.WIN',0,0
+qsd_cf8 dc.w	13,8,'QXL8.WIN',0,0
 
 	end

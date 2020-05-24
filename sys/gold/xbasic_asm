@@ -4,21 +4,27 @@
 
 	xdef	sgc_xbasic
 
-	xref	gl_proc1
+	xref	gl_hires
 	xref	ut_gtint
 
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_iod'
 	include 'dev8_sys_gold_keys'
 
 sgc_xbasic
-a84e	 lea	 min_procs,a1
-a852	 tst.w	 $1c204
-a858	 bne.s	 a85e
-a85a	 lea	 max_procs,a1
-a85e	 move.w  $110,a2
-a862	 jsr	 (a2)
-a864	 moveq	 #$0,d0
-a866	 rts
-max_procs
+	lea	gc_procs,a1
+	tst.w	glx_ptch+glk.card
+	bne.s	basic_gc		; only GoldCard
+	lea	sgc_procs,a1		; yay! SGC
+basic_gc
+	move.w	sb.inipr,a2
+	jsr	(a2)
+	moveq	#0,d0
+	rts
+
+sgc_procs
 	dc.w	10
 	dc.w	cache_on-*
 	dc.b	8,'CACHE_ON'
@@ -38,236 +44,280 @@ max_procs
 	dc.b	10,'FLP_JIGGLE'
 	dc.w	0,0,0
 
-min_procs
+gc_procs
 	dc.w	6
-	dc.w	a_tk2f1-*
+	dc.w	gc_tk2f1-*
 	dc.b	10,'AUTO_TK2F1'
-	dc.w	a_tk2f2-*
+	dc.w	gc_tk2f2-*
 	dc.b	10,'AUTO_TK2F2'
-	dc.w	a_dis-*
+	dc.w	gc_dis-*
 	dc.b	8,'AUTO_DIS'
-	dc.w	f_jiggle-*
+	dc.w	gc_jiggle-*
 	dc.b	10,'FLP_JIGGLE'
 	dc.w	0,0,0
 
-f_jiggle
-a910	 bsr.l	aaa2
-a914	 andi.b  #$80,d0
-a918	 addq.b  #4,d0
-a91a	 bsr.s	 a944
-a91c	 moveq	 #$0,d0
-a91e	 rts
+; FLP_JIGGLE
+gc_jiggle
+	bsr.l	do_jiggle
+	andi.b	#$80,d0
+	addq.b	#4,d0			; get or set bit 0
+	bsr.s	gc_change_config
+	moveq	#0,d0
+	rts
 
-a_tk2f1
-a920	 moveq	 #$ffffff87,d0
-a922	 bsr.s	 a944
-a924	 moveq	 #$6,d0
-a926	 bsr.s	 a944
-a928	 moveq	 #$0,d0
-a92a	 rts
+; AUTO_TK2F1
+gc_tk2f1
+	moveq	#$ffffff87,d0		; clear bit 3
+	bsr.s	gc_change_config
+	moveq	#6,d0			; set bit 2
+	bsr.s	gc_change_config
+	moveq	#0,d0
+	rts
 
-a_tk2f2
-a92c	 moveq	 #$ffffff86,d0
-a92e	 bsr.s	 a944
-a930	 moveq	 #$7,d0
-a932	 bsr.s	 a944
-a934	 moveq	 #$0,d0
-a936	 rts
+; AUTO_TK2F2
+gc_tk2f2
+	moveq	#$ffffff86,d0		; clear bit 2
+	bsr.s	gc_change_config
+	moveq	#7,d0			; set bit 3
+	bsr.s	gc_change_config
+	moveq	#$0,d0
+	rts
 
-a_dis
-a938	 moveq	 #$7,d0
-a93a	 bsr.s	 a944
-a93c	 moveq	 #$6,d0
-a93e	 bsr.s	 a944
-a940	 moveq	 #$0,d0
-a942	 rts
+; AUTO_DIS
+gc_dis
+	moveq	#7,d0			; clear bit 3
+	bsr.s	gc_change_config
+	moveq	#6,d0			; clear bit 2
+	bsr.s	gc_change_config
+	moveq	#0,d0
+	rts
 
-a944	 movem.l d1/a2,-(sp)
-a948	 move	 sr,d1
-a94a	 swap	 d1
-a94c	 move.l  $1c200,a2
-a952	 trap	 #$0
-a954	 ori.w	 #$700,sr
-a958	 move.b  #$30,(a2)
-a95c	 move.b  $3c(a2),d1
-a960	 tst.b	 d0
-a962	 bpl.s	 a968
-a964	 bset	 d0,d1
-a966	 bra.s	 a96a
-a968	 bclr	 d0,d1
-a96a	 move.b  d1,$3c(a2)
-a96e	 move.b  #$10,(a2)
-a972	 swap	 d1
-a974	 move	 d1,sr
-a976	 movem.l (sp)+,d1/a2
-a97a	 rts
+; Change GC config in RTC chip
+gc_change_config
+	movem.l d1/a2,-(sp)
+	move	sr,d1
+	swap	d1
+	move.l	glx_ptch+glk.base,a2	; hardware base
+	trap	#0
+	ori.w	#$700,sr
+	move.b	#$30,glo_rtcc(a2)	; enable RTC interrupt register
+	move.b	glo_rtcs(a2),d1 	; read interrupt register
+	tst.b	d0
+	bpl.s	gc_cfg_clr
+	bset	d0,d1
+	bra.s	gc_cfg_save
 
+gc_cfg_clr
+	bclr	d0,d1
+gc_cfg_save
+	move.b	d1,glo_rtcs(a2)
+	move.b	#$10,(a2)		; disable RTC interrupt register
+	swap	d1
+	move	d1,sr
+	movem.l (sp)+,d1/a2
+	rts
+
+; CACHE_ON
 cache_on
-a97c	 moveq	 #$9,d0
-a97e	 bra.s	 a982
+	moveq	#9,d0
+	bra.s	cache_set
 
+; CACHE_OFF
 cache_off
-a980	 moveq	 #$0,d0
-a982	 sne	 $1c10c
-a988	 moveq	 #$0,d0
-a98a	 trap	 #$1
-a98c	 rts
+	moveq	#0,d0
+cache_set
+	sne	sgx_work+sgo_cache
+	moveq	#0,d0
+	trap	#1			; this will apply the change
+	rts
 
+; SCR2DIS
 scr2dis
-a98e	 moveq	 #$1,d0
-a990	 bra.s	 a994
+	moveq	#1,d0
+	bra.s	scr2all
+; SCR2EN
 scr2en
-a992	 moveq	 #$0,d0
-a994	 sne	 d0
-a996	 move.l  $1c200,a2
-a99c	 beq.s	 a9a4
-a99e	 sf	 $68(a2)
-a9a2	 bra.s	 a9a8
+	moveq	#0,d0
+scr2all
+	sne	d0
+	move.l	glx_ptch+glk.base,a2	; get hardware base
+	beq.s	scr2en2
+	sf	sgo_scr2(a2)
+	bra.s	scr2save
 
-a9a4	 tst.b	 $68(a2)
+scr2en2
+	tst.b	sgo_scr2(a2)
+scr2save
+	andi.b	#$80,d0
+	addq.b	#5,d0			; set/clear bit 1
+	bsr.s	sgc_change_config
+	moveq	#$0,d0
+	rts
 
-a9a8	 andi.b  #$80,d0
-a9ac	 addq.b  #5,d0
-a9ae	 bsr.s	 a9b4
-a9b0	 moveq	 #$0,d0
-a9b2	 rts
+; Change SGC config in RTC chip
+sgc_change_config
+	movem.l d1/a2,-(sp)
+	move	sr,d1
+	swap	d1
+	move.l	glx_ptch+glk.base,a2
+	trap	#0
+	ori.w	#$700,sr
+	sf	glo_rtcc(a2)		; SGC RTC write sequence
+	sf	glo_dow(a2)
+	sf	glo_d01(a2)
+	move.b	#$30,glo_rtcc(a2)	; enable interrupt register
+	move.b	glo_rtcs(a2),d1 	; read interrupt register
+	tst.b	d0
+	bpl.s	sgc_cfg_clr
+	bset	d0,d1
+	bra.s	sgc_save
 
-a9b4	 movem.l d1/a2,-(sp)
-a9b8	 move	 sr,d1
-a9ba	 swap	 d1
-a9bc	 move.l  $1c200,a2
-a9c2	 trap	 #$0
-a9c4	 ori.w	 #$700,sr
-a9c8	 sf	 (a2)
-a9ca	 sf	 $38(a2)
-a9ce	 sf	 $20(a2)
-a9d2	 move.b  #$30,(a2)
-a9d6	 move.b  $3c(a2),d1
-a9da	 tst.b	 d0
-a9dc	 bpl.s	 a9e2
-a9de	 bset	 d0,d1
-a9e0	 bra.s	 a9e4
-a9e2	 bclr	 d0,d1
-a9e4	 sf	 (a2)
-a9e6	 sf	 $38(a2)
-a9ea	 sf	 $20(a2)
-a9ee	 move.b  d1,$3c(a2)
-a9f2	 sf	 (a2)
-a9f4	 sf	 $38(a2)
-a9f8	 sf	 $20(a2)
-a9fc	 move.b  #$10,(a2)
-aa00	 swap	 d1
-aa02	 move	 d1,sr
-aa04	 movem.l (sp)+,d1/a2
-aa08	 rts
+sgc_cfg_clr
+	bclr	d0,d1
+sgc_save
+	sf	glo_rtcc(a2)		; SGC RTC write sequence
+	sf	glo_dow(a2)
+	sf	glo_d01(a2)
+	move.b	d1,glo_rtcs(a2) 	; write back interrupt register
 
+	sf	glo_rtcc(a2)		; SGC RTC write sequence
+	sf	glo_dow(a2)
+	sf	glo_d01(a2)
+	move.b	#$10,glo_rtcc(a2)	; disable interrupt register
+	swap	d1
+	move	d1,sr
+	movem.l (sp)+,d1/a2
+	rts
+
+; AUTO_TK2F1 SGC
 auto_tk2f1
-aa0a	 moveq	 #$ffffff87,d0
-aa0c	 bsr.s	 a9b4
-aa0e	 moveq	 #$6,d0
-aa10	 bsr.s	 a9b4
-aa12	 clr.l	 $1c110
-aa18	 moveq	 #$0,d0
-aa1a	 rts
+	moveq	#$ffffff87,d0		; set bit 3
+	bsr.s	sgc_change_config
+	moveq	#6,d0			; clear bit 2
+	bsr.s	sgc_change_config
+	clr.l	sgx_work+sgo_hires
+	moveq	#0,d0
+	rts
 
+; AUTO_TK2F2
 auto_tk2f2
-aa1c	 moveq	 #$ffffff86,d0
-aa1e	 bsr.s	 a9b4
-aa20	 moveq	 #$7,d0
-aa22	 bsr.s	 a9b4
-aa24	 clr.l	 $1c110
-aa2a	 moveq	 #$0,d0
-aa2c	 rts
+	moveq	#$ffffff86,d0		; set bit 2
+	bsr.s	sgc_change_config
+	moveq	#7,d0			; clear bit 3
+	bsr.s	sgc_change_config
+	clr.l	sgx_work+sgo_hires
+	moveq	#0,d0
+	rts
 
+; AUTO_DIS
 auto_dis
-aa2e	 moveq	 #$7,d0
-aa30	 bsr.s	 a9b4
-aa32	 moveq	 #$6,d0
-aa34	 bsr.l	 a9b4
-aa38	 clr.l	 $1c110
-aa3e	 moveq	 #$0,d0
-aa40	 rts
+	moveq	#7,d0			; clear bit 3
+	bsr.s	sgc_change_config
+	moveq	#6,d0			; clear bit 2
+	bsr.l	sgc_change_config
+	clr.l	sgx_work+sgo_hires
+	moveq	#0,d0
+	rts
 
-aa42	 move.b  gl_proc1,d0
-aa46	 bpl.s	 aa5a
-aa48	 tst.w	 $1c204
-aa4e	 bne.s	 aa5a
-aa50	 lea	 hr_procs,a1
-aa54	 move.w  $110,a2
-aa58	 jsr	 (a2)
-aa5a	 moveq	 #$0,d0
-aa5c	 rts
+; Unused piece of code
+hires_init
+	move.b	gl_hires,d0
+	bpl.s	hires_ok
+	tst.w	glx_ptch+glk.card	; GC or SGC?
+	bne.s	hires_ok		; ... GC
+	lea	hr_procs,a1
+	move.w	sb.inipr,a2
+	jsr	(a2)
+hires_ok
+	moveq	#$0,d0
+	rts
+
 hr_procs
 	dc.w	2
 	dc.w	auto_tk2hires-*
 	dc.b	13,'AUTO_TK2HIRES'
 	dc.w	0,0,0,0
 
+; AUTO_TK2HIRES
 auto_tk2hires
-aa78	 moveq	 #$ffffff87,d0
-aa7a	 bsr.l	 a9b4
-aa7e	 moveq	 #$ffffff86,d0
-aa80	 bsr.l	 a9b4
-aa84	 move.l  #$b8be4741,$1c110
-aa8e	 moveq	 #$0,d0
-aa90	 rts
+	moveq	#$ffffff87,d0		; set bit 3
+	bsr.l	sgc_change_config
+	moveq	#$ffffff86,d0		; set bit 2
+	bsr.l	sgc_change_config
+	move.l	#sgo.hires,sgx_work+sgo_hires
+	moveq	#$0,d0
+	rts
 
+; FLP_JIGGLE
 flp_jiggle
-aa92	 bsr.s	 aaa2
-aa94	 andi.b  #$80,d0
-aa98	 addq.b  #4,d0
-aa9a	 bsr.l	 a9b4
-aa9e	 moveq	 #$0,d0
-aaa0	 rts
+	bsr.s	do_jiggle
+	andi.b	#$80,d0
+	addq.b	#4,d0
+	bsr.l	sgc_change_config
+	moveq	#0,d0
+	rts
 
-aaa2	 bsr.l	 ut_gtint
-aaa6	 bne.s	 aaf6
-aaa8	 tst.w	 d3
-aaaa	 beq.s	 aaf6
-aaac	 subq.w  #2,d3
-aaae	 bhi.s	 aaf6
-aab0	 bsr.s	 aafc
-aab2	 bne.s	 aaf6
-aab4	 lea	 $b4(a0),a0
-aab8	 tst.w	 d3
-aaba	 blt.s	 aade
-aabc	 move.w  $0(a6,a1.l),d2
-aac0	 ble.s	 aaf6
-aac2	 subq.w  #4,d2
-aac4	 bhi.s	 aaf6
-aac6	 moveq	 #$7f,d0
-aac8	 and.b	 $3(a0,d2.w),d0
-aacc	 tst.w	 $2(a6,a1.l)
-aad0	 beq.s	 aad4
-aad2	 tas	 d0
-aad4	 move.b  d0,$3(a0,d2.w)
-aad8	 addq.l  #4,sp
-aada	 moveq	 #$0,d0
-aadc	 rts
+do_jiggle
+	bsr.l	ut_gtint
+	bne.s	err4
 
-aade	 move.l  #$7f7f7f7f,d0
-aae4	 tst.w	 $0(a6,a1.l)
-aae8	 beq.s	 aaf0
-aaea	 not.l	 d0
-aaec	 or.l	 (a0),d0
-aaee	 bra.s	 aaf2
-aaf0	 and.l	 (a0),d0
-aaf2	 move.l  d0,(a0)
-aaf4	 rts
+	tst.w	d3
+	beq.s	err4			; no parameter is bad
+	subq.w	#2,d3
+	bhi.s	err4			; more than 2 is also bad
 
-aaf6	 addq.l  #4,sp
-aaf8	 moveq	 #-15,d0
-aafa	 rts
+	bsr.s	get_flp_ddb
+	bne.s	err4
 
-aafc	 move.l  #'FLP0',d7
-ab02	 moveq	 #$0,d0
-ab04	 trap	 #$1
-ab06	 lea	 $48(a0),a0
-ab0a	 move.l  (a0),d0
-ab0c	 beq.s	 aaf8
-ab0e	 move.l  d0,a0
-ab10	 cmp.l	 $2c(a0),d7
-ab14	 bne.s	 ab0a
-ab16	 rts
+	lea	$cc-iod_iolk(a0),a0	; FLP jiggle
+	tst.w	d3
+	blt.s	jiggle_all		; set same value for all drives
+
+	move.w	(a6,a1.l),d2		; drive number
+	ble.s	err4
+	subq.w	#4,d2
+	bhi.s	err4
+	moveq	#$7f,d0
+	and.b	3(a0,d2.w),d0
+	tst.w	2(a6,a1.l)
+	beq.s	jiggle_single_set
+	tas	d0
+jiggle_single_set
+	move.b	d0,3(a0,d2.w)
+	addq.l	#4,sp			; skip rest of FLP_JIGGLE, don't save config
+	moveq	#0,d0
+	rts
+
+jiggle_all
+	move.l	#$7f7f7f7f,d0		; set value for all drives
+	tst.w	0(a6,a1.l)
+	beq.s	jiggle_all_clear
+	not.l	d0
+	or.l	(a0),d0
+	bra.s	jiggle_all_set
+jiggle_all_clear
+	and.l	(a0),d0
+jiggle_all_set
+	move.l	d0,(a0)
+	rts
+
+err4
+	addq.l	#4,sp
+err
+	moveq	#-15,d0
+	rts
+
+get_flp_ddb
+	move.l	#'FLP0',d7
+	moveq	#sms.info,d0
+	trap	#1
+	lea	sys_fsdl(a0),a0
+ddb_loop
+	move.l	(a0),d0
+	beq.s	err
+	move.l	d0,a0
+	cmp.l	iod_dnam-iod_iolk+2(a0),d7
+	bne.s	ddb_loop
+	rts
 
 	end

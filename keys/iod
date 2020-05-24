@@ -33,8 +33,9 @@ iod_spr1 equ	$002c
 iod_cnam equ	$0030	; long	  set channel name
 iod_frmt equ	$0034	; long	  format routine address
 iod_plen equ	$0038	; long	  Physical definition block LENgth
-iod_dnus equ	$003c	; string  Drive Name (current USage)
-iod_dnam equ	$0042	; string  Drive NAMe (both names are a standard string of max 4 chars)
+iod_dnus equ	$003c	; string  Device Name (current USage)
+iod_dnam equ	$0042	; string  Device NAMe (both names are a standard string of max 4 chars)
+			;	  Beware: these two may be used by some drivers for other information (eg. NET device)
 
 ; standard directory driver entry points (JMP	xxx.l)
 

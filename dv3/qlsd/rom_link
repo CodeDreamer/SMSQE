@@ -30,6 +30,7 @@ input dev8_dv3_qlsd_inicrd_rel
 input dev8_dv3_qlsd_cinvi_rel
 
 input dev8_util_cv_upcas_min_rel
+input dev8_dv3_qlsd_qlf_check_rel
 input dev8_dv3_qlsd_qlf_drname_rel
 input dev8_dv3_qlsd_qlf_drmake_rel
 input dev8_dv3_qlsd_qlf_umap_rel

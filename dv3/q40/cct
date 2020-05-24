@@ -24,6 +24,8 @@ dev8_dv3_q40_hd_ide_wsect_rel
 dev8_dv3_hd_ide_lock_rel
 dev8_dv3_hd_ide_ststp_rel
 dev8_dv3_q40_hd_ide_cmd_rel
+dev8_dv3_q40_hd_chkwin_rel
+dev8_dv3_q40_hd_card_dir_rel
 dev8_dv3_hd_ide_stat_rel
 dev8_dv3_q40_normalise_rel
 dev8_dv3_hd_version_rel

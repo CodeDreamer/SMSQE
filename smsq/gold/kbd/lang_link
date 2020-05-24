@@ -7,4 +7,5 @@ input   dev8_smsq_gold_kbd_english_rel
 input   dev8_smsq_gold_kbd_french_rel
 input   dev8_smsq_gold_kbd_german_rel
 input   dev8_smsq_gold_kbd_danish_rel
+input   dev8_smsq_gold_kbd_spanish_rel
 library dev8_smsq_smsq_end_rel

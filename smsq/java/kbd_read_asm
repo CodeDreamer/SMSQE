@@ -1,9 +1,10 @@
-; SMSQmulator Read keyboard / mouse  V 1.01 (c) W. Lenerz 2012
+; SMSQmulator Read keyboard / mouse  V 1.03 (c) W. Lenerz 2020
 
 ; read by SMSQE during polling interrupt.
 
 ; this "reads" the keyboard coming from the emulator & puts the keystrokes
 ; into the keyboard queue
+; 1.03 read kbd loops until no more chars in java kbd queue (queue in & out in java are synchronized)
 ; 1.02 mouse wheel code is transferred to driver_mouse
 ; 1.01 special long word input when mouse moved
 ; 1.00 initial version
@@ -42,22 +43,30 @@ kbd_read movem.l smsh.reg,-(a7)
 	move.l	sys_ckyq(a6),d0 	; any keyboard queue?
 	beq.s	hok_rts 		; no!
 	move.l	d0,a2			; A2 = current keyboard queue
-	move.l	jva_lkptr,d0		; address of java emul linkage block
-	beq.s	hok_rts 		; there is none (????)
-	move.l	a1,-(sp)
-	move.l	d0,a1			; point to java linkage block
-	move.l	jva_lkkbd(a1),d0	; get current key char(s)
-	clr.l	jva_lkkbd(a1)		; no more
-	move.l	(sp)+,a1
+;	 move.l  jva_lkptr,d0		 ; address of java emul linkage block
+;	 beq.s	 hok_rts		 ; there is none (????)
+;	 move.l  a1,-(sp)
+;	 move.l  d0,a1			 ; point to java linkage block
+;	 move.l  jva_lkkbd(a1),d0	 ; get current key char(s)
+;	 clr.l	 jva_lkkbd(a1)		 ; no more
+;	 move.l  (sp)+,a1
+getkey	moveq	#jte.kbd,d0
+	dc.w	jva.trpE		; returns key(s) in D1, cond codes set
+	tst.l	d1
+	beq.s	hok_done
+
 	move.l	sys_klnk(a6),a1 	; keyboard linkage
-	move.l	d0,d1			; char(s) gotten
-	bne.s	hok_chkc		; there were some
+;	 move.l  d0,d1			 ; char(s) gotten
+;	 bne.s	 hok_chkc		 ; there were some
 	btst	#0,$29(a1)		; shift pressed?
-	beq.s	hok_rts 		; no
+	beq.s	nofrz			 ; no
 	sf	sys_dfrz(a6)		; yes, unfreeze screen
-hok_rts
-	movem.l (a7)+,smsh.reg
-	rts
+nofrz	bsr.s	hok_chkc		; do until queue empty
+	bra.s	getkey
+
+
+hok_done movem.l (a7)+,smsh.reg
+hok_rts rts
 
 
 hok_chkc

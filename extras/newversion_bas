@@ -214,8 +214,8 @@
 2230 :                                       : REMark copy Q68 smqe file to it
 2240   PAUSE 50
 2250   IF extn$<>"":COPY_O "dev1_progs_MenuConf_INF_"&extn$,"dev1_progs_MenuConf_INF"
-2260   EW menuconfig;"\q\uDEV8_smsq_q68_QL_RAM.BIN" : REMark set config
-2270   COPY_O "DEV8_smsq_q68_QL_RAM.BIN","win"&windrv%&"_Q68_SMSQ"
+2260   EW menuconfig;"\q\udev8_smsq_q68_SMSQ_4_WIN" : REMark set config
+2270   COPY_O "dev8_smsq_q68_SMSQ_4_WIN","win"&windrv%&"_Q68_SMSQ"
 2280   MAKE_DIR "win"&windrv%&"_config"
 2290   COPY DEV1_booty_Menu_rext_8e04,"win"&windrv%&"_config_menu_rext_english"
 2300   COPY DEV1_progs_MenuConfig,"win"&windrv%&"_config_MenuConfig"

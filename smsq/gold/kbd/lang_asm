@@ -7,10 +7,11 @@
 	xref	kbdf_tab
 ;	 xref	 kbdn_tab
 	xref	kbdk_tab
-;	 xref	 kbes_tab
+	xref	kbdes_tab
 
 	xref	kbd_nsid
 	xref	kbdf_nsid
+	xref	kbdes_nsid
 
 	xref	smsq_end
 
@@ -69,12 +70,12 @@ kbd_def
 ;	 dc.l	 kbd_nor-*
 
 	dc.w	ldm.kbdt,0,45		 ; Denmark
-	dc.w	0   !!!!!6
+	dc.w	6
 	dc.l	kbd_dk-*
 
-;	 dc.w	 ldm.kbdt,0,34		  ; Spain
-;	 dc.w	 0
-;	 dc.l	 kbd_esp-*
+	dc.w	ldm.kbdt,0,34		 ; Spanish
+	dc.w	0
+	dc.l	kbd_esp-*
 
 kbd_eng dc.w	44
 	dc.w	kbde_tab-*,kbd_nsid-*-2
@@ -86,7 +87,7 @@ kbd_fra dc.w	33
 ;	 dc.w	 kbdn_tab-*,kbd_nsid-*-2
 kbd_dk	dc.w	45
 	dc.w	kbdk_tab-*,kbd_nsid-*-2
-;kbd_esp dc.w	 34
-;	 dc.w	 kbes_tab-*,kbd_nsid-*-2
+kbd_esp dc.w	34
+	dc.w	kbdes_tab-*,kbdes_nsid-*-2
 
 	end

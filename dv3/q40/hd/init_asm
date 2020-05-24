@@ -1,6 +1,8 @@
-; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
+; DV3 Q40 IDE Initialisation  V3.02    1992  Tony Tebby
+;
+; WIN_CHECK,CARD_DIR$ added   v3.02   @ w. lenerz 2020
 ; Additions for LBA access    V3.01    W. Lenerz 2017 Nov 21
-
+;
 	section dv3
 
 	xdef	hd_init
@@ -182,6 +184,7 @@ hd_table
 
 	proc_thg {WIN Control}
 	fun40_thg {WIN Control}
+	fun_thg {WIN Control}
 
 win_use   proc	{USE }
 win_drive proc	{DRIV}
@@ -191,8 +194,12 @@ win_remv  proc	{REMV}
 win_wp	  proc	{WPRT}
 win_format proc {FRMT}
 win_slug  proc	{SLUG}
-
+win_check proc	{CHEK}
+card_crush proc {CRSH}
 win_drive$ fun40 {DRV$}
+card_dir$	move.l	#18*14,d7
+		bsr	fun_thg
+		dc.l	'CDIR'
 
 hd_proctab
 	proc_stt
@@ -204,9 +211,12 @@ hd_proctab
 	proc_ref WIN_WP
 	proc_ref WIN_FORMAT
 	proc_ref WIN_SLUG
+	proc_ref WIN_CHECK
+	proc_ref CARD_CRUSH
 	proc_end
 	proc_stt
 	proc_ref WIN_DRIVE$
+	proc_ref CARD_DIR$
 	proc_end
 
 

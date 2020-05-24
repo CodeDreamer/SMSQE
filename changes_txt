@@ -1,7 +1,163 @@
-  
+
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
+
+3.36
+
+    QLSD ALLOWS DIRECT QLWA FORMATTED CARDS (MK)
+	dv3_qlsd_banner_asm		.	new version date
+	dv3_qlsd_fpart_asm		1.02	allow direct QLWA format
+	dv3_qlsd_qlf_check_asm		3.01	only check for QLWA type files
+	dv3_qlsd_win_init_asm		1.02	new default filenames for WIN1..8
+	dv3_qlsd_respr_link		.	adapted to suit
+	dv3_qlsd_resprwq_link		.	    "    "   "
+	dv3_qlsd_rom_link		.	adapted to suit
+	dv3_qlsd_version_asm		.	    "    "   "
+
+
+    KEYBOARD HANDLING
+	smsq_kbd_ibm_german_asm 	1.02	CTRL+SHIFT+2 = arrow left (mk)
+	smsq_kbd_ibm_english_asm	1.01	CTRL+\ = arrow left (mk)
+	smsq_kbd_ibm_french_asm 	1.01	CTRL+SHIFT+\ = arrow left (wl)
+	smsq_kbd_ibm_Italian_asm	1.01	CTRL+SHIFT+\ = arrow left (wl)
+
+
+    BETTER HANDLING OF IOF.XINF (MK+wl)
+	dv3_qlf_check_asm		3.01	copy medium name with length word
+	dv3_qlf_check40_asm		3.04	same
+	dv3_qw1_check_asm		3.02	same
+	dv3_msd_check_asm		3.01	same
+	dv3_msd16_check_asm		3.02	same
+	dv3_dv3_io_asm			3.01	copy all of name
+	dv3_keys			.	ddf_mname moved, ddf_dtop increased, ddf.mnlen, ddl_rcnt introduced
+	dv3_dv3_format_asm		3.01	set correct name in drive defn block
+	dv3_qlf_ft5b_asm		3.01	changed for new ddf_mname format with size word
+	dv3_qlf_ftwa_asm		3.01	same
+	dv3_qxl_hd_mformat_asm		1.01	same
+	dv3_java_hd_mformat_asm 	1.01	same
+	dv3_qpc_hd_mformat_asm		1.01	same, also allow name for format
+
+
+    BUGIFXES
+	smsq_gold_hdop.asm		1.01	Set sys_klnk with keyboard linkage to fix KBD_TABLE (MK)
+	sbsext_ext_maint_asm		1.04	FDEL correctly implemented (wl)
+
+
+    MISC (wl)
+	keys_iod			.	added comment at iod_dnam
+	housecleaning			.	removed Q68 network stuff
+	.				.	removed dead iod2_con2_atmono stuff
+	.				.	removed dv3_msd32_ directory
+	.				.	removed iod_con2_java8_block_asm
+	.				.	removed extras_old_ directory
+	.				.	cleaned up SMSQEMake , del_all_bas
+	.				.	removed several unused files
+
+
+    Q68 KEYBOARD DELAY AND READ VIA INTERRUPTS (wl)
+	smsq_q68_driver_most_asm	1.01	check whether kbd read via interrutps is possible
+	smsq_q68_kbd_int_asm		1.00	kbd interrupt handler
+	smsq_q68_nasty_asm		1.01	get kbd delay and set at q68_dlay ($170d8)
+	smsq_q68_hwinit_asm		1.01	added kbd delay config item
+	smsq_q68_kbd_read_asm		1.01	use possible delay loop
+
+
+    Q68 MISC (wl)
+	smsq_q68_spp_thing_asm		1.13	use correct name for ser_par_prt thing, some branches made short (wl)
+	keys_q68			.	adapted for all changes in this version
+
+
+    Q68 BETTER CARD HANDLING (wl)
+	dv3_q68_sdhc_inicrd_asm 	1.03	wait up to 1 second if card busy
+	dv3_q68_sdhc_ckrdy_asm		1.01	if not ready, try to init card
+	dv3_q68_sdhc_hd_hold_asm	1.02	mark card as recently used
+	dv3_q68_sdhc_hd_poll_check_asm	1.01	clear card usage flags
+	dv3_q68_win_windrv_asm		1.02	no need to read card when setting drive via win_drive
+	dv3_q68_win_fpart_asm		1.01	better multiply (use MK's routine)
+	dv3_q68_win_card_xxxx_asm	1.01	1st byte of filename in dir =0 means empty slot+end of dir
+
+
+    Q40 BUGFIX AND NEW FAT32 CARD FEATURES (wl)
+	dv3_q40_hd_fpart_asm		3.04	fix for direct QLWA formatted CF card and 4 paritions  (wl)
+	dv3_q40_hd_chkwin_asm		1.00	WIN_CHECK keyword (new)
+	dv3_q40_hd_card_dir_asm 	1.00	CARD_DIR$ and CARD_CRUSH keywords (new)
+	dv3_q40_hd_init_asm		3.02	amended to suit
+	dv3_q40_hd_thing_asm		1.05	amended to suit
+
+
+    MISC
+	sys_sdp_link			.	use sbsext_utq_lib, not..sbsext_ut_lib (MK).
+
+
+    SMSQMULATOR (wl)
+	dv3_java_hd_ckrdy_asm		1.00	for HDD
+	dv3_java_hd_ckwp_asm		1.00	for HDD
+	dv3_java_hd_init_asm		1.00	   "
+	dv3_java_hd_lock_asm		1.00	   "
+	dv3_java_hd_mformat_asm 	1.00	   "
+	dv3_java_hd_rsect_asm		1.00	   "
+	dv3_java_hd_thing_asm		1.00	   "
+	dv3_java_hd_wsect_asm		1.00	   "
+
+	smsq_java_ctrl_init_asm 	1.01	internal changes
+	smsq_java_ctrl_thing_asm	1.02	amended to suit
+	keys_java			.	 "
+
+	smsq_java_driver_win_		.	dir created
+	smsq_java_driver_win_remv_asm	1.00	added, win drive may be removable
+	smsq_java_driver_nfa_cct	.	amended to suit
+	smsq_java_driver_win_init_asm	.	win_remv added
+	smsq_java_driver_nfa_trp2_asm	1.01	check for no more files open when closing
+
+	smsq_java_driver_dv3e_asm	1.01	check for swin
+	smsq_java_kbd_read_asm		1.03	read multiple chars from kbd at each poll loop
+
+
+    (SUPER) GOLDCARD  (MK)
+	sys_gold_boot_link		.	(no description)
+	sys_gold_boot			.	(no description)
+	sys_gold_cct			.	(no description)
+	sys_gold_date			.	(no description)
+	sys_gold_extr			.	(no description)
+	sys_gold_graph			.	(no description)
+	sys_gold_I2C			.	(no description)
+	sys_gold_keys			.	(no description)
+	sys_gold_mdv			.	(no description)
+	sys_gold_par			.	(no description)
+	sys_gold_patch			.	(no description)
+	sys_gold_patch_link		.	(no description)
+	sys_gold_pbasic 		.	(no description)
+	sys_gold_privv			.	(no description)
+	sys_gold_qlvers 		.	(no description)
+	sys_gold_refresh		.	(no description)
+	sys_gold_ser			.	(no description)
+	sys_gold_sgcnet 		.	(no description)
+	sys_gold_sgcp			.	(no description)
+	sys_gold_sgcp1			.	(no description)
+	sys_gold_sgcp2			.	(no description)
+	sys_gold_sgcp3			.	(no description)
+	sys_gold_trap1			.	(no description)
+	sys_gold_xbasic 		.	(no description)
+	sys_gold_sgcp0			.	(no description)
+	sys_gold_sgcpa4 		.	(no description)
+	dd_nd_gold_asm			1.01	adapted to changes in keys file
+
+
+    SPANISH KEYBOARD AND MESSAGES (MK)
+	smsq_gold_kbd_spanish_asm	.	new
+	smsq_kbd_ibm_spanish_asm	.	 "
+	smsq_kbd_ibm_spanish_asm	.	 "
+	smsq_kbd_ibm_base_asm		1.01	added Spanish tables
+	smsq_sbas_lang_asm		1.01	added Spanish tables
+	smsq_gold_kbd_lang_asm		.	amended to suit
+	smsq_gold_kbd_lang_asm		.	 "       "  "
+	smsq_kbd_ibm_cct		.	 "       "  "
+	smsq_smsq_lang_msgc_asm 	2.01	added Spanish messages
+	smsq_smsq_lang_msg8_asm 	2.01	added Spanish messages
+	smsq_smsq_lang_msg_asm		2.01	added Spanish messages
+
+-------------------------------------------------------------------------------
 
 3.35
 

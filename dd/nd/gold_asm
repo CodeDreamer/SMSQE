@@ -1,5 +1,5 @@
 ; Gold Card timing constants
-
+; 2020-04-09  1.01  adapt to changed keys in sys_gold_keys (wl)
 	section init
 
 	xdef	nd_gold
@@ -12,7 +12,7 @@
 
 nd_gold
 	lea	ndt_sgl,a1
-	tst.w	glk.time+sgx_ptch	 ; patch to 16 MHz?
+	tst.w	glk.card+glx_ptch	 ; patch to 16 MHz?
 	beq.s	ndg_init
 	lea	ndt_g16,a1
 

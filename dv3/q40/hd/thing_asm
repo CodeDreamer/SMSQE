@@ -1,9 +1,13 @@
 ; DV3 Standard Hard Disk Control Procedures   V1.03    1999   Tony Tebby
+;     win_chk xref'd                          V1.05   (wl) march 2020
 ; Q40 WIN_DRIVE may use name for QXL.WIN file V1.04    W. Lenerz 2017 Nov 21
+
 	section exten
 
 	xdef	hd_thing
 	xdef	hd_tname
+	xdef	hdt_doact
+	xdef	hd_byte
 
 	xref	thp_ostr
 	xref	thp_nrstr
@@ -14,6 +18,7 @@
 	xref	cv_locas
 	xref	gu_fclos
 	xref	gu_fopen
+	xref	win_chk
 
 	include 'dev8_keys_thg'
 	include 'dev8_keys_err'
@@ -22,6 +27,11 @@
 	include 'dev8_dv3_keys'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_dv3_hd_keys'
+
+
+
+hdt.reg reg	d1-d7/a0-a5   ; DON'T CHANGE THIS UNLESS IT IS ALSO CHANGED
+;!!!!			      ; IN dev8_dv3_q40_hd_chkwin_asm
 
 hd_4byte dc.w	thp.ubyt	 ; two compulsory unsigned byte
 	 dc.w	thp.ubyt
@@ -74,6 +84,7 @@ wd$.reg reg	d1/d2/d3/a1/a2/a3
 	movem.l wd$.reg,-(sp)
 	move.l	(a1)+,d3
 	beq.s	wd$_err
+	move.l	d3,d7
 	subq.l	#8,d3
 	bhi.s	wd$_err
 	move.l	4(a1),a1
@@ -94,6 +105,19 @@ wd$_do
 	move.b	d1,d0			 ; partition
 	bsr.s	wd$_0_19c
 wd$_set
+	lea	hdl_end-12-ddl_thing(a2),a2
+	mulu	#12,d7
+	add.w	d7,a2			; normalized name we're looking for
+	move.l	(a2)+,d0		; first part of file name
+	beq.s	wd$_end 		; none, drive is not on FAT xard
+	move.b	#' ',(a1)+		; for qx0, there were 5 chars (t,u,p)
+	move.l	d0,(a1)+
+	move.l	(a2)+,(a1)+
+	move.l	(a2),d0
+	move.b	#'.',d0
+	ror.l	#8,d0
+	move.l	d0,(a1)+
+wd$_end
 	exg	d2,a1
 	sub.l	a1,d2			 ; length
 	move.w	d2,-(a1)
@@ -123,7 +147,6 @@ wd$_sdig
 ; WIN_DRIVE n,t,u,p,name$
 ;---
 win_drive thg_extn {DRIV},win_start,hd_4byte
-hdt.reg reg	d1/d2/d3/d5/d6/d7/a0/a1/a2/a3
 
 	movem.l hdt.reg,-(sp)
 	bsr.l	hdt_doact		; call following code as device driver
@@ -132,7 +155,6 @@ hdt.reg reg	d1/d2/d3/d5/d6/d7/a0/a1/a2/a3
 	tst.b	ddf_nropen(a4)		; files open?
 	bne.s	hdt_inus
 	sf	ddf_mstat(a4)		; drive changed
-
 hdt_setd
 	lea	-ddl_thing(a2),a3	; get linkage
 	add.w	d7,a3			; table entry
@@ -155,6 +177,8 @@ hdt_rtok
 	moveq	#0,d0
 	rts
 set_name
+	andi.b	#3,d1			; here partitions are limited to 3
+	move.b	d1,hdl_part-1(a3)	; set partition
 	move.l	(a1),d0 		; pointer name
 	beq.s	hdt_rtok		; ... none
 	move.l	d0,a0			; pointer to name to normalise
@@ -165,21 +189,6 @@ set_name
 	add.w	d6,a1			; point to entry in table
 	jsr	norm_nm 		; normalise name
 	rts
-
-;	 bne.s	 wdrvout
-;	 add.l	 #'WIN0',d7
-;	 subq.l  #8,a7
-;	 move.l  a7,a0
-;	 moveq	 #5,d0
-;	 move.w  d0,(a0)+
-;	 move.l  d7,(a0)+
-;	 move.b  #'_',(a0)
-;	 move.l  a7,a0
-;	 moveq	 #ioa.kdir,d3
-;	 jsr	 gu_fopen		  ; try to open
-;	 addq.l  #8,a7
-;	 bne.s	 hdt_rtok
-;	 jmp	 gu_fclos
 
 
 hdt_inus
@@ -321,179 +330,8 @@ hdt_rok
 ;+++
 ; WIN_SLUG n
 ;---
-win_slug thg_extn {SLUG},crd_dir,hd_byte
+win_slug thg_extn {SLUG},win_chk,hd_byte
 	moveq	#0,d0
 out	rts
-
-
-crd_dir thg_extn {CDIR},,mdir
-
-	movem.l hdt.reg,-(a7)
-	bsr	hdt_doact		; this calls the following code in super mode
-	rts
-
-	end
-
-
-
-; Code is called as device driver, in supervisor mode with a3 pointing to device
-; definition block and a4 pointing to drive defn (if it exists)
-; on entry, condition code = Z if a drive definition is found, else NE
-;	d0 c	0 or error if no drive definition was found
-;	d7 c  p drive ID / number  (from 1 to 8)
-;	a1 c  p address of thing
-;	a3 c  p device driver linkage block
-
-	move.w	2(a1),d0		; buffer size
-	move.l	d0,d1
-	sub.w	#14*12,d1
-	blt	errbp			; not enough
-	move.l	#512,d0
-	bsr	get_rut
-	bne.s	out			; oops
-
-	move.l	4(a5),a4		; point to buffer
-	move.l	a4,a5
-	move.w	#16*14,(a4)+
-; I should now have the root dir at (a1)
-; read the first 16 entries in the root dir
-	moveq	#15,d1			; read first 16 entries in root dir
-	move.w	#$200a,d3		; space+lf
-	move.l	#$ff000000,d2
-	move.l	a1,a2			; point to start of dir
-loop1	move.l	a2,a3			; point start of dir entry
-	move.l	(a3)+,d0
-	rol.l	#8,d0
-	beq.s	empty
-	cmp.b	#$e5,d0
-	beq.s	empty
-	ror.l	#8,d0
-	move.l	d0,(a4)+
-	move.l	(a3)+,(a4)+
-	move.l	(a3),d0
-	cmp.b	#$0f,d0
-	beq.s	longname
-	move.b	#'.',d0 		; insert "." before the extension
-	ror.l	#8,d0
-	move.l	d0,(a4)+
-lp1	move.w	d3,(a4)+
-	add.w	#dos.drel,a2		; get next entry in the root dir
-	dbf	d1,loop1
-	clr.l	d0
-
-relmem	move.l	d0,d7			; keep possible error
-	move.l	a1,a0
-	moveq	#$19,d0 		; release mem
-	trap	#1
-	move.l	d7,d0
-exit	rts
-
-empty	lea	mty_str,a3
-cpy	move.l	(a3)+,(a4)+
-	move.l	(a3)+,(a4)+
-	move.l	(a3)+,(a4)+
-	bra.s	lp1
-longname
-	subq.l	#8,a4
-	lea	lname,a3
-	bra.s	cpy
-
-errbp	moveq	#err.ipar,d0
-errmem	addq.l	#4,a7
-	rts				; ooops
-
-get_rut move.l	d7,d2
-	subq.l	#1,d2
-	blt	errbp
-	cmp.w	#7,d2
-	bgt.s	errbp
-	jsr	gu_achpp
-	bne.s	errmem
-
-ok	move.l	a1,a5			; keep ptr to params
-
-memok	move.l	a0,a1			; ptr to mem space
-	lea	hdl_unit-1(a3),a2
-	move.b	d7,(a2) 		; pretend we're reading drive 0
-	moveq	#1,d2			; read one sector
-	clr.l	d0			; I want to read sector 0
-	clr.l	d7			; for this "drive"
-	move.l	ddf_dtop-4(a4),d6
-	clr.l	ddf_dtop-4(a4)
-	jsr	hdl_rsint(a3)		; read this sector
-	move.l	d6,ddf_dtop-4(a4)
-	tst.l	d0
-	bne.s	exit			; ooops card doesn't exist at all or
-					; isn't initialized
-	move.b	dos_vmbr(a1),d0 	; check for valid MBR
-	beq.s	hfp_mbr 		; seems to be ok so far
-	cmp.b	#$80,d0 		; and this could be an ok value, too
-	bne	mchkf			; ooops
-hfp_mbr cmp.w	#dos.ftcs,dos_ftcs(a1)	; marker present?
-	bne	mchkf			; no
-
-; I should now have the MBR at (a1)
-; get nbr of partition 1 sector - is in Intel format, so switch around
-	move.l	dos_prt1(a1),d0 	; partition start
-	xlong	d0			; as block (=512 bytes sector) number
-	move.l	d0,d4			; keep for later, start of partition
-	jsr	hdl_rsint(a3)		; read partition sector into (a1)
-	bne	out			; ooops
-	cmp.l	#'FAT3',dos_f32s(a1)	; check for FAT32 signature
-	bne	mchkf
-	cmp.b	#'2',dos_f32s+4(a1)	; continue check for FAT32 signature
-	bne	mchkf
-	cmp.b	#2,dos_sctl+1(a1)	; sector size =512 bytes?
-	bne	mchkf
-	tst.b	dos_sctl(a1)		; still 512 bytes?
-	bne	mchkf
-; I should now have what I can consider a valid fat32 partition
-; now find the root dir
-	clr.l	d3
-	move.b	dos_clst(a1),d3 	; cluster size (sectors per cluster)
-	beq	mchkf			; what??????
-	move.l	dos_bspf(a1),d0 	; '"big" sectors per fat
-	xlong	d0			; in big endian format
-	move.l	d0,d6			; keep : d6 = sectors per fat
-	move.l	d6,d2
-	clr.l	d5
-	move.b	dos_fats(a1),d5 	; nbr of fats
-	beq	mchkf			  ; what ????
-	subq.w	#2,d5			; dbf for primitive multiply
-	bgt	mchkf
-	blt.s	mul1ok			; we're done for this calculation
-mul1lp	add.l	d0,d6			; calculate nbr of fats * sectors per fat
-	dbf	d5,mul1lp		; at the end d6=old d6*d5
-mul1ok	add.l	d4,d6			; add start of partition
-	clr.l	d0
-	move.w	dos_ress(a1),d0
-	rol.w	#8,d0			; reserved sector count
-	add.l	d0,d6			; d6 + res sect count = data start
-	add.l	d0,d4			; D4 = start of fat
-
-	move.l	dos_rdir(a1),d1 	; root dir cluster
-	xlong	d1
-	subq.l	#2,d1			; always starts at 2 less!
-	move.l	d1,d0			; keep root dir cluster
-
-; another primitive multiply		; root dir cluster * sectors per cluster
-	move.w	d3,d5			; sectors per cluster, can't be  0
-	subq.w	#2,d5			;
-	blt.s	mul2ok			; done with multiplying
-mul2lp	add.l	d1,d0
-	dbf	d5,mul2lp		; at the end d0 = root dir sector
-mul2ok
-	add.l	d6,d0			; root dir start = data start + root dir sect
-	move.l	d0,d6
-	move.l	d2,d5
-	moveq	#1,d2
-	jsr	hdl_rsint(a3)		; read root dir 1st sector
-	move.l	d5,d2
-	tst.l	d0
-out	rts
-
-mty_str dc.l	'-- E','mpty',' -- '	     ;"-- Empty -- "
-lname	dc.l	'-Lon','g na','me- '
-
 
 	end

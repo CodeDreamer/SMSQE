@@ -1,4 +1,6 @@
 ; GOLD Card Hardware Operations
+;
+; 2020-04-09  1.01  Set sys_klnk with keyboard linkage to fix KBD_TABLE (MK)
 
 	section sms
 
@@ -61,6 +63,7 @@ hdop_init
 	moveq	#sms.xtop,d0		 ; supervisor mode
 	trap	#do.sms2
 
+	move.l	a3,sys_klnk(a6) 	 ; remember linkage for KBD_TABLE
 	move.l	sys_ckyq(a6),d0 	 ; extra keyboard init?
 	beq.s	hdop_ithg		 ; ... no
 	move.l	d0,a0			 ; ... yes, do it

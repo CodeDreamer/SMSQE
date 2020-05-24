@@ -1,8 +1,6 @@
-; DV3 java Hard Disk Write Sector  0.00    2014 W. Lenerz
+; DV3 java Hard Disk Write Sector  1.00     W. Lenerz 2020
 ; based on
-
 ; DV3 QXL Hard Disk Read Sector      1993     Tony Tebby
-; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 
 
 	section dv3
@@ -36,10 +34,14 @@ hd_wsint
 	bne.s	hdr_rts 		; ooops
 
 	move.l	d0,-(a7)
-	moveq	#jt8.wsec,d0
+	moveq	#jta.wsec,d0
 	dc.w	jva.trpa		; java side handles the rest, including setting the regs on return
+	addq.l	#4,a7
 	jmp	hd_release		; release (and set cc accoding to d0)
 
 hdr_rts rts
+
+
+
 
 	end

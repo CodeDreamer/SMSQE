@@ -1,5 +1,5 @@
 ; DV3 format routine (QDOS) entry	    V3.00	    1992 Tony Tebby
-
+; 2020-04-07   3.01  set correct name in drive defn block  (mk+wl)
 	section dv3
 
 	xdef	dv3_format
@@ -42,15 +42,6 @@ dqf_format
 	jsr	dv3_sbclr		 ; clear all slave blocks
 	bsr.l	dqf_flush
 
-	lea	ddf_mname+12(a4),a0	 ; set medium name
-	move.w	sys_rand(a6),-(a0)
-
-	moveq	#' ',d2
-	moveq	#9,d0
-dqf_nclr
-	move.b	d2,-(a0)		 ; preset name to spaces
-	dbra	d0,dqf_nclr
-
 	moveq	#0,d1			 ; assume no flag
 	moveq	#0,d4			 ; no heads specified
 	st	ddf_density(a4) 	 ; and default density
@@ -79,9 +70,13 @@ dqf_ss
 	moveq	#1,d4
 
 dqf_sname
-	cmp.b	#10,d3
-	bls.s	dqf_snlend		 ; 10 or fewer characters
-	moveq	#9,d3
+	lea	ddf_mname(a4),a0	 ; set medium name
+	cmp.b	#ddf.mnlen,d3
+	ble.s	dqf_nlen		 ; 20 or fewer characters
+	moveq	#ddf.mnlen,d3
+dqf_nlen
+	move.w	d3,(a0)+
+	bra.s	dqf_snlend
 dqf_snloop
 	move.b	(a1)+,(a0)+		 ; set the name
 dqf_snlend

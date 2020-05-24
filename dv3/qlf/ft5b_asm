@@ -1,4 +1,6 @@
 ; DV3 QL5B Format	      V3.00	      1992 Tony Tebby
+;
+; 2020-04-07  3.01  Changed for new ddf_mname format with size word (MK)
 
 	section dv3
 
@@ -6,6 +8,7 @@
 
 	include 'dev8_dv3_keys'
 	include 'dev8_dv3_qlf_keys'
+	include 'dev8_keys_sys'
 	include 'dev8_keys_ql5b'
 	include 'dev8_keys_err'
 	include 'dev8_keys_hdr'
@@ -145,10 +148,11 @@ qfm_cklend
 	assert	0,q5a_id,q5a_mnam-4,q5a_rand-$e,q5a_mupd-$10
 	move.w	#q5a.id>>16,(a2)+	 ; ID MSW
 	move.w	(a5)+,(a2)+		 ; ... LSW
-	lea	ddf_mname(a4),a1
-	move.l	(a1)+,(a2)+		 ; copy name and rand
+	lea	ddf_mname+2(a4),a1
+	move.l	(a1)+,(a2)+		 ; copy name
 	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
+	move.w	(a1)+,(a2)+
+	move.w	sys_rand(a6),(a2)+	 ; random number
 	clr.l	(a2)+			 ; clear update
 
 	assert	q5a_mupd,q5a_free-4,q5a_good-6,q5a_totl-8

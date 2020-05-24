@@ -1,8 +1,6 @@
-; DV3 java Hard Disk Read Sector  0.00	  2014 W. Lenerz
-; based on
+; DV3 java Hard Disk Read Sector  1.00	  2014 W. Lenerz
 
 ; DV3 QXL Hard Disk Read Sector      1993     Tony Tebby
-; 2006.10.20	1.01	BLAT macro definitions commented out - macro wasn't used (wl)
 
 
 	section dv3
@@ -35,9 +33,10 @@ hd_rsint
 	jsr	hd_hold 		; hold
 	bne.s	hdr_rts
 
-	move.l	d0,-(a7)
-	moveq	#jt8.rsec,d0
+	move.l	d0,-(a7)		; will be popped up in java
+	moveq	#jta.rsec,d0
 	dc.w	jva.trpa		; java side handles the rest, including setting the regs on return
+	addq.l	#4,a7
 	jmp	hd_release		; release
 
 hdr_rts rts

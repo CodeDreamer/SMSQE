@@ -1,4 +1,6 @@
-; DV3 QLWA Format	      V3.00	      1992 Tony Tebby
+; DV3 QLWA Format	      V3.01	      1992 Tony Tebby
+;
+; 2020-04-07  3.01  Changed for new ddf_mname format with size word (MK)
 
 	section dv3
 
@@ -129,27 +131,27 @@ qfm_lkle
 	blo.s	qfm_lklp
 
 ; group map is set up, set the header
-
-	move.l	#'    ',d0
-	lea	ddf_mname+10(a4),a2	 ; find end of name
-	moveq	#9,d5
-qfm_nmlen
-	cmp.b	-(a2),d0
-	dbne	d5,qfm_nmlen
-	addq.w	#1,d5
-
 	lea	qdf_map(a4),a2		 ; fill in header
 	assert	0,qwa_id,qwa_name-4,qwa_spr0-$1a,qwa_uchk-$1c
 	move.l	#qwa.id,(a2)+		 ; ID
-	move.w	d5,(a2)+		 ; name length
 	lea	ddf_mname(a4),a1
-	move.w	(a1)+,(a2)+		 ; copy name
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	d0,(a2)+		 ; pad with spaces
-	move.l	d0,(a2)+
-	move.w	d0,(a2)+
-	clr.w	(a2)+
+	move.w	(a1)+,d5
+	move.w	d5,(a2)+		 ; name length
+	bra.s	qfm_cpy_start
+qfm_cpy_name
+	move.b	(a1)+,(a2)+
+qfm_cpy_start
+	dbf	d5,qfm_cpy_name
+
+	lea	qdf_map+qwa_spr0(a4),a1  ; fill up to here with spaces
+qfm_name_fill
+	cmp.l	a2,a1
+	beq.s	qfm_name_done
+	move.b	#' ',(a2)+
+	bra.s	qfm_name_fill
+
+qfm_name_done
+	clr.w	(a2)+			 ; 2 spare bytes
 	move.w	sys_rand(a6),(a2)+	 ; msw update
 	clr.w	(a2)+			 ; clear lsw update
 

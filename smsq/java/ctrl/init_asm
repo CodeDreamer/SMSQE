@@ -1,4 +1,5 @@
 ; SMSQMuator control thing  copyright (c) w. Lenerz 2017
+; v. 1.02 added logon, logoff
 ; v. 1.01 added jva_minimize
 
 
@@ -16,6 +17,9 @@
 
 	xdef	ctrl_init
 	xdef	old_add
+
+	xdef	wl_od
+
 	xref	gu_achpp
 	xref	ctrl_thing
 	xref	ctrl_tname
@@ -23,7 +27,11 @@
 	xref	gu_thjmp
 
 
-ctrl_vers equ	'1.01'
+wl_od	dc.w	thp.ubyt+thp.opt+thp.call
+	 dc.w	 0
+
+
+ctrl_vers equ	'1.02'
 
 ctrl_init
 	lea	ctrl_tname,a0		; thing
@@ -137,6 +145,8 @@ jvannam move.l	#256,d7
 jvaaddr move.l	#256,d7
 	bsr	fun_thg
 	dc.l	'HADD'
+jvalon	proc	{LON }
+jvaloff proc	{LOFF}
 
 ; create the keywords
 proctab
@@ -165,6 +175,8 @@ proctab
 	proc_ref EMU_SYNCSCRAP , jvasync
 	proc_ref JVA_SYNCSCRAP_STOP , jvasstp
 	proc_ref EMU_SYNCSCRAP_STOP , jvasstp
+	proc_ref JVA_LOGON , jvalon
+	proc_ref JVA_LOGOFF , jvaloff
 	proc_end
 	proc_stt
 	proc_ref JVA_NETNAME$ , jvannam

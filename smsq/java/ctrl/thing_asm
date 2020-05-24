@@ -1,6 +1,7 @@
-; SMSQmulator Control Procedures   V1.00    2017 W. Lenerz
+; SMSQmulator Control Procedures   V1.02    2017 W. Lenerz
 ; contains the extensions
-; MBAR, VER$, WTIT,NNAM,PPUP, TMRS,TMRG
+; MBAR, VER$, WTIT,NNAM,PPUP, TMRS,TMRG and dsome more
+; 1.02 LOG added
 ; 1.01 JVA_MINIMIZE added
 	section exten
 
@@ -9,6 +10,7 @@
 
 	xref	thp_ostr
 	xref	thp_nul
+	xref	wl_od
 	xref	thp_wd
 	xref	thp_str
 	xref	thp_rstr
@@ -17,10 +19,12 @@
 	include 'dev8_keys_thg'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_java'
+	include 'dev8_keys_psf'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_err'
 	include 'dev8_mac_thg'
 	include 'dev8_mac_assert'
+	include 'dev8_smsq_smsq_base_keys'
 
 
 hd_byte dc.w	thp.ubyt,0
@@ -43,10 +47,8 @@ jth_rwrd dc.w	thp.ret+thp.uwrd
 
 jth_rlng dc.w	thp.ret+thp.ulng
 	 dc.w	0
-
-
-qpc_rword dc.w thp.ret+thp.uwrd
-qpc_null  dc.w 0
+jth_log  dc.w	 thp.ubyt+thp.opt
+	 dc.w	 0
 
 ;+++
 ; Thing NAME
@@ -224,9 +226,54 @@ jt_mbst thg_extn {MBST},jt_exit,jth_rwrd
 ; No parameter.
 ; Quits the emulation.
 ;---
-jt_exit thg_extn {EXIT},jt_qlfp,thp_nul
+jt_exit thg_extn {EXIT},jt_lgon,thp_nul
 	moveq	#jt5.exit,d0
 	bra.s	do_tp5
 
-	
+
+;+++
+; JVA_LOGON/LOGOFF
+; No parameter.
+; switches logging on/off
+;---
+
+jt_lgon thg_extn {LON },jt_loff,jth_log
+	bra.s	lg_exit
+	move.l	jva_lkptr,d0
+	beq.s	lg_exit
+	move.l	d0,a3
+	move.l	jva_kbrd(a3),d0
+	beq.s	lg_exit
+	lea	int3,a3
+	move.l	a3,$6c
+	moveq	#jte.lon,d0
+do_trpE dc.w	jva.trpE
+lg_exit moveq	#0,d0
+	rts
+
+jt_loff thg_extn {LOFF},jt_qlfp,thp_nul
+	bra.s	lg_exit
+	lea	endrt,a1
+	move.l	a1,$6c
+	moveq	#jte.loff,d0
+	bra.s	do_trpE
+
+int3
+	movem.l psf.reg,-(sp)		 ; save main working registers
+	movem.l psf.oreg,-(a7)
+	move.l	sms.sysb,a6		 ; system variable base
+shd_poll
+
+	move.l	jva_lkptr,d0
+	beq.s	int3out
+	move.l	d0,a5
+	move.l	jva_kbrd(a5),d0
+	beq.s	int3out
+	move.l	d0,a5
+	jsr	(a5)
+int3out
+	movem.l (a7)+,psf.oreg
+	movem.l (sp)+,psf.reg		restore registers
+endrt	rte
+
 	end

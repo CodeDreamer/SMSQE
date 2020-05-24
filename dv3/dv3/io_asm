@@ -1,4 +1,6 @@
-; DV3 IO routines		V3.00	        1992 Tony Tebby
+; DV3 IO routines		V3.01	        1992 Tony Tebby
+;
+; 2020-03-07  3.01  Modifications for correct medium name (xinf call) (MK+wl)
 
 	section dv3
 
@@ -121,8 +123,7 @@ io_tab
 dv3_minf
 io_minf
 	jsr	ddf_rsinfo(a4)		 ; update information
-
-	lea	ddf_mname(a4),a2	 ; medium name
+	lea	ddf_mname+2(a4),a2	 ; medium name, point past length word
 	move.l	(a2)+,(a1)+
 	move.l	(a2)+,(a1)+
 	move.w	(a2)+,(a1)+
@@ -150,7 +151,7 @@ ioi_sallc
 
 dv3_xinf
 io_xinf
-ioi.reg reg	d1/a0
+ioi.reg reg	d1/a0/d3/a5
 	movem.l ioi.reg,-(sp)
 	jsr	ddf_rsinfo(a4)		 ; set occupancy information
 	lea	ioi.blkl(a1),a0 	 ; pre-fill information block
@@ -180,6 +181,7 @@ ioi_pre
 	move.b	ddf_wprot(a4),-(a0)	 ; set read only
 	move.b	ddf_dnum(a4),-(a0)	 ; set drive number
 
+	assert	ioi_dnam,ioi_dnum-6
 	clr.l	-(a0)			 ; null the drive name
 	lea	ddl_dname(a3),a2
 	move.w	(a2)+,-(a0)		 ; name length
@@ -191,33 +193,20 @@ ioi_cdnm
 
 	lea	ioi_dnam(a1),a0 	 ; set medium name to zeros
 	assert	ioi_dnam-(ioi_name+2),20 ; max number of characters
-	clr.l	-(a0)
-	clr.l	-(a0)
-	clr.w	-(a0)			 ; clear last ten characters
+	moveq	#ddf.mnlen/2,d3 	 ; clear name + len word
+ioi_clr clr.w	-(a0)
+	dbf	d3,ioi_clr		; a2 = ioi_dnam afterwards
 
-	lea	ddf_mname+10(a4),a2
-	moveq	#0,d1			 ; actual name length
-	moveq	#10,d3			 ; max name length
-ioi_cmnl
-	move.b	-(a2),-(a0)
-	cmp.b	#' ',(a0)		 ; space
-	bne.s	ioi_smle		 ; ... no
-	clr.b	(a0)
-	subq.w	#1,d3
-	bgt.s	ioi_cmnl
-	bra.s	ioi_nmln
+	lea	ddf_mname(a4),a2	; medium (not device) name
+	move.w	(a2)+,d1		; length
+	move.w	d1,(a0)+
+	bra.s	ioi_lp
+ioi_cpy move.b	(a2)+,(a0)+		; copy name accross
+ioi_lp	dbf	d1,ioi_cpy
 
-ioi_smnl
-	move.b	-(a2),-(a0)		 ; copy characters
-ioi_smle
-	addq.w	#1,d1			 ; one more char
-	subq.w	#1,d3
-	bgt.s	ioi_smnl
-
-ioi_nmln
-	move.w	d1,-(a0)		 ; name length
-	movem.l (sp)+,ioi.reg		 ; restore regs
+	movem.l (sp)+,ioi.reg		; restore regs
 	rts
+
 
 ; set/read date
 

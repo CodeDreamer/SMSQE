@@ -1,6 +1,6 @@
-
 ; DV3 Q40 Find Partition (Atari root)	     1999  Tony Tebby
 
+; 2020-03-24  V3.04 fix for direct QLWA formatted CF cards, can use other partitions on FAT32 cards (wl)
 ; 2018-02-06  V3.03 fix for *d2d access to fat16 CF cards (wl)
 ; 2017-11-21  V3.02 LBA access to QXL.WIN files on FAT32 formatted media (wl)
 ; 2003-01-17  V3.01 Fixed the ICD extension (8 additional partitions in table)
@@ -55,7 +55,9 @@ hfp_rootloop
 	bne	hfp_mchk
 	jsr	hdl_rsint(a3)		; read sector
 	bne	hfp_npart		; no partition
-
+	lsl.w	#4,d4
+	add.w	#dos_prt1,d4
+	move.l	(a1,d4.w),d0		; partition start
 	cmp.w	#dos.ftcs,dos_ftcs(a1)	; (unswapped) FAT32 marker present?
 	beq	chk_fat32_normal	; ... yes
 	cmp.w	#dos.ftsw,dos_ftcs(a1)	; (swapped) FAT32 marker present?
@@ -71,7 +73,7 @@ hfp_atri
 
 ; here we hve a byte-swapped Atari type root partition
 ; swap the bytes back
-hfp_lpart
+swp_sct
 	move.l	a1,a2
 	moveq	#127,d2 		; 512 bytes in long words - DBF
 swp_lp	move.l	(a2),d0
@@ -81,7 +83,10 @@ swp_lp	move.l	(a2),d0
 	swap	d0
 	move.l	d0,(a2)+
 	dbf	d2,swp_lp
+	rts
 
+hfp_lpart
+	bsr.s	swp_sct 		; swap bytes
 hfp_lpart2
 	st	ddf_lba(a4)		; this is NOT an LBA drive, but CHS
 	lea	art_p0(a1),a1		; look from partition 0
@@ -91,42 +96,42 @@ hfp_lpart2
 
 hfp_partloop
 	move.l	d1,d0
-	and.l	art_pflg(a1),d0 	 ; partition flag
-	cmp.l	d5,d0			 ; extended?
+	and.l	art_pflg(a1),d0 	; partition flag
+	cmp.l	d5,d0			; extended?
 	beq.s	hfp_xlink
-	subq.b	#1,d4			 ; partition found
+	subq.b	#1,d4			; partition found
 	blt.s	hfp_found
 	add.w	#art.plen,a1
-	subq.w	#1,d2			 ; extended group yet?
+	subq.w	#1,d2			; extended group yet?
 	bne.s	hfp_partloop
-	tst.l	d2			 ; all tried?
-	bne.s	hfp_root		 ; was: beq.s	hfp_root		 ;
+	tst.l	d2			; all tried?
+	bne.s	hfp_root		 ; was: beq.s	hfp_root
 	moveq	#-8,d2
-	neg.w	d2			 ; try eight more
+	neg.w	d2			; try eight more
 	lea	art_pext-art_p0-4*art.plen(a1),a1 ; (JG: this should work now!)
 	bra.s	hfp_partloop
 
 hfp_xlink
 	move.l	d6,d3
-	add.l	art_pstt(a1),d3 	 ; new root
-	tst.l	d6			 ; first partition yet?
+	add.l	art_pstt(a1),d3 	; new root
+	tst.l	d6			; first partition yet?
 	bne	hfp_rootloop
-	move.l	d3,d6			 ; ... yes, save base of first
+	move.l	d3,d6			; ... yes, save base of first
 	bra	hfp_rootloop
 
 hfp_found
-	btst	#art.pval+24,d0 	 ; partition valid?
+	btst	#art.pval+24,d0 	; partition valid?
 	beq.s	hfp_mchk
 
-	move.l	art_psiz(a1),d2 	 ; size of partition
-	add.l	art_pstt(a1),d3 	 ; root sector for partition
-	move.l	d0,d4			 ; partition ID
+	move.l	art_psiz(a1),d2 	; size of partition
+	add.l	art_pstt(a1),d3 	; root sector for partition
+	move.l	d0,d4			; partition ID
 hfp_ok
 	move.l	d3,d0
 	jsr	id_diradd
-	move.l	d0,d1			 ; physical root sector
+	move.l	d0,d1			; physical root sector
 	moveq	#0,d0
-	move.b	d0,hdl_npart(a3)	 ; partition found
+	move.b	d0,hdl_npart(a3)	; partition found
 
 hfp_exit
 	movem.l (sp)+,hfp.reg
@@ -135,30 +140,34 @@ hfp_fnf
 hfp_mchk
 	moveq	#err.mchk,d0
 hfp_npart
-	st	hdl_npart(a3)		 ; set no partition found
+	st	hdl_npart(a3)		; set no partition found
 	bra.s	hfp_exit
 
 hfp_root
-	moveq	#-1,d2			 ; size unknown
-	move.l	#art.qflg,d4		 ; for QDOS disk
+	st	ddf_lba(a4)		; this is NOT an LBA drive, but CHS
+	cmp.l	#'LQAW',(a1)		; swapped?
+	bne.s	noswp
+	bsr	swp_sct 		; re-swap
+noswp	moveq	#-1,d2			; size unknown
+	move.l	#art.qflg,d4		; for QDOS disk
 	bra.s	hfp_ok
+
 
 ; if we get here, we have a fat32 drive (possibly)
 ; the bytes in each word are (normally) still the wrong way round
-chk_fat32_switched			; bytes were switchedn swa only words
-	move.l	dos_prt1(a1),d0 	; partition start
+
+chk_fat32_switched			; bytes were switched, swap only words
 	swap	d0
 	bra.s	common
 
 chk_fat32_normal			; bytes not switched, swap bytes & words
-	move.l	dos_prt1(a1),d0 	; partition start
 	xlong	d0
 common
 	sf	ddf_lba(a4)		; use LBA & switch bytes
-	moveq	#1,d2			; read 1 sector
-	move.l	d0,d5			; keep for later, start of partition
+	move.l	d0,d4			; keep for later, start of partition
 	jsr	hdl_rsint(a3)		; read partition root sector into (a1)
 	bne	nofat32 		; ooops
+
 ; I  should now have the partition root sector at (a1)
 	cmp.l	#'FAT3',dos_f32s(a1)	; check for FAT32 signature
 	bne	nofat32 		; ... nope
@@ -168,25 +177,26 @@ common
 	bne.s	hfp_fnf 		; I can't handle anything else
 	tst.b	dos_sctl(a1)		; still 512 bytes?
 	bne.s	hfp_fnf 		; ... no
-	move.l	d5,d4			; needs to be here
 
 ; Here I should have what I can consider a valid fat32 partition.
 ; Now find the root dir.
 	clr.l	d3
 	move.b	dos_clst(a1),d3 	; cluster size (sectors per cluster)
-	beq.s	hfp_fnf 		; what??????
-	move.l	dos_bspf(a1),d0 	; "big" sectors per fat
-	xlong	d0			; in big endian format
-	move.l	d0,d6			; keep : d6 = sectors per fat
-	clr.l	d5
+	beq	hfp_fnf 		; what??????
+	moveq	#0,d5
 	move.b	dos_fats(a1),d5 	; nbr of fats
 	beq	hfp_fnf 		; what ????
-	subq.w	#2,d5			; dbf for primitive multiply
-	bgt	hfp_fnf
-	blt.s	mul1ok			; we're done for this calculation
-mul1lp	add.l	d0,d6			; calculate nbr of fats * sectors per fat
-	dbf	d5,mul1lp		; at the end d6=old d6*d5
-mul1ok	add.l	d4,d6			; add start of partition
+	move.l	dos_bspf(a1),d0 	; "big" sectors per fat
+	xlong	d0			; in big endian format
+	move.l	d0,d6			; d6 = also sectors per fat
+					; now use MK's multiply routine
+	mulu	d5,d6			; lower 16 bit * number of fats
+	swap	d0
+	mulu	d5,d0			; upper 16 bit * number of fats
+	swap	d0
+	add.l	d0,d6			; combine
+	add.l	d4,d6			; add start of partition
+
 	clr.l	d0
 	move.w	dos_ress(a1),d0
 	rol.w	#8,d0			; res sector count
@@ -195,15 +205,15 @@ mul1ok	add.l	d4,d6			; add start of partition
 	move.l	dos_rdir(a1),d1 	; root dir cluster
 	xlong	d1
 	subq.l	#2,d1			; always starts at 2 less!
-	move.l	d1,d0			; keep root dir cluster
 
-; another primitive multiply		; root dir cluster * sectors per cluster
-	move.w	d3,d5			; sectors per cluster, can't be  0
-	subq.w	#2,d5			;
-	blt.s	mul2ok			; done with multiplying
-mul2lp	add.l	d1,d0
-	dbf	d5,mul2lp		; at the end d0 = root dir sector
-mul2ok
+; root dir cluster * sectors per cluster (MK)
+	move.l	d1,d0			; keep root dir cluster
+	mulu	d3,d1			; lower 16 bit * sectors per cluster
+	swap	d0
+	mulu	d3,d0			; upper 16 bit * sectors per cluster
+	swap	d0
+	add.l	d1,d0			; combine
+
 	add.l	d6,d0			; root dir start = data start + root dir sect
 	jsr	hdl_rsint(a3)		; read root dir 1st sector
 	bne	hfp_fnf
@@ -214,13 +224,12 @@ mul2ok
 	moveq	#0,d0
 	move.w	d7,d0
 	mulu	#12,d0
-	add.w	d0,a2			; normalized name we're looking for
-	move.l	a2,d0			; keep
+	add.l	a2,d0			; normalized name we're looking for
 	move.l	a3,d5			; keep linkage block
-	move.l	a1,a3			; point to start of dir
 	move.l	a1,a0			; also point to start of dir
 srchlp1 move.l	d0,a2			; point to my name (again)
-not_fnd cmp.l	(a2)+,(a3)+		; name matches?
+	move.l	a0,a3
+	cmp.l	(a2)+,(a3)+		; name matches?
 	bne.s	nxtsrch 		; no
 	cmp.l	(a2)+,(a3)+
 	bne.s	nxtsrch
@@ -230,27 +239,30 @@ not_fnd cmp.l	(a2)+,(a3)+		; name matches?
 	beq.s	found			; yes
 
 nxtsrch add.w	#dos.drel,a0		; get next entry in the root dir
-	move.l	a0,a3
 fndlp	dbf	d1,srchlp1
 	bra	hfp_fnf 		; if we get here, file wasn't found
 
 ; here the dir entry for the image file is found at (a0), get to 1st sector of it
 found
-	move.l	dos_flen(a0),d2 	; totally wrong "partition" length
+	move.l	dos_flen(a0),d2 	; filesize = "partition length"
 	xlong	d2
 	move.w	$14(a0),d0		; high word of 1st cluster of file
 	rol.w	#8,d0
 	swap	d0
 	move.w	$1a(a0),d1		; low word of 1st cluster of file
-	rol.w	#8,d1
+	rol.w	#8,d1			;
 	move.w	d1,d0			; d0 = 1rst cluster of file
-	subq.l	#2,d0			; !!! -2 !!!
+
+	subq.l	#2,d0			; First data cluster is cluster 2
+
 	move.l	d0,d1			; keep for multiply
-	subq.w	#2,d3			; sectors per cluster
-	blt.s	mul3ok
-mul3lp	add.l	d0,d1
-	dbf	d3,mul3lp
-mul3ok	add.l	d6,d1			; d6 = start sector of my qxl.win file
+	mulu	d3,d1			; lower 16 bit * sectors per cluster
+	swap	d0
+	mulu	d3,d0			; upper 16 bit * sectors per cluster
+	swap	d0
+	add.l	d0,d1			; combine
+	add.l	d6,d1			; d1 = start sector of my qxl.win file
+
 	move.l	d5,a3			; get my pointer back
 
 ; D1 is the start position of my container, as a sector number ( one sector =
@@ -258,7 +270,8 @@ mul3ok	add.l	d6,d1			; d6 = start sector of my qxl.win file
 ; contiguous sectors from there on. (Perhaps in later versions it needn't be).
 ;
 ; For LBA drives, the partition offset in ddf_psoff is set to 0 and the real
-; offset is kept at ddt_dtop-4 - except in this file here, this
+; offset is kept at ddt_dtop-4 -
+
 	move.l	d1,ddf_dtop-4(a4)
 	moveq	#0,d1			; will go into ddf_psoff
 	moveq	#-1,d2			; partition length unknown

@@ -1,4 +1,4 @@
-; DV3 JAVA Hard Disk Check Write Protect  V1.00 @ W. Lenerz 2014
+; DV3 JAVA HDD Check Write Protect  V1.00 @ W. Lenerz 2014
 ; based on
 ; DV3 QXL Hard Disk Check Write Protect  V3.00	 1993	 Tony Tebby
 
@@ -23,7 +23,7 @@
 ;
 ;---
 hd_ckwp
-	moveq	#jt8.ckwp,d0			; is disk write protected?
+	moveq	#jta.ckwp,d0			; is disk write protected?
 	dc.w	jva.trpa			; return NZ if write proted
 	sne	ddf_wprot(a4)
 hdwp_exit

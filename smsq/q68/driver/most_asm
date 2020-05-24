@@ -1,4 +1,5 @@
 ; base area SMSQ Q68 Drivers   0.00 (C) W. Lenerz 2016
+; 2020-03-27	1.01	check whether kbd read via interrutps is possible
 
 	section header
 
@@ -27,7 +28,9 @@ smsq_name
 	xref	q68_int2
 	xref	q68_int2h
 
+	xref	kbd_initiq68
 	xref	kbd_initi
+	xref	kbd_intr
 	xref	mse_init
 	xref	dev_init
 	xref	nul_init
@@ -60,32 +63,35 @@ gl_most
 iou_dirshr dc.w 0	; shared directories supported	(RAM disk)
 
 	section init
-
 start
 	jsr	ssss_init
-	jsr	kbd_initi
-	jsr	mse_init
 	jsr	dev_init
 	jsr	nul_init
 	jsr	pipe_init
 	jsr	rd_init
 	jsr	iob_init
 	jsr	history_init
-	jsr	q68_spp_init
+
+; now the interrupt handlers, try to order them so that the one that will
+; probably called the most (mouse, as it generates several interrupts per
+; move) is called first. This means that it should be linked in last.
+	jsr	q68_spp_init		; serial port,	will be last interrupts called
+	st	kbd_status		; try  to use interrupts for keyboard
+	move.b	kbd_status,d0
+	btst	#7,d0			; can I use interrupts for keyboard?
+	beq.s	no_intr 		;   ... no
+	jsr	kbd_initi		;   ... yes, so generic smsq kbd queue poll
+	jsr	kbd_intr		;	and set up kbd read via interrupt
+	bra.s	common
+no_intr jsr	kbd_initiq68		; both kbd fetch and read queue via poll
+common	jsr	mse_init
+
 sys_init
 ; When we have linked in the interrupt servers, we can enable the interrupts
 
 	moveq	#sms.xtop,d0
 	trap	#do.sms2
 	clr.w	psf_sr(a5)		; we can clear interrupts on return
-;	 move.l  sys_clnk(a6),d0	 ; get kbd/pointer linkage
-;	 beq.s	 new			 ; there is none?! ->
-;	 move.l  d0,a1			 ; keep
-;	 st	 pt_xicnt(a1)
-;	 move.w  #200,pt_xinc(a1)
-;	 move.w  #200,pt_yinc(a1)
-;	 move.w  #200,pt_xicnt(a1)
-;	 move.l  #-1,pt_npos(a1)
 
 mmreg	reg	d1/a1/a2
 new	movem.l mmreg,-(a7)

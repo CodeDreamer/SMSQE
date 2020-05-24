@@ -1,5 +1,6 @@
-; QLSD init code 1.01				 W. Lenerz + M. Kilgus 2018
+; QLSD init code 1.02				 W. Lenerz + M. Kilgus 2018
 ;
+; 2020-04-05  1.02  Removed CARD_INIT (wl)
 ; 2018-29-05  1.01  Output the recognised hardware revison (MK)
 
 	section init
@@ -101,7 +102,6 @@ write_msg
 	jmp	(a2)
 procs
 	proc_stt
-	proc_def CARD_INIT
 	proc_def WIN_DRIVE
 	proc_def WIN_USE
 	proc_def WIN_CHECK

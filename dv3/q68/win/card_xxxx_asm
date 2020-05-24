@@ -1,12 +1,11 @@
-
-; Q68 the CARD_xxxx keywords, except card_init	1.00. Copyright (c) W. Lenerz 2016
-
+; Q68 the CARD_xxxx keywords, except card_init	1.01. Copyright (c) W. Lenerz 2016
+; 2020-04-12   1.01  1st byte of filename in dir =0 means empty slot+end of dir (wl)
 	section exten
 
 	xdef	crd_renm
 	xdef	get_rut2
 
-	xref	hdt_doact		; cause follwoing code to exec as device driver (in windrv_asm)
+	xref	hdt_doact		; cause following code to exec as device driver (in windrv_asm)
 	xref	hd_byte 		; (windrv_asm), thing parameter
 	xref	gu_achpp
 	xref	gu_rchp
@@ -44,18 +43,7 @@ creat	 dc.w	thp.ubyt	 ; drive
 	 dc.w	thp.uwrd	 ; size (in MiB)
 	 dc.w	thp.call+thp.str ; string
 	 dc.w	0
-
-mchkf4	addq.l	#4,a7
-mchkf	moveq	#err.mchk,d0
-	bra.s	rel_mem
-errnf	moveq	#err.itnf,d0		; old name wasn't found
-rel_mem move.l	a1,a0
-	jmp	gu_rchp
-
-errp2	addq.l	#4,a7
-errbp	moveq	#err.ipar,d0
-exit2	rts
-
+  
 
 ;************************** Extention thing routine
 ;
@@ -79,28 +67,28 @@ crd_renm thg_extn {CREN},crd_dir,crdren
 ;	a1 c  p address of thing
 ;	a3 c  p device driver linkage block
 
-	move.l	a1,a5			; keep parameter pointer
-	move.l	#512+24,d0		; reserve mem read buffer + 2 * name
-	bsr.s	get_rut
-	bne.s	exit2
-	move.l	a1,a2
+	move.l	#512+24,d0		; res. mem read buffer + 2x name into A1
+	bsr.s	get_rut 		; get root dir sect into (a1)
+	bne.s	exit			; (keeps old a1 in a5)
+	move.l	a1,a2			; keep mem pointer
+
 ; normalise old name
-	move.l	4(a5),a0		; pointer to smsqe name  (old)
+	move.l	4(a5),a0		; pointer to smsqe name (old)
 	lea	512(a2),a1		; space for normalised name  (old)
 	move.l	a1,a4			; keep this
 	bsr	norm_nm 		; normalise name into (a1)
-	bne.s	rel_mem 		; ooops
+	move.l	a2,a1			; in case of error
+	bne.s	rel_a1			; ooops
 
 ; normalise new name
 	move.l	12(a5),a0		; new smsqe name
 	lea	12(a4),a1		; space for normalized new name
 	move.l	a1,a5			; keep ptr to normalized new name
 	bsr	norm_nm 		; normalise name into (a1)
-	bne.s	rel_mem
+	move.l	a2,a1
+	bne.s	rel_a1
 
-	move.l	a2,a1			; pointer to mem space
-
-; a1	  pointer to memspace
+; a1	  pointer to memspace with 1st sector of root dir
 ; a3	  linkage block
 ; a4	  old name (normalised -> no leading length word!)
 ; a5	  new name (normalised -> no leading length word!)
@@ -112,7 +100,6 @@ crd_renm thg_extn {CREN},crd_dir,crdren
 	movem.l (a4),d5-d7		; get name to search for
 	clr.b	d7			; LSB of extn should be 0
 	moveq	#15,d1			; check first 16 entries in root dir
-	move.l	a1,a2			; point to start of dir
 srchlp1 move.l	a2,a4			; point start of dir entry
 not_fnd cmp.l	(a4)+,d5		; name matches?
 	bne.s	nxtsrch 		; no
@@ -121,19 +108,12 @@ not_fnd cmp.l	(a4)+,d5		; name matches?
 	move.l	(a4),d2
 	clr.b	d2
 	cmp.l	d7,d2			; last part of name matches?
-	beq.s	found			; ... yes, done
+	beq.s	found			; ... yes, replace
 nxtsrch add.w	#dos.drel,a2		; ... no, get next entry in the root dir
 fndlp	dbf	d1,srchlp1
 
 ; if we get here, old name wasn't found
-	moveq	#err.itnf,d0
-
-relmem	move.l	d0,d7			; keep possible error
-	move.l	a1,a0
-	moveq	#$19,d0 		; release mem
-	trap	#1
-	move.l	d7,d0
-exit	rts
+	bra.s	 errnf
 
 ; I found the old name, now replace by new name
 ; d0 = sector number
@@ -143,9 +123,22 @@ found	move.l	(a5)+,(a2)+
 	move.b	(a5),(a2)
 	clr.l	d7
 	moveq	#1,d2
-	jsr	hdl_wsint(a3)		     ; write dir sector back
-	bra.s	relmem
- 
+	jsr	hdl_wsint(a3)		; write dir sector back
+	bra.s	rel_a1			; done
+
+mchkf	moveq	#err.mchk,d0
+	bra.s	rel_a1
+
+errnf	moveq	#err.itnf,d0		; old name wasn't found
+
+rel_a1	move.l	a1,a0
+	bra	gu_rchp
+
+errbp	moveq	#err.ipar,d0
+exit	rts
+   
+
+;--------------------------------------------
 ; DV3 Q68 find 1st sector of main FAT32 dir
 ;
 ;	d0 cr	amount of mem to reserve  /  0 or error
@@ -165,8 +158,10 @@ found	move.l	(a5)+,(a2)+
 ;	a6 c  p sysvars
 ;
 ;	error return 0 or error
-;	if this can't reserve enough mem, it won't come back to the caller
-;---
+;	if there is any error, this routine releases the memory it has reserved
+;-------------------------------------------
+
+
 get_rut subq.l	#1,d7
 	lsl.w	#q68_dshft,d7
 get_rut2
@@ -176,20 +171,23 @@ get_rut2
 	bne	errbp
 ok	move.l	a1,a5
 	jsr	gu_achpp
-	beq.s	memok
-	addq.l	#4,a7
-	rts				; ooops
-
+	bne.s	exit
 memok	move.l	a0,a1
 	lea	hdl_unit-1(a3),a2
 	move.b	d7,(a2) 		; pretend we're reading drive 0
+	move.l	d7,a2			; restitute into d7 at end
 	moveq	#1,d2			; read one sector
 	clr.l	d0			; I want to read sector 0
 	clr.l	d7			; for this "drive"
 	jsr	hdl_rsint(a3)		; read this sector
-	bne.s	exit			; ooops card doesn't exist at all or
+	beq.s	got_sec 		; got it
+	jsr	hdl_ststp(a3)		; try to INIT the card
+	bne	rel_a1
+	clr.l	d0
+	jsr	hdl_rsint(a3)		; re-read this sector
+	bne	rel_a1			; ooops card doesn't exist at all or
 					; isn't initialized
-	move.b	dos_vmbr(a1),d0 	; check for valid MBR
+got_sec move.b	dos_vmbr(a1),d0 	; check for valid MBR
 	beq.s	hfp_mbr 		; seems to be ok so far
 	cmp.b	#$80,d0 		; and this could be an ok value, too
 	bne	mchkf			; ooops
@@ -267,7 +265,6 @@ out	rts
 ;***************************
 			
 crd_dir thg_extn {CDIR},crd_crea,mdir
-
 	movem.l hdt.reg,-(a7)
 	bsr	hdt_doact		; this calls the following code in super mode
 
@@ -299,9 +296,11 @@ crd_dir thg_extn {CDIR},crd_crea,mdir
 loop1	move.l	a2,a3			; point start of dir entry
 	move.l	(a3)+,d0
 	rol.l	#8,d0
-	beq.s	empty
+	beq.s	dir_eof
 	cmp.b	#$e5,d0
 	beq.s	empty
+	tst.b	d0
+	beq.s	dir_eof
 	ror.l	#8,d0
 	move.l	d0,(a4)+
 	move.l	(a3)+,(a4)+
@@ -314,22 +313,31 @@ loop1	move.l	a2,a3			; point start of dir entry
 lp1	move.w	d3,(a4)+
 	add.w	#dos.drel,a2		; get next entry in the root dir
 	dbf	d1,loop1
-	clr.l	d0
-	bra	relmem
+cd_out	clr.l	d0
+	bra	rel_a1
 
 empty	lea	mty_str,a3
 cpy	move.l	(a3)+,(a4)+
 	move.l	(a3)+,(a4)+
 	move.l	(a3)+,(a4)+
 	bra.s	lp1
+
 longname
 	subq.l	#8,a4
 	lea	lname,a3
 	bra.s	cpy
 
+; the end of the dir was reached, set all remaining to empty
+dir_eof lea	mty_str,a2
+cpy2	move.l	(a2),(a4)+
+	move.l	4(a2),(a4)+
+	move.l	8(a2),(a4)+
+	move.w	d3,(a4)+
+	dbf	d1,cpy2
+	bra.s	cd_out
+
 mty_str dc.l	'-- E','mpty',' -- '	     ;"-- Empty -- "
 lname	dc.l	'-Lon','g na','me- '
-
 
 
 ;************************** Extension thing routine
@@ -343,7 +351,7 @@ lname	dc.l	'-Lon','g na','me- '
 ;  err.drfl equ    -11	 DRive FuLl  : no space for a file of this size
 ;  err.fex  equ    -8	 a File with this name already EXists
 ;  err.inam equ    -12	 Invalid file name (not an 8.3 name)
-;  err.ipar equ    -15	  wrong card number ( not 1 or 2)
+;  err.ipar equ    -15	 wrong card number ( not 1 or 2)
 ;  err.mchk equ    -16	 Medium CHecK failed because card wasn't readable
 ;			 (perhaps absent / not initialized?) or isn't a valid
 ;			 FAT32 partition
@@ -369,18 +377,17 @@ errorng moveq	#err.orng,d0
 	rts
 
 errfex	moveq	#err.fex,d0
-	bra	relmem
+	bra.s	rel_mem
 
 errbffl moveq	#err.bffl,d0
-	bra	relmem
+	bra.s	rel_mem
 
 errdrfl moveq	#err.drfl,d0
-	bra	relmem
+rel_mem bra	gu_rchp
 
 errinam moveq	#err.inam,d0
 crea_er rts
-
-
+	    
 
 crd_crea thg_extn {CREA},,creat
 
@@ -391,11 +398,12 @@ crd_crea thg_extn {CREA},,creat
 ; definition block and a4 pointing to drive defn (if it exists)
 ; on entry, condition code = Z if a drive definition is found, else NE
 ;	d0 c	0 or error if no drive definition was found
-;	d7 c  p drive ID / number  (from 1 to 8)
+;	d7 c  p card nbr (1 or 2)
 ;	a1 c  p address of thing
 ;	a3 c  p device driver linkage block
 	move.l	#600,d0 		; reserve mem for a sector+ workspace
 	bsr	get_rut 		; a5 becomes param ptr , a1 mem ptr
+	bne.s	crea_er 		; d7 becomes 0
 
 ; normalise name
 	move.l	a1,a4			; keep mem ptr
@@ -404,20 +412,16 @@ crd_crea thg_extn {CREA},,creat
 	move.l	8(a5),a0		; pointer to smsqe name
 	lea	512(a1),a5
 	lea	nmoffset(a5),a1 	; space for normalised name
-	move.l	d0,fsize(a5)		; keep file size
-	movem.l d3/d4,-(a7)
-	bsr	norm_nm 		; normalise name into (a1)
-	movem.l (a7)+,d3/d4
-	bne	relmem			; couldn't
-	move.l	a4,a1
-
-	movem.l d2/d3/d4/d6,fatsz(a5)	; keep :
+	movem.l d0/d2/d3/d4/d6,fatsz(a5)   ; keep :
 					;   d2	 nbr of sectors per fat
 					;   d3	 cluster size (sectors per cluster)
 					;   d4	 start of FAT (sector nbr)
 					;   d6	 sector nbr of start of dir
+	bsr	norm_nm 		; normalise name into (a1)
+	move.l	a4,a1
+	bne	rel_a1			; couldn't
+					
 
-; d7 card offset (0 or q68.coff)
 ; a1 mem space , contains 1st sector of dir
 ; a3 device linkage
 ; a5 poiner to work space, including normalized name
@@ -503,7 +507,7 @@ goodnbr
 	bsr	gt_mpty 		; get first free (= empty) cluster
 fnd_0	bne	crea_er 		; couldn't
 
-; I now have the first entry in the fat which shows an enpty cluster.
+; I now have the first entry in the fat which shows an empty cluster.
 ; on return:
 ; d1  nbr of sects remaining to be read in fat
 ; d3  nbr of clusters needed for file
@@ -511,7 +515,7 @@ fnd_0	bne	crea_er 		; couldn't
 ; d6  =d3
 ; a2  pointer to empty slot +4
 
-; would there be enough space for my clusters?
+; would there be enough space for my clusters if all the remaining were empty?
 chk_ful move.l	d1,d0			; sectors remaining in the FAT
 	lsl.l	#7,d0			; custer entries remaining in the fat
 	move.l	a2,d2			; where we are in current sector
@@ -529,8 +533,8 @@ chk_ful move.l	d1,d0			; sectors remaining in the FAT
 ; search for the first non free cluster
 	bsr	gt_full 		; find enough contiguous clusters
 	beq.s	no_err			; no read error per se
-	lea	12(a7),a7		    ; forget the saved regs
-	bra	rel_mem
+	lea	12(a7),a7		; forget the saved regs
+	bra	rel_a1
 no_err
 	tst.l	d3			; did we find enough clusters?
 	beq.s	enough			; yes
@@ -628,7 +632,7 @@ filldir move.l	d0,d4			; last used cluster
 ; adjust the nbr of free clusters in file system info sector
 	clr.l	d0			; I want to read sector 0
 	jsr	hdl_rsint(a3)		; read this sector
-	bne	mchkf			; ooops
+	bne	rel_a1			 ; ooops
 ; I should now have the MBR at (a1)
 ; get nbr of partition 1 sector - is in Intel format, so switch around
 	move.l	dos_prt1(a1),d0 	; partition start
@@ -636,9 +640,9 @@ filldir move.l	d0,d4			; last used cluster
 	addq.l	#1,d0			; I want the sector after that
 	move.l	d0,d5
 	jsr	hdl_rsint(a3)		; read partition sector into (a1)
-	bne	mchkf
+	bne	rel_a1
 	cmp.l	#$52526141,(a1) 	; FS sgnature
-	bne	relmem
+	bne	mchkf			; not there???
 	move.l	$1e8(a1),d0		; nbr of free clusters
 	xlong	d0
 	sub.l	fclust(a5),d0
@@ -647,13 +651,12 @@ filldir move.l	d0,d4			; last used cluster
 	move.l	d4,$1ec(a1)
 	move.l	d5,d0
 	jsr	hdl_wsint(a3)
-	bra	relmem			; release mem & leave
+	bra	rel_a1			; release mem & leave
 
 
 ; read each sector of the fat in turn until I find the first one with an empty
 ; cluster (empty cluster = longword 0)
-; this doesn't return to caller if no free cluster is found
-; d0   r    <>0 if no empty cluster found
+; d0   r    s
 ; d1 c	s   nbr of sects to read, adjusted for dbf / nbr of sects remaining to be read
 ; d2  r s   1
 ; d4 cr     nbr of clusters in sect to search / nbr remaining to be serached
@@ -661,20 +664,22 @@ filldir move.l	d0,d4			; last used cluster
 ; a1 c	p   buffer
 ; a2 cr     where to start search in sector / pointer to empty slot +4
 ; a3 c	p   device linkage block
+;
+; on return status reg Z if ok, NZ if not
+
 gt_mpty moveq	#1,d2			; always read one sector
 gtm_lp1 move.l	d5,d0
 	jsr	hdl_rsint(a3)		; read sector of fat
-	bne	mchkf4			; couldn't
+	bne.s	srchret 		; couldn't
 	move.l	a1,a2
 gtm_lp2 tst.l	(a2)+			; empty cluster?
-	beq.s	srchret 		; yes
+	beq.s	srchret 		; yes, done
 gtm_int dbf	d4,gtm_lp2
 	addq.l	#1,d5			; try next sector of fat
 	moveq	#127,d4 		; there are 128 longwords in a sector
 	dbf	d1,gtm_lp1
-	bra	errdrfl 		; no free clusters at all!
-srchret moveq	#0,d0
-	rts
+	moveq	#err.drfl,d0		; no free clusters at all!
+srchret rts
 
 
 ; read each sector of the fat in turn until I find the first not empty one
@@ -702,7 +707,7 @@ lpctr	dbf	d4,gtf_lp2
 	addq.l	#1,d5			; try next sector of fat
 	moveq	#127,d4 		; there are 128 longwords in a sector
 	dbf	d1,gtf_lp1
-	bra	errdrfl 		; not en free clusters at all!
+	bra	errdrfl 		; no free clusters at all!
 
 	end
 

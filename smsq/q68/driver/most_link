@@ -38,8 +38,10 @@ library dev8_smsq_sbas_procs_machine_rel
 library dev8_smsq_kbd_inithwt_rel
 library dev8_smsq_q68_kbd_initi_rel
 library dev8_smsq_q68_kbd_read_rel
+library dev8_smsq_q68_kbd_int_rel
 library dev8_smsq_q68_driver_mouse_rel
 library dev8_smsq_kbd_poll_rel
+library dev8_smsq_kbd_initi_rel
 library dev8_smsq_kbd_ibm_tables_rel
 library dev8_smsq_kbd_ibm_at102cvt_rel
 library dev8_smsq_kbd_keyrow_rel

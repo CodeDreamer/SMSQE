@@ -1,4 +1,6 @@
 ; IBM SMSQ Keyboard Tables base area
+;
+; 2020-04-14  1.01  Added Spanish tables (MK)
 
 	section base
 
@@ -9,9 +11,11 @@
 	xref	kbdd_tab
 	xref	kbdf_tab
 	xref	kbdi_tab
+	xref	kbdes_tab
 
 	xref	kbd_nsid
 	xref	kbdf_nsid
+	xref	kbdes_nsid
 
 	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_ldm'
@@ -40,8 +44,12 @@ kbd_def
 	dc.l	kbd_ita-*
 
 	dc.w	ldm.kbdt,0,33		 ; French
-	dc.w	0
+	dc.w	6
 	dc.l	kbd_fra-*
+
+	dc.w	ldm.kbdt,0,34		 ; Spanish
+	dc.w	0
+	dc.l	kbd_esp-*
 
 kbd_usa dc.w	1
 	dc.w	kbdu_tab-*,kbd_nsid-*-2
@@ -53,5 +61,7 @@ kbd_ita dc.w	39
 	dc.w	kbdi_tab-*,kbd_nsid-*-2
 kbd_fra dc.w	33
 	dc.w	kbdf_tab-*,kbdf_nsid-*-2
+kbd_esp dc.w	34
+	dc.w	kbdes_tab-*,kbdes_nsid-*-2
 
 	end

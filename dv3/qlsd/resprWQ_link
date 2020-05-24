@@ -6,9 +6,9 @@ section init
 
 section driver
 
-section dv3       ; DV3 drivers
+section dv3	  ; DV3 drivers
 
-section procs     ; SuperBASIC procedure table
+section procs	  ; SuperBASIC procedure table
 section cv
 section gen_util
 section config
@@ -32,10 +32,12 @@ input dev8_dv3_qlsd_cinvi_rel
 input dev8_dv3_qlsd_cfg_rel
 
 input dev8_util_cv_upcas_min_rel
+input dev8_dv3_qlsd_qlf_check_rel
 input dev8_dv3_qlsd_qlf_drname_rel
 input dev8_dv3_qlsd_qlf_drmake_rel
 input dev8_dv3_qlsd_qlf_umap_rel
 
+input dev8_dv3_qlsd_win_init_rel
 input dev8_dv3_qlsd_qub_init_rel
 library dev8_dv3_qlsd_drv_lib
 library dev8_dv3_qw1_lib

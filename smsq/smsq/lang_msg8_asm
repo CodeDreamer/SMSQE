@@ -1,4 +1,6 @@
-; SMSQ_LANG_MSG8  Messages Tables - Group 8  V2.0   1994  Tony Tebby
+; SMSQ_LANG_MSG8  Messages Tables - Group 8  V2.1   1994  Tony Tebby
+;
+; 2020-04-13  2.1  Added Spanish messages (MK)
 
 	section language
 
@@ -25,8 +27,12 @@ smsq_msg8
 	dc.l	msg_ita-*
 
 	dc.w	ldm.msgt,8,33	 ; French
-	dc.w	smsq_msgc-*
+	dc.w	6
 	dc.l	msg_fra-*
+
+	dc.w	ldm.msgt,8,34	 ; Spanish
+	dc.w	smsq_msgc-*
+	dc.l	msg_esp-*
 
 
 ; message tables
@@ -109,7 +115,6 @@ msg_fra dc.w	33
 	dc.w	fra_nabt-msg_fra
 	dc.w	fra_infl-msg_fra
 
-
 fra_fmtq mkstr	{Pour FORMATER le disque, appuyez sur }
 fra_abrt mkstr	{******* INTERROMPU *******}
 fra_grab mkstr	{Allocation de mƒmoire de travail (en kilo-octets)> }
@@ -155,6 +160,37 @@ ita_scts mkstr	{ settori\}
 ita_jobh mkstr	{ID Tag  ID-Prop. Priorit Nome-Job\}
 ita_nabt mkstr	{net interrotta\}
 ita_infl mkstr	{K nei files\}
+ 
+msg_esp dc.w	39
+	dc.w	esp_fmtq-msg_esp
+	dc.w	esp_abrt-msg_esp
+	dc.w	esp_grab-msg_esp
+	dc.w	esp_llrc-msg_esp
+	dc.w	esp_ynch-msg_esp
+	dc.w	esp_yn-msg_esp
+	dc.w	esp_ynaq-msg_esp
+	dc.w	esp_to-msg_esp
+	dc.w	esp_exst-msg_esp
+	dc.w	esp_ovrw-msg_esp
+	dc.w	esp_scts-msg_esp
+	dc.w	esp_jobh-msg_esp
+	dc.w	esp_nabt-msg_esp
+	dc.w	esp_infl-msg_esp
+
+esp_fmtq mkstr	{Para formatear el disco, pulse }                   
+esp_abrt mkstr	{******* INTERRUMPIDO *******}
+esp_grab mkstr	{Reserva de memoria de trabajo (KiB) > }
+esp_llrc mkstr	{recuperar la ™ltima l“nea}
+esp_ynch mkstr	{SNTC}
+esp_yn	 mkstr	{? (S/N) }
+esp_ynaq mkstr	{? (S/N/T/C) }
+esp_to	 mkstr	{ A }
+esp_exst mkstr	{ existe, }
+esp_ovrw mkstr	{´sobreescribir}
+esp_scts mkstr	{ sectores\}
+esp_jobh mkstr	{Tarea Etiq. Prop. Prior.\}
+esp_nabt mkstr	{red interrumpida\}
+esp_infl mkstr	{KiB en ficheros\}
  
 	ds.w	0
 

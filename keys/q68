@@ -64,6 +64,8 @@ kbd_unlock	equ	$1c144		; acknowledge key receipt
 k.ackn		  equ	  0		; bit to set to acknowledge key
 kbd_status	equ	$1c148		; ps2 key status register
 kbd.rcv 	equ	   0		; bit set when keyboard has key waiting
+kbd.isint	equ	   7		; bit set/to set if kbd is driven by interrupts
+kbd_dlay	equ	$17d0c		; config. delay for kbd if no interrupt
 
 
 ; mouse
@@ -121,7 +123,9 @@ q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
 					; (nb 0-5 are the same)
 q68_reset	equ	$1c024
 q68_timer	equ	$1c060
-
+q68_1sec	equ	40000000	; 40 Mhz timer
+q68_tick	equ	4		; 1 "tick" = 1/10th of a microsecond
+q68_tmrmul	equ	4000		; 1/10 of a milliseond
 
 ; network related variables
 q68_netvec	equ	$17d10		; net vectors pointer
@@ -129,37 +133,16 @@ q68_kradd	equ	$17d14		; address of keyboard read routine
 q68_klnk	equ	$17d18		; kbd linkage area
 q68_test	equ	$17d1c		; 4 bytes for whatever you want
 
+
 ; debug
 ;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
 q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
 q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
-debug		equ	1		; if 1 debug code is included
+debug		equ	0		; if 1 debug code is included
+		      ; $17d08	used for serial port (see above)
+		      ; $17d0c	used for keyboard (see above)
 
-
-;qcf.mse	 equ	 $16
-
-
-; the following scheme is no longer used. Drive infos are stored in the
-; config block for each device.
-
-; -------------------------- UNUSED ----------------------------
-; part of the info in the config block is copied to a fixed memory address
-; (in addition to the standard config info block)
-; at addres q68_cfgb the following info is stored:
-; 1- a table with smsqe type strings:
-;     8 * drive names, in config format (i.e. 1 word max length, 1 word actual
-;     string length, string.
-;     Each entry takes q68.cfgb bytes DO NOT CHANGE THIS.
-;     This is stored at that address in smsq_q68_hwinit_asm.
-; 2 - a table with 8.3 DOS names for these drives. Each name takes 8+3+1 bytes
-;     making up a total of 12 bytes (the last byte is always 0) but entries in
-;     the table are also spaced q68.cfgb bytes.
-;     This table is created by dv3_q68_qlsd_init_asm.
-;
-;q68_cfgb	 equ	 $17D0C 	 ; base of info on drive config
-;q68.cfgb	 equ	 16		 ; spacing between drive names DONT CHANGE
-;q68.norn	 equ	 8*q68.cfgb	 ; offset to normalized names
-	    
-
+; q68 specific config
+q68.cfgkb	 equ	 $20		 ; position in config block of kbd delay
 
 	list

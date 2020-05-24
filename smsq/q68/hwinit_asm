@@ -1,5 +1,5 @@
-; SMSQ Q68 Hardware Initialisation Copyright (c) W. Lenerz 2016
-
+; SMSQ Q68 Hardware Initialisation Copyright (c) W. Lenerz 2016-2020
+; v. 1.01	added kbd delay config item
 ; inspired by the q40 hwinit routine
 
 ; Called with A7 a valid, safe stack
@@ -68,8 +68,11 @@ qcf_fill	ds.b	 11	; 0f  ... 19
 qcf_mlan	dc.w	 49	; 1a
 qcf_kstuf	dc.b	 250	; 1c
 qcf_curs	dc.b	 1	; 1d
-qcf_ctrc	dc.b	 0	; 1e
-qcf_bgio	dc.b	 0	; 1f
+qcf_bgio	dc.b	 0	; 1e
+qcf_ctrc	dc.b	 0	; 1f
+q68_kbdy	dc.w	 0	; 20
+
+
 
 	xref.l	smsq_vers
 
@@ -78,12 +81,11 @@ qcf_bgio	dc.b	 0	; 1f
 ; SMSQ generic config items
 
 	mkcfhead {SMSQ},{smsq_vers}
+	  mkcfitem 'OSPM',word,'M',qcf_mlan,,,\
+	  {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 
 	  mkcfitem 'OSPL',word,'L',qcf_lang,,,\
 	  {Default Keyboard Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
-
-	  mkcfitem 'OSPM',word,'M',qcf_mlan,,,\
-	  {Default Messages Language Code 33=F, 44=GB, 49=D, 39=IT},0,$7fff
 				      
 	  mkcfitem 'OSPS',byte,'S',qcf_kstuf,,,\
 	  {Stuffer buffer key for edit line calls},0,$ff
@@ -125,12 +127,15 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 	  mkcfitem 'Q68a',code,0,q68_led,,,\
 	  {Switch LED off when SMSQ/E is set up?},.noyes
 
-	
+;	   mkcfitem 'Q68Z',word,'L',q68_kbdy,,,\
+;	   {Keyboard delay in 1/10th of °s (15 = 1.5°s) max. is 100},0,$7fff
+				    
 	mkcfblend
 
 	mkcfend
 
-	dc.w	0
+
+
 
 	section hwinit
 
@@ -152,6 +157,7 @@ hwinit_base				; this is the start after loading the OS from the card
 					; in that case it is called from smsq_smsq_loader_asm
 	bra.s	hwinit			; this is also what gets called after a "reset" command
 					; in that case it's loaded at label ldm_softrset
+
 	dc.w	0			; leave this or make the bra long !
 
 hwinit_hreset				; special hard reset entry
@@ -179,7 +185,9 @@ t1	move.b	d0,q68_dmode		; set initial screen mode
 	move.l	a1,a0
 	add.l	#q68.screen-4,a0
 
-periok	move.l	#$32000,0
+periok	clr.l	d0
+
+	move.l	#$32000,0
 	move.l	#$904,4
 	tst.l	d7			; RAM set?
 	beq.s	hwi_mem 		; no->

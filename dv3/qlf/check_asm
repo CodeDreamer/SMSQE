@@ -1,4 +1,6 @@
-; DV3 QL Check Format		   V3.00	   1992 Tony Tebby
+; DV3 QL Check Format		   V3.01	   1992 Tony Tebby
+;
+; 2020-03-07  3.01  Better handling of medium name (MK+wl)
 
 	section dv3
 
@@ -110,11 +112,17 @@ qck_changed
 	move.l	a2,qdf_mtop(a4) 	 ; map top
 	move.w	d2,qdf_msect(a4)	 ; number of map sectors
 
-	lea	qwa_name+2(a1),a2
+	lea	qwa_name(a1),a2 	 ; for QLWA
 	lea	ddf_mname(a4),a0
-	move.l	(a2)+,(a0)+
-	move.l	(a2)+,(a0)+
-	move.l	(a2)+,(a0)+		 ; max name is 10 long + rnd
+	moveq	#ddf.mnlen,d6		 ; max length
+	move.w	(a2)+,d0
+	cmp.w	d0,d6
+	bge.s	qck_sz
+	move.w	d6,d0			 ; limit length
+qck_sz	move.w	d0,(a0)+
+	bra.s	qck_lp1
+qck_cp1 move.b	(a2)+,(a0)+
+qck_lp1 dbf	d0,qck_cp1
 
 	clr.w	ddf_rdid(a4)
 	move.w	qwa_root(a1),ddf_rdid+2(a4) ; root directory ID
@@ -208,10 +216,18 @@ qck_5set
 	move.w	d2,qdf_msect(a4)	 ; number of map sectors
 
 	lea	q5a_mnam(a1),a2
-	lea	ddf_mname(a4),a0
+	lea	ddf_mname+2(a4),a0	; point after length word
+	move.l	(a2)+,(a0)+		; copy all of name
 	move.l	(a2)+,(a0)+
-	move.l	(a2)+,(a0)+
-	move.l	(a2)+,(a0)+		 ; max name is 10 long + rnd
+	move.w	(a2)+,(a0)+		; max name is 10 long
+
+	moveq	#9,d0			; max nbrs of chars -1 (dbf)
+	moveq	#' ',d6 		; string is space filled
+cmp_lp	cmp.b	-(a2),d6
+	bne.s	cont1
+	dbf	d0,cmp_lp
+cont1	addq.w	#1,d0
+	move.w	d0,ddf_mname(a4)
 
 	moveq	#hdr.len,d6
 

@@ -1,4 +1,6 @@
-; DV3 QXL Floppy Disk Format		      1993	Tony Tebby
+; DV3 QXL HD Disk Format		  1993     Tony Tebby
+;
+; 2020-04-07  1.01  Changed for new ddf_mname definition (length word) (MK)
 
 	section dv3
 
@@ -48,7 +50,7 @@ hmf_wstart
 
 	clr.l	ddf_psoff(a4)		 ; set base of partition
 
-	lea	ddf_mname(a4),a0
+	lea	ddf_mname+2(a4),a0
 	jsr	cv_decil		 ; size of disk required
 	bne.l	hmf_inam
 	moveq	#11,d0			 ; convert megabytes to sectors
@@ -60,9 +62,9 @@ hmf_wstart
 	bne.s	hmf_exit
 
 	lea	ddf_mname(a4),a0
-	move.l	#'WIN0',(a0)+		 ; blat name
-	add.b	d7,-1(a0)
-	move.l	#'    ',(a0)
+	move.w	#4,(a0)+
+	move.l	#'WIN0',(a0)		 ; blat name
+	add.b	d7,3(a0)
 
 	move.l	qxl_message,a1
 	lea	qxl_ms_phys(a1),a1	 ; message key
