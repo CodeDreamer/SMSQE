@@ -1,4 +1,6 @@
 ; SMSQmulator control extension thing, floating point extns (c) W.Lenerz 2017
+
+; v. 1.02 2020 Nov 27 removed dead & test code (DEG/RAD conversion)
 ; v. 1.01 corrected SQRT
 ; v. 1.00
 
@@ -7,7 +9,6 @@
 	xdef	jt_qlfp
 	xdef	qpc_patchfpu
 
-	xref	old_add
 	xref	thp_ostr
 	xref	thp_nul
 	xref	jt_sget 		; next thing extension
@@ -19,23 +20,16 @@
 	include 'dev8_dv3_keys'
 
 jt_qlfp thg_extn QLFP,jt_iefp,thp_nul
-	move.w	#$4eba,d4		 ; JSR
 	lea	qpc_patch2ql,a2 	; routine to jump to
 	bra.s	fp_comn
 
 jt_iefp thg_extn {IEFP},jt_sget,thp_nul
 	lea	qpc_patchfpu,a2
-	move.w	#ib+17,d4		; call java code
 fp_comn move.w	sr,d7
 	trap	#0			; go into supervisor mode
 	move.w	#$2700,sr		; no interrupts
 	jsr	(a2)			; patch vectors
 	move.w	d7,sr			; reset status as it was
-	lea	old_add,a2
-	move.l	(a2),d0 		; address of DEG/RAd routine
-	beq.s	exit			; none
-	move.l	d0,a2
-	move.w	d4,(a2) 		; set new/old instruction
 exit	moveq	#0,d0
 	rts
 

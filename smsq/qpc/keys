@@ -1,189 +1,203 @@
 ; QPC "Hardware" Keys
-        nolist
+	nolist
 
 ; Communication addresses
-qpc_rtc         equ   $0001c000 ; long  real time clock
-qpc_kbd_link    equ   $0001c004 ; long  pointer to keyboard linkage
-qpc_spp_link    equ   $0001c008 ; long  pointer to SPP linkage
+qpc_rtc 	equ   $0001c000 ; long	real time clock
+qpc_kbd_link	equ   $0001c004 ; long	pointer to keyboard linkage
+qpc_spp_link	equ   $0001c008 ; long	pointer to SPP linkage
 
-qpc_numl  equ   $0001c060     ; byte  numlock
-qpc_caps  equ   $0001c061     ; byte  capslock
-qpc_dfrz  equ   $0001c062     ; byte  scrolllock
-qpc_bcnt  equ   $0001c064     ; word  count for beep till kill
-qpc_clipc equ   $0001c066     ; byte  clipboard modify count
-qpc_sjbid equ   $0001c068     ; long  job ID of synchronisation job
+qpc_numl  equ	$0001c060     ; byte  numlock
+qpc_caps  equ	$0001c061     ; byte  capslock
+qpc_dfrz  equ	$0001c062     ; byte  scrolllock
+qpc_bcnt  equ	$0001c064     ; word  count for beep till kill
+qpc_clipc equ	$0001c066     ; byte  clipboard modify count
+qpc_sjbid equ	$0001c068     ; long  job ID of synchronisation job
 
-qpc_mpos  equ   $0001c070     ; long  mouse position
-qpc_mpsx  equ   $0001c070     ; word  X mouse position
-qpc_mpsy  equ   $0001c072     ; word  Y mouse position
-qpc_mops  equ   $0001c074     ; long  old position
-qpc_moxp  equ   $0001c074     ; word  old x position
-qpc_moyp  equ   $0001c076     ; word  old y position
-qpc_movx  equ   $0001c070     ; word  x-move (QPC1 code)
-qpc_movy  equ   $0001c072     ; word  y-move (QPC1 code)
-qpc_mbut  equ   $0001c078     ; byte  mouse button status
-qpc_mwhl  equ   $0001c07a     ; word  mouse wheel movement
+qpc_mpos  equ	$0001c070     ; long  mouse position
+qpc_mpsx  equ	$0001c070     ; word  X mouse position
+qpc_mpsy  equ	$0001c072     ; word  Y mouse position
+qpc_mops  equ	$0001c074     ; long  old position
+qpc_moxp  equ	$0001c074     ; word  old x position
+qpc_moyp  equ	$0001c076     ; word  old y position
+qpc_movx  equ	$0001c070     ; word  x-move (QPC1 code)
+qpc_movy  equ	$0001c072     ; word  y-move (QPC1 code)
+qpc_mbut  equ	$0001c078     ; byte  mouse button status
+qpc_mwhl  equ	$0001c07a     ; word  mouse wheel movement
 
-qpc_scr_work    equ   $0001c080 ; screen work area
-qpc_scra        equ      $00       ; long  screen allocation
-qpc_scrb        equ      $04       ; long  screen base
-qpc_scry        equ      $08       ; word  screen lines
-qpc_scrl        equ      $0a       ; word  line length
-qpc_vql         equ      $0c       ; byte  ql display mode emulation
+qpc_scr_work	equ   $0001c080 ; screen work area
+qpc_scra	equ	 $00	   ; long  screen allocation
+qpc_scrb	equ	 $04	   ; long  screen base
+qpc_scry	equ	 $08	   ; word  screen lines
+qpc_scrl	equ	 $0a	   ; word  line length
+qpc_vql 	equ	 $0c	   ; byte  ql display mode emulation
 
-qpc_sound equ   $0001c090     ; word  0=no snd / -ve=snd active / +ve=new snd
-qpc_ptch1 equ   $0001c092     ; word  pitch 1
-qpc_ptch2 equ   $0001c094     ; word  pitch 2
-qpc_pitch equ   $0001c096     ; word  add pitches
-qpc_step  equ   $0001c098     ; word  step
-qpc_intvl equ   $0001c09a     ; word  interval
-qpc_wrap  equ   $0001c09c     ; word  wrap
+qpc_sound equ	$0001c090     ; word  0=no snd / -ve=snd active / +ve=new snd
+qpc_ptch1 equ	$0001c092     ; word  pitch 1
+qpc_ptch2 equ	$0001c094     ; word  pitch 2
+qpc_pitch equ	$0001c096     ; word  add pitches
+qpc_step  equ	$0001c098     ; word  step
+qpc_intvl equ	$0001c09a     ; word  interval
+qpc_wrap  equ	$0001c09c     ; word  wrap
 
-qpc_schdl equ   $0001c0b0     ; long  scheduler link block
-qpc_schdp equ   $0001c0b4     ; long  scheduler routine
+qpc_schdl equ	$0001c0b0     ; long  scheduler link block
+qpc_schdp equ	$0001c0b4     ; long  scheduler routine
 
-qpc_sconf equ   $0001c100     ; saved config
+qpc_sconf equ	$0001c100     ; saved config
 
-qpc.intn  equ     $1a      ; use the interrupt level 2 autovector
-qpc_ivec  equ     qpc.intn<<2 ; interrupt level 2 adress
+qpc.intn  equ	  $1a	   ; use the interrupt level 2 autovector
+qpc_ivec  equ	  qpc.intn<<2 ; interrupt level 2 adress
 
 ; Command keys (normally the lowest nibble represents a register number)
 
-qpc.exit  equ   $A000           ; exit emu (+$4AFB to avoid crashed programs call this)
-qpc.ver   equ   $A010           ; get version
-qpc.os    equ   $A018           ; get host os
-qpc.ramt  equ   $A020           ; get ramtop
-qpc.nnam  equ   $A028           ; get network name
-qpc.cram  equ   $A030           ; clear SMSQ memory (faster)
-qpc.inie  equ   $A040           ; init event handler vectors
-qpc.cale  equ   $A050           ; process event
-qpc.savr  equ   $A060           ; save all 68000 registers
-qpc.resr  equ   $A070           ; restore all 68000 registers
-qpc.getq  equ   $A080           ; get byte out of queue
-qpc.putq  equ   $A090           ; put byte in queue
-qpc.fulq  equ   $A0A0           ; test if queue's full
-qpc.idle  equ   $A0B0           ; detect idle state and sleep if idle
-qpc.cmdl  equ   $A0C0           ; get command line
-qpc.wtit  equ   $A0C1           ; set window title
-qpc.pclp  equ   $A0D0           ; put string in windows clipboard
-qpc.gcps  equ   $A0E0           ; get clipboard size
-qpc.gcpc  equ   $A0E8           ; get clipboard contents
-qpc.exec  equ   $A0F0           ; execute external program
+qpc.exit  equ	$A000		; exit emu (+$4AFB to avoid crashed programs call this)
+qpc.ver   equ	$A010		; get version
+qpc.os	  equ	$A018		; get host os
+qpc.ramt  equ	$A020		; get ramtop
+qpc.nnam  equ	$A028		; get network name
+qpc.cram  equ	$A030		; clear SMSQ memory (faster)
+qpc.inie  equ	$A040		; init event handler vectors
+qpc.cale  equ	$A050		; process event
+qpc.savr  equ	$A060		; save all 68000 registers
+qpc.resr  equ	$A070		; restore all 68000 registers
+qpc.getq  equ	$A080		; get byte out of queue
+qpc.putq  equ	$A090		; put byte in queue
+qpc.fulq  equ	$A0A0		; test if queue's full
+qpc.idle  equ	$A0B0		; detect idle state and sleep if idle
+qpc.cmdl  equ	$A0C0		; get command line
+qpc.wtit  equ	$A0C1		; set window title
+qpc.focs  equ	$A0C2		; get if QPC window currently has the focus
+qpc.flsh  equ	$A0C3		; flash QPC taskbar button
+qpc.pclp  equ	$A0D0		; put string in windows clipboard
+qpc.gcps  equ	$A0E0		; get clipboard size
+qpc.gcpc  equ	$A0E8		; get clipboard contents
+qpc.exec  equ	$A0F0		; execute external program
 
-qpc.cmode equ   $A100           ; get nearest available display mode
-qpc.smode equ   $A110           ; set display mode
-qpc.sqlmd equ   $A120           ; set ql display mode emulation
-qpc.sbase equ   $A130           ; set screen base
-qpc.bmove equ   $A140           ; block move
-qpc.bfill equ   $A150           ; block fill
-qpc.beor  equ   $A160           ; block eor
-qpc.cmblk equ   $A170           ; block combine
-qpc.qlemu equ   $A1E0           ; set ql screen (at $20000) emulation mode
-qpc.maxwn equ   $A1F0           ; maximize window
-qpc.minwn equ   $A1F1           ; minimize window
-qpc.reswn equ   $A1F2           ; restore window
-qpc.sszwn equ   $A1F3           ; set window size
+qpc.cmode equ	$A100		; get nearest available display mode
+qpc.smode equ	$A110		; set display mode
+qpc.sqlmd equ	$A120		; set ql display mode emulation
+qpc.sbase equ	$A130		; set screen base
+qpc.bmove equ	$A140		; block move
+qpc.bfill equ	$A150		; block fill
+qpc.beor  equ	$A160		; block eor
+qpc.cmblk equ	$A170		; block combine
+qpc.qlemu equ	$A1E0		; set ql screen (at $20000) emulation mode
+qpc.maxwn equ	$A1F0		; maximize window
+qpc.minwn equ	$A1F1		; minimize window
+qpc.reswn equ	$A1F2		; restore window
+qpc.sszwn equ	$A1F3		; set window size
 
-qpc.sexst equ   $A200           ; does ser port no. Dr exist?
-qpc.sinit equ   $A210           ; init ser port no. Dr
-qpc.sopen equ   $A220           ; open ser port no. Dr
-qpc.sclse equ   $A230           ; close ser port no. Dr
-qpc.ssend equ   $A240           ; send bytes in ser queue
-qpc.sesnd equ   $A250           ; enable sending (=signal tx event)
-qpc.srxen equ   $A260           ; activate receiving
-qpc.srxdi equ   $A270           ; deactivate receiving
-qpc.scdst equ   $A280           ; return CD status
-qpc.sbaud equ   $A290           ; set baud rate
-qpc.sgetp equ   $A2A0           ; get port
-qpc.ssetp equ   $A2B0           ; set port
-qpc.sique equ   $A2E0           ; get address of input queue
-qpc.soque equ   $A2F0           ; get address of output queue
+qpc.sexst equ	$A200		; does ser port no. Dr exist?
+qpc.sinit equ	$A210		; init ser port no. Dr
+qpc.sopen equ	$A220		; open ser port no. Dr
+qpc.sclse equ	$A230		; close ser port no. Dr
+qpc.ssend equ	$A240		; send bytes in ser queue
+qpc.sesnd equ	$A250		; enable sending (=signal tx event)
+qpc.srxen equ	$A260		; activate receiving
+qpc.srxdi equ	$A270		; deactivate receiving
+qpc.scdst equ	$A280		; return CD status
+qpc.sbaud equ	$A290		; set baud rate
+qpc.sgetp equ	$A2A0		; get port
+qpc.ssetp equ	$A2B0		; set port
+qpc.sique equ	$A2E0		; get address of input queue
+qpc.soque equ	$A2F0		; get address of output queue
 
-qpc.pexst equ   $A300           ; does par port no. Dr exist?
-qpc.pinit equ   $A310           ; init par port no. Dr
-qpc.popen equ   $A320           ; open par port no. Dr
-qpc.pclse equ   $A330           ; close par port no. Dr
-qpc.psend equ   $A340           ; send bytes in par queue
-qpc.pesnd equ   $A350           ; enable sending (=signal tx event)
-qpc.pinfo equ   $A360           ; get printer info
-qpc.pgetp equ   $A370           ; get printer name of port x
-qpc.psetp equ   $A380           ; set printer name of port x
-qpc.pgetf equ   $A390           ; get printer filter status
-qpc.psetf equ   $A3A0           ; set printer filter status
-qpc.poque equ   $A3F0           ; get address of output queue
+qpc.pexst equ	$A300		; does par port no. Dr exist?
+qpc.pinit equ	$A310		; init par port no. Dr
+qpc.popen equ	$A320		; open par port no. Dr
+qpc.pclse equ	$A330		; close par port no. Dr
+qpc.psend equ	$A340		; send bytes in par queue
+qpc.pesnd equ	$A350		; enable sending (=signal tx event)
+qpc.pinfo equ	$A360		; get printer info
+qpc.pgetp equ	$A370		; get printer name of port x
+qpc.psetp equ	$A380		; set printer name of port x
+qpc.pgetf equ	$A390		; get printer filter status
+qpc.psetf equ	$A3A0		; set printer filter status
+qpc.poque equ	$A3F0		; get address of output queue
 
-qpc.sclck equ   $A400           ; set PC's rtc
-qpc.smpos equ   $A410           ; set mouse position
-qpc.skled equ   $A420           ; set keyboard led status
-qpc.gkeyr equ   $A430           ; get keyrow status
+qpc.sclck equ	$A400		; set PC's rtc
+qpc.smpos equ	$A410		; set mouse position
+qpc.skled equ	$A420		; set keyboard led status
+qpc.gkeyr equ	$A430		; get keyrow status
 
-qpc.sbeep equ   $A700           ; start beep sound emulation
-qpc.kbeep equ   $A710           ; kill beep sound
-qpc.ssupd equ   $A711           ; buffer got updated
-qpc.skill equ   $A712           ; immediatelly silence SSSS
-qpc.ssbuf equ   $A720           ; set buffer management address
+qpc.sbeep equ	$A700		; start beep sound emulation
+qpc.kbeep equ	$A710		; kill beep sound
+qpc.ssupd equ	$A711		; buffer got updated
+qpc.skill equ	$A712		; immediatelly silence SSSS
+qpc.beepn equ	$A713		; are we beeping?
+qpc.ssbuf equ	$A720		; set buffer management address
+qpc.ayrst equ	$A730		; reset AY chips
+qpc.aykil equ	$A731		; kill AY sound for channel
+qpc.aychp equ	$A732		; set AY chip type
+qpc.ayfrq equ	$A733		; set AY frequency
+qpc.ayste equ	$A734		; set AY stereo mode
+qpc.ayvol equ	$A735		; set AY volume
+qpc.ayreg equ	$A740		; set AY registers
 
-qpc.ipopn equ   $AA00           ; IP open
-qpc.ipio  equ   $AA01           ; IP I/O
-qpc.ipcls equ   $AA02           ; IP close
-qpc.ipcla equ   $AA03           ; IP close all
-qpc.ipcnm equ   $AA04           ; IP channel name
+qpc.ipopn equ	$AA00		; IP open
+qpc.ipio  equ	$AA01		; IP I/O
+qpc.ipcls equ	$AA02		; IP close
+qpc.ipcla equ	$AA03		; IP close all
+qpc.ipcnm equ	$AA04		; IP channel name
 
-qpc.cdini equ   $AC10           ; init cd driver
-qpc.cdejc equ   $AC20           ; eject
-qpc.cdlad equ   $AC21           ; close
-qpc.cdstp equ   $AC22           ; stop playing
-qpc.cdrsm equ   $AC23           ; resume playing
-qpc.cdply equ   $AC30           ; play cd audio
-qpc.cdtst equ   $AC40           ; get track start
-qpc.cdtln equ   $AC50           ; get track length
-qpc.cdinf equ   $AC60           ; get cd info
-qpc.cdsti equ   $AC70           ; get status info
-qpc.cdpos equ   $AC80           ; get position
-qpc.cdh2r equ   $ACE0           ; convert hsg to redbook
-qpc.cdr2h equ   $ACF0           ; convert redbook to hsg
+qpc.cdini equ	$AC10		; init cd driver
+qpc.cdejc equ	$AC20		; eject
+qpc.cdlad equ	$AC21		; close
+qpc.cdstp equ	$AC22		; stop playing
+qpc.cdrsm equ	$AC23		; resume playing
+qpc.cdply equ	$AC30		; play cd audio
+qpc.cdtst equ	$AC40		; get track start
+qpc.cdtln equ	$AC50		; get track length
+qpc.cdinf equ	$AC60		; get cd info
+qpc.cdsti equ	$AC70		; get status info
+qpc.cdpos equ	$AC80		; get position
+qpc.cdh2r equ	$ACE0		; convert hsg to redbook
+qpc.cdr2h equ	$ACF0		; convert redbook to hsg
 
-qpc.donew equ   $AD00           ; DOS create new file
-qpc.doovr equ   $AD10           ; DOS create always new file
-qpc.dodir equ   $AD18           ; DOS open directory
-qpc.dopen equ   $AD20           ; DOS open old file
-qpc.dopin equ   $AD28           ; DOS open old file read only
-qpc.dclse equ   $AD30           ; DOS close file
-qpc.dclal equ   $AD38           ; DOS close all files
-qpc.ddele equ   $AD40           ; DOS delete file
-qpc.ddelt equ   $AD48           ; DOS delete temporary directory file
-qpc.dmdir equ   $AD50           ; DOS create directory
-qpc.dread equ   $AD60           ; DOS file read
-qpc.dwrte equ   $AD70           ; DOS file write
-qpc.dmove equ   $AD80           ; DOS move file pointer
-qpc.dtrnc equ   $AD90           ; DOS truncate file
-qpc.drnam equ   $ADA0           ; DOS rename file
-qpc.gdbse equ   $ADB0           ; DOS get base directory
-qpc.sdbse equ   $ADB8           ; DOS set base directory
-qpc.dfatr equ   $ADC0           ; DOS get file attribute
-qpc.sfatr equ   $ADC8           ; DOS set file attribute
-qpc.dsize equ   $ADD0           ; DOS get file size
-qpc.ddate equ   $ADE0           ; DOS get file date
-qpc.sdate equ   $ADE8           ; DOS set file date
-qpc.dfree equ   $ADF0           ; DOS get free/total disc space
+qpc.donew equ	$AD00		; DOS create new file
+qpc.doovr equ	$AD10		; DOS create always new file
+qpc.dodir equ	$AD18		; DOS open directory
+qpc.dopen equ	$AD20		; DOS open old file
+qpc.dopin equ	$AD28		; DOS open old file read only
+qpc.dclse equ	$AD30		; DOS close file
+qpc.dclal equ	$AD38		; DOS close all files
+qpc.ddele equ	$AD40		; DOS delete file
+qpc.ddelt equ	$AD48		; DOS delete temporary directory file
+qpc.dmdir equ	$AD50		; DOS create directory
+qpc.dread equ	$AD60		; DOS read file
+qpc.drhdr equ	$AD68		; DOS read header
+qpc.dwrte equ	$AD70		; DOS write file
+qpc.dshdr equ	$AD78		; DOS save header
+qpc.dmove equ	$AD80		; DOS move file pointer
+qpc.dtrnc equ	$AD90		; DOS truncate file
+qpc.drnam equ	$ADA0		; DOS rename file
+qpc.gdbse equ	$ADB0		; DOS get base directory
+qpc.sdbse equ	$ADB8		; DOS set base directory
+qpc.dfatr equ	$ADC0		; DOS get file attribute
+qpc.sfatr equ	$ADC8		; DOS set file attribute
+qpc.dsize equ	$ADD0		; DOS get file size
+qpc.ddate equ	$ADE0		; DOS get file date
+qpc.sdate equ	$ADE8		; DOS set file date
+qpc.dfree equ	$ADF0		; DOS get free/total disc space
+qpc.dminf equ	$ADF8		; DOS iof.minf
+qpc.dxinf equ	$ADF9		; DOS iof.xinf
 
-qpc.hrsec equ   $AE00           ; read sector (hd)
-qpc.hwsec equ   $AE01           ; write sector (hd)
-qpc.hdfmt equ   $AE02           ; create QXL.WIN file (with prot of qpc_exit)
-qpc.hdchk equ   $AE03           ; Check for removeable
-qpc.hdlck equ   $AE04           ; Lock drive
-qpc.hunlk equ   $AE05           ; close QXL.WIN file and unlock drive
-qpc.stfil equ   $AE06           ; set name of hard disc file
-qpc.rdfil equ   $AE07           ; read name of hard disc file
-qpc.chkwp equ   $AE08           ; check write protection
-qpc.hdcln equ   $AE09           ; cleanup HD driver
+qpc.hrsec equ	$AE00		; read sector (hd)
+qpc.hwsec equ	$AE01		; write sector (hd)
+qpc.hdfmt equ	$AE02		; create QXL.WIN file (with prot of qpc_exit)
+qpc.hdchk equ	$AE03		; Check for removeable
+qpc.hdlck equ	$AE04		; Lock drive
+qpc.hunlk equ	$AE05		; close QXL.WIN file and unlock drive
+qpc.stfil equ	$AE06		; set name of hard disc file
+qpc.rdfil equ	$AE07		; read name of hard disc file
+qpc.chkwp equ	$AE08		; check write protection
+qpc.hdcln equ	$AE09		; cleanup HD driver
 
-qpc.frsec equ   $AF00           ; read sector (floppy)
-qpc.fwsec equ   $AF01           ; write sector (floppy)
-qpc.fdfmt equ   $AF02           ; format floppy (with protection of qpc_exit)
-qpc.frlse equ   $AF03           ; release floppy drive
-qpc.fckwp equ   $AF04           ; check write protection
-qpc.fstfl equ   $AF05           ; set name of associated drive/image
-qpc.frdfl equ   $AF06           ; read name of associated drive/image
+qpc.frsec equ	$AF00		; read sector (floppy)
+qpc.fwsec equ	$AF01		; write sector (floppy)
+qpc.fdfmt equ	$AF02		; format floppy (with protection of qpc_exit)
+qpc.frlse equ	$AF03		; release floppy drive
+qpc.fckwp equ	$AF04		; check write protection
+qpc.fstfl equ	$AF05		; set name of associated drive/image
+qpc.frdfl equ	$AF06		; read name of associated drive/image
 
-        list
+	list

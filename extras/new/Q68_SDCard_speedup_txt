@@ -1,0 +1,39 @@
+Q68 faster SD card driver.
+
+Two features have been implemented in newer versions of the Q68 firmware:
+				      =============
+
+
+1 - 16 bit transfer instead of 8 bit transfer
+This means then when transferring data to/from the card, it can be read/written
+by word sized operations instead of byte sized operations. This might make the
+Q68 a little bit faster at every transfer of data to/from the SD Card.
+
+2 - 40Mhz speed for SD Card transfer.
+Normal transfer between the SD Card and the Q68 is done at 25 Mhz, in
+compliance with the specifications for SD cards.
+It has been experimentally found that it is possible to speed up the transfer
+to 40 Mhz. This, again, may give a slightly faster transfer speed. HOWEVER:
+USING THIS 40 MHz SPEED IS USING THE SD CARDS OUTSIDE THEIR SPECIFICATIONS. IT
+COULD CONCEIVABLY DESTROY THE CARD AND/OR THE DATA THAT IS ON IT.
+TEST THIS EXTENSIVELY WITH EACH AND EVERY CARD YOU WANT TO USE (and be
+prepared to have it destroyed). USE AT YOUR OWN RISK
+To avoid this being accidentally switched on, you must configure the SMSQE file,
+there you can switch this on individually for each drive.
+
+
+Using the 16 bit transfer is perfectly safe (and automatic if the firmware can
+handle it).
+
+
+NOTE: BOTH FACILITIES NEED NEWER VERSIONS OF THE FIRMWARE
+
+You can easily find out whether you have a firmware that allows this, simply by
+using the new CARD_SPEEDUP function :
+
+PRINT CARD_SPEEDUP will print 1 if you have a firmaware that can use 16-bit
+transfer and 40 Mhz transfer speed, 0 if not.
+
+
+W. Lenerz
+Nov. 2020

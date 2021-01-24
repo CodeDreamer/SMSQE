@@ -1,4 +1,6 @@
 ; QPC SMSQ BEEP emulation    1988  Tony Tebby	 QJUMP
+;
+; 2018-01-03  1.01  Moved beep killing to QPC2 to support shorter beeps
 
 	section sms
 
@@ -58,18 +60,6 @@ hob_dlend
 
 	move.l	sp,a0
 	dc.w	qpc.sbeep		 ; start beep sound
-
-	moveq	#0,d0
-	move.w	4(a0),d0		 ; length of sound
-	ror.w	#8,d0
-	beq.s	hob_endless
-	divu	#455,d0 		 ; correction for 50hz poll
-	tst.w	d0
-	bne.s	hob_setlength
-	moveq	#1,d0			 ; at least 1 tick
-hob_setlength
-	move.w	d0,qpc_bcnt		 ; count down
-hob_endless
 	st	sys_qlbp(a6)		 ; ... beeping now
 
 	add.w	#frame,sp
@@ -80,7 +70,7 @@ hob_ok
 
 hdop_bpof
 	movem.l hob.rege,-(sp)
-	move.w	#1,qpc_bcnt		 ; kill beep
+	dc.w	qpc.kbeep
 	sf	sys_qlbp(a6)		 ; ... not beeping now
 	bra.s	hob_ok
 

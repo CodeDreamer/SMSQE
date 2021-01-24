@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.36'
+smsq_vers equ	 '3.37'
 
 	end
 	    
@@ -14,6 +14,21 @@ smsq_vers equ	 '3.36'
 ; #&#  not, the next line is supposed to be a continuation).
 
 
+; 3.37	Ramdisk makes QDOS driver again (MK).
+;	Fixed io.minf for dv3 to fill name with spaces as before (broken in v3.36) (MK).
+;	QL-SD: Minerva fixes, QLNET support, new BASIC utilities (MK+wl).
+;	Ptr_gen fixed QL Mode support, added native QemuLator support (MK).
+;	Make QDOS NUL driver again (MK).
+;	Fixed dead ' key on spanish keyboard for Gold card (MK).
+;	Gut make channel list distinguishes between CON and SCR channels (MK).
+;	Adaption for QPC2 v5 (MK).
+;	Initial support for QPC QSOUND for AY sound (MK).
+;	No longer add default devices if filename starts with valid device name (MK).
+;	Q68 16-bit card transfer, bugfixes (wl).
+;	Q40 fix for Atari partition check (wl).
+;	SBasic fixed "buffer full" error in command line history (wl).
+;	SMSQmulator support for udp/udd device (wl).
+;
 ; 3.36	QL-SD allows direct formatted cards (MK).
 ;	Ibm keyboard : key to generate "¼" added(MK+wl).
 ;	Better handling of iof_xinf (for dmedium_name$) (MK+wl).
@@ -34,7 +49,7 @@ smsq_vers equ	 '3.36'
 ;	Q68 always return even address for mem request for fast memory (wl).
 ;	SMSQmulator better 8 bit sprite cache handling (wl).
 ;
-; 3.34	Added SSJOB command, extended JOB_NAME to compiled programs (pjw).
+; 3.34	Added SSJOB command, extended JOB_NAME to compiled programs (PJW).
 ;	TK II provide for ROM and standalone version (mk).
 ;	QL-SD updated drivers (mk).
 ;	Q68 WIN_FORMAT command fixed (wl).

@@ -26,7 +26,8 @@ smsq_name
 	xref	fd_init
 	xref	hd_init
 	xref	dv3_addfd
-	xref	qlf_table
+;	 xref	 qlf_table
+	xref	qw1_table
 
 	xref	dev_init
 
@@ -38,7 +39,8 @@ init
 	jsr	dv3_init	 ; initialise
 	jsr	hd_init
 	jsr	fd_init
-	lea	qlf_table,a1
+;	 lea	 qlf_table,a1
+	lea	qw1_table,a1	 ; includes QLW1 driver
 	jsr	dv3_addfd
 
 	jmp	dev_init

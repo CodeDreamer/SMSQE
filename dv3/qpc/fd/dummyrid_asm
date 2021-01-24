@@ -13,18 +13,4 @@ fd_rid
 	moveq	#0,d0
 	rts
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	end

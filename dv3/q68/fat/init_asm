@@ -1,9 +1,9 @@
-; DV3 Q68 SDHC Driver initialisation 1.00  W. Lenerz 2016
+; DV3 Q68 SDHC Driver initialisation 1.01  W. Lenerz 2016-2020
 ;
 ; based on
 ;
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
-
+; 1.01	rearranged config items
 
 	section dv3
 
@@ -120,7 +120,7 @@ fat_proctab
 
    
 ; fat config items
-
+	dc.w	0
 qcf_fatu	dc.b	0,q68.coff,-1,-1,-1,-1,-1,-1 ; the cards for each fat drive
 qcf_fatp	dc.b	1,1,1,1,1,1,1,1 ; the partition (1-4)
 qcf_fatl	dc.b	0
@@ -128,7 +128,7 @@ qcf_fatl	dc.b	0
 	mkcfstart
 	mkcfhead {FAT device settings},{fat_vers}
 
-	  mkcfitem 'q68f',code,'L',qcf_fatl,,,\
+	  mkcfitem 'q68i',code,'L',qcf_fatl,,,\
 	  {Link in FAT driver?} \
 	  0,N,{No},1,Y,{Yes}
 

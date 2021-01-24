@@ -1,7 +1,7 @@
-; Q68 Mouse Interrupt (or Poll) Routine  V1.00 (c) W. Lenerz 2017
+; Q68 Mouse Interrupt (or Poll) Routine  V1.01 (c) W. Lenerz 2017 - 2020
 
+; 1.01 2020-11-12   removed dead code	 (wl)
 ; THIS CODE IS NOT ROMMABLE unless used as a minimodule (which it is)
-
 
 ; this is called from an interrupt
 ; mouse button 1 (left) = 1
@@ -39,7 +39,7 @@
 ; For each byte an interrupt is generated. Only when the last byteof a packet
 ; is collected is the mouse data acted upon, in the meantime the intermediary
 ; bytes are stored here at label ms_btn & beyond. THIS MEANS THAT THIS CODE IS
-; NOT ROMMABLE. Al label ms_stat, I keep a count of what bytes were received
+; NOT ROMMABLE. At label ms_stat, I keep a count of what bytes were received
 ; so far.
 ;
 ; A mouse interrupt sets bit#0 of mouse_status : if this bit is set, a byte is
@@ -53,7 +53,6 @@ mse.xmv equ	4
 mse.ymw equ	6
 mse.scr equ	8
 
-
 mse_hdr
 	dc.w	mse_intr-*
 	dc.w	mse_end-*
@@ -61,7 +60,6 @@ mse_intr
 	move.b	mouse_status,d3
 	btst	#m.rcv,d3		; any mouse activity?
 	beq.s	mse_done		; no, must have been another int ->
-  addq.l	#1,$17d34
 	move.l	sys_clnk(a6),d0 	; get kbd/pointer linkage
 	beq.s	mse_done		; there is none?! ->
 	move.l	d0,a5			; keep
@@ -111,8 +109,6 @@ mse_addinc
 	addq.w	#1,d0			; make sure that there is a move
 mse_setinc
 	move.w	d0,pt_xicnt(a5) 	; update count
-;	 move.w  #200,pt_xicnt(a5)	   ; update count
-;	 addq.w  #1,pt_xicnt(a5)
 	add.w	d2,pt_xinc(a5)
 	add.w	d1,pt_yinc(a5)		; and distance moved
 
@@ -218,21 +214,8 @@ mse_end
 mse_init
 	lea	mse_hdr,a0
 	jsr	cpy_mmod
-;	 lea	 mse_xlnk,a0		 ; linkage area
-;	 lea	 mse_intr(pc),a1	 ; external interrupt address
-;	 move.l  a1,4(a0)		 ; set it in linkage area
 	moveq	#sms.lexi,d0		; link in interrupt routine
-;	 lea	 sms.conf+q68_msecf,a1
-;	 add.b	 (a1),d0		 ; or poll routine
 	trap	#1
-;	 st	 mouse_unlock		 ; I can now receive mouse data
 	rts
 
-
 	end
-
-
-; mouse interrupt routine linkage area
-
-mse_xlnk dc.l	0			; external interrupt linkage
-mse_xiad dc.l	0			; absolute ext. int. service routine address

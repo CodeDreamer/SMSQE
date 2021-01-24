@@ -1,5 +1,6 @@
 ; DV3 Q40 Find Partition (Atari root)	     1999  Tony Tebby
 
+; 2020-04-29  V3.05 fix for atari partition check (wl)
 ; 2020-03-24  V3.04 fix for direct QLWA formatted CF cards, can use other partitions on FAT32 cards (wl)
 ; 2018-02-06  V3.03 fix for *d2d access to fat16 CF cards (wl)
 ; 2017-11-21  V3.02 LBA access to QXL.WIN files on FAT32 formatted media (wl)
@@ -55,9 +56,10 @@ hfp_rootloop
 	bne	hfp_mchk
 	jsr	hdl_rsint(a3)		; read sector
 	bne	hfp_npart		; no partition
-	lsl.w	#4,d4
-	add.w	#dos_prt1,d4
-	move.l	(a1,d4.w),d0		; partition start
+	move.l	d4,d0
+	lsl.w	#4,d0			; 3.36 : don't change d4
+	add.w	#dos_prt1,d0
+	move.l	(a1,d0.w),d0		; partition start
 	cmp.w	#dos.ftcs,dos_ftcs(a1)	; (unswapped) FAT32 marker present?
 	beq	chk_fat32_normal	; ... yes
 	cmp.w	#dos.ftsw,dos_ftcs(a1)	; (swapped) FAT32 marker present?

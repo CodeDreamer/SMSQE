@@ -1,0 +1,226 @@
+; sys_qsound function code
+;
+;       moveq   #<fct>,d0
+;       move.l  sys_qsound(a6),a0
+;       jsr     (a0)
+;
+;       status return standard
+
+;+++
+;       AY_RESET
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $00                     D0.L    0 or error code
+;       D1                              D1      undefined
+;       D2                              D2      undefined
+;       A1                              A1      undefined
+;       A5                              A5      undefined
+;---
+ay.reset        equ     0
+
+;+++
+;       AY_WRREG
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $01                     D0.L    0 or error code
+;       D1.B    Register value          D1      preserved
+;       D2.B    $CR: Chip/Register no   D2      preserved
+;       A5                              A5      undefined
+;---
+ay.wrreg        equ     1
+
+;+++
+;       AY_RDREG
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $02                     D0.L    0 or error code
+;       D1                              D1.B    register value
+;       D2.B    $CR: Chip/Register no   D2      preserved
+;       A5                              A5      undefined
+;---
+ay.rdreg        equ     2
+
+;+++
+;       AY_WRALL
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $03                     D0.L    0 or error code
+;       D1.B    Chip number             D1      undefined
+;       D2                              D2      undefined
+;       A1.L    Pointer to data block   A1      undefined
+;       A5                              A5      undefined
+;---
+ay.wrall        equ     3
+
+;+++
+;       AY_RDALL
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $04                     D0.L    0 or error code
+;       D1.B    Chip number             D1      undefined
+;       D2                              D2      undefined
+;       A1.L    Pointer to data block   A1      undefined
+;       A5                              A5      undefined
+;---
+ay.rdall        equ     4
+
+;+++
+;       AY_PLAY
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $05                     D0.L    0 or error code
+;       D1.B    AY channel              D1      preserved
+;       A0.L    Pointer to string       A0      undefined
+;       A5                              A5      undefined
+;---
+ay.play         equ     5
+
+;+++
+;       AY_TSTPL
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $06                     D0.L    0 or error code
+;       D1.B    AY channel              D1.L    0 = waiting / 1 = playing
+;       A5                              A5      undefined
+;---
+ay.tstpl        equ     6
+
+;+++
+;       AY_HOLD
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $07                     D0.L    0 or error code
+;       D1.B    AY channel              D1      undefined
+;       D2                              D2      undefined
+;       D3                              D3      undefined
+;       A0                              A0      undefined
+;       A1                              A1      undefined
+;       A5                              A5      undefined
+;
+; AY channel 0 causes all channels to stop
+;---
+ay.hold         equ     7
+
+;+++
+;       AY_RELSE
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $08                     D0.L    0 or error code
+;       D1.B    AY channel              D1      undefined
+;       D2                              D2      undefined
+;       D3                              D3      undefined
+;       A0                              A0      undefined
+;       A1                              A1      undefined
+;       A5                              A5      undefined
+;
+; AY channel 0 causes all channels to continue
+;---
+ay.relse        equ     8
+
+;+++
+;       AY_NOISE
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $09                     D0.L    0 or error code
+;       D1.B    noise                   D1      undefined
+;       D2                              D2      undefined
+;       A1                              A1      undefined
+;       A5                              A5      undefined
+;
+; noise: 0 = explosion
+;        1 = gunshot
+;        2 = bell
+;---
+ay.noise        equ     9
+
+;+++
+;       AY_SOUND
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0A                     D0.L    0 or error code
+;       D1.B    AY channel              D1      undefined
+;       D2.W    frequency               D2      undefined
+;       D3.B    volume                  D3      undefined
+;       A5                              A5      undefined
+;---
+ay.sound        equ     10
+
+;+++
+;       AY_INFO
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0B                     D0.L    0 or error code
+;       D1                              D1.L    Version
+;       D2                              D2.L    Chip count
+;       A5                              A5      undefined
+;---
+ay.info         equ     11
+
+;+++
+;       AY_CHIP_TYPE
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0C                     D0.L    0 or error code
+;       D1.L    -1(read), 0(AY), 1(YM)  D1.L    Current type 0(AY), 1(YM)
+;       A5                              A5      undefined
+;---
+ay.chip_type    equ     12
+
+ayct.ay equ     0
+ayct.ym equ     1
+
+;+++
+;       AY_CHIP_FREQ
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0D                     D0.L    0 or error code
+;       D1.L    -1 (read), freq (Hz)    D1.L    Current frequency
+;       A5                              A5      undefined
+;---
+ay.chip_freq    equ     13
+
+;+++
+;       AY_STEREO
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0E                     D0.L    0 or error code
+;       D1.L    -1 (read), mode         D1.L    Current mode
+;       A5                              A5      undefined
+;
+; Modes: 0 = mono, 1 = ABC, 2 = ACB, 3 = BAC, 4 = BCA, 5 = CAB, 6 = CBA
+;---
+ay.stereo       equ     14
+
+ayst.mono       equ     0
+ayst.abc        equ     1
+ayst.acb        equ     2
+ayst.bac        equ     3
+ayst.bca        equ     4
+ayst.cab        equ     5
+ayst.cba        equ     6
+
+;+++
+;       AY_VOLUME
+;
+;       Registers:
+;               Entry                           Exit
+;       D0.L    $0F                     D0.L    0 or error code
+;       D1.L    -1 (read), $0000..$FFFF D1.L    Current volume
+;       A5                              A5      undefined
+;---
+ay.volume       equ     15

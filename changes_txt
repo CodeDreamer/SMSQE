@@ -3,6 +3,146 @@ SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
 
+3.37
+
+    QPC (MK)
+	dv3_qpc_hd_ckrdy_asm		3.02	update ddf_remv in case of auto_detect
+	dv3_qpc_cct			.	2 file changes (fd_done, fd_pflush)
+	smsq_qpc_hdop_beep_asm		1.01	moved beep killing to QPC2 to support shorter beeps
+	smsq_qpc_isrv_asm		1.02	beep-end code now on PC side to support shorter beeps
+
+	ADAPTIONS FOR QPC V.5		.	THE FOLLOWING FILES HAVE BEEN CHANGED TO SUIT QPC V5
+	smsq_qpc_dos_thing_asm		1.01
+	smsq_qpc_dos_open_asm		1.01
+	smsq_qpc_dos_io_asm		1.04
+	smsq_qpc_dos_close_asm		1.01
+	smsq_qpc_driver_dv3e_link	.
+	smsq_qpc_dv3e_asm		.
+	smsq_qpc_keys			.
+
+
+    QSOUND
+	iod_qsound			.	created directory
+	iod_qsound_driver_asm		1.00	AY chip sound driver (MK)
+	iod_qsound_driver_keys		.	driver keys file
+	iod_qsound_keys 		.	general keys
+	iod_qsound_cct			.
+	iod_qsound_main_asm		3.00	AY-sound chip API and BASIC commands (MK & JM)
+	iod_qsound_qpc_asm		1.00	QPC specific driver part (MK)
+
+
+    TK2 DON'T ADD DEFAULT DEVICES IF FILENAME STARTS WITH A VALID DEVICE (MK)
+	sbsext_tk2_version_asm		.	modified to suit
+	sbsext_tk2_versions_txt 	.	modified to suit
+
+
+    RAMDISK MAKE QDOS DRIVER AGAIN (MK)
+	dd_rd_ql_cct			.	creation
+	dd_rd_link			.	modified to suit
+
+
+    PTR-GEN QLMODE FIX AND Q-EMULATOR SUPPORT (MK)
+	ee_ptr_close_asm		1.04	changed mode information from sys_qlm
+	ee_ptr_copyc_asm		1.04	changed mode information from sys_qlmr to pt_dmode
+	ee_ptr_sched_asm		1.12	pdate pt_dmode for CON2 code to use
+	ee_hot_link			.	modified to suit
+	ee_ptr_link			.	modified to suit
+	ee_ptr_gen_asm			1.06	added Q-emulator support
+	iod_con2_ptr_version_asm	.	modified to suit
+
+
+    QLSD MISC
+	dv3_qlsd_hd_ckrdy_asm		1.02	always assume card changed after re-init (MK)
+	dv3_qlsd_open_asm		3.04	fixed Minerva heap corruption issue (MK)
+	dv3_qlsd_close_asm		3.01	correctly calculate heap block length for Minerva (mk)
+	dv3_qlsd_init_asm		1.02	removed CARD_INIT (wl)
+
+
+    QLSD CONTAINS NET CODE IN ROM (MK)
+	dv3_qlsd_respr_asm		1.01	provide stub only for network code
+	dv3_qlsd_io_asm 		3.03	(split from main trunc), removed support for DOS timestamps to save space, fixed io.minf to fill the name with spaces (MK)
+	dv3_qlsd_rom_link		.	adjusted to suit
+	dv3_qlsd_version_asm		.	adjusted to suit
+	dv3_qlsd_init_asm		1.03	added network driver call
+							       
+
+    QLSD NEW BASIC UTILITIES (MK + wl)
+	dv3_qlsd_utils_basic_asm	1.00	utils init code
+	dv3_qlsd_utils_basic_link	.	added
+	dv3_qlsd_utils_card_asm 	1.00	CARD_xxxx keywords
+	dv3_qlsd_utils_get_linkage_asm	1.00	search for WIN driver linkage block
+
+
+    Q68 USE 16-BIT CARD TRANSFER AND 40 MHz TRANSFER SPEED (wl)
+	dv3_q68_qub_init_asm		1.01	re-arranged config item names
+	dv3_q68_fat_init_asm		1.01	re-arranged config item names
+	dv3_q68_win_init_asm		1.01	re-arranged config item names
+	dv3_q68_sdhc_rsect_asm		1.05	added 16 bit read
+	dv3_q68_sdhc_wsect_asm		1.03	added 16 bit write
+	keys_q68			.	adjusted to suit
+	dv3_q68_win_init_asm		1.02	card_speedup added, removed test code
+	dv3_q68_win_card_xxxx_asm	1.03	card_speedup added, removed test code
+
+
+    Q68 BUGFIXES (wl)
+	dv3_q68_win_card_xxxx_asm	1.02	bugfix for card_create
+	dv3_q68_sdhc_ckrdy_asm		1.02	ensure drive defn is rebuilt after card initialization
+	smsq_q68_rtc_asm		1.01	use pc_clock, else clock might slow down during heavy interrupt activity
+
+
+    Q68 MISC (wl)
+	smsq_q68_driver_mouse_asm	1.01	removed dead code
+	smsq_q68_kbd_int_asm		1.01	removed debug code
+	smsq_q68_hwinit_asm		1.03	remove card init config item, add card speed items, check for firmware revision, clear ETH interrupt reg early on in boot process
+
+
+    Q40 MISC (wl)
+	dv3_q40_hd_fpart_asm		3.05	fix for atari partition check
+	dv3_q40_hd_init_asm		3.03	delay whilst waiting for drive to come online
+
+
+    MISC
+	dv3_dv3_io_asm			3.02	fix io.minf to fill the name with spaces (MK)
+	smsq_ioq_setq_asm		2.01	corrected header, d1 is preserved (wl)
+	smsq_sbas_main_asm		1.04	fixed "buffer full" error in command line history (wl)
+	smsq_gold_kbd_spanish_asm	1.01	fixed ' dead key (MK)
+	util_gut_mkchl_asm		0.04	distinguish between CON and SCR  (MK)
+	sbsext_ext_german_net_asm	.	split some exts off that don't need to be in NET driver (all MK)
+	sbsext_ext_german_asm		.	"     "
+	sbsext_ext_french_net_asm	.	"     "
+	sbsext_ext_french_asm		.	"     "
+	sbsext_ext_english_net_asm	.	"     "
+	sbsext_ext_english_asm		.	"     "
+	sbsext_ext_cct			.	amended to suit
+	sbsext_tk2_rom_net_link 	.	  "     "    "
+	util_cv_cctx			.	split code and table (sharter code if table not needed) (MK)
+	util_cv_cttab_asm		2.01	split from ctype_asm (MK)
+	util_cv_ctype_asm		2.01	moved table to own file to save space when code not needed (MK)
+
+
+    NUL DEVICE FOR QDOS (MK)
+	iod_nul_link			.	changed to make QDOS driver again
+
+
+    SMSQMULATOR SUPPORT FOR UDP/UDD DEVICE (wl)
+	smsq_java_ip_close_asm		1.01	check for UDP
+	smsq_java_ip_cnam_asm		1.02	check for UDP
+	smsq_java_ip_init_asm		1.02	check for UDP
+	smsq_java_ip_io_asm		1.02	check for UDP
+	smsq_java_ip_open_asm		1.02	check for UDP
+	smsq_java_ip_data		.	modified to suit
+	smsq_java_ip_version_asm	.	modified to suit
+    
+
+    SMSQMULATOR MISC (wl)
+	smsq_java_ctrl_float_asm	1.02	removed dead & test code (DEG/RAD conversion)
+	smsq_java_ctrl_init_asm 	1.03	removed test & dead code
+
+
+    REMOVED SPURIOUS LINEFEEDS (too many files to list, most kept their initial date)
+
+-----------------------------------------------------------------------------
+
 3.36
 
     QLSD ALLOWS DIRECT QLWA FORMATTED CARDS (MK)
@@ -1668,15 +1808,16 @@ Version  changed		       of file	changes made
 keys:
 
 BC = Bruno Coativy
+DW = David Westbury
 FD = Fabrizio Diversi
-PD = Phoebus Dokos
 GG = George Gwilt
 JG = Jƒr˜me Grimbert
 JH = John Hall
+JM = Jochen Merz
 MK = Marcel Kilgus
 MS = Mark Swift
+PD = Phoebus Dokos
+PW = Per Witte
 TG = Thierry Godefroy
 TT = Tony Tebby
-DW = David Westbury
-PW = Per Witte
 WL = Wolfgang Lenerz

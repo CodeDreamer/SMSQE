@@ -1,7 +1,8 @@
-; DV3 Q40 IDE Initialisation  V3.02    1992  Tony Tebby
+; DV3 Q40 IDE Initialisation  V3.03    1992  Tony Tebby
 ;
-; WIN_CHECK,CARD_DIR$ added   v3.02   @ w. lenerz 2020
-; Additions for LBA access    V3.01    W. Lenerz 2017 Nov 21
+; v3.03 2020-05-06 delay whilst waiting for drive to come online (wl)
+; v3.02 WIN_CHECK,CARD_DIR$ added    @ w. lenerz 2020
+; V3.01 Additions for LBA access      W. Lenerz 2017 Nov 21
 ;
 	section dv3
 
@@ -46,6 +47,7 @@
 	include 'dev8_mac_basic'
 	include 'dev8_mac_proc'
 	include 'dev8_keys_q40'
+	include 'dev8_smsq_smsq_base_keys'
 
 ide.0	  equ	ide0
 ide.1	  equ	ide1
@@ -82,16 +84,30 @@ hd_init
 
 	jsr	hd_1sec
 	move.l	d0,hdl_1sec(a3)
+	move.l	d0,d5
 
 	lea	q40_wn1+2,a0		; configured name
 	lea	hdl_end(a3),a1		; names lie after device defn (linkage) block
 	bsr	norm_nm 		; copy & normalise name
 
+	moveq	#0,d3
+	move.b	q40_dkdl,d3		; wait for drive?
+	beq.s	hdi_ckdrive		; no
+	mulu	#25,d3			; the check takes a long time
+	moveq	#1,d2			; read 1 sector
+	moveq	#0,d7			; of disk (and target) 1
+	lea	hdl_buff(a3),a1 	; root sector buffer
+
+hdi_wait
+	jsr	hd_1sec
+	moveq	#0,d0
+	jsr	hdl_rsint(a3)		; check disk : try to read sector 0
+	beq.s	hdi_ckdrive		; success, done
+	dbf	d3,hdi_wait
 hdi_ckdrive
 	moveq	#0,d1			; try partitions 0 to 7
 	moveq	#1,d7			; for WIN1
 	st	hdl_npart(a3)		; assume no partition found at all
-
 hdi_loop
 	move.b	d1,hdl_part(a3)
 	lea	hdi_boot,a0
@@ -224,7 +240,10 @@ hd_proctab
 
 	mkcfhead {WIN},1
 
-	 mkcfitem 'Q481',string,0,q40_wn1,,ppr,{Filename for WIN1 container file},0
+	  mkcfitem 'Q481',string,0,q40_wn1,,ppr,{Filename for WIN1 container file},0
+
+	  mkcfitem 'Q482',byte,'D',q40_dkdl,,,\
+	  {Disk startup delay: 0 - 20},0,20
 
 	mkcfblend
 
@@ -235,6 +254,8 @@ q40_wn1 dc.w   13,7
 	dc.w   'QXL.WIN',0,0,0
 
 drv_ind dc.b	$ff,0
+
+q40_dkdl dc.b	0
 
 ; post processing routine to make sure that a name is a valid 8.3 name
 ppr	tst.b	d1

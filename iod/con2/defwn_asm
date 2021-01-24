@@ -29,9 +29,4 @@ cn_defwn
 cnd_exit
 	rts
 
-
-
-
-
-
 	end

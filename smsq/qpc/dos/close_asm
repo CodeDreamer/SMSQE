@@ -1,4 +1,6 @@
-; Close DOS	    V1.00     1997   Marcel Kilgus
+; Close DOS	    V1.01     1997   Marcel Kilgus
+;
+; 2018-12-31  1.01  Adapted for new QPC2v5 DOS driver
 
 	section dos
 
@@ -17,29 +19,8 @@
 	include 'dev8_smsq_qpc_keys'
 
 dos_close
-	move.l	a0,-(sp)		; save pointer to strings
-	  bra.s   dos_realclose
-	lea	sys_fsch(a6),a1 	; scan linked list of fsd channels
-*
-dos_checkloop
-	move.l	(a1),d0 		; any more?
-	beq.s	dos_realclose		; ... no
-	cmp.l	(sp),d0
-	beq.s	dos_checkloop		; ... it's us
-	move.l	d0,a1
-	cmp.l	#chn_nchk,chn_nchk-chn_link(a1) ; no checking?
-	beq.s	dos_checkloop		; ... no
-
-	cmp.b	chn_drid-chn_link(a1),d6 ; same drive?
-	bne.s	dos_checkloop		 ; ... no, carry on
-	lea	chn_name-chn_link(a1),a4 ; name of file already open
-	move.l	(sp),a0
-	bsr.l	ioa_cknm		; check file name
-	bne.s	dos_checkloop		; ... no match
-	bra.s	dos_smsclose		; file open more than one time
-
-dos_realclose
-	move.l	(sp),a0
+reglist reg	a3/a4
+	movem.l reglist,-(sp)
 	move.l	chn_hand(a0),d1
 	dc.w	qpc.dclse
 	cmp.b	#4,chn_accs(a0)
@@ -47,19 +28,17 @@ dos_realclose
 
 	dc.w	qpc.ddelt		; Delete temporary directory file
 dos_smsclose
-	move.l	(sp)+,a0
-	moveq	#0,d0
-	move.b	chn_drid(a0),d0
-	lsl.b	#2,d0
-	lea	sys_fsdd(a6),a2
-	move.l	(a2,d0.w),a2
-	subq.b	#1,iod_nrfl(a2) 	; decrement file count
+	move.l	chn_ddef(a0),a4 	; Physical definition
+	subq.b	#1,iod_nrfl(a4) 	; decrement file count
+
 	lea	chn_link(a0),a0
-	lea	sys_fsdt(a6),a1
-	move.w	mem.rlst,a4
-	jsr	(a4)			; unlink file from list
+	lea	sys_fsch(a6),a1
+	move.w	mem.rlst,a2
+	jsr	(a2)			; unlink file from list
 	lea	-chn_link(a0),a0
-	move.w	mem.rchp,a4
-	jmp	(a4)
+	move.w	mem.rchp,a2
+	jsr	(a2)
+	movem.l (sp)+,reglist
+	rts
 
 	end

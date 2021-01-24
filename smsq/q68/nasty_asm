@@ -76,9 +76,4 @@ nasty_base
 nasty_done
 	jmp	rtc_init
 
-
-
-
-
-
 	end

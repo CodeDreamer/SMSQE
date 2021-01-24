@@ -1,9 +1,11 @@
-; DV3 Q68 SDHC (WIN) Driver initialisation 1.00  W. Lenerz 2016 - 2017
+; DV3 Q68 SDHC (WIN) Driver initialisation 1.02  W. Lenerz 2016 - 2020
 ;
 ; based on
 ;
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
 
+; 2020-11-27	1.02  card_speedup added, removed test code (wl)
+;		1.01  don't check for card 2 init, config items rearranged (wl)
 
 	section dv3
 
@@ -22,18 +24,20 @@
 	include 'dev8_dv3_hd_keys'
 	include 'dev8_dv3_mac'
 	include 'dev8_mac_assert'
-	include 'dev8_mac_basic'
+	include 'dev8_mac_basic2'
 	include 'dev8_mac_proc'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_q68'
 	include 'dev8_smsq_smsq_base_keys'
 	include 'dev8_mac_MultiConfig'
 
-;++++++++++++++++++++
+;------------------------------------------------
+;
 ; DV3 Q68 SDHC (WIN) driver initialisation
 ;
 ;	a3  r	device driver linkage
-;--------------------
+;
+;------------------------------------------------
 win_init
 	lea	hd_table,a3
 	jsr	dv3_link		; link in driver
@@ -73,17 +77,6 @@ norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
 	move.l	d6,a1
 	dbf	d7,norm_lp
 
-	bra.s	done
-
-; check whether card2 should be initialised
-	move.b	sms.conf+q68_card2,d0	; config item for card2
-	beq.s	done			; never init card
-	subq.b	#1,d0			; init it always ?
-	bne.s	crd2			; ... yes
-ondrv	move.l	a4,d3			; ... only if a drive is on card 2
-	beq.s	done			; but no drive is on card 2, don't init
-crd2	moveq	#q68.coff,d1		; this is the card
-	jsr	inicrd			; (try to) init it
 done	jsr	cpy2mem 		; copy routines into fast mem
 	movem.l (a7)+,cpyreg
 	moveq	#0,d0			; done
@@ -143,14 +136,14 @@ WIN_drive	proc  {DRIV}
 ;WIN_stop	proc  {STOP}
 ;WIN_remv	proc  {REMV}
 WIN_wp		proc  {WPRT}
-;WIN_slug	proc  {SLUG}
 WIN_safe	proc  {SAFE}
 CARD_init	proc  {INIT}
-WIN_format	proc {FRMT}
+WIN_format	proc  {FRMT}
 WIN_drive$	fun40 {DRV$}
 WIN_check	proc  {CHEK}
 card_renf	proc  {CREN}
 card_create	proc  {CREA}
+card_speed	fun   {SPED},8
 card_dir$	move.l	#16*14,d7
 		bsr	fun_thg
 		dc.l	'CDIR'
@@ -170,6 +163,7 @@ hd_proctab
 	proc_stt
 	proc_ref WIN_DRIVE$
 	proc_ref CARD_DIR$
+	proc_ref CARD_SPEEDUP,card_speed
 	proc_end
 
 	xref.l	win_vers
@@ -209,7 +203,7 @@ hd_proctab
 	  {WIN7_ is on card},0,1,{1},q68.coff,2,{2},$ff,0,{None}
 
 	  mkcfitem 'Q688',string,0,q68_wn8,,ppr,{Filename for WIN8},0
-	  mkcfitem 'Q68I',code,0,q68_drv8,,,\
+	  mkcfitem 'Q68K',code,0,q68_drv8,,,\
 	  {WIN8_ is on card},0,1,{1},q68.coff,2,{2},$ff,0,{None}
 
 	mkcfblend

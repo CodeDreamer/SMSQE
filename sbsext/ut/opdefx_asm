@@ -1,4 +1,6 @@
 ; Utility open a file using name, default and extension  1994 Tony Tebby
+;
+; 2020-08-24  1.01  Don't add default directories on names with drives (MK)
 
 	section utils
 
@@ -20,6 +22,8 @@
 	include 'dev8_keys_err'
 	include 'dev8_keys_sys'
 	include 'dev8_keys_hdr'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_qdos_sms'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_sbsext_ut_opdefx_keys'
 	include 'dev8_mac_assert'
@@ -156,10 +160,38 @@ stk_ext equ	$14
 	lea	buff_off(a6,a3.l),a3	 ; leave room for the count
 	move.l	a1,d0			 ; ... is there a pointer to a name?
 	beq.l	uod_opdef		 ; ... no, just open with default
-	tst.w	(a6,a1.l)		 ; is there a name at all?
+	move.w	(a6,a1.l),d0		 ; is there a name at all?
 	beq.l	uod_opdef		 ; ... no, just open with default
 	blt.l	uod_inam
 
+; Does filename start with a known device name? Don't add default dir then!
+; Note: we assume all directory devices have 3 character names
+	subq.w	#5,d0			 ; must have at least 5 chars for check
+	bcs.s	uod_start
+	cmp.b	#'_',6(a6,a1.l) 	 ; underscore at right place?
+	bne.s	uod_start		 ; no, we can skip test
+	move.b	5(a6,a1.l),d0		 ; drive number must be between 1 and 8
+	sub.b	#'1',d0
+	bcs.s	uod_start
+	subq.b	#8,d0
+	bcc.s	uod_start
+
+	moveq	#sms.info,d0
+	trap	#1
+	lea	sys_fsdl(a0),a0 	 ; list with directory device drivers
+	move.l	#$dfdfdf00,d1
+	and.l	2(a6,a1.l),d1		 ; First 3 chars of filename
+uod_fsloop
+	move.l	(a0),d0 		 ; next driver
+	beq.s	uod_start		 ; no more
+	move.l	d0,a0
+	move.l	#$dfdfdf00,d0
+	and.l	iod_dnus-iod_iolk+2(a0),d0
+	cmp.l	d0,d1
+	bne.s	uod_fsloop		 ; no match, try next
+
+	andi.b	#$ff-uod.datd-uod.prgd-uod.dstd,d7 ; match, don't try def dirs!
+uod_start
 	lea	ut_null,a4		 ; no default first time round
 uod_tryd
 	move.w	(a4)+,d2		 ; get character count of default

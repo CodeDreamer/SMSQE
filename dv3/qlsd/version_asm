@@ -38,7 +38,11 @@
 ; 1.07	Fixed compatibility with DEV device under Minerva
 ;
 ; 1.08	Allow SDs with QLWA images on sector 0 (mount .WIN as virtual SD)
+;
+; 1.09	Fixed rare Minerva heap corruption issue
+;	Always assumes card was changed when it was ejected
+;	ROM version now includes TK2 QL-network low-level hardware routines
 
-qlsd_vers equ  '1.08'
+qlsd_vers equ  '1.09'
 
 	end

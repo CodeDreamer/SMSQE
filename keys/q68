@@ -10,6 +10,7 @@ mmc1_dout	equ	$1c30c
 mmc1_read	equ	$1c310
 mmc1_writ	equ	$1c314
 mmc1_xfer	equ	$1c318
+mmc1_40hz	equ	$1c31c
 
 mmc2_cs 	equ	$1c340		; port for card 2
 mmc2_clk	equ	$1c344
@@ -18,6 +19,7 @@ mmc2_dout	equ	$1c34c
 mmc2_read	equ	$1c350
 mmc2_writ	equ	$1c354
 mmc2_xfer	equ	$1c358
+mmc2_40hz	equ	$1c35c
 
 ; keys for physical access to sdhc, relative to mmcx_cs  base address
 drv_cs		equ	0
@@ -27,6 +29,8 @@ drv_dout	equ	drv_din+4
 drv_read	equ	drv_dout+4
 drv_writ	equ	drv_read+4
 drv_xfer	equ	drv_writ+4
+drv_40hz	equ	drv_xfer+4
+
 
 q68_dshft	equ	6		; amount to shift to get to mmc2_cs
 q68.coff	equ	$40		; offset from port 1 to port 2
@@ -122,6 +126,7 @@ q68_card2	equ	$c		; card init item in config block
 q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
 					; (nb 0-5 are the same)
 q68_reset	equ	$1c024
+q68_ethi	equ	$1c040		; Ethernet interrupt ON switch
 q68_timer	equ	$1c060
 q68_1sec	equ	40000000	; 40 Mhz timer
 q68_tick	equ	4		; 1 "tick" = 1/10th of a microsecond
@@ -141,6 +146,9 @@ q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
 debug		equ	0		; if 1 debug code is included
 		      ; $17d08	used for serial port (see above)
 		      ; $17d0c	used for keyboard (see above)
+		      ;
+		      ; $17d10	- $17d1c  QL Net
+q68_v2		equ	$17d20		; (byte) if set : hardware v.2
 
 ; q68 specific config
 q68.cfgkb	 equ	 $20		 ; position in config block of kbd delay

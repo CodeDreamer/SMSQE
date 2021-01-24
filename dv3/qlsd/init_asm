@@ -1,7 +1,8 @@
-; QLSD init code 1.02				 W. Lenerz + M. Kilgus 2018
+; QLSD init code 1.03				 W. Lenerz + M. Kilgus 2018
 ;
-; 2020-04-05  1.02  Removed CARD_INIT (wl)
 ; 2018-29-05  1.01  Output the recognised hardware revison (MK)
+; 2020-04-05  1.02  Removed CARD_INIT (wl)
+; 2020-05-08  1.03  Added network driver call (MK)
 
 	section init
 
@@ -19,6 +20,7 @@
 	xref	dv3_addfd
 	xref	qlf_table
 	xref	inicrd
+	xref	nd_init
 
 inirgs	reg	d7/a0/a3
 ini.d7	equ	0
@@ -95,6 +97,9 @@ write_hw
 	st	qlsd_fake(a3)		; Remember that we faked it
 write_msg
 	jsr	(a2)
+
+	move.l	qlsd_sysvars(a3),a4	; nd_init needs sysVar in a4
+	bsr	nd_init 		; RESPR version will have empty stub
 
 	movem.l (a7)+,inirgs
 	lea	procs,a1

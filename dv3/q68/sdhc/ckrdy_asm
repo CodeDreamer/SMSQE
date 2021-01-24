@@ -1,5 +1,5 @@
-; Q68 DV3 Check Ready Drive	 1.01			2020 W. Lenerz
-;
+; Q68 DV3 Check Ready Drive	 1.02			2020 W. Lenerz
+; 2020-04-29	1.02 ensure drive defn is rebuilt after card initialization
 ; 2020-03-30	1.01 if drive not ready, try to init card  (based on MK's code)
 
 
@@ -47,7 +47,7 @@ hcr_tst
 	lea	hdl_buff(a3),a1
 	moveq	#0,d0
 	moveq	#1,d2
-	jsr	hd_rdsect	       ; read root sector
+	jsr	hd_rdsect		; read root sector
 	beq.s	hcrw_check		; ... success, check if changed
 
 ; Read failed, try to initialise card
@@ -59,7 +59,8 @@ hcr_tst
 	moveq	#0,d0
 	moveq	#1,d2
 	jsr	hd_rdsect
-	bne.s	hcrw_exit
+	beq.s	hcrw_new
+	bra.s	hcrw_exit
 
 hcrw_check
 ; We cannot use the generic QLF/QW1 check format routine because that will try
@@ -77,6 +78,7 @@ hcrw_loop
 	cmpm.l	(a2)+,(a1)+
 	dbne	d0,hcrw_loop
 	beq.s	hcrw_ok 		; update counter is still the same
+hcrw_new
 	sf	ddf_mstat(a4)		; card changed
 hcrw_ok
 	moveq	#0,d0

@@ -1,5 +1,7 @@
-* Pointer CLOSE   V1.03    1985  Tony Tebby   QJUMP
+* Pointer CLOSE   V1.04    1985  Tony Tebby   QJUMP
 *
+* 2020-08-10  1.04  Changed mode information from sys_qlmr to pt_dmode (MK)
+
 	section driver
 *
 	xdef	pt_close
@@ -180,8 +182,7 @@ ptc_wrmv
 *
 ptc_omod
 	move.l	pt_head(a3),d0		point to head
-	moveq	#$e,d1
-	and.b	sys_qlmr(a6),d1 	get current mode
+	move.b	pt_dmode(a3),d1 	get current mode
 ptc_mktl
 	move.l	d0,a2
 ptc_nmod

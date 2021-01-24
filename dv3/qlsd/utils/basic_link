@@ -1,0 +1,12 @@
+program dev8_dv3_qlsd_utils_basic_bin
+
+section init
+section utils
+
+input dev8_dv3_qlsd_utils_basic_rel
+input dev8_dv3_qlsd_utils_card_rel
+input dev8_dv3_q68_sdhc_normalise_rel
+input dev8_dv3_qlsd_utils_get_linkage_rel
+library dev8_util_cv_lib
+library dev8_util_gut_lib
+library dev8_sbsext_utq_lib

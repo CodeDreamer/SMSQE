@@ -62,7 +62,4 @@ inst	move.l	d2,d4			; install this
 	moveq	#-1,d4			 ; do not install
 inst1	 jmp	 pt_setup
 
-	
-	
-
 	end

@@ -63,10 +63,4 @@ sd1s_loop
 	movem.l (sp)+,qlsd.1sec
 	rts
 
-
-
-
-
-
-
 	end

@@ -28,12 +28,12 @@ dev8_dv3_qpc_fd_thing_rel
 dev8_dv3_qpc_fd_check_rel
 dev8_dv3_fd_direct_rel
 dev8_dv3_qpc_fd_mformat_rel
-dev8_dv3_qpc_fd_done_rel
+dev8_dv3_fd_done_rel
 dev8_dv3_fd_slbfill_rel
 dev8_dv3_fd_slbupd_rel
 dev8_dv3_fd_flush_rel
 dev8_dv3_qpc_fd_poll_rel
-dev8_dv3_fd_pflush_rel
+dev8_dv3_qpc_fd_pflush_rel
 dev8_dv3_qpc_fd_rsect_rel
 dev8_dv3_qpc_fd_wsect_rel
 dev8_dv3_qpc_fd_dummyrid_rel

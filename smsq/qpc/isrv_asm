@@ -1,6 +1,7 @@
 ; SMS (QPC) Interrupt Server				   2006 Marcel Kilgus
 ;
 ; 2006-04-01  1.01  Enabled numlock (MK)
+; 2018-01-03  1.02  Beep-end code now on PC side to support shorter beeps (MK)
 
 	section isrv
 
@@ -89,19 +90,9 @@ qpc_event_poll
 	dc.w	qpc.skled		 ; set keyboard led status
 	move.b	d7,sys_caps(a6) 	 ; QPC2 can't set Win's capslock state,
 					 ; so write back the real state
-isrv_stats
-	move.w	qpc_bcnt,d7		 ; beep counting down?
-	beq.s	isrv_ptest		 ; ... no
-	subq.w	#1,d7
-	bne.s	isrv_bcnt		 ; still counting
+	dc.w	qpc.beepn		 ; beeping?
+	move.b	d7,sys_qlbp(a6) 	 ; copy status to system variable
 
-	dc.w	qpc.kbeep
-	sf	sys_qlbp(a6)		 ; counted down
-
-isrv_bcnt
-	move.w	d7,qpc_bcnt
-
-isrv_ptest
 	tas	sys_plrq(a6)
 	bne.s	isrv_rrte
 	addq.w	#1,sys_pict(a6) 	 ; one more poll

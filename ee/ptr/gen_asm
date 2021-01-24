@@ -1,6 +1,8 @@
-; Pointer Physical Routines  V1.05    1985   Tony Tebby   QJUMP
-; Internal Mouse Interface / Sandy SQB / CST Thor / Atari QL 
+; Pointer Physical Routines  V1.06    1985   Tony Tebby   QJUMP
+; Internal Mouse Interface / Sandy SQB / CST Thor / Atari QL
 ; / Standard keyboard  pointer driver
+;
+; 2020-08-17  1.06  Added QEmulator support
 
 	section driver
 
@@ -220,8 +222,8 @@ ptin_nthr
 	bra.l	ptin_rts
 
 qdos_too_old
-	dc.w	51
-	dc.b	'Pointer Interface needs at least JS ROM or higher!',10,0
+	dc.w	26
+	dc.b	'PE needs at least JS ROM!',10
 
 ptin_init
 	bsr.l	pt_init
@@ -327,7 +329,7 @@ pti_cthr
 	moveq	#sms.lexi,d0
 	trap	#do.sms2
 	move.b	#mt.eni,mt_ctrl 	 ; enable interrupts
-	bra.s	ptin_rts
+	bra.l	ptin_rts
 	page
 		  ; check for SQB
 pti_csqb
@@ -339,7 +341,7 @@ pti_csqb
 	lea	sys_fsdl(a0),a0 	 ; fsd link list
 pti_lflp
 	move.l	(a0),d0 		 ; next
-	beq.s	ptin_rte
+	beq.l	ptin_rte
 	move.l	d0,a0
 	cmp.w	#3,iod_dnus-iod_iolk(a0) ; flp?
 	bne.s	pti_lflp		 ; ... no
@@ -355,7 +357,7 @@ pti_lflp
 
 	moveq	#0,d0			 ; no error
 	cmp.l	#'Sand',rmh_name+2(a0)	 ; Sandy interface?
-	bne.s	ptin_rte		 ; ... no
+	bne.s	ptin_qemu		 ; ... no
 
 	moveq	#ms.intbt,d1		 ; get interrupt bits and buttons
 	tst.b	ms_clear(a0)		 ; ... after clearing 
@@ -374,11 +376,39 @@ pti_lflp
 	lea	pt_lext(a3),a0		 ; link in external interrupt
 	moveq	#sms.lexi,d0
 	trap	#1
+	bra.s	ptin_rte
 
+ptin_qemu
+	moveq	#$e6,d0 		 ; Check for QemuLator
+	moveq	#1,d1
+	trap	#1
+	tst.l	d0
+	bne.s	ptin_rte0		 ; Nope
+	subq.b	#1,d1
+	bne.s	ptin_rte0		 ; D1 changed -> also nope
+	dc.w	$ADCA			 ; Start emulator side of mouse driver
+	dc.b	'MMou'
+	bne.s	ptin_rte0
+
+	lea	ptq_poll(pc),a1 	 ; set polling routine address
+	move.l	a1,pt_apoll(a3)
+	lea	pt_lpoll(a3),a0 	 ; link in polling routine
+	moveq	#sms.lpol,d0
+	trap	#1
+ptin_rte0
+	moveq	#0,d0
 ptin_rte
 	move.w	d7,sr			 ; back to user mode, interrupts enabled
 ptin_rts
 	rts
+
+; polling routine for QEmulator
+ptq_poll
+	moveq	#0,d0
+	dc.w	$ADCB			 ; This updates the CON variables
+	dc.b	'MMou'
+	rts
+
 	page
 
 ; external interrupt server for Internal Mouse Interface

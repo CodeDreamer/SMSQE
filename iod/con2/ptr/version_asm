@@ -355,10 +355,11 @@
 *	New, optional, CTRL+C behaviour (configurable) (MK)
 *
 *	V2.05
-*	A few fixes for QDOS (MK)
+*	PTR_GEN: A few fixes for QDOS (MK)
 *
 *	V2.06
-*	Fixed mode changing on QDOS (MK)
+*	PTR_GEN: Fixed mode changing/crashes on QDOS (MK)
+*	PTR_GEN: Added native QemuLator support (MK)
 
 pt.vers equ	'2.06'
 pt_vers equ	pt.vers

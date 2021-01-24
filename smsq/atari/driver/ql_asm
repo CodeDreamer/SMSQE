@@ -64,17 +64,4 @@ ats_sloop
 	dbra	d0,ats_sloop
 	rts
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	end

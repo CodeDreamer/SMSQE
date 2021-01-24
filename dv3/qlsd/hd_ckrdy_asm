@@ -1,6 +1,7 @@
 ; DV3 QLSD Check Ready Drive					 2018 M. Kilgus
 ;
 ; 2018-06-10  1.01  Use new qlsd_crdused flags instead of hdl_actm (MK)
+; 2020-05-05  1.02  Always assume card changed after re-init
 
 	section dv3
 
@@ -42,10 +43,7 @@ hd_ckrdy
 ; Read failed, try to initialise card
 	jsr	inicrd
 	bne.s	hcrw_exit		; defective or missing card
-
-	lea	hdl_buff(a3),a1
-	jsr	hd_ckroot		; try to read root sector again
-	bne.s	hcrw_exit
+	bra.s	hcrw_changed		; always assume changed after re-init
 
 hcrw_check
 ; We cannot use the generic QLF/QW1 check format routine because that will try
@@ -63,7 +61,7 @@ hcrw_loop
 	cmpm.l	(a2)+,(a1)+
 	dbne	d0,hcrw_loop
 	beq.s	hcrw_ok 		; update counter is still the same
-
+hcrw_changed
 	sf	ddf_mstat(a4)		; card changed
 hcrw_ok
 	moveq	#0,d0

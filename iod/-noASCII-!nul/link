@@ -1,2 +1,4 @@
 program dev8_iod_nul_driver
 input dev8_iod_nul_lib
+library dev8_iod_iou_lib
+library dev8_util_gut_lib

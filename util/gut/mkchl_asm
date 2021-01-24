@@ -1,7 +1,8 @@
-; Make a channel list			V0.03   Apr 1988  J.R.Oakley  QJUMP
+; Make a channel list			V0.04   Apr 1988  J.R.Oakley  QJUMP
 ;						Tony Tebby QJUMP
 ;
 ; 2003-06-23  0.03  Re-established compatibility with QDOS (MK)
+; 2020-05-04  0.04  Distinguish between CON and SCR (MK)
 
 	section gen_util
 
@@ -226,12 +227,15 @@ mkc_ccon
 
 mkc_csiz
 	move.l	d1,d7			 ; keep channel number
+	tst.l	sd_keyq+sd.extnl(a4)	 ; any keyboard queue?
+	bne.s	mkc_iscon
+	lea	scrdev(pc),a5		 ; nope, must be SCR then
+mkc_iscon
 	bsr	cpstr			 ; copy it
 	move.b	#'_',(a0)+		 ; add underscore
 	moveq	#0,d1
 	move.w	sd_borwd+sd.extnl(a4),d3 ; get border
 	add.w	d3,d3
-
 
 	move.w	sd_xsize+sd.extnl(a4),d1 ; size...
 	add.w	d3,d1
@@ -335,5 +339,6 @@ cps_rts
 	rts
 
 condev	dc.w	3,'CON_'
+scrdev	dc.w	3,'SCR_'
 
 	end

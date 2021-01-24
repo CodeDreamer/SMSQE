@@ -77,7 +77,4 @@ qdi_stx
 	moveq	#pc.intrt,d7		 ; clear this interrupt
 	bra.s	qdi_clri
 
-
-
-
 	end

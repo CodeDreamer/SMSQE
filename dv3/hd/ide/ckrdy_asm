@@ -26,11 +26,4 @@ id_ckrdy
 	moveq	#0,d0
 	rts
 
-
-
-
-
-
-
-
 	end

@@ -1,0 +1,18 @@
+; Driver definition block
+ddb_ssio  equ	$28			; l   iou.ssio function block
+ddb_ssi   equ	$2c			; l   byte fetch
+ddb_sso   equ	$30			; l   byte send
+ddb_rts   equ	$34			; w   RTS
+ddb_open  equ	$36			; 3b  set if already open
+ddb_chips equ	$39			; b   chip count
+ddb_cdb0  equ	$3a			; l   pointer to cdb
+ddb_cdb1  equ	$3e			; l   pointer to cdb
+ddb_qsnd  equ	$42			; l   QSound pointer
+ddb_end   equ	$60
+
+; This data starts at chn_end
+chn_outq  equ	$18			; l   out-queue
+chn_chip  equ	$1c			; b   chip number
+chn_poll  equ	$20			; l   poll counter
+chn_bsze  equ	$24			; l   buffer size
+chn.len   equ	$28

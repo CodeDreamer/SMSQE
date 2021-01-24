@@ -1,4 +1,6 @@
-; DOS Control Procedure V1.00				 1997	Marcel Kilgus
+; DOS Control Procedure V1.01				 1997	Marcel Kilgus
+;
+; 2017-04-20  1.01  Fixed DOS_USE without any parameter (MK)
 
 	section dos
 
@@ -42,8 +44,9 @@ dos_use thg_extn {USE },dos_drive,thp_ostr
 	movem.l dos.reg,-(sp)
 	move.l	#'DOS0',d7		 ; standard name
 	move.l	d7,d6			 ; assume reset
-	move.l	4(a1),a1		 ; any parameter?
+	move.l	4(a1),d0		 ; any parameter?
 	beq.s	du_look
+	move.l	d0,a1
 
 	subq.w	#3,(a1) 		 ; 3 characters long
 	bne.s	dos_err 		 ; ... oops

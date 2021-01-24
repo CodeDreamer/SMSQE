@@ -1,8 +1,8 @@
 ; Q68 Keyboard interrupt handler   1.00 (c) 2020 W. Lenerz
 
-; based on
+; 2020-10-27	1.01	removed debug code
 
-; Keyboard Interrupt handler   V2.00    1998  Tony Tebby  QJUMP
+; based on Keyboard Interrupt handler	V2.00	 1998	Tony Tebby  QJUMP
 
 	section kbdint
 
@@ -33,17 +33,13 @@ kbd_intr				; setup the interrupt "server"
 kbd_xlnk dc.l	0			; external interrupt linkage
 kbd_xiad dc.l	0			; absolute ext. int. service routine address
 
-
- 
 ;+++
-; This routine handles keyboard interrupts. It must set the status register
-; to EQ if the interrupt wasn't handled here
+; This routine handles keyboard interrupts.
 ;---
-  
+
 kbd_iserve
 	btst	#kbd.rcv,kbd_status	; any keyboard data?
 	beq.s	kbd_out 		; ... no
-  addq.l	#1,$17d38
 	moveq	#0,D0
 	move.b	kbd_code,d0		; IBM keycode
 	st	kbd_unlock		; acknowledge key receipt
@@ -54,5 +50,5 @@ kbd_iserve
 
 kbd	bra	kbd_at102cvt		; process key code
 kbd_out rts
-	
+
 	end

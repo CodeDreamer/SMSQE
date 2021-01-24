@@ -1,5 +1,5 @@
 ; Q68 RTC read / set	1.00 (c) W. Lenerz 2017
-
+; 2020-05-08  1.01  always use PC clock, not  sys_rtc (wl)
 	xdef	rtc_init
 
 	xdef	sms_rrtc	read clock
@@ -23,7 +23,7 @@
 ;	d1  r	time read
 ;---
 sms_rrtc
-	move.l	sys_rtc(a6),d1
+	move.l	pc_clock,d1
 srtc_rtok
 	moveq	#0,d0
 	move.l	sms.rte,a5
@@ -35,7 +35,7 @@ srtc_rtok
 ;	d1 cr	adjustment (seconds) / time read
 ;---
 sms_artc
-	add.l	sys_rtc(a6),d1
+	add.l	pc_clock,d1
 
 ;+++
 ; Set real time clock
@@ -43,11 +43,8 @@ sms_artc
 ;	d1 cr	time to set (seconds) / time read
 ;---
 sms_srtc
-	move.l	d1,sys_rtc(a6)
-	tst.b	sys_prtc(a6)			; hardware clock protected?
-	bne.s	srtc_rtok			; yes ->
-;      move.l  #pc_clock,a5
-;	 move.l  d1,(a5)
+;	 tst.b	 sys_prtc(a6)			 ; hardware clock protected?
+;	 bne.s	 srtc_rtok			 ; yes ->
 	move.l	d1,pc_clock			; also set hardware clock
 	bra.s	srtc_rtok
 
@@ -58,4 +55,6 @@ sms_srtc
 rtc_init
 	move.l	pc_clock,sys_rtc(a6)
 	rts
+
+
 	end

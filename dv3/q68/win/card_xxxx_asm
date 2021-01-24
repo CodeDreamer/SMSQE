@@ -1,5 +1,9 @@
-; Q68 the CARD_xxxx keywords, except card_init	1.01. Copyright (c) W. Lenerz 2016
+; Q68 the CARD_xxxx keywords, except card_init	1.01. Copyright (c) W. Lenerz 2016-2020
+
+; 2020-11-27   1.03  card_speedup added, removed test code (wl)
+; 2020-06-06   1.02  card_create bugfix (thanks Marcel) (wl)
 ; 2020-04-12   1.01  1st byte of filename in dir =0 means empty slot+end of dir (wl)
+
 	section exten
 
 	xdef	crd_renm
@@ -12,6 +16,8 @@
 	xref	hfp_sdhc		; get to dos dir
 	xref	norm_nm 		; normalise smsqe name into FAT 8.3 name
 	xref	cv_rtdos		; convert my time to dos time
+
+
 	include 'dev8_dv3_keys'
 	include 'dev8_dv3_hd_keys'
 	include 'dev8_keys_q68'
@@ -44,6 +50,9 @@ creat	 dc.w	thp.ubyt	 ; drive
 	 dc.w	thp.call+thp.str ; string
 	 dc.w	0
   
+jth_rwrd dc.w	thp.ret+thp.uwrd
+	 dc.w	0
+
 
 ;************************** Extention thing routine
 ;
@@ -387,9 +396,8 @@ rel_mem bra	gu_rchp
 
 errinam moveq	#err.inam,d0
 crea_er rts
-	    
 
-crd_crea thg_extn {CREA},,creat
+crd_crea thg_extn {CREA},crd_spd,creat
 
 	movem.l hdt.reg,-(a7)
 	bsr	hdt_doact		; this calls the following code in super mode
@@ -412,7 +420,8 @@ crd_crea thg_extn {CREA},,creat
 	move.l	8(a5),a0		; pointer to smsqe name
 	lea	512(a1),a5
 	lea	nmoffset(a5),a1 	; space for normalised name
-	movem.l d0/d2/d3/d4/d6,fatsz(a5)   ; keep :
+	movem.l d0/d2/d3/d4/d6,fsize(a5); keep :
+					;   d0	 size needed
 					;   d2	 nbr of sectors per fat
 					;   d3	 cluster size (sectors per cluster)
 					;   d4	 start of FAT (sector nbr)
@@ -421,7 +430,6 @@ crd_crea thg_extn {CREA},,creat
 	move.l	a4,a1
 	bne	rel_a1			; couldn't
 					
-
 ; a1 mem space , contains 1st sector of dir
 ; a3 device linkage
 ; a5 poiner to work space, including normalized name
@@ -709,18 +717,18 @@ lpctr	dbf	d4,gtf_lp2
 	dbf	d1,gtf_lp1
 	bra	errdrfl 		; no free clusters at all!
 
+
+	      
+;************************** Extension thing routine
+;
+; ret = CARD_SPEEDUP
+;
+; returns 1 if hardware is 40Mhz card transfer speed capable, 0 if not
+;
+;***************************
+crd_spd thg_extn {SPED},,jth_rwrd
+	move.b	q68_v2,d1
+	andi.l	#1,d1
+	move.l	d1,4(a1)
+	rts
 	end
-
-
-
-
-
-
-
-
-
-
-
-
-
-	

@@ -1,9 +1,10 @@
-; SBAS_MAIN - Main SuperBASIC control routine v1.02
+; SBAS_MAIN - Main SuperBASIC control routine v1.04
 ;
 ; 2005-11-15  1.01  Sets the boot-filename as the current file name (MK)
 ; 2005-12-08  1.02  Also registers boot in HOME directory if possible (MK)
 ;		    New command line history (up/down arrows) (MK)
 ; 2017-04-05  1.03  Fixed LRESPR-within-PROCedure crash (MK)
+; 2020-05-05  1.04  Fixed "buffer full" error in command line history (wl)
 
 	section sbas
 
@@ -528,7 +529,8 @@ sbm_histdown
 	moveq	#-1,d3
 	move.l	sb_hichn(a6),a0 	 ; history channel ID
 	trap	#3
-	cmp.l	#err.eof,d0		 ; out of bonds?
+	moveq	#err.eof,d1
+	cmp.l	d1,d0			 ; out of bonds?
 	bne.s	sbm_gethist		 ; no, go ahead
 	move.l	sb_buffb(a6),sb_buffp(a6) ; yes, return with empty string
 	bra.s	sbm_endhist
@@ -539,11 +541,11 @@ sbm_histup
 	moveq	#-1,d1
 	moveq	#0,d2			 ; just read FPOS for now
 sbm_huagain
+	moveq	#-1,d3			 ; set here so it's set in sbm_gethist
 	tst.l	d1
 	beq.s	sbm_gethist		 ; at end of history, exit loop
 	moveq	#iof.posr,d0
 	move.l	d2,d1
-	moveq	#-1,d3
 	move.l	sb_hichn(a6),a0 	 ; history channel ID
 	trap	#3
 	moveq	#-1,d2			 ; Backtrack in case of EOF
@@ -551,11 +553,15 @@ sbm_huagain
 	beq.s	sbm_huagain		 ; if EOF, try to hit last line
 
 sbm_gethist
-	moveq	#iob.flin,d0
-	move.l	sb_buffb+8(a6),d2	 ; top of buffer
-	sub.l	sb_buffb(a6),d2 	 ; buffer size
-	moveq	#-1,d3
+	move.l	#$7fff,d0		 ; max allowed size for iob.flin
 	move.l	sb_buffb(a6),a1 	 ; buffer base
+	move.l	sb_buffb+8(a6),d2	 ; top of buffer
+	sub.l	a1,d2			 ; buffer size
+	cmp.l	d0,d2			 ; mustn't exceed max value
+	ble.s	sbm_histget
+	move.l	d0,d2
+sbm_histget
+	moveq	#iob.flin,d0
 	trap	#4
 	trap	#3			 ; get line out of history
 	subq.l	#1,a1

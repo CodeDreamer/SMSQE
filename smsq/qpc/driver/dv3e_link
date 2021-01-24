@@ -29,6 +29,7 @@ section utils     ; SuperBASIC extension utilities
 input   dev8_smsq_qpc_dv3e_rel
 
 library dev8_dv3_qpc_lib
+library dev8_dv3_qw1_lib
 library dev8_dv3_qlf_lib
 library dev8_dv3_msd_lib
 library dev8_dv3_dv3_lib

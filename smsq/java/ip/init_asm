@@ -1,5 +1,7 @@
-; IP initialisation  V1.00				 2004	Marcel Kilgus
+; IP initialisation  V1.02				 2004	Marcel Kilgus
+; 1.02 check for UDP
 ; 1.01 adatped for java wl
+
 	section ip
 
 	xdef	ip_init
@@ -26,7 +28,9 @@
 ip_init
 	moveq	#jt9.cla,d0
 	dc.w	jva.trp9		; close all previous sockets
-
+	moveq	#-jt9.cla,d0
+	dc.w	jva.trp9		; close all previous sockets
+     
 	lea	ip_link,a3
 	jsr	iou_idset		; setup IP linkage
 	jmp	iou_idlk		; and link in

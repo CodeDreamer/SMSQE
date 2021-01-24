@@ -1,6 +1,7 @@
-; DV3 IO routines		V3.01	        1992 Tony Tebby
+; DV3 IO routines		V3.02	        1992 Tony Tebby
 ;
 ; 2020-03-07  3.01  Modifications for correct medium name (xinf call) (MK+wl)
+; 2020-05-07  3.02  Fixed io.minf to fill the name with spaces (MK)
 
 	section dv3
 
@@ -123,10 +124,20 @@ io_tab
 dv3_minf
 io_minf
 	jsr	ddf_rsinfo(a4)		 ; update information
-	lea	ddf_mname+2(a4),a2	 ; medium name, point past length word
-	move.l	(a2)+,(a1)+
+	lea	ddf_mname(a4),a2	 ; medium name
+	move.w	(a2)+,d2		 ; name size
+	move.l	(a2)+,(a1)+		 ; copy first 10 chars of name
 	move.l	(a2)+,(a1)+
 	move.w	(a2)+,(a1)+
+	move.l	a1,a2			 ; keep a1 at end of buffer
+	moveq	#9,d1
+	sub.w	d2,d1			 ; characters remaining - 1
+	bcs.s	ioi_ftype		 ; no space remaining
+ioi_space
+	move.b	#' ',-(a2)		 ; overwrite non-name part with space
+	dbf	d1,ioi_space
+
+ioi_ftype
 	assert	ddf_ftype,ddf_stype-1
 	cmp.w	#ddf.qdos<<8+ddf.ql5b,ddf_ftype(a4)  ; old QL format?
 	bhi.s	ioi_sallc		 ; use allocation units

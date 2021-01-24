@@ -2,6 +2,8 @@
 
 	section header
 
+	xdef	nd_init
+
 	xref	banner
 	xref	init
 
@@ -14,5 +16,9 @@ base
 	jsr	(a2)
 	moveq	#1,d7			; start by RESPR
 	bra.s	init
+
+; Doesn't make sense for RESPR version to have network code, provide stub
+nd_init
+	rts
 
 	end

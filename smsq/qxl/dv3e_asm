@@ -56,15 +56,4 @@ qlf_ldwa
 qlf_ld5b
 	jmp	dv3_sload		; dummy scatter load
 
-
-
-
-
-
-
-
-
-
-
-
 	end

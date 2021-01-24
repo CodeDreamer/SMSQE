@@ -1,0 +1,40 @@
+ay_tune_a_l	equ	0
+ay_tune_a_h	equ	1
+ay_tune_b_l	equ	2
+ay_tune_b_h	equ	3
+ay_tune_c_l	equ	4
+ay_tune_c_h	equ	5
+ay_noise_period equ	6
+ay_enable	equ	7
+ay_amplitude_a	equ	8
+ay_amplitude_b	equ	9
+ay_amplitude_c	equ	10
+ay_env_period_l equ	11
+ay_env_period_h equ	12
+ay_env_shape	equ	13
+
+qs_ayjmp	equ	$00	;  6 b	JMP to mc_entry
+qs_chip_count	equ	$06	; byte	chip count
+qs_chan_count	equ	$07	; byte	chip count * 3
+qs_pllk 	equ	$08	; long	polling interrupt linkage
+qs_plad 	equ	$0c	; long	polling interrupt service routine address
+qs_regs_0	equ	$10	; 16 b	table with ay registers (chip 1)
+qs_regs_1	equ	$20	; 16 b	table with ay registers (chip 2)
+qs_mem		equ	$38	;  6 l	Queues of memory channel 1..6
+qs_act		equ	$50	;  6 b	0xFF if currently playing
+qs_len		equ	$56	;  6 b	Length of current note
+qs_count	equ	$5c	;  6 b	Remaining time of current note
+qs_okt		equ	$62	;  6 b	Current octave
+qs_dif		equ	$68	;  6 b	Sharp/flat offset
+qs_work_queue	equ	$70	; long	Queue we're currently working on
+qs_work_num	equ	$74	; 12 b	space for building ASCII number
+qs_data 	equ	$80	; 6 b	working block
+qs.chan 	equ	0
+qs.freq 	equ	2
+qs.volume	equ	4
+qs_chip_base	equ	$86	; long	chip base address
+qs_chip_freq	equ	$8a	; long	chip base frequency
+qs_chip_type	equ	$8e	; byte	chip type
+qs_stereo	equ	$8f	; byte	stereo mode
+qs_volume	equ	$90	; word	volume
+qs_size 	equ	$92

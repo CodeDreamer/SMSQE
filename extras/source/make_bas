@@ -467,7 +467,7 @@
 4760   prg$=PROGD$
 4770   asm$=rel$:rel$=rel$(1 TO LEN(rel$)-3)
 4780   listf$=rel$&'err'
-4790   rel$=rel$&'exe'
+4790   rel$=rel$&'bin'
 4800   listo$=' -errors -NOLINK'
 4810   plog 'Assembling '&asm$&" "&listf$&" "&rel$&listo$
 4820   my_err=EXEPF_W('QMac',#mainch;asm$&' '&listf$&' '&rel$&listo$)

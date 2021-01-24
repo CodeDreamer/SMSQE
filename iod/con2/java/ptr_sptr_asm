@@ -71,13 +71,4 @@ pt_or
 	moveq	#err.orng,d0		out of range
 	rts
 
-
-
-
-
-
-
-
-
-
 	end

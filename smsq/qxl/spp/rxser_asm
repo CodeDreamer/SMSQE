@@ -88,7 +88,4 @@ srxp_noinput
 srxp_exit
 	jmp	qxl_mess_prnext
 
-
-
-
 	end

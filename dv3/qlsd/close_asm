@@ -1,4 +1,6 @@
-; DV3 close routines		   V3.00	   1992 Tony Tebby
+; DV3 close routines		   V3.01	   1992 Tony Tebby
+;
+; 2020-05-14  3.01  Correctly calculate heap block length for Minerva (MK)
 
 	section dv3
 
@@ -36,7 +38,8 @@ dcl.reg reg	d4-d7/a0/a1/a3/a4/a5
 dcl.a0	equ	16
 	movem.l dcl.reg,-(sp)		 ; save lots of registers
 
-	move.l	#d3c_end,(a0)		 ; reset length
+	move.l	d3c_qdend(a0),d0	 ; length of fake block
+	add.l	d0,(a0) 		 ; add back to reset length
 
 	assert	d3c_flid,d3c_drid-4,d3c_drnr-6,d3c_ddef-8
 	movem.l d3c_flid(a0),d6/d7/a4	 ; file ID / drive number / def block

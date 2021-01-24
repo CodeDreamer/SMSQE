@@ -29,6 +29,7 @@ dev8_util_cv_vfunc_rel
 dev8_util_cv_vcurs_rel
 dev8_util_cv_vctrl_rel
 dev8_util_cv_ctype_rel
+dev8_util_cv_cttab_rel
 dev8_util_cv_uchar_rel
 dev8_util_cv_gitem_rel
 dev8_util_cv_caltab_rel

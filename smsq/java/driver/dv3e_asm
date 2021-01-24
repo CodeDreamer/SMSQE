@@ -47,8 +47,4 @@ qlf	lea	qlf_table,a1
 	jmp	dv3_addfd
 	end
 
-
-
-
-
 	end

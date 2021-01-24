@@ -50,13 +50,4 @@ pt_xmodec				; this is called from the MODE command
 	moveq	#err.ipar,d0
 	rts
 
-
-
-
-
-
-
-
-
-
 	end

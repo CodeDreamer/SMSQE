@@ -19,6 +19,7 @@ input dev8_sbsext_tk2_rom_rel
 input dev8_sbsext_tk2_banner_rel
 input dev8_sbsext_tk2_init_rel
 input dev8_sbsext_ext_english_rel
+input dev8_sbsext_ext_english_net_rel
 input dev8_sbsext_tk2_wdef_rel
 !! dev8_sbsext_tk2_procs_asm
 input dev8_sbsext_tk2_procs_rom_net_rel

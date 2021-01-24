@@ -1,6 +1,9 @@
-; DOS IO routines     V1.01     2000	Marcel Kilgus
+; DOS IO routines     V1.04     2000	Marcel Kilgus
 ;
 ; 2016-04-08  1.01  Added rename support (MK)
+; 2018-11-28  1.02  Some software expect upper word of D1=0 in FMUL/FLIN (MK)
+; 2019-03-28  1.03  Fixed iob.suml (MK)
+; 2019-04-07  1.04  Adapted for new QPC2v5 DOS driver
 
 	section dos
 
@@ -93,60 +96,22 @@ dos_setpos
 ; Media information
 ;---
 dos_minf
-	movem.l d2-d3,-(a7)
-
-; old - derive device name from drive number = DOSx_
-;	 move.l  d0,(a1)+
-;	 move.l  #'_   ',(a1)+
-;	 move.w  #'  ',(a1)+
-
-	move.l	#'    ',d1	; first fill it up with spaces
-	move.l	d1,(a1)
-	move.l	d1,4(a1)
-	move.w	d1,8(a1)
-	moveq	#10,d1		; maximum length
-	bsr	dos_getdevicename
-	adda.w	d0,a1
-
-	move.b	iod_dnum(a4),d1
-	dc.w	qpc.dfree+1
-	lsr.l	#8,d3
-	lsr.l	#1,d3
-	cmp.l	#$ffff,d1
-	bgt.s	dos_minf1x
-	mulu	d3,d1
-	cmp.l	#$ffff,d1
-	ble.s	dos_minf1
-dos_minf1x
-	moveq	#-1,d1
-dos_minf1
-	swap	d1
-	cmp.l	#$ffff,d2
-	ble.s	dos_minf2x
-	mulu	d3,d2
-	cmp.l	#$ffff,d2
-	ble.s	dos_minf2
-dos_minf2x
-	moveq	#-1,d2
-dos_minf2
-	move.w	d2,d1
-	movem.l (a7)+,d2-d3
-	moveq	#0,d0
+	move.w	chn_drnr(a0),d1
+	dc.w	qpc.dminf
 	rts
 
 ;+++
 ; Save header
 ;---
 dos_shdr
-	move.b	hdr_accs(a1),d0 ; attributes to set
-	lea	chn_name(a0),a2 ; file name
+	movem.l a2,-(sp)
+	move.l	chn_hand(a0),d1 ; file handle
 	move.w	chn_drnr(a0),d2 ; drive number
-	dc.w	qpc.sfatr+2	; set file attributes
+	lea	chn_name(a0),a2 ; file name
+	dc.w	qpc.dshdr+2	; set file header
+	movem.l (sp)+,a2
 	bmi.s	dos_rts
-
-	moveq	#14,d1
-	add.l	d1,a1
-	moveq	#0,d0
+	add.w	d1,a1		; update header pointer
 dos_rts
 	rts
 
@@ -154,71 +119,16 @@ dos_rts
 ; Read header
 ;---
 dos_rhdr
-	cmp.w	#hdr.len,d2
-	bhs.s	dos_rhdr_all
-
-	move.l	a1,-(a7)
-	lea	dos_header(pc),a1 ; working space
-	bsr.s	dos_rhdr_all
-	move.l	(a7)+,a1
-	lea	dos_header(pc),a2
-	move.l	d2,-(a7)
-	bra.s	dos_rlend
-
-dos_rloop
-	move.b	(a2)+,(a1)+
-dos_rlend
-	dbra	d2,dos_rloop
-	move.l	(a7)+,d2
-	move.w	d2,d1
-	moveq	#0,d0
-	rts
-
-dos_rhdr_all
-	move.l	d2,-(a7)
-	move.l	chn_hand(a0),d1
-	dc.w	qpc.dsize+2
-;	 add.l	 #hdr.len,d2
-	move.l	d2,(a1)+	; file size
-
-	lea	chn_name(a0),a2 ; file name
+	movem.l d2/a2,-(sp)
+	move.w	d2,d0		; buffer length
+	move.l	chn_hand(a0),d1 ; file handle
 	move.w	chn_drnr(a0),d2 ; drive number
-	dc.w	qpc.dfatr+2	; get file attributes
-	move.b	d0,(a1)+	; access keys
-
-	moveq	#0,d0
-	cmp.b	#4,chn_accs(a0)
-	bne.s	dos_rhdr_dir
-	moveq	#-1,d0
-dos_rhdr_dir
-	move.b	d0,(a1)+	; file type
-	clr.l	(a1)+		; file dependant information
-	clr.l	(a1)+		; ...
-
-	move.l	a1,-(a7)
-	lea	chn_name(a0),a2
-	move.w	(a2)+,d2
-	move.w	d2,(a1)+
-	bra.s	dos_ralend
-dos_raloop
-	move.b	(a2)+,(a1)+
-dos_ralend
-	dbra	d2,dos_raloop
-	move.l	(a7)+,a1
-
-	lea	hdr.nmln+2(a1),a1
-	dc.w	qpc.ddate+1
-	move.l	d1,(a1)+	; file date
-	clr.w	(a1)+		; file version
-	clr.w	(a1)+		; reserved
-	move.l	d1,(a1)+	; backup date
-	move.l	(a7)+,d2
-	move.w	d2,d1
-	moveq	#0,d0
+	lea	chn_name(a0),a2 ; file name
+	dc.w	qpc.drhdr+2	; get file header
+	movem.l (sp)+,d2/a2
+	bmi.s	dos_rts
+	add.w	d1,a1		; update header pointer
 	rts
-
-dos_header
-	ds.b	hdr.len 	; dirty
 
 ;+++
 ; Load file
@@ -361,21 +271,33 @@ dos_ichn
 	rts
 
 ;+++
-; Read date
+; Get/set date
 ;---
 dos_date
 	move.l	d2,-(a7)
 	cmp.b	#2,d2		; backup date not supported
 	beq.s	dos_dateok
 
-	tst.l	d1
-	beq.s	dos_setcurdate	; set date to current date
 	cmp.l	#-1,d1
-	bne.s	dos_setdate	; set date to specified value
+	beq.s	dos_getdate	; get date
 
+	tst.l	d1
+	bne.s	dos_setdate	; set date to specific value
+	move.l	qpc_rtc,d1	; current date/time
+dos_setdate
+	cmp.b	#0,d2
+	bne.s	dos_dateok	; can only set update date
+	move.l	d1,d2
 	move.l	chn_hand(a0),d1
-	dc.w	qpc.ddate+2
-	move.l	d2,(a1)+	; file date
+	dc.w	qpc.sdate+2	; set date
+	move.l	d2,d1		; return date set
+	move.l	(a7)+,d2
+	tst.l	d0
+	rts
+
+dos_getdate			; also return update date as backup date
+	move.l	chn_hand(a0),d1
+	dc.w	qpc.ddate+1	; get file date
 dos_dateok
 	move.l	(a7)+,d2
 	moveq	#0,d0
@@ -384,16 +306,6 @@ dos_dateok
 ;+++
 ; Set date
 ;---
-dos_setcurdate
-	move.l	qpc_rtc,d1	; current date/time
-dos_setdate
-	move.l	d1,d2
-	move.l	chn_hand(a0),d1
-	dc.w	qpc.sdate+2	; set date
-	move.l	d2,d1		; return date set
-	move.l	(a7)+,d2
-	tst.l	d0
-	rts
 
 ;+++
 ; Set or read file version
@@ -406,56 +318,16 @@ dos_vers
 ; Extended information
 ;---
 dos_xinf
-	movem.l d1-d3/a1/a4,-(a7)
-	moveq	#0,d2
-	move.b	chn_drid(a0),d2
-	lsl.w	#2,d2
-	lea	sys_fsdd(a6),a4
-	move.l	(a4,d2.w),a4
+;	 movem.l d1-d3/a4,-(a7)
+;	 moveq	 #0,d2
+;	 move.b  chn_drid(a0),d2
+;	 lsl.w	 #2,d2
+;	 lea	 sys_fsdd(a6),a4
+;	 move.l  (a4,d2.w),a4
+	move.w	chn_drnr(a0),d1
 
-; old routine - just set DOSx_ as the name
-;	 move.w  #5,(a1)+		 ; ioi_name
-;	 move.l  #'DOS0',d0
-;	 add.b	 iod_dnum(a4),d0
-;	 move.l  d0,(a1)+
-;	 move.b  #'_',(a1)+
-;	 clr.b	 (a1)+
-;	 clr.w	 (a1)+
-;	 clr.l	 (a1)+
-;	 clr.l	 (a1)+
-;	 clr.l	 (a1)+
-
-	moveq	#20,d1
-	addq.w	#2,a1			; ioi_name
-	bsr	dos_getdevicename
-	move.w	d0,-2(a1)
-	add.w	#$14,a1
-
-	move.w	#3,(a1)+		; ioi_dnam
-	move.l	#'DOS'<<8,(a1)+
-	move.b	iod_dnum(a4),d1
-	move.b	d1,(a1)+		; ioi_dnum
-	clr.b	(a1)+			; ioi_rdon
-
-	dc.w	qpc.dfree+1
-	move.w	d3,(a1)+		; ioi_allc
-	move.l	d2,(a1)+		; ioi_totl
-	move.l	d1,(a1)+		; ioi_free
-
-	move.w	#$40,(a1)+		; ioi_hdrl
-	move.b	#2,(a1)+		; ioi_ftyp
-	clr.b	(a1)+			; ioi_styp
-	clr.b	(a1)+			; ioi_dens
-	move.b	#2,(a1)+		; ioi_mtyp
-	clr.b	(a1)+			; ioi_remv
-	moveq	#-1,d1
-	move.l	d1,(a1)+
-	move.l	d1,(a1)+
-	move.l	d1,(a1)+
-	move.w	d1,(a1)+
-	move.b	d1,(a1)+
-	movem.l (a7)+,d1-d3/a1/a4
-	moveq	#0,d0
+	dc.w	qpc.dxinf		; let PC side do this
+;	 movem.l (a7)+,d1-d3/a4
 	rts
 
 ;+++
@@ -472,13 +344,10 @@ btable	dc.w	dos_test-btable
 	dc.w	dos_fbyt-btable
 	dc.w	dos_flin-btable
 	dc.w	dos_fmul-btable
-	dc.w	dos_nc-btable
+	dc.w	dos_ipar-btable
 	dc.w	dos_sbyt-btable
-	dc.w	dos_nc-btable
 	dc.w	dos_smul-btable
-dos_nc
-	moveq	#err.nc,d0
-	rts
+	dc.w	dos_smul-btable
 
 ;+++
 ; Test I/O
@@ -560,6 +429,7 @@ dfl_ok
 	moveq	#0,d0
 dfl_exit
 	add.l	d3,chn_fpos(a0)
+	moveq	#0,d1		; make sure upper word is clear
 	move.w	d3,d1
 	movem.l (a7)+,d3-d4/a2
 	tst.l	d0
@@ -586,6 +456,7 @@ dos_fmul
 	bmi.s	dos_fend
 	bcs.s	dos_feof
 	add.l	d0,chn_fpos(a0)
+	moveq	#0,d1		; make sure upper word is clear
 	move.w	d0,d1
 	add.w	d0,a1
 	moveq	#0,d0
@@ -593,6 +464,7 @@ dos_fend
 	rts
 dos_feof
 	add.l	d0,chn_fpos(a0)
+	moveq	#0,d1		; make sure upper word is clear
 	move.w	d0,d1
 	add.w	d0,a1
 	moveq	#err.eof,d0
@@ -641,82 +513,6 @@ dos_smul
 	andi.l	#$ffff,d1
 	moveq	#0,d0
 dos_smend
-	rts
-
-;+++
-; Derive drive name from device setting
-;
-; d0	 r	size of string
-; d1	c  p	size of buffer
-; a0	c  p	ptr to channel definition block
-; a1	c  p	address of buffer
-; a6	c  p	ptr to system variables
-;---
-dgdn.reg reg	d1-d2/a1/a3-a6
-dos_getdevicename
-	movem.l dgdn.reg,-(sp)
-
-	move.l	#$80,d0 	; size of buffer
-	suba.l	d0,a7		; reserve some space
-	move.l	a7,a4
-	move.l	d1,-(sp)
-
-	moveq	#0,d1
-	moveq	#0,d2
-	move.b	chn_drid(a0),d2
-	lsl.w	#2,d2
-	lea	sys_fsdd(a6),a3
-	move.l	(a3,d2.w),a3
-	move.b	iod_dnum(a3),d1 ; drive number
-
-	clr.w	(a4)
-	dc.w	qpc.gdbse+4	; get device setting
-	move.w	(a4)+,d0	; size of string
-	move.l	(sp)+,d1
-	move.l	a4,a5
-	cmp.w	#3,d0		; 3 is a special case ("c:\")
-	bls.s	dm_copy
-
-	add.w	d0,a5
-dm_endslash
-	suba.w	#1,a5
-	cmp.b	#'\',(a5)
-	bne.s	dm_stringend
-	cmpa.l	a4,a5
-	bne.s	dm_endslash
-dm_stringend
-	addq.w	#1,a5		; now one char past end of string
-	move.l	a5,a6
-	bra.s	dm_lookstartslash
-
-dm_startslashloop
-	subq.w	#1,a5
-	cmp.b	#'\',(a5)
-	beq.s	dm_startslash
-dm_lookstartslash
-	cmpa.l	a4,a5
-	bne.s	dm_startslashloop
-	subq.w	#1,a5
-dm_startslash
-	addq.w	#1,a5		; start of string for us
-	move.l	a6,d0
-	sub.l	a5,d0		; size of string
-	move.l	a5,a4
-dm_copy
-	tst.w	d0
-	beq.s	dm_end		; empty (should not be possible, but well...)
-	cmp.w	d1,d0
-	bgt.s	dm_startcopy
-	move.w	d0,d1		; string is smaller, only use d0 bytes
-dm_startcopy
-	move.w	d1,d0		; make a copy for caller
-dm_loop
-	move.b	(a4)+,(a1)+
-	subq.w	#1,d1
-	bne.s	dm_loop
-dm_end
-	adda.w	#$80,a7 	; restore stack
-	movem.l (sp)+,dgdn.reg
 	rts
 
 	end

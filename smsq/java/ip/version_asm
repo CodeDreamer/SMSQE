@@ -8,7 +8,7 @@
 
 ;	V1.00	Initial version
 ;	1.01	adapted for java by wl
-ip_vers equ  '1.01'
+ip_vers equ  '1.02'
 ip_vmess
 	dc.w	'JAVA IP devices V'
 	dc.l	ip_vers

@@ -1,6 +1,7 @@
-; DV3 QPC Check Ready Drive   V3.01     1998	  Tony Tebby
+; DV3 QPC Check Ready Drive   V3.02     1998	  Tony Tebby
 ;
-; 19-08-2004  3.01  Check whether drive definition is actually valid (MK)
+; 2014-08-19  3.01  Check whether drive definition is actually valid (MK)
+; 2020-02-23  3.02  Update ddf_remv in case of auto_detect (MK)
 
 	section dv3
 
@@ -39,6 +40,7 @@ hd_ckrdy
 	dc.w	qpc.hdchk		; Auto detect
 	move.b	d2,-1(a2,d7.w)		; New removeable status
 	tst.b	d2
+	smi	ddf_remv(a4)		; set removeable flag
 	beq.s	hdrm_ok 		; No removeable
 hdrm_rm
 	move.b	#ddf.mchg,ddf_mstat(a4) ; Always assume changed

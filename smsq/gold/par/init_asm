@@ -89,7 +89,4 @@ par_link
 
 	dc.w	par_cnam-*
 
-
-
-
 	end

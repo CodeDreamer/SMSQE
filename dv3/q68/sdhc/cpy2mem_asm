@@ -44,9 +44,4 @@ cpy2mem lea	q68_dvstrt,a0
 	move.l	d1,ddl_wsect+2(a3)	; jump to this routine now
 	rts
 
-
-
-
-
-
 	end

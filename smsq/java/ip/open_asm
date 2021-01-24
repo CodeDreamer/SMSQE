@@ -1,10 +1,12 @@
-; Open IP	   V1.01				 2004	Marcel Kilgus
+; Open IP	   V1.03				 2004	Marcel Kilgus
+; 1.03 check for UDP (wl)				  2020	W. Lenerz
 ; 1.02 adapted for smsqmulator (wl)
 
 	section ip
 
 	xdef	ip_open
-
+	xdef	udp_name
+	xdef	udd_name
 	xref	io_ckchn
 
 	include 'dev8_keys_err'
@@ -18,12 +20,13 @@ tregs	reg	d3/d7/a0    ; if you change this also change the code at
 tcp_name dc.b	'TCP_'
 udp_name dc.b	'UDP_'
 sck_name dc.b	'SCK_'
+udd_name dc.b	'UDD_'
      
 ip_open
 	movem.l tregs,-(sp)
-	move.l	#$dfdfdfdf,d7
-	and.l	2(a0),d7
-	cmp.l	sck_name,d7		; is it a socket?
+	move.l	#$dfdfdfdf,d6
+	and.l	2(a0),d6
+	cmp.l	sck_name,d6		; is it a socket?
 	bne.s	ipo_open		; no, try to open
 ipo_sck
 	cmp.l	#4,d3			; is a channel id in d3?
@@ -44,7 +47,13 @@ ipo_sck
 
 ipo_open
 	moveq	#jt9.opn,d0
-	dc.w	jva.trp9		; open channel now, D7 = key returned
+	cmp.l	udp_name,d6
+	beq.s	neg_it
+	cmp.l	udd_name,d6
+	bne.s	t1
+neg_it	neg.l	d0
+t1	dc.w	jva.trp9		; open channel now, D7 = key returned
+
 	bne.s	ipo_exit		; oops, couldn't open
 
 	moveq	#chn_end,d1
@@ -53,6 +62,7 @@ ipo_open
 	bne.s	ipo_exit		; oops	(leaves useless socket in map)
 					; but this isn't going to happen often!
 	move.l	#chn.id,chn_id(a0)	; say that this is one of my devices
+	move.l	d6,chn_typ(a0)		; what kind of device
 	move.l	d7,chn_data(a0) 	; put negative key into channel block
 ipo_set move.l	a0,8(sp)		; replace A0...
 

@@ -1,5 +1,7 @@
 * Pointer copy channel block routine   V1.02	 1986	Tony Tebby   QJUMP
 *
+* 2020-08-10  1.04  Changed mode information from sys_qlmr to pt_dmode (MK)
+
 	section driver
 *
 	xdef	pt_copyc
@@ -57,9 +59,7 @@ cpc_copy
 	subq.l	#1,d0
 	bgt.s	cpc_copy
 
-	moveq	#$e,d0
-	and.b	sys_qlmr(a6),d0
-	move.b	d0,sd_wmode+sd.extnl(a0) copy this window's mode
+	move.b	pt_dmode(a3),sd_wmode+sd.extnl(a0) copy this window's mode
 
 *
 *	Now move keyboard queue
@@ -153,8 +153,7 @@ cpl_swls
 * link into primary link lists
 *
 cpl_lkp
-	moveq	#$e,d1
-	and.b	sys_qlmr(a6),d1 	  get mode
+	move.b	pt_dmode(a5),d1 	  get mode
 	tas	sd_prwin+sd.extnl(a0)	  say it is a primary window
 	lea	sd_prwlt+sd.extnl(a0),a3  primary link list, top down
 	lea	pt_head(a5),a1

@@ -1,0 +1,12 @@
+program dev8_smsq_qpc_driver_qsound
+
+section header
+section base
+section qsound
+section ay
+section ay_hw
+
+input   dev8_smsq_qpc_driver_qsound_rel
+input   dev8_iod_qsound_qpc_rel
+library dev8_iod_qsound_lib
+library dev8_smsq_smsq_end_rel

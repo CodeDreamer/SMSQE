@@ -1,9 +1,10 @@
-; DV3 open routines		  V3.03 	  1992 Tony Tebby
+; DV3 open routines		  V3.04 	  1992 Tony Tebby
 ;
 ; QDOS compatible version
 ;
 ; 2018-06-24  3.02  Keep error code from ddl_check (MK)
 ; 2018-07-30  3.03  Fixed Minerva workaround in case of open through DEV (MK)
+; 2020-04-22  3.04  Fixed Minerva heap corruption issue (MK)
 
 	section dv3
 
@@ -442,8 +443,15 @@ dop_set
 dop_link
 	move.l	ddf_chnlst(a4),d3c_link(a0) ; link in
 	move.l	a0,ddf_chnlst(a4)
-	move.l	#d3c_qdend,(a0)
-	move.l	#d3c_end-d3c_qdend,d3c_qdend(a0) ; set individual block lengths
+
+; Minerva rounds up heap block size if the allocation would result in
+; a free block with 16 bytes. Therefore we need to calculate the size of
+; the second heap block or the heap chain will sometimes get corrupted!
+	move.l	#d3c_qdend,d4		; base block length
+	move.l	(a0),d0 		; size of allocated heap block
+	sub.l	d4,d0			; minus the base block
+	move.l	d4,(a0) 		; only now overwrite size of base block
+	move.l	d0,d3c_qdend(a0)	; and set remaining block length
 	move.l	#d3c.qdnchk,d3c_qdnchk(a0)  ; and no check flag
 	moveq	#0,d0
 

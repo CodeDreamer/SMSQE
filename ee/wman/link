@@ -1,7 +1,7 @@
 program dev8_ee_wman_wman
 
 section header
-section base      ; base area for any extension or program
+section base	  ; base area for any extension or program
 section version   ; version messages
 
 input dev8_ee_wman_wman_rel

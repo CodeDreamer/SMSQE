@@ -63,17 +63,4 @@ trailer
 last_zero
 	dc.l	0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	end

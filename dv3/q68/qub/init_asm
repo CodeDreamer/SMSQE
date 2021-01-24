@@ -180,7 +180,7 @@ qcf_qubl	dc.b	 1
 	mkcfhead {QUB drives settings},{qub_vers}
 
 
-noyes	  mkcfitem 'q68q',code,'L',qcf_qubl,,,\
+noyes	  mkcfitem 'q689',code,'L',qcf_qubl,,,\
 	  {Link in QUB driver?} \
 	  0,N,{No},1,Y,{Yes}
 

@@ -63,3 +63,6 @@ V2.33  (Per Witte)
 
 V2.34  (Marcel Kilgus)
        Fixed a crash on LOAD/LRUN/MERGE
+
+V2.35  (Marcel Kilgus)
+       Don't add default directory to names starting with a drive
