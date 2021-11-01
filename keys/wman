@@ -40,6 +40,7 @@ wm.opw	  equ	    $88
 wm.ssclr  equ	    $8c
 wm.jbpal  equ	    $90
 wm.cpspr  equ	    $94
+wm.drndx  equ	    $98		;(AH)
 ;
 wm.drall  equ	    0		; draw all
 wm.drsel  equ	    -1		; draw selectively

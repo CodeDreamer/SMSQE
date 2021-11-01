@@ -161,8 +161,10 @@
 ;	V2.07	       menu appsub wdw may have csizes for text objects (wl)
 ;
 ;	V2.08	       QDOS version optimized for space (MK)
+;
+;	V2.09	       indexes drawing added (AH)
 
-wm_vers equ	'2.08'
+wm_vers equ	'2.09'
 wm.pver equ	'2.02'
 
 	end

@@ -771,7 +771,7 @@ exist and point to a real sprite.
   * If no pointer to a selected AND current item sprite exists, then the
     selected item sprite is taken instead.
 
-- For unavailavle items, the available item sprite is used.
+- For unavailable items, the available item sprite is used.
 
 
 It is allowed, but not necessary, for any of these pointers including the first

@@ -19,6 +19,15 @@ This here file only contains a short description of the new features.
 
 
 What is new in versions :
+	
+
+=====
+3.38
+=====
+Various bugfixes
+WMAN can now use index drawing
+QSOUND improvements fro QPC
+QPC new features (QPC_FLASHBUTTON and QPC_HASFOCUS)
 
 
 =====

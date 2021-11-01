@@ -14,7 +14,7 @@
 	xdef	kbd_read
 	xdef	kbd_vers
 
-kbd_vers equ	'1.02'
+kbd_vers equ	'1.03'
 
 
 	xref	ioq_tstg

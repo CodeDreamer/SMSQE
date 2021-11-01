@@ -1,7 +1,7 @@
 ; SOUND device driver open,close and io/routines  v. 1.00 (c) W.Lenerz 2014
 
+; 2021-03-05	1.01	improvements, use bytes sized AND for last "D"
 ; v. 1.00   2014 Jan 16
-
 
 	section sound
 
@@ -18,10 +18,10 @@
 ; open routine, check whether it's this device
 snd_open
 	moveq	#1,d2		; default drive
-	move.w	(a0),D0 	; length name
-	subq.w	#5,d0		; 'sound'
-	beq.s	possible
-	subq.w	#1,d0		;'soundx'
+	move.w	(a0),d0 	; length of name
+	subq.w	#5,d0		; 'sound' ?
+	beq.s	possible	; perhaps
+	subq.w	#1,d0		; might be 'soundx'
 	bne.s	notme		; can't be me
 	moveq	#0,d2
 possible
@@ -30,7 +30,7 @@ possible
 	cmp.l	#'SOUN',d1	;
 	bne.s	notme		; it's not me
 	move.b	6(a0),d1	; last byte of name
-	and.l	#$dfdfdfdf,d1
+	and.b	#$df,d1
 	cmp.b	#'D',d1
 	bne.s	notme		; not me
 	tst.w	d2		; use default device?
@@ -69,7 +69,7 @@ snd_close
 	jmp	(a2)
 				
 
-; the io routine  , just call java
+; the io routine, just call java
 snd_io
 	move.l	d0,d4		; type of trap
 	moveq	#jt5.asnd,d0	: do it in java

@@ -1,5 +1,6 @@
-; AY chip sound driver.  2020 by Marcel Kilgus
-; v. 1.00
+; AY chip sound driver	 v1.01	  2021 by Marcel Kilgus
+;
+; 2021-08-01  1.01  Channel can now access several chips at the same time (MK)
 
 	section qsound_drv
 
@@ -46,11 +47,11 @@ qsound_drv_init
 	move.l	ddb_qsnd(a3),a2 	; Get QSound entry
 	moveq	#ay.info,d0
 	jsr	(a2)
-	move.l	d2,(a4)+		; ddb_open/ddb_chips
+	move.b	d2,(a4) 		; ddb_chips
 
-	moveq	#0,d1
+	moveq	#0,d2
 	bsr	ay_silence
-	moveq	#1,d1
+	moveq	#1,d2
 	bsr	ay_silence
 
 	lea	ay_poll,a2
@@ -97,16 +98,26 @@ ay_open
 ayo_do
 	move.l	a4,a3			; recover DDB
 
-	move.w	p.chip(sp),d4		; chip number
+	move.w	p.chip(sp),d4		; chip bit mask
 	beq	ayo_ipar
-	cmp.b	ddb_chips(a3),d4	; how many chips there are
-	bhi.s	ayo_ipar
-	subq.w	#1,d4			; we're 0 based
+	move.b	ddb_chips(a3),d0	; how many chips there are
+	moveq	#1,d1
+	lsl.b	d0,d1			; maximum chip mask
+	cmp.b	d1,d4			; bit mask within range?
+	bcc	ayo_ipar		; ... no
 
 	moveq	#err.fdiu,d0
-	tas	ddb_open(a3,d4.w)
-	bne.s	ayo_rts
+	move.b	d4,d1			; chip mask
+	and.b	ddb_chipm(a3),d1	; one of the chips already in use?
+	bne.s	ayo_rts2		; ... yes
 
+	lea	ddb_cdb0(a3),a4 	; check for empty slot
+	tst.l	(a4)
+	beq.s	ayo_slot_ok
+	addq.l	#4,a4
+	tst.l	(a4)
+	bne.s	ayo_rts2		; ... nope, none
+ayo_slot_ok
 	move.l	ddb_qsnd(a3),a2 	; Get QSound entry
 	move.w	p.type(sp),d1
 	moveq	#ay.chip_type,d0
@@ -126,14 +137,17 @@ ayo_do
 	jsr	(a2)
 
 	moveq	#chn.len+qu.hdlen,d1	; allocate CDB + queue header
-	moveq	#14,d5			; length must be multiple of 14
+	moveq	#0,d6
+	move.b	mask_to_cnt(pc,d4.w),d6 ; mask to chip count
+	mulu	#14,d6			; buffer must be multiple of this
+	move.w	d6,d5
 	mulu	p.buff(sp),d5		; frame buffer size
 	add.l	d5,d1
 	move.w	mem.achp,a2
 	jsr	(a2)
-	bne.s	ayo_err
-	move.b	d4,chn_chip(a0)
-	move.l	d5,chn_bsze(a0)
+	bne.s	ayo_rts
+	move.b	d4,chn_chipm(a0)	; remember chip mask
+	move.l	d5,chn_bsze(a0) 	; buffer size
 
 	move.l	d5,d1
 	lea	chn.len(a0),a2		; setup output queue
@@ -141,51 +155,69 @@ ayo_do
 	move.w	ioq.setq,a1
 	jsr	(a1)
 
-	moveq	#0,d1
-	move.b	chn_chip(a0),d1
-	bsr.s	ay_silence
+	move.w	d6,chn_frame(a0)	; frame size
 
-	lsl.w	#2,d4
-	move.l	a0,ddb_cdb0(a3,d4.w)	; must be last as poll checks this
+	lea	chn_chip0(a0),a2
+	move.b	d4,d0			; chip mask
+	moveq	#0,d2			; current chip number
+	bra.s	ayo_chip_loop
+
+mask_to_cnt
+	dc.b	0,1,1,2,2,2,2,3
+
+ayo_chip_set
+	move.b	d2,(a2)+		; insert chip
+ayo_chip_loop
+	addq.l	#1,d2			; try next
+	lsr.b	#1,d0
+	bcs.s	ayo_chip_set
+	bne.s	ayo_chip_loop
+
+	bsr.s	ay_silence_chips	; silence all chips in channel
+
+	or.b	d4,ddb_chipm(a3)	; mark chips as occupied
+	move.l	a4,chn_slot(a0) 	; remember the slot
+	move.l	a0,(a4) 		; save CDB. Must be last as poll checks it
 
 	moveq	#0,d0
 ayo_rts
 	lea	p.end(sp),sp
 	rts
-ayo_err
-	clr.b	ddb_open(a4,d4.w)
-	bra.s	ayo_rts
 ayo_ipar
 	moveq	#err.ipar,d0
+	bra.s	ayo_rts
+ayo_iuse
+	moveq	#err.fdiu,d0
 	bra.s	ayo_rts
 
 ay_ipar
 	moveq	#err.ipar,d0
 	rts
 
-; Silence AY chip on init/close
-;
-; d1 = chip
-ay_silence
-	clr.l	-(sp)
-	clr.l	-(sp)
-	clr.l	-(sp)
-	clr.l	-(sp)
-	move.l	sp,a1
-	bsr	ay_set_regs
-	lea	16(sp),sp
+
+; Silence all chips of a channel
+ay_silence_chips
+	lea	chn_chip0(a0),a2
+ay_silence_loop
+	move.b	(a2)+,d2
+	beq.s	ay_silence_rts
+
+	subq.b	#1,d2
+	bsr	ay_silence
+	bra.s	ay_silence_loop
+ay_silence_rts
 	rts
 
 ; Close
 ay_close
-	moveq	#0,d7
-	move.b	chn_chip(a0),d7
-	move.l	d7,d2
-	bsr.s	ay_silence
+	bsr.s	ay_silence_chips	; silence all chips in channel
 
-	sf	ddb_open(a3,d7.w)
-	lsl.l	#2,d7
-	clr.l	ddb_cdb0(a3,d7.w)
+	move.b	chn_chipm(a0),d0
+	not.b	d0
+	and.b	d0,ddb_chipm(a3)	; chips not in use anymore
+
+	move.l	chn_slot(a0),a2
+	clr.l	(a2)			; free ddb_cbd slot
 	move.w	mem.rchp,a2
 	jmp	(a2)
 
@@ -228,7 +260,7 @@ ayp_next2
 	rts
 
 ay_poll_chip
-	move.l	d0,a0
+	move.l	d0,a0			; cdb
 	move.l	chn_outq(a0),a2
 
 	move.l	qu_nexti(a2),d0 	; next in
@@ -238,13 +270,19 @@ ay_poll_chip
 	bgt.s	ayp_check		; ... there are some
 	add.l	chn_bsze(a0),d0 	; wrapped around, add total
 ayp_check
-	cmp.w	#14,d0			; one complete register set?
+	cmp.w	chn_frame(a0),d0	; complete frame available?
 	bcs.s	ayp_rts 		; ... no
 	move.l	qu_nexto(a2),a1 	; next out
-	move.b	chn_chip(a0),d2 	; chip number
-	bsr.s	ay_set_regs
+
+	lea	chn_chip0(a0),a4	; chip numbers
+ayp_loop
+	move.b	(a4)+,d2
+	beq.s	ayp_done
+	subq.b	#1,d2			; API is 0 based
+	bsr.s	ay_set_regs		; this will update a1
+	bra.s	ayp_loop
+ayp_done
 	addq.l	#1,chn_poll(a0)
-	add.w	#14,a4
 	cmp.l	qu_endq(a2),a1		; off end?
 	bne.s	ayp_ok			; ... no
 	lea	qu_strtq(a2),a1 	; ... yes, reset queue pointer
@@ -253,6 +291,13 @@ ayp_ok
 ayp_rts
 	rts
 
+; Silence AY chip on init/close
+;
+; d2 = chip
+ay_silence
+	lea	silence(pc),a1
+
+; d2 = chip
 ; a1 = registers
 ay_set_regs
 	move.l	a5,-(sp)
@@ -261,5 +306,8 @@ ay_set_regs
 	jsr	(a5)
 	move.l	(sp)+,a5
 	rts
+
+silence
+	dc.w	0,0,0,0,0,0,0
 
 	end

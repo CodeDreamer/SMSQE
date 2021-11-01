@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.37'
+smsq_vers equ	 '3.38'
 
 	end
 	    
@@ -13,7 +13,13 @@ smsq_vers equ	 '3.37'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
-
+; 3.38	WMAN can now draw indexes (AH).
+;	SOUND command renamed to SOUND_AY b/c of clash with SOUND device (MK).
+;	A single QSOUND channel can now address several chips at once (MK).
+;	QPC added QPC_FLASHBUTTON and QPC_HASFOCUS (MK).
+;	Fixed QUBIDE/QLW1 driver (MK).
+;	Q68 fixed FAT1_ config item (wl).
+;
 ; 3.37	Ramdisk makes QDOS driver again (MK).
 ;	Fixed io.minf for dv3 to fill name with spaces as before (broken in v3.36) (MK).
 ;	QL-SD: Minerva fixes, QLNET support, new BASIC utilities (MK+wl).
@@ -30,7 +36,7 @@ smsq_vers equ	 '3.37'
 ;	SMSQmulator support for udp/udd device (wl).
 ;
 ; 3.36	QL-SD allows direct formatted cards (MK).
-;	Ibm keyboard : key to generate "¼" added(MK+wl).
+;	Ibm keyboard : key to generate chr$(188) added (MK+wl).
 ;	Better handling of iof_xinf (for dmedium_name$) (MK+wl).
 ;	SMSQmulator better keyboard read (wl).
 ;	Fixed FDEL (wl).
@@ -758,7 +764,7 @@ smsq_vers equ	 '3.37'
 ;	WIN_WP acts immediately.
 ;	Channel and Job tags always positive.
 ;	KBD_TABLE address made consistent with old SMSQ / old Atari drivers.
-;	TRAP #3 with d3<>0 in supervisor mode are no longer atomic.
+;	TRAP #3 with d3 different to 0 in supervisor mode are no longer atomic.
 ;	INPUT buffer made expandable.
 ;	IOB.TBYT IOB.FBYT permitted on directory (EOF now works).
 ;	0^0 is 1!!

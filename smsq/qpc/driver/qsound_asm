@@ -1,4 +1,6 @@
-; Base area SMSQ QSOUND drivers  v1.00	 2021 by Marcel Kilgus
+; Base area SMSQ QSOUND drivers  v1.01	 2021 by Marcel Kilgus
+;
+; 2021-08-02  1.01  Fixed module name (MK)
 
 	section header
 

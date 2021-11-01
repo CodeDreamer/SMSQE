@@ -1,8 +1,10 @@
-* Draw menu object or loose menu item  V1.05	 1986	Tony Tebby   QJUMP
+* Draw menu object or loose menu item  V1.06	 1986	Tony Tebby   QJUMP
 * 2003-01-24	1.02	draws sprites according to item status (wl)
 * 2003-05-06	1.03	uses pto..blk to check for sprite block (wl)
 * 2003-05-20	1.04	calls pv_fsprt before checking on object data (mk)
 * 2003-06-15	1.05	yet more bugfixes for statuts items (wl)
+* 2020-08-13	1.06	index item drawing if item number -ve (AH)
+
 	section wman
 *
 	xdef	wm_drmit
@@ -116,6 +118,10 @@ wm_drmob
 *
 wdo_menu
 	move.w	wwm_item(a2),d1 	get item number
+	bpl.s	wdo_mit 		-ve is index item (AH)
+	lea	wwa_iiat(a3),a4 	index attributes - unav (AH)
+	bra.s	wdo_do			draw index item instead (AH)
+wdo_mit
 	move.l	wwa_mstt(a3),a1 	status list
 	move.b	wss_item(a1,d1.w),d2	status
 	bclr	#0,d2			redraw?
@@ -323,7 +329,7 @@ unav	tst.l	16(a1)			; is there a pointer to unavailable?
 	move.l	16(a1),d0		; yes get it
 	add.l	#16,d0			; and make more absolute
 wdo_spt add.l	d0,a1			; point to correct sprite now
-	bsr	wm_getrealobject
+	bsr.s	wm_getrealobject
 
 wdo_old
 	bsr.s	wdo_ojst		justify arbitrary object

@@ -1,6 +1,6 @@
 ; Console input        V2.00	 1994	Tony Tebby
 ; 2003-09-28		2.01	bugfix for cursor move if one-line wdw (wl)
-; 3004-03-27		2.02	compatible with new cursor toggle (wl)
+; 2004-03-27		2.02	compatible with new cursor toggle (wl)
 	section con
 
 	xdef	cn_test 	; test input

@@ -1,4 +1,6 @@
-; QPC_PROCS_BASE - QPC Procedures Base	V2.03	 1997	Marcel Kilgus
+; QPC_PROCS_BASE - QPC Procedures Base	V2.04	 2021	Marcel Kilgus
+;
+; 2021-08-02  2.04  Added QPC_FLASHBUTTON and QPC_HASFOCUS (MK)
 
 	section header
 
@@ -50,6 +52,7 @@ qpc_qlscremu	  proc	  {SEMU}
 qpc_exec	  proc	  {EXEC}
 qpc_syncscrap	  proc	  {SYNC}
 qpc_windowtitle   proc	  {WTIT}
+qpc_flashbutton   proc	  {FLSH}
 ser_setport	  proc	  {SSET}
 par_setprinter	  proc	  {PSET}
 par_setfilter	  proc	  {PFST}
@@ -60,6 +63,7 @@ qpc_ver$	  fun	  {VER$},16
 qpc_netname$	  fun	  {NAM$},64
 qpc_cmdline$	  fun	  {CMD$},127
 qpc_hostos	  fun	  {HOST},16
+qpc_hasfocus	  fun	  {FOCS},16
 ser_getport$	  fun	  {SGET},16
 par_printercount  fun	  {PCNT},16
 par_printername$  fun	  {PNAM},127
@@ -79,6 +83,7 @@ qpc_procs
 	proc_ref QPC_EXEC
 	proc_ref QPC_SYNCSCRAP
 	proc_ref QPC_WINDOWTITLE
+	proc_ref QPC_FLASHBUTTON
 	proc_ref SER_SETPORT
 	proc_ref PAR_SETPRINTER
 	proc_ref PAR_SETFILTER
@@ -88,6 +93,7 @@ qpc_procs
 	proc_ref QPC_NETNAME$
 	proc_ref QPC_CMDLINE$
 	proc_ref QPC_HOSTOS
+	proc_ref QPC_HASFOCUS
 	proc_ref SER_GETPORT$
 	proc_ref PAR_PRINTERCOUNT
 	proc_ref PAR_PRINTERNAME$

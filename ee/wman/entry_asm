@@ -3,6 +3,7 @@
 ; 2002-11-13  1.01  Added wm_setpal, wm_getpal and wm_trap3 entries (MK)
 ; 2003-01-28  1.02  Added wm_opw and wm_ssclr
 ; 2005-10-10  1.03  Added wm_cpspr (MK)
+; 2020-08-16  1.04  Added wm_drndx (AH)
 
 	section wman
 
@@ -47,6 +48,7 @@
 	xref	wm_ssclr
 	xref	wm_jbpal
 	xref	wm_cpspr
+	xref	wm_drndx			;(AH)
 
 	section version
 	dc.w	20,'Window Manager V'
@@ -92,6 +94,7 @@ wm_entry
 	bra.l	wm_ssclr		$8c
 	bra.l	wm_jbpal		$90
 	bra.l	wm_cpspr		$94
+	bra.l	wm_drndx		$98	;(AH)
 
 we_rts
 	rts

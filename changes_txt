@@ -3,6 +3,42 @@ SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
 
+3.38
+
+    WMAN CAN NOW USE INDEXES (AH)
+	ee_wman_drndx_asm		1.02	implements index drawing & QPTR bug correction
+	ee_wman_drobj_asm		1.06	index item drawing if item number -ve
+	ee_wman_entry_asm		1.04	added wm_drndx
+	ee_wman_index_asm		1.03	added support for indexes drawing
+	ee_wman_pan_asm 		1.06	call wm.index, not wm.drbar to draw indexes & bars
+	ee_wman_scrol_asm		1.05	  "       "	 "     "       "
+	ee_wman_scrow_asm		1.02	preserve d4 high word (moveq to move.w)
+	ee_wman_version_asm		.	adjusted version number
+
+
+    BUGFIXES
+	qw1_check_asm			3.03	fixed trashed sectors per cluster info	(MK)
+	dv3_q68_fat_init_asm		1.02	FAT1_ config item was wrong (wl)
+	keys_qlhw			.	amended
+
+
+    SMSQmulator
+	smsq_java_driver_snd_sound_asm	1.01	use bytes sized AND for last "D"
+	smsq_java_kbd_read_asm		1.03	(simply set to corect version number)
+
+
+    QSOUND IMPROVEMENTS (MK)
+	iod_qsound_driver_asm		1.01	channel can access several chips at the same time
+	iod_qsound_main_asm		3.01	renamed SOUND to SOUND_AY because of SOUND device
+	iod_qsound_driver_keys		.	amended to suit
+	smsq_qpc_driver_qsound_asm	1.01	fixed module name
+
+    QPC (MK)
+	smsq_qpc_procs_base_asm 	2.04	added QPC_FLASHBUTTON and QPC_HASFOCUS
+	smsq_qpc_procs_thing_asm	1.01	"           "		  "
+
+-----------------------------------------------------------------------------
+
 3.37
 
     QPC (MK)
@@ -11,7 +47,8 @@ Version  changed		       of file	changes made
 	smsq_qpc_hdop_beep_asm		1.01	moved beep killing to QPC2 to support shorter beeps
 	smsq_qpc_isrv_asm		1.02	beep-end code now on PC side to support shorter beeps
 
-	ADAPTIONS FOR QPC V.5		.	THE FOLLOWING FILES HAVE BEEN CHANGED TO SUIT QPC V5
+
+    QPC ADAPTIONS FOR QPC V.5 (MK)
 	smsq_qpc_dos_thing_asm		1.01
 	smsq_qpc_dos_open_asm		1.01
 	smsq_qpc_dos_io_asm		1.04
@@ -198,7 +235,7 @@ Version  changed		       of file	changes made
     Q68 KEYBOARD DELAY AND READ VIA INTERRUPTS (wl)
 	smsq_q68_driver_most_asm	1.01	check whether kbd read via interrutps is possible
 	smsq_q68_kbd_int_asm		1.00	kbd interrupt handler
-	smsq_q68_nasty_asm		1.01	get kbd delay and set at q68_dlay ($170d8)
+	smsq_q68_nasty_asm		1.01	get kbd delay and set at kbd_dlay ($170dc)
 	smsq_q68_hwinit_asm		1.01	added kbd delay config item
 	smsq_q68_kbd_read_asm		1.01	use possible delay loop
 
@@ -945,7 +982,7 @@ Version  changed		       of file	changes made
 	smsq_java_hwinit_asm		2.01	added config item for ieee floats (wl)
 	smsq_java_driver_most_asm	1.02	possibly use java routines for some fp ops (wl)
 	smsq_java_smsq_base_asm 	2.04	removed debug code (blats etc) (wl)
-	smsq_java_driver_most_asm	1.03	integrated the rtc routines  & removed <rtc module (wl)
+	smsq_java_driver_most_asm	1.03	integrated the rtc routines  & removed rtc module (wl)
 
     NEW KEYWORD FEX_M
 	sbsext_ext_exsbas_asm		2.06	added FEX_M routine  (pw)
@@ -1811,7 +1848,7 @@ BC = Bruno Coativy
 DW = David Westbury
 FD = Fabrizio Diversi
 GG = George Gwilt
-JG = Jƒr˜me Grimbert
+JG = Jerome Grimbert
 JH = John Hall
 JM = Jochen Merz
 MK = Marcel Kilgus

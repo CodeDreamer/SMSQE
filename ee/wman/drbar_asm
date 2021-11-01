@@ -247,7 +247,7 @@ wdb_srng
 	move.w	d0,s.ws(a1,d7.w)
 	add.w	d3,s.wo(a1,d7.w)
 	move.w	wwa_watt+wwa_borw(a3),d7
-	bsr	wdb_wdef		 ; set background
+	bsr.s	wdb_wdef		 ; set background
 	bne.s	wdb_wderr
 	moveq	#iow.spap,d0
 	move.w	d4,d1			 ; scroll bar colour
@@ -293,14 +293,14 @@ wbd_offb
 	swap	d1
 	moveq	#1,d2			 ; single border
 	moveq	#iow.defw,d0
-	bsr	wdb_trap3
+	bsr.s	wdb_trap3
 	move.w	wwa_watt+wwa_papr(a3),d1
 	cmp.w	d4,d1			 ; bar background same as window bg?
 	beq.s	wdb_nobarback
 	moveq	#iow.spap,d0
-	bsr	wdb_trap3
+	bsr.s	wdb_trap3
 	moveq	#iow.clra,d0
-	bsr	wdb_trap3		 ; clear it
+	bsr.s	wdb_trap3		 ; clear it
 wdb_nobarback
 	movem.l (sp)+,d1
 	rts
@@ -323,7 +323,7 @@ wdb_wdef
 	move.w	wwa_watt+wwa_borc(a3),d1
 	move.w	d7,d2
 	moveq	#iow.defw,d0
-	bsr	wdb_trap3
+	bsr.s	wdb_trap3
 	movem.l (sp)+,d1-d3/d5
 	rts
 

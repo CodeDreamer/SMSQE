@@ -1,4 +1,5 @@
-; Pan a menu sub-window  V1.05	  1986  Tony Tebby   QJUMP
+; Pan a menu sub-window  V1.06	  1986  Tony Tebby   QJUMP
+* 2020-08-13	1.06	modif for index items drawing (AH)
 
 	section wman
 
@@ -8,7 +9,7 @@
 	xref	wm_mdraw
 	xref	wm_mpdrw
 	xref	wm_index
-	xref	wm_drbar
+;;	xref	wm_drbar		;(AH)
 
 	include 'dev8_keys_wwork'
 	include 'dev8_keys_wstatus'
@@ -161,9 +162,8 @@ wpn_drall
 	moveq	#0,d3
 	move.l	stk_a4(sp),a4
 	jsr	wm_mdraw		 ; redraw menu
-	jsr	wm_index		 ; and index items
+	jsr	wm_index		 ; and index items, bars and arrows
 	bra.l	wpn_exit
-
 
 wpn_sbar
 	move.w	d5,d0			 ; find item at middle of section
@@ -311,9 +311,10 @@ wpn_rdef
 
 	swap	d4			 ; limits right way round
 	swap	d5
-	jsr	wm_mpdrw		 ; redraw defined part of menu
-					 ; redraw bars
-	jsr	wm_drbar
+
+	jsr	wm_mpdrw		; redraw defined part of menu
+	jsr	wm_index		; redraw indexes, bars, arrows
+;;	jsr	wm_drbar		; redraw bars (AH)
 
 wpn_exok
 	moveq	#0,d0

@@ -116,7 +116,7 @@ jta.strm	equ	  9		; set removable status
 jta.gtrm	equ	 10		; get	  "       "
 jta.sslen	equ	 11		; set sector length in bytes (in D7)
 jta.qslen	equ	 12		; query sector length (in number)
-
+jte.swin	equ	 13		; check for swin presence
 
 jva.trpB	equ	$a00b		; popup iconified prog
 jtb.pop 	equ	  0		;    popup
@@ -130,14 +130,14 @@ jtd.xs2cp	equ	  1		;   transfer from scrap to clopboard
 jtd.qryc	equ	  2		;   query current change count
 jtd.strt	equ	  3		;   start java clipborad monitor thread
 jtd.stop	equ	  4		;   stop java clipborad monitor thread
-jva.test	equ	$a100		; test instruction
 
 jva.trpE	equ	$a00e		; more miscs
 jte.remv	equ	  0		; set drive removable status
-jte.lon 	equ	  1		; log on
-jte.loff	equ	  2		; log off
+jte.lon 	equ	  1		; log on   (debug)
+jte.loff	equ	  2		; log off  (debug)
 jte.kbd 	equ	  3		; get char from keyboard queue
-jte.swin	equ	  4		; check for swin presence
+
+jva.test	equ	$a100		; test instruction
 
 ; smsqmulator config info flag
 

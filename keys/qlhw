@@ -4,6 +4,7 @@
 mc_stat  equ    $18063  byte
 mc..blnk equ      1
 mc..m8   equ      3
+mc..ntsc equ      6
 mc..scrb equ      7
 
 pc_clock equ    $18000  long    clock

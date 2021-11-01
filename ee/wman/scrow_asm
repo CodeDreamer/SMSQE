@@ -1,4 +1,5 @@
-* Scan visible rows of standard menu  V1.01    1986  Tony Tebby  QJUMP  
+* Scan visible rows of standard menu  V1.01    1986  Tony Tebby  QJUMP
+* 2020-08-13	1.02	preserve d4 high word (moveq to move.w) (AH)  
 *
 	section wman
 *
@@ -37,7 +38,7 @@ wsr_loop
 	move.w	wwa_iatt+wwa_curw(a3),d5 set origin of hit area
 	add.w	(a2)+,d5		update origin
 	moveq	#-1,d6			up arrow row
-	moveq	#ww.scarr,d4		hit area size
+	move.w	#ww.scarr,d4		hit area size (AH)
 	move.w	(a2)+,d3		real row number
 	jsr	(a1)			do row for up arrow
 	bne.s	wsr_exit
@@ -56,7 +57,7 @@ wsr_dnarr
 	move.w	wwa_ysiz(a3),d5 	... yes, arrows at bottom
 wsr_dodn
 	moveq	#1,d6			down arrow row
-	moveq	#ww.scarr,d4		hit area size
+	move.w	#ww.scarr,d4		hit area size (AH)
 	sub.w	wwa_iatt+wwa_curw(a3),d5 up a bit
 	subq.w	#ww.scarr,d5
 	jsr	(a1)			do row for down arrow

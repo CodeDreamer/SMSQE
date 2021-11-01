@@ -1,12 +1,14 @@
-
-    <P>
-    <img src = "images/deg1.png"  width = 450 height =1>
-    <P>
-  </DIV>
-  Go to <A Href="#top"> Top of document</A>
-  <p>
-  Go to <A Href="index.php">Start document (Main Page)</A>
-  <p>
-  Go to <A Href="chngelog.html">Change Log</A>
-</BODY>
-</HTML>
+      <br>
+    </div>
+    <div style="text-align:center">
+        <img src = "images/deg1.png" alt="Divisor image" width = 450 height =1>
+        <br>
+    </DIV>
+    <div>
+       Go to <A Href="#top"> Top of document</A>
+       <br>
+       Go to <A Href="index.php">Start document (Main Page)</A>
+       <br>
+       Go to <A Href="chngelog.html">Change Log</A>
+       <br>
+       <br>

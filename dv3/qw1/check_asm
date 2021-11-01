@@ -1,10 +1,11 @@
-; DV3 Qubide (QLW1) Check Format   V3.02	   2017 W. Lenerz
+; DV3 Qubide (QLW1) Check Format   V3.03	   2017 W. Lenerz
 ;
 ; based on
 ;
 ; DV3 QL Check Format		   V3.00	   1992 Tony Tebby
 ;
 ; 2020-03-07  3.02  Better handling of medium name (MK+wl)
+; 2021-08-01  3.03  Last version trashed sectors per cluster info, fixed (MK)
 
 	section dv3
 
@@ -102,11 +103,10 @@ qck_changed
 	move.w	(a2)+,(a0)+		; max name is 10 long
 
 	moveq	#9,d0			; max nbrs of chars -1 (dbf)
-	moveq	#' ',d6 		; string is space filled
-cmp_lp	cmp.b	-(a2),d6
-	bne.s	cont1
-	dbf	d0,cmp_lp
-cont1	addq.w	#1,d0
+	moveq	#' ',d4 		; string is space filled
+cmp_lp	cmp.b	-(a2),d4
+	dbne	d0,cmp_lp
+	addq.w	#1,d0
 	move.w	d0,ddf_mname(a4)
 
 	assert	ddf_strk,ddf_sintlv-4,ddf_sskew-6,ddf_heads-8

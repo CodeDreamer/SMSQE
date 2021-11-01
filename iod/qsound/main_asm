@@ -2,6 +2,8 @@
 ;
 ; Mostly QSOUND compatible where possible, but supports multiple chips.
 ; Actual hardware access is implemented in separate file.
+;
+; 2021-03-20  3.01  Renamed SOUND to SOUND_AY because of SOUND device (MK)
 
 	section qsound
 
@@ -26,7 +28,7 @@
 	xref	ay_hw_volume
 
 cmd.count equ	15
-qsound.vers	equ   '3.00'
+qsound.vers	equ   '3.01'
 
 qsound_base
 	lea	proc_def,a1
@@ -364,16 +366,19 @@ peek_rts
 
 ; BELL
 bell	lea	bell_tab,a1
+	moveq	#0,d2
 	bsr	get_aybas
 	bra	ay_wrall
 
 ; EXPLODE
 explode lea	explode_tab,a1
+	moveq	#0,d2
 	bsr	get_aybas
 	bra	ay_wrall
 
 ; SHOOT
 shoot	lea	shoot_tab,a1
+	moveq	#0,d2
 	bsr	get_aybas
 	bra	ay_wrall
 
@@ -1171,10 +1176,10 @@ sound_mc
 	movem.l (sp)+,a0-a2/a4/d4-d7
 	rts
 
-; SOUND n, f, v
+; SOUND_AY n, f, v
 ;
 ; Set sound output of channel n to frequency f with volume v
-sound
+sound_ay
 	move.w	sb.gtfp,a2
 	jsr	(a2)
 	bsr	get_aybas
@@ -1453,7 +1458,7 @@ proc_def
 	proc_ref HOLD
 	proc_ref RELEASE
 	proc_ref ENVELOPE
-	proc_ref SOUND
+	proc_ref SOUND_AY
 	proc_end
 	proc_stt
 	proc_ref PEEK_AY

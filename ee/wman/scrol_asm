@@ -1,4 +1,5 @@
 ; Scroll a menu sub-window  V1.04    1986  Tony Tebby	 QJUMP
+* 2020-08-13	1.06	modif for index items partial drawing (AH)
 
 	section wman
 
@@ -8,7 +9,7 @@
 	xref	wm_mdraw
 	xref	wm_mpdrw
 	xref	wm_index
-	xref	wm_drbar
+;	xref	wm_drbar	;(AH)
 
 	include 'dev8_keys_wwork'
 	include 'dev8_keys_wstatus'
@@ -158,7 +159,7 @@ wps_drall
 	moveq	#0,d3
 	move.l	stk_a4(sp),a4
 	jsr	wm_mdraw		 ; redraw menu
-	jsr	wm_index		 ; and index items
+	jsr	wm_index		 ; and index items, bars and arrows
 	bra.l	wps_exit
 
 
@@ -307,7 +308,8 @@ wps_rdef
 	addq.l	#8,sp			 ; remove junk
 
 	jsr	wm_mpdrw		 ; redraw defined part of menu
-	jsr	wm_drbar		 ; redraw bars
+	jsr	wm_index		 ; and index items, bars and arrows
+;;	jsr	wm_drbar		 ; redraw bars (AH)
 
 wps_exok
 	moveq	#0,d0

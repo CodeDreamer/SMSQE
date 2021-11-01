@@ -1,4 +1,6 @@
-; QPC Extension thing
+; QPC Extension thing v1.01
+;
+; 2021-08-02  1.01  Added QPC_FLASHBUTTON and QPC_HASFOCUS (MK)
 
 	section thing
 
@@ -195,11 +197,31 @@ qe_nopar
 ;+++
 ; QPC_WINDOWTITLE name
 ;---
-qpc_windowtitle thg_extn {WTIT},ser_getport,thp_str
+qpc_windowtitle thg_extn {WTIT},qpc_flashbutton,thp_str
 	move.l	a0,-(sp)
 	move.l	4(a1),a0
 	dc.w	qpc.wtit
 	movem.l (sp)+,a0
+	rts
+
+;+++
+; QPC_FLASHBUTTON
+;---
+qpc_flashbutton thg_extn {FLSH},qpc_hasfocus,qpc_null
+	dc.w	qpc.flsh
+	moveq	#0,d0
+	rts
+
+;+++
+; focus% = QPC_HASFOCUS
+;---
+qpc_hasfocus thg_extn {FOCS},ser_getport,qpc_rword
+	dc.w	qpc.focs
+	move.l	a1,-(sp)
+	move.l	4(a1),a1
+	move.w	d1,(a1)
+	move.l	(sp)+,a1
+	moveq	#0,d0
 	rts
 
 ;+++

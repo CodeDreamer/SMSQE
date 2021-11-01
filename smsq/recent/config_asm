@@ -1,4 +1,6 @@
-; Config section for recent thing	V1.00 (c) W. Lenerz 2016
+; Config section for recent thing	V1.01 (c) W. Lenerz 2016
+;
+; 2020-01-23  1.01  Changed xref rcnt_vers to xref.l to avoid QLink bug (MK)
 
 	section config
 
@@ -8,7 +10,7 @@
 	xdef	rcfg_file	; file to save/load
 	xdef	rcfg_use	; use thing at all?
 
-	xref	rcnt_vers
+	xref.l	rcnt_vers
 
 rcfg_nbr dc.b	20		; number of files
 rcfg_use dc.b	0		; use thing at all? (preset = no)
