@@ -3,6 +3,29 @@
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
+3.40
+
+    QIMSI integration (wl)
+	smsq_qimsi_ps2_ibm_base_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_english_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_french_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_german_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_italian_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_spanish_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_usa_asm		1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_at102cvt_asm	1.01	adapted for Qimsi PS2
+	smsq_qimsi_ps2_hdop_asm 	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_basic_asm	1.00	initial version
+	smsq_qimsi_ps2_init_asm 	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_kbd_sett_asm	1.02	adapted for Qimsi PS2
+	smsq_qimsi_ps2_languages_cct	.	initial version
+	smsq_qimsi_ps2_ps2_cct		.	initial version
+	smsq_qimsi_ps2_driver_most_link .	adapted for Qimsi PS2
+	smsq_qimsi_ps2_poll_asm 	1.03	adapted for Qimsi PS2
+	smsq_qimsi_ps2_read_asm 	1.00	initial version
+	smsq_qimsi_ps2_tables_asm	1.03	adapted for Qimsi PS2
+
+-----------------------------------------------------------------------------
 
 3.39
 

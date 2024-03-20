@@ -1,0 +1,19 @@
+program dev8_smsq_qimsi_ps2_ps2
+
+section ps2
+section ps2_lang
+section basic     ; base area for any extension or program
+section version   ; version messages
+
+input   dev8_smsq_qimsi_ps2_init_rel
+library dev8_smsq_qimsi_ps2_lib
+library dev8_smsq_qimsi_ps2_languages_lib
+library dev8_smsq_ioq_lib
+library dev8_util_thg_parm_rel
+library dev8_iod_iou_lib
+library dev8_util_gut_lib
+library dev8_sbsext_ut_lib
+library dev8_util_cv_lib
+library dev8_util_dummy_lib
+library dev8_smsq_smsq_reset_rel
+library dev8_smsq_smsq_end_rel

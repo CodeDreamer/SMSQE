@@ -381,1671 +381,1674 @@
 3810   DATA 'smsq_gold_driver_ql_link'
 3820   DATA 'smsq_gold_driver_8_link'
 3830   DATA 'smsq_gold_driver_most_link'
-3840   DATA 'smsq_gold_driver_nd_link'
-3850   DATA 'smsq_gold_driver_nds_link'
-3860   DATA 'smsq_gold_driver_dv3_link'
-3870   DATA 'smsq_gold_kbd_lang_link'
-3880   DATA 'smsq_gold_kbd_abc_lng_link'
-3890   DATA 'smsq_gold_kbd_abc_link'
-3900   DATA 'smsq_gold_roms_link'
-3910   DATA 'smsq_gold_qimi_link'
-3920   DATA 'smsq_gold_sysspr_link',''
-3930 END DEFine gc_data
-3940 :
-3950 DEFine PROCedure aurora_data
-3960 restore 3960
-3970   DATA '**** -- Aurora -- ****'
-3980   DATA 'smsq_gold_host_link'
-3990   DATA 'smsq_gold_hwinit_link'
-4000   DATA 'smsq_gold_nasty_link'
-4010   DATA 'smsq_gold_nasty_s_link'
-4020   DATA 'smsq_aurora_driver_8_link'
-4030   DATA 'smsq_gold_driver_ql_link'
-4040   DATA 'smsq_gold_driver_most_link'
-4050   DATA 'smsq_gold_driver_nd_link'
-4060   DATA 'smsq_gold_driver_nds_link'
-4070   DATA 'smsq_gold_driver_dv3_link'
-4080   DATA 'smsq_gold_kbd_lang_link'
-4090   DATA 'smsq_gold_kbd_abc_lng_link'
-4100   DATA 'smsq_gold_kbd_abc_link'
-4110   DATA 'smsq_gold_roms_link'
-4120   DATA 'smsq_gold_qimi_link'
-4130   DATA 'smsq_aurora_sysspr_link'
-4140   DATA 'smsq_gold_sysspr_link',''
-4150 END DEFine aurora_data
-4160 :
-4170 DEFine PROCedure qxl_data
-4180 restore 4180
-4190   DATA '**** -- QXL -- ****'
-4200   DATA 'smsq_qxl_host_link'
-4210   DATA 'smsq_qxl_hwinit_link'
-4220   DATA 'smsq_qxl_nasty_e_link'
-4230   DATA 'smsq_qxl_driver_ql_link'
-4240   DATA 'smsq_qxl_driver_16_link'
-4250   DATA 'smsq_qxl_driver_most_link'
-4260   DATA 'smsq_qxl_driver_nd_link'
-4270   DATA 'smsq_qxl_procs_link'
-4280   DATA 'smsq_qxl_driver_dv3e_link'
-4290   DATA 'smsq_qxl_kbd_lang_link'
-4300   DATA 'smsq_qxl_ecache_link'
-4310   DATA 'smsq_qxl_sysspr_link',''
-4320 END DEFine qxl_data
-4330 :
-4340 DEFine PROCedure java_data
-4350 restore 4350
-4360   DATA '**** -- Java -- ****'
-4370   DATA 'smsq_java_host_link'
-4380   DATA 'smsq_java_smsq_link'
-4390   DATA 'smsq_java_smsq_1mb_link'
-4400   DATA 'smsq_java_hwinit_link'
-4410   DATA 'smsq_java_driver_ql_link'
-4420   DATA 'smsq_java_driver_8_link'
-4430   DATA 'smsq_java_driver_16_link'
-4440   DATA 'smsq_java_driver_most_link'
-4450   DATA 'smsq_java_driver_dv3e_link'
-4460   DATA 'smsq_java_ip_link'
-4470   DATA 'smsq_gold_kbd_lang_link'
-4480   DATA 'smsq_java_sysspr_link',''
-4490 END DEFine java_data
-4500 :
-4510 DEFine PROCedure qpc_data
-4520 restore 4520
-4530   DATA "**** -- QPC -- ****"
-4540   DATA 'smsq_qpc_host_link'
-4550   DATA 'smsq_qpc_hwinit_link'
-4560   DATA 'smsq_qpc_nasty_e_link'
-4570   DATA 'smsq_qpc_driver_ql_link'
-4580   DATA 'smsq_qpc_driver_16_link'
-4590   DATA 'smsq_qpc_driver_8_link'
-4600   DATA 'smsq_qpc_driver_ql_link'
-4610   DATA 'smsq_qpc_driver_most_link'
-4620   DATA 'smsq_qpc_driver_qsound_link'
-4630   DATA 'smsq_qpc_procs_link'
-4640   DATA 'smsq_qpc_driver_dv3e_link'
-4650   DATA 'smsq_qpc_kbd_lang_link'
-4660   DATA 'smsq_qpc_dos_link'
-4670   DATA 'smsq_qpc_ip_link'
-4680   DATA 'smsq_qpc_cdaudio_link'
-4690   DATA 'smsq_smsq_qpc_link'
-4700   DATA 'smsq_qpc_sysspr_link',''
-4710 END DEFine qpc_data
-4720 :
-4730 DEFine PROCedure ptrgen_data
-4740 restore 4740
-4750   DATA "**** -- PtrGen -- ****"
-4760   DATA "ee_wman_link","ee_ptr_link","ee_hot_german_link","ee_hot_french_link"
-4770   DATA "ee_hot_english_link",""
-4780 END DEFine ptrgen_data
-4790 :
-4800 DEFine PROCedure q68_data
-4810 restore 4810
-4820   DATA '**** -- Q68 -- ****'
-4830   DATA 'smsq_q68_sbas_procs_link'
-4840   DATA 'smsq_q68_hwinit_link'
-4850   DATA 'smsq_q68_nasty_link'
-4860   DATA 'smsq_q68_driver_dv3_link'
-4870   DATA 'smsq_q68_driver_most_link'
-4880   DATA 'smsq_q68_driver_ql_link'
-4890   DATA 'smsq_q68_driver_16_link'
-4900   DATA 'smsq_q68_driver_8_link'
-4910   DATA 'smsq_q68_kbd_lang_link'
-4920   DATA 'smsq_smsq_q68_link'
-4930   DATA 'smsq_q40_sysspr_link',''
-4940 END DEFine q68_data
-4950 :
-4960 DEFine PROCedure qemu_data_old
-4970 restore 4970
-4980   DATA '**** -- Q-Emulator -- ****'
-4990   DATA 'smsq_gold_host_link'
-5000   DATA 'smsq_qem_hwinit_link'
-5010   DATA 'smsq_qem_nasty_link'
-5020   REM DATA 'smsq_aurora_driver_8_link'
-5030   DATA 'smsq_qem_driver_16_link'
-5040   DATA 'smsq_qem_driver_most_link'
-5050   DATA 'smsq_qem_driver_nd_link'
-5060   REM DATA 'smsq_qem_driver_nds_link'
-5070   DATA 'smsq_qem_driver_dv3_link'
-5080   DATA 'smsq_qem_kbd_lang_link'
-5090   DATA 'smsq_qem_roms_link'
-5100   DATA 'smsq_qem_procs_link'
-5110   DATA 'smsq_qem_qimi_link'
-5120   REM DATA 'smsq_aurora_sysspr_link'
-5130   REM DATA 'smsq_q40_sysspr_link'
-5140   DATA 'smsq_qem_sysspr_link',''
-5150 END DEFine qemu_data
-5160 :
-5170 DEFine PROCedure qemu_data
-5180 restore 5180
-5190   DATA '**** -- Q-Emulator -- ****'
-5200   DATA 'smsq_gold_host_link'
-5210   DATA 'smsq_qem_hwinit_link'
-5220   DATA 'smsq_gold_nasty_link'
-5230   DATA 'smsq_qem_driver_ql_link'
-5240   DATA 'smsq_qem_driver_16_link'
-5250   DATA 'smsq_gold_driver_most_link'
-5260   DATA 'smsq_gold_driver_nd_link'
-5270   DATA 'smsq_gold_driver_dv3_link'
-5280   DATA 'smsq_gold_kbd_lang_link'
-5290   DATA 'smsq_gold_roms_link'
-5300   DATA 'smsq_qem_procs_link'
-5310   DATA 'smsq_gold_qimi_link'
-5320   DATA 'smsq_q40_sysspr_link',''
-5330 END DEFine qemu_data
-5340 :
-5350 DEFine PROCedure make_targets
-5360 REMark targets are only made if there was no error during compilation
-5370 REMark to achieve this, a primitive approach is used:
-5380 REMark a check is made whether an appsub menu item status is still selected
-5390 REMark if it is, then the
-5400   LOCal lp%,current_target%,tot_targets%
-5410   tot_targets%=0                        : REMark no targets to make yet
-5420   current_target%=0                               : REMark and no target yet
-5430   FOR lp%=0 TO data_count%-2
-5440     IF main_mfl%(lp%,0)=16
-5450       REMark we're covering a new target
-5460       tot_targets%=tot_targets%+current_target% : REMark show old target
-5470       current_target%=find_target%(lp%+1) : REMark get new target we're covering
-5480     ELSE
-5490       IF main_mfl%(lp%,0)<>0:current_target%=0
-5500     END IF
-5510   END FOR lp%
-5520   tot_targets%=tot_targets%+current_target%
-5530   REMark at the end, here, tot_targets holds a bitmap
-5540   REMark of targets for which compilation was ok
-5550   IF (machines%&&1) AND NOT (tot_targets% && 1):RETurn : REMark generic was asked for but not compiled correctly!
-5560   IF tot_targets%&&2:atari_target
-5570   IF tot_targets%&&4:gc_target
-5580   IF tot_targets%&&8:qx0_target
-5590   IF tot_targets%&&16:qxl_target
-5600   IF tot_targets%&&32:aurora_target
-5610   IF tot_targets%&&64:java_target
-5620   REMark IF tot_targets%&&128:ptr_gen_target  : rem no need for this
-5630   IF tot_targets%&&256:qpc_target
-5640   IF tot_targets%&&512:q68_target
-5650   IF tot_targets%&&1024:qemu_target
-5660 END DEFine make_targets
-5670 :
-5680 DEFine PROCedure atari_target
-5690   cmdl$='m'
-5700   p$=rep$&'sys_boot_st_flp'
-5710   f$=rep$&'sys_boot_file'
-5720   ah$=rep$&'sys_boot_st_host'
-5730   ld$=rep$&'smsq_smsq_loader'
-5740   hi$=rep$&'smsq_atari_hwinit'
-5750   os1f$=rep$&'smsq_smsq_fh_os'
-5760   os1$=rep$&'smsq_smsq_os'
-5770   ca$=rep$&'smsq_smsq_cache'
-5780   os2$=rep$&'smsq_sbas_control'
-5790   ns1$=rep$&'smsq_atari_nasty'
-5800   ln1$=rep$&'smsq_smsq_lang'
-5810   ln2$=rep$&'smsq_atari_kbd_lang'
-5820   ln3$=rep$&'smsq_sbas_lang'
-5830   ex1$=rep$&'smsq_sbas_procs_x'
-5840   ex2$=rep$&'smsq_atari_driver_dv3'
-5850   ex3$=rep$&'smsq_atari_driver_ser'
-5860   ex4$=rep$&'smsq_atari_driver_mono'
-5870   ex5$=rep$&'smsq_atari_driver_ql'
-5880   ex6$=rep$&'smsq_smsq_wman'
-5890   ex7$=rep$&'smsq_smsq_hotkey'
-5900   ex8$=rep$&'smsq_atari_sysspr'
-5910   ex9$=rep$&'smsq_home_home'
-5920   ex10$=rep$&'smsq_recent_recent'
-5930   nl$=rep$&'sys_boot_null'
-5940   IF 'm' INSTR cmdl$ = 0: ex4$ = nl$
-5950   EW f$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$, ex10$,rep$&'smsq_atari_SMSQ.PRG'
-5960 END DEFine atari_target
-5970 :
-5980 DEFine PROCedure gc_target
-5990 REMark there are  2 targets for the Goldcard!
-6000   f$=rep$&'sys_boot_file'
-6010   v$=rep$&'smsq_smsq_vers'
-6020   h$=rep$&'smsq_gold_host'
-6030   ld$=rep$&'smsq_smsq_loader'
-6040   hi$=rep$&'smsq_gold_hwinit'
-6050   os1$=rep$&'smsq_smsq_os'
-6060   ca$=rep$&'smsq_smsq_cache'
-6070   os2$=rep$&'smsq_sbas_control'
-6080   ns1$=rep$&'smsq_gold_nasty'
-6090   ns2$=rep$&'smsq_gold_nasty_s'
-6100   ln1$=rep$&'smsq_smsq_lang'
-6110   ln2$=rep$&'smsq_gold_kbd_lang'
-6120   ln2a$=rep$&'smsq_gold_kbd_abc_lang'
-6130   ln3$=rep$&'smsq_sbas_lang'
-6140   ex1$=rep$&'smsq_sbas_procs_x'   : REMark this must be after "roms"
-6150   ex2a$=rep$&'smsq_gold_kbd_abc'
-6160   ex2$=rep$&'smsq_gold_driver_most'
-6170   ex3a$=rep$&'smsq_gold_driver_ql'
-6180   ex38$=rep$&'smsq_gold_driver_8'
-6190   ex3q$=rep$&'smsq_gold_qimi'
-6200   ex3w$=rep$&'smsq_smsq_wman'
-6210   ex4$=rep$&'smsq_gold_driver_dv3'
-6220   ex5$=rep$&'smsq_gold_driver_nd'
-6230   ex6$=rep$&'smsq_gold_driver_nds'
-6240   ex7$=rep$&'smsq_smsq_hotkey'
-6250   ex8$=rep$&'smsq_gold_sysspr'
-6260   ex9$=rep$&'smsq_home_home'
-6270   ex10$=rep$&'smsq_gold_roms'
-6280   ex11$=rep$&'smsq_recent_recent'
-6290   nl$=rep$&'sys_boot_null'
-6300   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,ex10$, ex1$,ex11$,rep$&'SMSQ_GOLD_gold'
-6310   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex38$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,ex10$, ex1$,ex11$,rep$&'SMSQ_GOLD_gold8'
-6320 END DEFine gc_target
-6330 :
-6340 DEFine PROCedure aurora_target
-6350   f$=rep$&'sys_boot_file'
-6360   v$=rep$&'smsq_smsq_vers'
-6370   h$=rep$&'smsq_gold_host'
-6380   ld$=rep$&'smsq_smsq_loader'
-6390   hi$=rep$&'smsq_gold_hwinit'
-6400   os1$=rep$&'smsq_smsq_os'
-6410   ca$=rep$&'smsq_smsq_cache'
-6420   os2$=rep$&'smsq_sbas_control'
-6430   ns1$=rep$&'smsq_gold_nasty'
-6440   ns2$=rep$&'smsq_gold_nasty_s'
-6450   ln1$=rep$&'smsq_smsq_lang'
-6460   ln2$=rep$&'smsq_gold_kbd_lang'
-6470   ln2a$=rep$&'smsq_gold_kbd_abc_lang'
-6480   ln3$=rep$&'smsq_sbas_lang'
-6490   ex1$=rep$&'smsq_sbas_procs_x'   : REMark this must be after "roms"
-6500   ex2a$=rep$&'smsq_gold_kbd_abc'
-6510   ex2$=rep$&'smsq_gold_driver_most'
-6520   ex3a$=rep$&'smsq_gold_driver_ql'
-6530   ex3b$=rep$&'smsq_aurora_driver_8'
-6540   ex3q$=rep$&'smsq_gold_qimi'
-6550   ex3w$=rep$&'smsq_smsq_wman'
-6560   ex3sq$=rep$&'smsq_aurora_sysspr'
-6570   ex3sh$=rep$&'smsq_gold_sysspr'
-6580   ex4$=rep$&'smsq_gold_driver_dv3'
-6590   ex5$=rep$&'smsq_gold_driver_nd'
-6600   ex6$=rep$&'smsq_gold_driver_nds'
-6610   ex8$=rep$&"smsq_home_home"
-6620   ex9$=rep$&'smsq_smsq_hotkey'
-6630   ex10$=rep$&'smsq_gold_roms'
-6640   ex11$=rep$&'smsq_recent_recent'
-6650   nl$=rep$&'sys_boot_null'
-6660   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3b$,ex3q$,ex3w$,ex3sh$,ex4$,ex5$,ex6$,ex9$,ex10$,ex8$,ex1$,ex11$, rep$&'SMSQ_Aurora_SMSQE'
-6670 END DEFine aurora_target
-6680 :
-6690 DEFine PROCedure qx0_target
-6700   nl$=rep$&'sys_boot_null'
-6710   f$=rep$&'sys_boot_file'
-6720   qr$=rep$&'sys_boot_q40_rom'
-6730   ld$=rep$&'smsq_smsq_loader'
-6740   hi$=rep$&'smsq_q40_hwinit'
-6750   os1$=rep$&'smsq_smsq_q40_os' : REMark -*** change for fast memory   **
-6760   ca$=rep$&'smsq_smsq_cache40c'
-6770   caq$=rep$&'smsq_q40_cache'
-6780   caq4$=rep$&'smsq_q40_cachemode'
-6790   os2$=rep$&'smsq_sbas_control'
-6800   ns2$=rep$&'smsq_q40_nasty'
-6810   ln1$=rep$&'smsq_smsq_lang'
-6820   ln2$=rep$&'smsq_q40_kbd_lang'
-6830   ln3$=rep$&'smsq_sbas_lang'
-6840   ex1$=rep$&'smsq_sbas_procs_x'
-6850   ex2$=rep$&'smsq_q40_driver_dv3'
-6860   ex3$=rep$&'smsq_q40_driver_ser'
-6870   ex4a$=rep$&'smsq_q40_driver_ql'
-6880   ex4b$=rep$&'smsq_q40_driver_16'
-6890   ex4w$=rep$&'smsq_smsq_wman'
-6900   ex5$=rep$&'smsq_q40_sysspr'
-6910   ex9$=rep$&'smsq_smsq_hotkey'
-6920   ex10$=rep$&'smsq_home_home'
-6930   ex11$=rep$&'smsq_recent_recent'
-6940   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex5$,ex9$,ex10$,ex11$,ns2$,caq4$, rep$&'smsq_q40_rom'
-6950 END DEFine qx0_target
-6960 :
-6970 DEFine PROCedure qxl_target
-6980   IF FOP_IN (rep$&'smsq_qxl_qxlh.exe') <> -7: PRINT 'QXLH.EXE exists'; cmd$: QUIT
-6990   p$   = rep$&'sys_boot_file'
-7000   bl$  = rep$&'smsq_qxl_qxl2_exe'
-7010   hst$ = rep$&'smsq_qxl_host'
-7020   hi$  = rep$&'smsq_qxl_hwinit'
-7030   ld$  = rep$&'smsq_smsq_loader'
-7040   os1$ = rep$&'smsq_smsq_os'
-7050   ca$  = rep$&'smsq_smsq_cache'
-7060   os2$ = rep$&'smsq_sbas_control'
-7070   ns1$ = rep$&'smsq_qxl_nasty_e'
-7080   ln1$ = rep$&'smsq_smsq_lang'
-7090   ln2$ = rep$&'smsq_qxl_kbd_lang'
-7100   ln3$ = rep$&'smsq_sbas_lang'
-7110   ex1$ = rep$&'smsq_qxl_procs_x'
-7120   ex2$ = rep$&'smsq_qxl_driver_most'  : REMark Keyboard before CON
-7130   ex3$ = rep$&'smsq_qxl_driver_ql'
-7140   ex3b$ = rep$&'smsq_qxl_driver_16'
-7150   ex3w$ = rep$&'smsq_smsq_wman'
-7160   ex4$ = rep$&'smsq_qxl_driver_nd'
-7170   ex5$ = rep$&'smsq_qxl_driver_dv3e'
-7180   ex6$ = rep$&'smsq_smsq_hotkey'
-7190   ex7$ = rep$&'smsq_qxl_sysspr'
-7200   ex8$ = rep$&'smsq_home_home'
-7210   ex10$= rep$&'smsq_recent_recent'
-7220   last$ = rep$&'smsq_qxl_ecache'
-7230   dml$ = rep$&'smsq_qxl_dummy'
-7240   qm$  = rep$&'qmon_qxl_bin'
-7250   r$='ram1_smsqe.exe' : f$=rep$&'smsq_qxl_smsqe.exe'
-7260   cct$=rep$&"extras_exe_cct"
-7270   DELETE f$
-7280   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex11$,last$, r$
-7290   EW cct$, bl$,r$, f$
-7300   DELETE r$
-7310   OPEN #4,f$
-7320   lenf=FLEN(#4)
-7330   lens% = INT ((lenf+511)/512)
-7340   lenb% = lenf - lens% * 512
-7350   IF lenb%: lenb% = lenb% + 512
-7360   BPUT #4\2, lenb% MOD 256, lenb% DIV 256, lens% MOD 256, lens% DIV 256
-7370   CLOSE #4
-7380 END DEFine qxl_target
-7390 :
-7400 DEFine PROCedure java_target
-7410   f$=rep$&'sys_boot_file'
-7420   v$=rep$&'smsq_smsq_vers'
-7430   h$=rep$&'smsq_java_host'
-7440   ld$=rep$&'smsq_smsq_loader'
-7450   hi$=rep$&'smsq_java_hwinit'
-7460   os1$=rep$&'smsq_java_smsq_os'
-7470   os3$=rep$&'smsq_java_smsq_1mb_os'     : REMark must be after os
-7480   ca$=rep$&'smsq_smsq_cache'
-7490   os2$=rep$&'smsq_sbas_control'
-7500   ln1$=rep$&'smsq_smsq_lang'
-7510   ln2$=rep$&'smsq_gold_kbd_lang'
-7520   ln3$=rep$&'smsq_sbas_lang'
-7530   sb$=rep$&'smsq_sbas_procs_x'
-7540   dr1$=rep$&'smsq_java_driver_most'
-7550   dr2$=rep$&'smsq_java_driver_ql'
-7560   dr3$=rep$&'smsq_java_driver_8'
-7570   dr4$=rep$&'smsq_java_driver_16'
-7580   dr5$=rep$&'smsq_smsq_wman'
-7590   dr6$=rep$&'smsq_java_driver_dv3e'
-7600 rem  dr7$=rep$&'smsq_java_driver_qsd_qsd'
-7610   hk$=rep$&'smsq_smsq_hotkey'
-7620   sp$=rep$&'smsq_java_sysspr'
-7630   hm$=rep$&'smsq_home_home'
-7640   ip$=rep$&'smsq_java_ip_x'
-7650   re$=rep$&'smsq_recent_recent'
-7660   EW f$,h$,ld$,hi$,os1$,os3$,ca$,os2$,ln1$,ln2$,ln3$,sb$,dr1$,dr2$,dr3$,dr4$,dr5$,dr6$,hk$,sp$,hm$,ip$,re$, rep$&'SMSQ_java_java'
-7670 END DEFine java_target
-7680 :
-7690 DEFine PROCedure qpc_target
-7700   p$   = rep$&'sys_boot_file'
-7710   hst$ = rep$&'smsq_qpc_host'
-7720   hi$  = rep$&'smsq_qpc_hwinit'
-7730   ld$  = rep$&'smsq_smsq_loader'
-7740   os1$ = rep$&'smsq_smsq_qpc_os'
-7750   ca$  = rep$&'smsq_smsq_cache'
-7760   os2$ = rep$&'smsq_sbas_control'
-7770   ns1$ = rep$&'smsq_qpc_nasty_e'
-7780   ln1$ = rep$&'smsq_smsq_lang'
-7790   ln2$ = rep$&'smsq_qpc_kbd_lang'
-7800   ln3$ = rep$&'smsq_sbas_lang'
-7810   ex1$ = rep$&'smsq_sbas_procs_x'
-7820   ex2$ = rep$&'smsq_qpc_driver_most'  : REMark Keyboard before CON
-7830   ex3$ = rep$&'smsq_qpc_driver_ql'
-7840   ex3b$= rep$&'smsq_qpc_driver_16'
-7850   ex3c$= rep$&'smsq_qpc_driver_8'
-7860   ex3w$= rep$&'smsq_smsq_wman'
-7870   ex3s$= rep$&'smsq_qpc_sysspr'
-7880   ex4$ = rep$&'smsq_qpc_driver_dv3e'
-7890   ex5$ = rep$&'smsq_smsq_hotkey'
-7900   ex6$ = rep$&'smsq_qpc_procs_x'
-7910   ex7$ = rep$&'smsq_qpc_cdaudio_x'
-7920   ex8$ = rep$&'smsq_qpc_dos_x'
-7930   ex9$ = rep$&'smsq_qpc_ip_x'
-7940   exa$ = rep$&'smsq_home_home'
-7950   exb$ = rep$&'smsq_recent_recent'
-7960   exc$ = rep$&'smsq_qpc_driver_qsound'
-7970   qm$ =  rep$&"qmon_qpc_smsq"
-7980   r$='ram1_smsqe.bin'
-7990   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3c$,ex3w$,ex3s$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,exc$,exa$,exb$, r$
-8000   COPY_O r$,rep$&'smsq_qpc_smsqe.bin'
-8010   DELETE r$
-8020 END DEFine qpc_target
-8030 :
-8040 DEFine PROCedure q68_target
-8050   local c%
-8060   tgt$= rep$&'smsq_q68_RAM_SYS'
-8070   leng=350000
-8080   nl$=rep$&'sys_boot_null'
-8090   f$=rep$&'sys_boot_file'
-8100   qr$=rep$&'sys_boot_q68_rom_bin'
-8110   ld$=rep$&'smsq_smsq_loader'
-8120   hi$=rep$&'smsq_q68_hwinit'
-8130   os1$=rep$&'smsq_smsq_q68_os' : REMark change for fast memory
-8140   ca$  = rep$&'smsq_smsq_cache'
-8150   ns2$=rep$&'smsq_q68_nasty'
-8160   os2$=rep$&'smsq_sbas_control'
-8170   ln1$=rep$&'smsq_smsq_lang'
-8180   ln2$=rep$&'smsq_q68_kbd_lang'
-8190   ln3$=rep$&'smsq_sbas_lang'
-8200   ex1$=rep$&'smsq_q68_sbas_procs_x'
-8210   ex2$=rep$&'smsq_q68_driver_dv3'
-8220   ex3$=rep$&'smsq_q68_driver_most'
-8230   ex4a$=rep$&'smsq_q68_driver_ql'
-8240   ex4b$=rep$&'smsq_q68_driver_16'
-8250   ex4c$=rep$&'smsq_q68_driver_8'
-8260   ex4w$=rep$&'smsq_smsq_wman'
-8270   ex5$=rep$&'smsq_q40_sysspr'
-8280   ex9$=rep$&'smsq_smsq_hotkey'
-8290   ex10$=rep$&'smsq_home_home'
-8300   ex11$=rep$&'smsq_recent_recent'
-8310 rem  extr$="dev1_asm_Q0_bin"
-8320   EW f$, qr$,ld$,hi$,os1$,ca$,os2$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4c$,ex4w$,ex5$,ex9$,ex10$,ex11$,ns2$,tgt$ : rem no net
-8330   COPY_O tgt$,rep$&"smsq_q68_SMSQ_4_WIN"
-8340   c%=fop_in (tgt$)
-8350   fleng=flen(#c%)
-8360   close#c%
-8370   a=ALCHP (leng)
-8380   LBYTES tgt$,a
-8390   poke_l a+16,fleng                               : rem set length here for loader
-8400   SBYTES_O tgt$,a,leng
-8410   RECHP a
-8420 END DEFine q68_target
-8430 :
-8440 DEFine PROCedure qemu_target
-8450 local file$,size,addr
-8460   file$='dev8_smsq_qem_SMSQ_QEM'
-8470   f$='dev8_sys_boot_file'
-8480   v$='dev8_smsq_smsq_vers'
-8490   h$='dev8_smsq_gold_host'
-8500   ld$='dev8_smsq_smsq_loader'
-8510   hi$='dev8_smsq_qem_hwinit'
-8520   qm$='dev8_qmon_qem_smsq'
-8530   os1$='dev8_smsq_smsq_os'
-8540   ca$='dev8_smsq_smsq_cache'
-8550   os2$='dev8_smsq_sbas_control'
-8560   ns1$='dev8_smsq_gold_nasty'
-8570   ln1$='dev8_smsq_smsq_lang'
-8580   ln2$='dev8_smsq_gold_kbd_lang'
-8590   ln3$='dev8_smsq_sbas_lang'
-8600   ex1$='dev8_smsq_sbas_procs_x'         : rem must be after roms (??)
-8610   ex2$='dev8_smsq_gold_driver_most'
-8620   ex3a$='dev8_smsq_qem_driver_ql'
-8630   ex3c$='dev8_smsq_qem_driver_16'
-8640   ex3q$='dev8_smsq_gold_qimi'
-8650   ex3w$='dev8_smsq_smsq_wman'
-8660   ex3sq$='dev8_smsq_q40_sysspr'
-8670   rem ex3sq$='dev8_smsq_qem_sysspr'
-8680   ex4$='dev8_smsq_gold_driver_dv3'
-8690   ex5$='dev8_smsq_gold_driver_nd'
-8700   ex6$='dev8_smsq_qem_procs'
-8710   ex9$='dev8_smsq_smsq_hotkey'
-8720   ex10$='dev8_smsq_gold_roms'
-8730   ex11$='dev8_smsq_home_home'
-8740   ex12$='dev8_smsq_recent_recent'
-8750   nl$='dev8_sys_boot_null'
-8760 rem       EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex2$,ex3a$,ex3c$,ex3q$,ex3w$,ex3sq$,ex4$,'dev8_smsq_qem_SMSQ_QEM'
-8770   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex2$,ex3a$,ex3c$,ex3q$,ex3w$,ex3sq$,ex4$,ex5$,ex9$,ex10$,ex1$,ex6$,ex11$,ex12$,file$
-8780   size = flen(\file$)
-8790   addr = alchp(size)
-8800   lbytes file$,addr
-8810   sbytes_o file$,addr,size    : rem no longer is executable
-8820   rechp addr
-8830 END DEFine qemu_target
-8840 :
-8850 DEFine PROCedure findit2
-8860 LOCal lp%,a$
-8870 restore 8870
-8880   DATA p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3c$,ex3w$,ex3s$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,exa$, r$,""
-8890   REPeat lp%
-8900     READ a$:IF a$="":EXIT lp%
-8910     t%=FOP_IN(a$ )
-8920     IF (t%<0)
-8930        PRINT "not found "& a$
-8940     END IF
-8950  END REPeat lp%
-8960 END DEFine findit2
-8970 :
-8980 DEFine FuNction find_target% (current%)
-8990   IF "SMSQ Generic" INSTR mdata$(current%):RETurn 1
-9000   IF "Atari" INSTR mdata$(current%):RETurn 2
-9010   IF "GoldCard" INSTR mdata$(current%):RETurn 4
-9020   IF "Q40" INSTR mdata$(current%):RETurn 8
-9030   IF "QXL" INSTR mdata$(current%):RETurn 16
-9040   IF "Aurora" INSTR mdata$(current%):RETurn 32
-9050   IF "Java" INSTR mdata$(current%):RETurn 64
-9060   IF "Ptr_Gen" INSTR mdata$(current%):RETurn 128
-9070   IF "QPC" INSTR mdata$(current%):RETurn 256
-9080   IF "Q68" INSTR mdata$(current%):RETurn 512
-9090   IF "Q-Emulator" INSTR mdata$(current%):RETurn 1024
-9100   RETurn 0                                     : REMark huh???
-9110 END DEFine find_target%
-9120 :
-9130 define procedure change_size (x%,y%)
-9140 rem this uses the GLOBAL vars : maxx%,maxy%, xsize%,ysize%,main_xxx...
-9150 local xrel%,yrel%,temp,a$,ttemp%(main_lit%),abs%,yabs%,t%,bt$,mtemp%(0,0)
-9160   main_lfl%(size_it%)=1                 : remark reset to available
-9170   dim mtemp%(dimn(main_mfl%,1),dimn(main_mfl%,2))
-9180   arrcopy main_lfl%,ttemp%              : remark keep statusses
-9190   arrcopy main_mfl%,mtemp%
-9200   ch_win main_defn,xrel%,yrel%                    : remark get ptr displacement
-9210   xsize%=xsize%-xrel%+3
-9220   if xsize%<420:xsize%=420
-9230   ysize%=ysize%-yrel%                             : remark new sizes
-9240   t%=2^4+2^5                                      : rem return immediately from read ptr call
-9250   rptr xabs%,yabs%,t%,t%,xrel%,yrel%,bt$: remark get absolute coords
-9260   if xsize%>maxx%-16:xsize%=maxy%-16
-9270   if ysize%>maxy%-16:ysize%=maxy%-16    : remark max values
-9280   dr_unst main_defn                               : remark no more wdw defn...
-9290   dr_remv main_defn                               : remark .... now!
-9300   app_addr=0                                      : remark nor any appsub wdw
-9310   rows%=-1
-9320   make_main_wdw                         : remark make window anew
-9330   arrcopy ttemp%,main_lfl%
-9340   arrcopy mtemp%,main_mfl%
-9350   t%=lxs%*3
-9360   xabs%=xabs%-t%:if xabs%<0:xabs%=0     : remark position ptr nicely
-9370   yabs%=yabs%-8:if yabs%<0:yabs%=0
-9380   sptr xabs%,yabs%,0                              : remark now
-9390   if compiled
-9400      dr_ppos main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
-9410   else
-9420      dr_puld main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
-9430   end if
-9440   pos_ptr main_defn,x%*65536+y%,1      : remark position pointer in wdw
-9450 end define change_size
-9460 :
-9470 def proc autochange_size (x%,y%)
-9480 rem change size when items added/removed
-9490 rem this tries to change the wdw position as little as possible
-9500 local lp%,xrel%,yrel%,ttemp%(main_lit%),abs%,yabs%,t%,bt$
-9510   t%=2^4+2^5                                      : rem return immediately from read ptr call
-9520   rptr xabs%,yabs%,t%,t%,xrel%,yrel%,bt$: remark get absolute coords
-9530   arrcopy main_lfl%,ttemp%              : remark keep statusses
-9540   dr_unst main_defn                               : remark no more wdw defn...
-9550   dr_remv main_defn                               : remark .... now!
-9560   app_addr=0                                      : remark nor any appsub wdw
-9570   rows%=data_count%-1
-9580   make_main_wdw                         : remark make window anew
-9590   for lp%=0 to dimn(main_lfl%,1)
-9600      main_lfl%(lp%)=ttemp%(lp%)+1
-9610   end for lp%
-9620   set_statusses
-9630   main_cty%(0,1)=1
-9640   xabs%=xabs%-x%:if xabs%<0:xabs%=x%    : remark position ptr nicely
-9650   yabs%=yabs%-y%:if yabs%<0:yabs%=y%
-9660   sptr xabs%,yabs%,0                              : remark now
-9670   if compiled
-9680      dr_ppos main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
-9690   else
-9700      dr_puld main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
-9710   end if
-9720   pos_ptr main_defn,x%*65536+y%,1       : remark position pointer in wdw
-9730 end define autochange_size
-9740 :
-9750 DEFine PROCedure set_statusses
-9760 REMark set all statusses of menu appsub objects
-9770 LOCal temp%,lp%,stat%
-9780   temp%=DIMN(main_mfl%,1)               : REMark how many are there?
-9790   stat%=main_lfl%(all_it%)              : REMark status of "all" item
-9800   FOR lp%=0 TO temp%
-9810     IF mdata$(lp%+1,1)='*'
-9820       main_mfl%(lp%,0)=16               : REMark comments set to unavailable
-9830     ELSE
-9840       main_mfl%(lp%,0)=stat%            : REMark all other to status
-9850     END IF
-9860   END FOR lp%
-9870 END DEFine set_statusses
-9880 :
-9890 define procedure make_main_wdw
-9900 rem make the main window - a pretty standard window with 1 menu appsub wdw
-9910 rem nbr_trgs% is the number of targets there are, set in init
-9920 local main_lot,main_iwt,main_iot1,infy1%,lxs%,lys%,xesp%,nbr_post%
-9930 local title$,title_size%,title_x%,temp%,appwinoffset%,li_xorig%,li_xsize%
-9940 :
-9950   appwinoffset%=16                      : remark appsub win additional y offset
-9960   lxs%=24:lys%=12                       : remark standard item x,y, sizes
-9970   inf1y%=lys%+4                         : remark y orig of inner border
-9980   xesp%=lxs%+2                                    : remark loose items x spacing
-9990   nbr_post%=5                                     : remark nbr of item right & left in title bar
-10000   li_xorig%=6
-10010   li_xsize%=7*6 + 2
-10020 :
-10030   title$="dir: "&rep$&" "
-10040   rem first make sure of the wdw sizes (we also come here from change_size!)
-10050   temp%=(xsize%-li_xorig%) div nbr_trgs% : rem x size of 1 target loose item
-10060   xsize%=temp%*nbr_trgs%+ li_xorig% +3
-10070   xsize%=xsize%-(xsize% mod 4)                    : rem make into nbr divisible by 4
-10080 :
-10090   rem calculate the y size of the wdw so that it always looks nice, in that
-10100   rem the rows in the appsub always fill the appsub entirely
-10110   app_y_orig%=inf1y% + appwinoffset%    : rem y offset for appsub win within wdw
-10120   calc_ysize 0                                    : rem set ysize% and rows% variables
-10130 :
-10140   rem first calc info obj size - this also influences one loose item, used
-10150   rem in the title bar
-10160   title_size%=len(title$)*6             : rem length in pixels
-10170   title_x%=int((xsize%-title_size%)/2): rem x orig
-10180 :
-10190   rem first the loose items
-10200 :
-10210   esc%=0:move_it%=esc%+1:size_it%=move_it%+1
-10220   sleep_it%=size_it%+1:all_it%=sleep_it%+1:go_it%=all_it%+1
-10230   dir_it%=go_it%+1:target_its%=dir_it%+1:make_it%=target_its%+nbr_trgs%
-10240   info_it%=make_it%+1:del_it%=info_it%+1:alltargets_it%=del_it%+1
-10250 :
-10260 restore 10260
-10270 :
-10280   main_lit%=21:dim main_lfl%(main_lit%)   : rem there are 22 items
-10290   main_lot=rd_lot(std_iattr,main_lit%)
-10300     data lxs%,lys%,4+xesp%*0,2,0,0,cancel$,text+retr,'ESC'
-10310     data lxs%,lys%,4+xesp%*1,2,0,0,move$,sprite+retr,move_sprite
-10320     data lxs%,lys%,4+xesp%*2,2,0,0,size$,sprite+retn,size_sprite
-10330     data lxs%,lys%,xsize%-2-xesp%*1,2,0,0,sleep$,sprite+retr,sleep_sprite
-10340     data lxs%,lys%,xsize%-2-xesp%*3,2,0,0,'A',sous1+retn,"All"
-10350     data lxs%,lys%,xsize%-2-xesp%*4,2,0,0,'O',sous1+retn,"Ok"
-10360     data 6*6,lys%-2,title_x%+30,3,0,0   ,'D',text+retn,rep$
-10370     data li_xsize%,lys%,li_xorig%,inf1y%+2,0,0,        'G',sous1+retn,"Generic"
-10380     data li_xsize%,lys%,li_xorig%+temp%,inf1y%+2,0,0,  'T',sous2+retn,"Atari"
-10390     data li_xsize%,lys%,li_xorig%+temp%*2,inf1y%+2,0,0,'L',sous3+retn,"Gold"
-10400     data li_xsize%,lys%,li_xorig%+temp%*3,inf1y%+2,0,0,'Q',sous1+retn,"Qx0"
-10410     data li_xsize%,lys%,li_xorig%+temp%*4,inf1y%+2,0,0,'X',sous2+retn,"Qxl"
-10420     data li_xsize%,lys%,li_xorig%+temp%*5,inf1y%+2,0,0,'U',sous2+retn,"Aurora"
-10430     data li_xsize%,lys%,li_xorig%+temp%*6,inf1y%+2,0,0,'J',sous1+retn,"Java"
-10440     data li_xsize%,lys%,li_xorig%+temp%*7,inf1y%+2,0,0,'P',sous1+retn,"PtrGen"
-10450     data li_xsize%,lys%,li_xorig%+temp%*8,inf1y%+2,0,0,'C',sous3+retn,"QPC"
-10460     data li_xsize%,lys%,li_yorig%+temp%*9,inf1y%+2,0,0,'8',sous3+retn,"Q68"
-10470     data li_xsize%,lys%,li_yorig%+temp%*10,inf1y%+2,0,0,'-',sous2+retn,"Q-Em"
-10480     data 4*6,lys%,xsize%-2-xesp%*2,2,0,0,'M',sous1+retn,"Make"
-10490     data 4*6,lys%,xsize%-2-xesp%*5,2,0,0,'?',sous1+retn,"?"
-10500     data lxs%,lys%,4+xesp%*3,2,0,0,"E",sous2+retn,"DEL"
-10510     data lxs%,lys%,4+xesp%*4,2,0,0,"S",sous1+retn,"SaT"
-10520 :
-10530 rem now info wdw objects - here only one, the title
-10540   rem make the title data: calculate size and x position of this object
-10550   main_iot1=rd_iot(0)
-10560     data title_size%,10,4,int((lys%-10)/2),sous1,sp.titlefg,0,0,title$
-10570 :
-10580 rem now the info wdws
-10590   main_iwt=rd_iwt(2)                              : rem there are 3
-10600   rem first the title bar
-10610     data xsize%-8-(2*nbr_post%*xesp%),lys%+2,xesp%*nbr_post%+4,0       : rem x,y sizes & origs
-10620     data 0,0,sp.infwinbd,sp.titlebg     : rem shadow, border size & col,paper col
-10630     data 0                                        : rem object pointer (none)
-10640 :
-10650   rem now wdw containing title itself
-10660     data title_size%+8,lys%,title_x%-4,2
-10670     data 0,0,sp.infwindbd,sp.infwinbg
-10680     data main_iot1                      : rem one object
-10690 :
-10700   rem inner border
-10710     data xsize%-8,ysize%-inf1y%-2,4,inf1y%
-10720     data 0,1,sp.infwinbd,sp.infwinbg
-10730     data 0
-10740 :
-10750 rem now the appsub wdw - use the outptr functions for this
-10760   main_app_list=0                       : rem appsub win list
-10770   app_addr=0                                      : rem there is no appsub win yet
-10780   menu_selkeys$=""                      : rem selkeys to exclude
-10790   appw_sections%=1                      : rem display only one section
-10800   app_addr=mk_main_app(app_addr,mdata$,0,0,1,0,0,0) : rem make apsub wdw
-10810   main_app_list = app_addr+180                    : rem list built by outptr
-10820   set_statusses                         : rem set statusses of menu items
-10830 :
-10840 rem the working defn
-10850   main_defn=rd_wdef
-10860     data 2,1,sp.winbd,sp.winbg                    : rem shad,border size & col,pap col
-10870     data xsize%,ysize%,0,0              : rem x,y size & initial ptr pos
-10880     data main_sprite,main_lot,main_iwt,main_app_list : rem sprite,loose items, info wins, appsubs
-10890 end define make_main_wdw
-10900 :
-10910 def fn warning_pos% (mess$,channel%,title$,pos)
-10920 rem warning wdw with pointer positioning
-10930   pos_ptr main_defn,pos,-1
-10940   return warning%(mess$,channel%,title$)
-10950 end def warning_pos%
-10960 :
-10970 define function warning%(mess$,channel%,title$)
-10980 rem shows a warning message (mess$) in a small window. hit esc or ok
-10990 rem to return; returns 0 if esc, 1 if ok  hit
-11000 local item%,lp%,chan%,y%,swnum%,infot%
-11010   stop_info
-11020   if channel%
-11030     chan%=channel%
-11040   else
-11050     chan%=fopen("con")
-11060   endif
-11070   ch_item warn_defn,-3,0,-1,'','Attention'
-11080   ch_item warn_defn,-1,0,-1,cancel$,'ESC'
-11090   ch_item warn_defn,-1,1,-1,'O','OK'
-11100   warn_lfl%(0)=1:warn_lfl%(1)=1
-11110   poke_w warn_defn+44,sp.errbg                           : rem border colour of wdw
-11120   poke_w warn_defn+46,sp.errbg                           : rem paper colour of wdw
-11130   poke_w warn_wdw_addr+14,sp.errbg             : rem paper of title info wdw
-11140   obj_addr=peek_l(warn_wdw_addr+16)            : rem ptr to object list
-11150   poke_w obj_addr+10,sp.errfg                            : rem info object text  colour
-11160   dr_puld warn_defn,-1,-1
-11170   dr_iwdf #chan%,warn_defn,0
-11180   wm_paper#chan%,sp.errbg
-11190   wm_ink#chan%,sp.errfg
-11200   cls#chan%
-11210   if title$<>"":print#chan%,title$;" :"
-11220   print #chan%,mess$
-11230   pos_ptr warn_defn,160*65536+10,-1
-11240   repeat lp%
-11250     rd_ptr warn_defn,item%,swnum%,y%,y%,y%,warn_lfl%
-11260     if swnum%=-1:exit lp%
-11270   end repeat lp%
-11280   if not channel%:close#chan%
-11290   dr_unst warn_defn
-11300   return item%
-11310 end define warning%
-11320 :
-11330 def proc info_pos (mess$,channel%,pos)
-11340 rem warning wdw with positioning
-11350   pos_ptr main_defn,pos,-1
-11360   info mess$,channel%
-11370 end def info_pos
-11380 :
-11390 define procedure info(mess$,channel%)
-11400 rem shows window containing mess$. channel% is a screen channel, if this is 0,
-11410 rem a temp screen channel will be opened.
-11420 local chan%,infot%,obj_addr
-11430   if channel%
-11440     chan%=channel%
-11450   else
-11460     chan%=fopen("con")
-11470   endif
-11480   ch_item warn_defn,-3,0,-1,"",'  Info.  '
-11490   ch_item warn_defn,-1,0,-1,"",'Info'
-11500   ch_item warn_defn,-1,1,-1,"",'Info'
-11510   poke_w warn_defn+46,sp.infwinbd                 : rem paper colour of wdw
-11520   poke_w warn_defn+44,sp.infwinbd                 : rem border around wdw
-11530   poke_w warn_wdw_addr+14,sp.infwinbg             : rem paper of title info wdw
-11540   obj_addr=peek_l(warn_wdw_addr+16)               : rem ptr to object list
-11550   poke_w obj_addr+10,sp.infwinfg                  : rem info object text        colour
-11560   dr_puld warn_defn,-1,-1
-11570   pos_ptr warn_defn,90*65536+70,-1
-11580   dr_iwdf #chan%,warn_defn,0
-11590   wm_paper#chan%,sp.infwinbg
-11600   wm_ink#chan%,sp.infwinfg
-11610   cls#chan%
-11620   print #chan%,mess$
-11630   if not channel%:close#chan%
-11640   info_is_pulled_down%=1
-11650 end define info
-11660 :
-11670 def proc info_wait(mess$,channel%)
-11680 rem shows info wdw, waits until user clicks, closed info wdw
-11690   show_info mess$,channel%
-11700   info_wait_to_close
-11710 end def info_wait
-11720 :
-11730 def proc info_wait_to_close
-11740 local item%,lp%,chan%,y%,swnum%,infot%
-11750   repeat lp%
-11760     rd_ptr warn_defn,item%,swnum%,y%,y%,y%,warn_lfl%
-11770     if swnum%=-1:exit lp%
-11780   end repeat lp%
-11790   stop_info
-11800 end def info_wait_to_close
-11810 :
-11820 def proc info_pos_wait (mess$,channel%,pos)
-11830 rem positions & shows info wdw, waits until user clicks,closes info wdw
-11840   info_pos mess$,channel%,pos
-11850   info_wait_to_close
-11860 end def info_pos_wait
-11870 :
-11880 def proc stop_info
-11890   if info_is_pulled_down%
-11900     dr_unst warn_defn
-11910     info_is_pulled_down%=0
-11920   endif
-11930 end def stop_info
-11940 :
-11950 def proc show_info (mess$,channel%)
-11960 rem either opens the info wdw and shows the message or shows the message in
-11970 rem the existing info wdw
-11980 local chan%
-11990   if channel%
-12000     chan%=channel%
-12010   else
-12020     chan%=fopen("con")
-12030   endif
-12040   if info_is_pulled_down%
-12050     cls#chan%
-12060     wm_paper#chan%,sp.infwinbg
-12070     wm_ink#chan%,sp.infwinfg
-12080     pe_cls#chan%
-12090     pe_print #chan%,mess$
-12100   else
-12110     info mess$,chan%
-12120   endif
-12130   if not channel%:close#chan%
-12140 end def show_info
-12150 :
-12160 DEFine PROCedure button (def_trav,menu_drap%,app_drap%,control%,chaine$,type_col%)
-12170 REMark les parametres sont, dans l'ordre:
-12180 REMark la dƒfinition de la fen‘tre, suivie des tableaux pour
-12190 REMark les postes du menu dƒliƒ, les postes de la sous-fen‘tre d'appl.
-12200 REMark et la dƒfinition de contr˜le, suivi du nom du bouton et
-12210 REMark du type couleurs.
-12220 REMark Il est supposƒ que vous avez ouvert une fen‘tre #1 si
-12230 REMark le programme est compilƒ
-12240   DR_UNST def_trav
-12250   IF compiled: CLOSE#1
-12260   rem button_wait chaine$
-12270   BTN chaine$,type_col%
-12280   IF compiled
-12290     OPEN#1,"CON_"
-12300     DR_PPOS def_trav,-1,-1,menu_drap%,app_drap%,control%
-12310   ELSE
-12320     DR_PULD def_trav,-1,-1,menu_drap%,app_drap%,control%
-12330   END IF
-12340 END DEFine button
-12350 :
-12360 DEFine FuNction centr$(ctr$,leng)
-12370 rem this "centres" the string ctr$ (i.e. left padds it with spaces) so that
-12380 rem it is centred in a window of leng width (leng is length in chars)
-12390   LOCal l%,cta$
-12400   cta$=ctr$
-12410   strip_spaces cta$
-12420   l%=INT(leng-LEN(cta$))/2
-12430   if l%<0:return cta$
-12440   return FILL$(' ',l%)&cta$&FILL$(' ',l%)
-12450 END DEFine centr$
-12460 :
-12470 def proc calc_ysize (y_csize%)
-12480 rem This tries to calculate the window y size depending on the given y size,
-12490 rem the number of rows wished in the menu appsub window and the y position of
-12500 rem the menu appsub window.
-12510 rem It uses and changes the GLOBAL variables rows%, app_y_orig% and ysize%.
-12520 rem It also uses the GLOBAL var maxy% which is the maximum y size a window
-12530 rem could have in the current screen resolution.
-12540 rem algo is as follows:
-12550 rem if both ysize and rows% are undefined (=-1) : make wdw as big as possible
-12560 rem if one is undefined, calc the other
-12570 rem if both are defined, give precedence to the rows number
-12580 rem
-12590 rem param : y_csize% is the y character height, either 0 (10 pix) or 1 (20 pix)
-12600 rem
-12610 local y_spcg%
-12620   if rows%=0:return
-12630   y_spcg% = 12+(y_csize%*10)
-12640   if rows%= -1
-12650     if ysize%= -1
-12660       rows%=(maxy%-14-app_y_orig%) div y_spcg% : rem max nbr of rows
-12670     else
-12680       rows%= (ysize%-app_y_orig%-4) div y_spcg%
-12690     endif
-12700   endif
-12710   if rows%<2:rows%=2
-12720   ysize%=rows%*y_spcg%+app_y_orig%+4
-12730   if ysize%>=maxy%-14
-12740     ysize%=maxy%-app_y_orig%-14
-12750     rows%=ysize% div y_spcg%
-12760     ysize%=rows%*y_spcg% + app_y_orig% + 4
-12770   endif
-12780   if ysize%<minysize%
-12790     ysize%=minysize% -app_y_orig%-14
-12800     rows%=ysize% div y_spcg%
-12810     ysize%=rows%*y_spcg% + app_y_orig% + 4
-12820   endif
-12830 end def calc_ysize
-12840 :
-12850 DEFine PROCedure scroll_arrows(rows%,nbr_objects%,appfen,cty%)
-12860 rem This determined whether an appsub wdw should have scroll arrows.
-12870 rem Params: number of visible rows in the appsub wdw, ,total nbr of object rows
-12880 rem in the abbsub wdw (not the visible rows, but the rows with objects),
-12890 rem pointer to the appsub wdw defn returned by the APP_MAKE or APP_MAKE2 function
-12900 rem and the control definition
-12910   IF nbr_objects%<=rows%
-12920     POKE_W appfen+150,0       : rem all objects fit , so no scroll arrows
-12930                                         : rem and no y offset to start of menu
-12940     poke_l appfen+96,0                  : rem no scroll bars
-12950     cty%(1,2)=nbr_objects%    : rem nbr of columns/rows
-12960   ELSE
-12970     POKE_W appfen+150,6       : rem leave space for arrows
-12980     cty%(1,2)=rows%-1                   : rem if scroll arrows are there, there is one line less in the window
-12990     poke_l appfen+96,hex("2210222")
-13000   END IF
-13010   IF DIMN(cty%,1)=2:cty%(2,2)=cty%(1,2)
-13020   cty%(0,1)=1                            : rem show that definition has changed
-13030 END DEFine scroll_arrows
-13040 :
-13050 DEFine FuNction getstr$(poste%,drap%,defn,a$)
-13060 REMark opens and sets a window over a loose item and proposes a sting to be edited.
-13070 REMark parameters:
-13080 REMark - item nbr
-13090 REMark - flag whether result MUST be a number (flag<>0)
-13100 REMark - the working definition
-13110 REMark - the string to edit
-13120 rem returns the string or ""
-13130 rem uses the global (!) vars sp.litemselbg and sp.litemselfg
-13140 rem
-13150 local b$,chan%
-13160   chan%=FOPEN("con")
-13170   b$=getstr2$(poste%,drap%,defn,a$,chan%)
-13180   close#chan%
-13190   return b$
-13200 END DEFine getstr$
-13210 :
-13220 DEFine FuNction getstr2$(poste%,drap%,defn,a$,chan%)
-13230 REMark sets a window over a loose item and proposes a sting to be edited.
-13240 REMark parameters:
-13250 REMark - item nbr
-13260 REMark - flag whether result MUST be a number (flag<>0)
-13270 REMark - the working definition
-13280 REMark - the string to edit
-13290 remark - a screen channel to be used
-13300 rem returns the string or ""
-13310 rem uses the global (!) vars sp.litemselbg and sp.litemselfg
-13320 rem
-13330   LOCal b$,res
-13340   b$=" ":b$=a$           : REMark c'est curieusement nƒcessaire
-13350   wm_PAPER#chan%,sp.litemselbg
-13360   wm_INK#chan%,sp.litemselfg
-13370   DR_LWDF#chan%,defn,poste%             : rem open channel over item
-13380   CLS#chan%
-13390   res=GET_STR(#chan%,drap%,b$)                                : rem get string
-13400   IF res<0:b$=""                        : rem ooops
-13410   CH_ITEM defn,-1,poste%,-1,"",b$
-13420   RETurn b$
-13430 END DEFine getstr2$
-13440 :
-13450 def fn showcont$(string$,length%)
-13460 rem this adds '...' at the end of a string, to show that it continues
-13470 local l%,lengt%
-13480   l%=len(string$)
-13490   if not l%:return ""                             : rem empty string
-13500   lengt%=length% div 6
-13510   if l%<=lengt%:return string$                    : rem entire string fits wdw
-13520   return string$(1 to lengt%-3)&"..."
-13530 end def showcont$
-13540 :
-13550 def fn get_free_text$(defn,item%,prompt$,length%)
-13560 rem this opens wdw over loose-item item% of the working definition defn
-13570 rem allows free text to be entered
-13580 rem params: working defintion,item over which wdw is to be opened
-13590 rem           first value of string, length of max string in wdw, if this is...
-13600 rem              -1, the length will be determined here
-13610 local chan%,string$,tempsizes%(3)
-13620   chan%=fopen('con')
-13630   if chan%<0:return prompt$
-13640   dr_lwdf#chan%,defn,item%              : rem open wdw over item
-13650   paper#chan%,menu_brd
-13660   ink#chan%,menu_ink
-13670   cls#chan%
-13680   string$=wedit$(#chan%,prompt$)
-13690   if length%=-1
-13700      wsipo#chan%,tempsizes%
-13710      length%=tempsizes%(0)
-13720   endif
-13730   close#chan%
-13740   if length%
-13750     ch_item defn,-1,item%,-1,"",showcont$(string$,length%)
-13760   else
-13770     ch_item defn,-1,item%,-1,"",string$
-13780   endif
-13790   return string$
-13800 end def get_free_text$
-13810 :
-13820 def proc make_my_palette (cw%)
-13830   sp.winbd            = hex('0200') : rem Window border
-13840   sp.winbg            = hex('0201') : rem Window background
-13850   sp.winfg            = hex('0202') : rem Window foreground
-13860   sp.winmg            = hex('0203') : rem Window middleground
-13870   sp.titlebg          = hex('0204') : rem Title background
-13880   sp.titletextbg  = hex('0205') : rem Title text background
-13890   sp.titlefg          = hex('0206') : rem Title foreground
-13900   sp.litemhigh        = hex('0207') : rem Loose item highlight
-13910   sp.litemavabg   = hex('0208') : rem Loose item available background
-13920   sp.litemavafg   = hex('0209') : rem Loose item available foreground
-13930   sp.litemselbg   = hex('020a') : rem Loose item selected background
-13940   sp.litemselfg   = hex('020b') : rem Loose item selected foreground
-13950   sp.litemunabg   = hex('020c') : rem Loose item unavailable background
-13960   sp.litemunafg   = hex('020d') : rem Loose item unavailable foreground
-13970   sp.infwinbd         = hex('020e') : rem Information window border
-13980   sp.infwinbg         = hex('020f') : rem Information window background
-13990   sp.infwinfg         = hex('0210') : rem Information window foreground
-14000   sp.infwinmg         = hex('0211') : rem Information window middleground
-14010   sp.subinfbd         = hex('0212') : rem Subsidiary information window border
-14020   sp.subinfbg         = hex('0213') : rem Subsidiary information window background
-14030   sp.subinffg         = hex('0214') : rem Subsidiary information window foreground
-14040   sp.subinfmg         = hex('0215') : rem Subsidiary information window middleground
-14050   sp.appbd            = hex('0216') : rem Application window border
-14060   sp.appbg            = hex('0217') : rem Application window background
-14070   sp.appfg            = hex('0218') : rem Application window foreground
-14080   sp.appmg            = hex('0219') : rem Application window middleground
-14090   sp.appihigh         = hex('021a') : rem Application window item highlight
-14100   sp.appiavabg        = hex('021b') : rem Application window item available background
-14110   sp.appiavafg        = hex('021c') : rem Application window item available foreground
-14120   sp.appiselbg        = hex('021d') : rem Application window item selected background
-14130   sp.appiselfg        = hex('021e') : rem Application window item selected foreground
-14140   sp.appiunabg        = hex('021f') : rem Application window item unavailable background
-14150   sp.appiunafg        = hex('0220') : rem Application window item unavailable foreground
-14160   sp.scrbar           = hex('0221') : rem Pan/scroll bar
-14170   sp.scrbarsec        = hex('0222') : rem Pan/scroll bar section
-14180   sp.scrbararr        = hex('0223') : rem Pan/scroll bar arrow
-14190   sp.buthigh          = hex('0224') : rem Button highlight
-14200   sp.butbd            = hex('0225') : rem Button border
-14210   sp.butbg            = hex('0226') : rem Button background
-14220   sp.butfg            = hex('0227') : rem Button foreground
-14230   sp.hintbd           = hex('0228') : rem Hint border
-14240   sp.hintbg           = hex('0229') : rem Hint background
-14250   sp.hintfg           = hex('022a') : rem Hint foreground
-14260   sp.hintmg           = hex('022b') : rem Hint middleground
-14270   sp.errbg            = hex('022c') : rem Error message background
-14280   sp.errfg            = hex('022d') : rem Error message foreground
-14290   sp.errmg            = hex('022e') : rem Error message middleground
-14300   sp.shaded           = hex('022f') : rem sp.shaded area
-14310   sp.3ddark           = hex('0230') : rem Dark 3D border shade
-14320   sp.3dlight          = hex('0231') : rem Light 3D border shade
-14330   sp.vertfill         = hex('0232') : rem Vertical area fill
-14340   sp.subtitbg         = hex('0233')  : rem Subtitle background
-14350   sp.subtittxtbg  = hex('0234')  : rem Subtitle text background
-14360   sp.subtitfg         = hex('0235')  : rem Subtitle foreground
-14370   sp.mindexbg         = hex('0236')  : rem Menu index background
-14380   sp.mindexfg         = hex('0237')  : rem Menu index foreground
-14390   sp.separator        = hex('0238')  : rem Seperator lines etc.
-14400   if cw%
-14410     if not (is_open(#0) or is_open(#1))
-14420       open#1,'con'
-14430       sp_jobpal -1,cw%
-14440       close#1
-14450     else
+3840   DATA 'smsq_qimsi_ps2_most_link'
+3850   DATA 'smsq_gold_driver_nd_link'
+3860   DATA 'smsq_gold_driver_nds_link'
+3870   DATA 'smsq_gold_driver_dv3_link'
+3880   DATA 'smsq_gold_kbd_lang_link'
+3890   DATA 'smsq_gold_kbd_abc_lng_link'
+3900   DATA 'smsq_gold_kbd_abc_link'
+3910   DATA 'smsq_gold_roms_link'
+3920   DATA 'smsq_gold_qimi_link'
+3930   DATA 'smsq_gold_sysspr_link',''
+3940 END DEFine gc_data
+3950 :
+3960 DEFine PROCedure aurora_data
+3970 restore 3970
+3980   DATA '**** -- Aurora -- ****'
+3990   DATA 'smsq_gold_host_link'
+4000   DATA 'smsq_gold_hwinit_link'
+4010   DATA 'smsq_gold_nasty_link'
+4020   DATA 'smsq_gold_nasty_s_link'
+4030   DATA 'smsq_aurora_driver_8_link'
+4040   DATA 'smsq_gold_driver_ql_link'
+4050   DATA 'smsq_gold_driver_most_link'
+4060   DATA 'smsq_gold_driver_nd_link'
+4070   DATA 'smsq_gold_driver_nds_link'
+4080   DATA 'smsq_gold_driver_dv3_link'
+4090   DATA 'smsq_gold_kbd_lang_link'
+4100   DATA 'smsq_gold_kbd_abc_lng_link'
+4110   DATA 'smsq_gold_kbd_abc_link'
+4120   DATA 'smsq_gold_roms_link'
+4130   DATA 'smsq_gold_qimi_link'
+4140   DATA 'smsq_aurora_sysspr_link'
+4150   DATA 'smsq_gold_sysspr_link',''
+4160 END DEFine aurora_data
+4170 :
+4180 DEFine PROCedure qxl_data
+4190 restore 4190
+4200   DATA '**** -- QXL -- ****'
+4210   DATA 'smsq_qxl_host_link'
+4220   DATA 'smsq_qxl_hwinit_link'
+4230   DATA 'smsq_qxl_nasty_e_link'
+4240   DATA 'smsq_qxl_driver_ql_link'
+4250   DATA 'smsq_qxl_driver_16_link'
+4260   DATA 'smsq_qxl_driver_most_link'
+4270   DATA 'smsq_qxl_driver_nd_link'
+4280   DATA 'smsq_qxl_procs_link'
+4290   DATA 'smsq_qxl_driver_dv3e_link'
+4300   DATA 'smsq_qxl_kbd_lang_link'
+4310   DATA 'smsq_qxl_ecache_link'
+4320   DATA 'smsq_qxl_sysspr_link',''
+4330 END DEFine qxl_data
+4340 :
+4350 DEFine PROCedure java_data
+4360 restore 4360
+4370   DATA '**** -- Java -- ****'
+4380   DATA 'smsq_java_host_link'
+4390   DATA 'smsq_java_smsq_link'
+4400   DATA 'smsq_java_smsq_1mb_link'
+4410   DATA 'smsq_java_hwinit_link'
+4420   DATA 'smsq_java_driver_ql_link'
+4430   DATA 'smsq_java_driver_8_link'
+4440   DATA 'smsq_java_driver_16_link'
+4450   DATA 'smsq_java_driver_most_link'
+4460   DATA 'smsq_java_driver_dv3e_link'
+4470   DATA 'smsq_java_ip_link'
+4480   DATA 'smsq_gold_kbd_lang_link'
+4490   DATA 'smsq_java_sysspr_link',''
+4500 END DEFine java_data
+4510 :
+4520 DEFine PROCedure qpc_data
+4530 restore 4530
+4540   DATA "**** -- QPC -- ****"
+4550   DATA 'smsq_qpc_host_link'
+4560   DATA 'smsq_qpc_hwinit_link'
+4570   DATA 'smsq_qpc_nasty_e_link'
+4580   DATA 'smsq_qpc_driver_ql_link'
+4590   DATA 'smsq_qpc_driver_16_link'
+4600   DATA 'smsq_qpc_driver_8_link'
+4610   DATA 'smsq_qpc_driver_ql_link'
+4620   DATA 'smsq_qpc_driver_most_link'
+4630   DATA 'smsq_qpc_driver_qsound_link'
+4640   DATA 'smsq_qpc_procs_link'
+4650   DATA 'smsq_qpc_driver_dv3e_link'
+4660   DATA 'smsq_qpc_kbd_lang_link'
+4670   DATA 'smsq_qpc_dos_link'
+4680   DATA 'smsq_qpc_ip_link'
+4690   DATA 'smsq_qpc_cdaudio_link'
+4700   DATA 'smsq_smsq_qpc_link'
+4710   DATA 'smsq_qpc_sysspr_link',''
+4720 END DEFine qpc_data
+4730 :
+4740 DEFine PROCedure ptrgen_data
+4750 restore 4750
+4760   DATA "**** -- PtrGen -- ****"
+4770   DATA "ee_wman_link","ee_ptr_link","ee_hot_german_link","ee_hot_french_link"
+4780   DATA "ee_hot_english_link",""
+4790 END DEFine ptrgen_data
+4800 :
+4810 DEFine PROCedure q68_data
+4820 restore 4820
+4830   DATA '**** -- Q68 -- ****'
+4840   DATA 'smsq_q68_sbas_procs_link'
+4850   DATA 'smsq_q68_hwinit_link'
+4860   DATA 'smsq_q68_nasty_link'
+4870   DATA 'smsq_q68_driver_dv3_link'
+4880   DATA 'smsq_q68_driver_most_link'
+4890   DATA 'smsq_q68_driver_ql_link'
+4900   DATA 'smsq_q68_driver_16_link'
+4910   DATA 'smsq_q68_driver_8_link'
+4920   DATA 'smsq_q68_kbd_lang_link'
+4930   DATA 'smsq_smsq_q68_link'
+4940   DATA 'smsq_q40_sysspr_link',''
+4950 END DEFine q68_data
+4960 :
+4970 DEFine PROCedure qemu_data_old
+4980 restore 4980
+4990   DATA '**** -- Q-Emulator -- ****'
+5000   DATA 'smsq_gold_host_link'
+5010   DATA 'smsq_qem_hwinit_link'
+5020   DATA 'smsq_qem_nasty_link'
+5030   REM DATA 'smsq_aurora_driver_8_link'
+5040   DATA 'smsq_qem_driver_16_link'
+5050   DATA 'smsq_qem_driver_most_link'
+5060   DATA 'smsq_qem_driver_nd_link'
+5070   REM DATA 'smsq_qem_driver_nds_link'
+5080   DATA 'smsq_qem_driver_dv3_link'
+5090   DATA 'smsq_qem_kbd_lang_link'
+5100   DATA 'smsq_qem_roms_link'
+5110   DATA 'smsq_qem_procs_link'
+5120   DATA 'smsq_qem_qimi_link'
+5130   REM DATA 'smsq_aurora_sysspr_link'
+5140   REM DATA 'smsq_q40_sysspr_link'
+5150   DATA 'smsq_qem_sysspr_link',''
+5160 END DEFine qemu_data
+5170 :
+5180 DEFine PROCedure qemu_data
+5190 restore 5190
+5200   DATA '**** -- Q-Emulator -- ****'
+5210   DATA 'smsq_gold_host_link'
+5220   DATA 'smsq_qem_hwinit_link'
+5230   DATA 'smsq_gold_nasty_link'
+5240   DATA 'smsq_qem_driver_ql_link'
+5250   DATA 'smsq_qem_driver_16_link'
+5260   DATA 'smsq_gold_driver_most_link'
+5270   DATA 'smsq_gold_driver_nd_link'
+5280   DATA 'smsq_gold_driver_dv3_link'
+5290   DATA 'smsq_gold_kbd_lang_link'
+5300   DATA 'smsq_gold_roms_link'
+5310   DATA 'smsq_qem_procs_link'
+5320   DATA 'smsq_gold_qimi_link'
+5330   DATA 'smsq_q40_sysspr_link',''
+5340 END DEFine qemu_data
+5350 :
+5360 DEFine PROCedure make_targets
+5370 REMark targets are only made if there was no error during compilation
+5380 REMark to achieve this, a primitive approach is used:
+5390 REMark a check is made whether an appsub menu item status is still selected
+5400 REMark if it is, then the
+5410   LOCal lp%,current_target%,tot_targets%
+5420   tot_targets%=0                        : REMark no targets to make yet
+5430   current_target%=0                               : REMark and no target yet
+5440   FOR lp%=0 TO data_count%-2
+5450     IF main_mfl%(lp%,0)=16
+5460       REMark we're covering a new target
+5470       tot_targets%=tot_targets%+current_target% : REMark show old target
+5480       current_target%=find_target%(lp%+1) : REMark get new target we're covering
+5490     ELSE
+5500       IF main_mfl%(lp%,0)<>0:current_target%=0
+5510     END IF
+5520   END FOR lp%
+5530   tot_targets%=tot_targets%+current_target%
+5540   REMark at the end, here, tot_targets holds a bitmap
+5550   REMark of targets for which compilation was ok
+5560   IF (machines%&&1) AND NOT (tot_targets% && 1):RETurn : REMark generic was asked for but not compiled correctly!
+5570   IF tot_targets%&&2:atari_target
+5580   IF tot_targets%&&4:gc_target
+5590   IF tot_targets%&&8:qx0_target
+5600   IF tot_targets%&&16:qxl_target
+5610   IF tot_targets%&&32:aurora_target
+5620   IF tot_targets%&&64:java_target
+5630   REMark IF tot_targets%&&128:ptr_gen_target  : rem no need for this
+5640   IF tot_targets%&&256:qpc_target
+5650   IF tot_targets%&&512:q68_target
+5660   IF tot_targets%&&1024:qemu_target
+5670 END DEFine make_targets
+5680 :
+5690 DEFine PROCedure atari_target
+5700   cmdl$='m'
+5710   p$=rep$&'sys_boot_st_flp'
+5720   f$=rep$&'sys_boot_file'
+5730   ah$=rep$&'sys_boot_st_host'
+5740   ld$=rep$&'smsq_smsq_loader'
+5750   hi$=rep$&'smsq_atari_hwinit'
+5760   os1f$=rep$&'smsq_smsq_fh_os'
+5770   os1$=rep$&'smsq_smsq_os'
+5780   ca$=rep$&'smsq_smsq_cache'
+5790   os2$=rep$&'smsq_sbas_control'
+5800   ns1$=rep$&'smsq_atari_nasty'
+5810   ln1$=rep$&'smsq_smsq_lang'
+5820   ln2$=rep$&'smsq_atari_kbd_lang'
+5830   ln3$=rep$&'smsq_sbas_lang'
+5840   ex1$=rep$&'smsq_sbas_procs_x'
+5850   ex2$=rep$&'smsq_atari_driver_dv3'
+5860   ex3$=rep$&'smsq_atari_driver_ser'
+5870   ex4$=rep$&'smsq_atari_driver_mono'
+5880   ex5$=rep$&'smsq_atari_driver_ql'
+5890   ex6$=rep$&'smsq_smsq_wman'
+5900   ex7$=rep$&'smsq_smsq_hotkey'
+5910   ex8$=rep$&'smsq_atari_sysspr'
+5920   ex9$=rep$&'smsq_home_home'
+5930   ex10$=rep$&'smsq_recent_recent'
+5940   nl$=rep$&'sys_boot_null'
+5950   IF 'm' INSTR cmdl$ = 0: ex4$ = nl$
+5960   EW f$, ah$,ld$,hi$,os1f$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$, ex10$,rep$&'smsq_atari_SMSQ.PRG'
+5970 END DEFine atari_target
+5980 :
+5990 DEFine PROCedure gc_target
+6000 REMark there are  2 targets for the Goldcard!
+6010   f$=rep$&'sys_boot_file'
+6020   v$=rep$&'smsq_smsq_vers'
+6030   h$=rep$&'smsq_gold_host'
+6040   ld$=rep$&'smsq_smsq_loader'
+6050   hi$=rep$&'smsq_gold_hwinit'
+6060   os1$=rep$&'smsq_smsq_os'
+6070   ca$=rep$&'smsq_smsq_cache'
+6080   os2$=rep$&'smsq_sbas_control'
+6090   ns1$=rep$&'smsq_gold_nasty'
+6100   ns2$=rep$&'smsq_gold_nasty_s'
+6110   ln1$=rep$&'smsq_smsq_lang'
+6120   ln2$=rep$&'smsq_gold_kbd_lang'
+6130   ln2a$=rep$&'smsq_gold_kbd_abc_lang'
+6140   ln3$=rep$&'smsq_sbas_lang'
+6150   ex1$=rep$&'smsq_sbas_procs_x'   : REMark this must be after "roms"
+6160   ex2a$=rep$&'smsq_gold_kbd_abc'
+6170   ex2$=rep$&'smsq_gold_driver_most'
+6180   qim$=rep$&'smsq_qimsi_ps2_drvr_most'
+6190   ex3a$=rep$&'smsq_gold_driver_ql'
+6200   ex38$=rep$&'smsq_gold_driver_8'
+6210   ex3q$=rep$&'smsq_gold_qimi'
+6220   ex3w$=rep$&'smsq_smsq_wman'
+6230   ex4$=rep$&'smsq_gold_driver_dv3'
+6240   ex5$=rep$&'smsq_gold_driver_nd'
+6250   ex6$=rep$&'smsq_gold_driver_nds'
+6260   ex7$=rep$&'smsq_smsq_hotkey'
+6270   ex8$=rep$&'smsq_gold_sysspr'
+6280   ex9$=rep$&'smsq_home_home'
+6290   ex10$=rep$&'smsq_gold_roms'
+6300   ex11$=rep$&'smsq_recent_recent'
+6310   nl$=rep$&'sys_boot_null'
+6320   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,ex10$, ex1$,ex11$,rep$&'SMSQ_GOLD_gold'
+6330   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex38$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,ex10$, ex1$,ex11$,rep$&'SMSQ_GOLD_gold8'
+6340   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,qim$,ex3a$,ex3q$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,ex10$, ex1$,ex11$,rep$&'SMSQ_GOLD_gold_qimsi'
+6350 END DEFine gc_target
+6360 :
+6370 DEFine PROCedure aurora_target
+6380   f$=rep$&'sys_boot_file'
+6390   v$=rep$&'smsq_smsq_vers'
+6400   h$=rep$&'smsq_gold_host'
+6410   ld$=rep$&'smsq_smsq_loader'
+6420   hi$=rep$&'smsq_gold_hwinit'
+6430   os1$=rep$&'smsq_smsq_os'
+6440   ca$=rep$&'smsq_smsq_cache'
+6450   os2$=rep$&'smsq_sbas_control'
+6460   ns1$=rep$&'smsq_gold_nasty'
+6470   ns2$=rep$&'smsq_gold_nasty_s'
+6480   ln1$=rep$&'smsq_smsq_lang'
+6490   ln2$=rep$&'smsq_gold_kbd_lang'
+6500   ln2a$=rep$&'smsq_gold_kbd_abc_lang'
+6510   ln3$=rep$&'smsq_sbas_lang'
+6520   ex1$=rep$&'smsq_sbas_procs_x'   : REMark this must be after "roms"
+6530   ex2a$=rep$&'smsq_gold_kbd_abc'
+6540   ex2$=rep$&'smsq_gold_driver_most'
+6550   ex3a$=rep$&'smsq_gold_driver_ql'
+6560   ex3b$=rep$&'smsq_aurora_driver_8'
+6570   ex3q$=rep$&'smsq_gold_qimi'
+6580   ex3w$=rep$&'smsq_smsq_wman'
+6590   ex3sq$=rep$&'smsq_aurora_sysspr'
+6600   ex3sh$=rep$&'smsq_gold_sysspr'
+6610   ex4$=rep$&'smsq_gold_driver_dv3'
+6620   ex5$=rep$&'smsq_gold_driver_nd'
+6630   ex6$=rep$&'smsq_gold_driver_nds'
+6640   ex8$=rep$&"smsq_home_home"
+6650   ex9$=rep$&'smsq_smsq_hotkey'
+6660   ex10$=rep$&'smsq_gold_roms'
+6670   ex11$=rep$&'smsq_recent_recent'
+6680   nl$=rep$&'sys_boot_null'
+6690   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ns2$,ln1$,ln2$,ln2a$,ln3$,ex2a$,ex2$,ex3a$,ex3b$,ex3q$,ex3w$,ex3sh$,ex4$,ex5$,ex6$,ex9$,ex10$,ex8$,ex1$,ex11$, rep$&'SMSQ_Aurora_SMSQE'
+6700 END DEFine aurora_target
+6710 :
+6720 DEFine PROCedure qx0_target
+6730   nl$=rep$&'sys_boot_null'
+6740   f$=rep$&'sys_boot_file'
+6750   qr$=rep$&'sys_boot_q40_rom'
+6760   ld$=rep$&'smsq_smsq_loader'
+6770   hi$=rep$&'smsq_q40_hwinit'
+6780   os1$=rep$&'smsq_smsq_q40_os' : REMark -*** change for fast memory   **
+6790   ca$=rep$&'smsq_smsq_cache40c'
+6800   caq$=rep$&'smsq_q40_cache'
+6810   caq4$=rep$&'smsq_q40_cachemode'
+6820   os2$=rep$&'smsq_sbas_control'
+6830   ns2$=rep$&'smsq_q40_nasty'
+6840   ln1$=rep$&'smsq_smsq_lang'
+6850   ln2$=rep$&'smsq_q40_kbd_lang'
+6860   ln3$=rep$&'smsq_sbas_lang'
+6870   ex1$=rep$&'smsq_sbas_procs_x'
+6880   ex2$=rep$&'smsq_q40_driver_dv3'
+6890   ex3$=rep$&'smsq_q40_driver_ser'
+6900   ex4a$=rep$&'smsq_q40_driver_ql'
+6910   ex4b$=rep$&'smsq_q40_driver_16'
+6920   ex4w$=rep$&'smsq_smsq_wman'
+6930   ex5$=rep$&'smsq_q40_sysspr'
+6940   ex9$=rep$&'smsq_smsq_hotkey'
+6950   ex10$=rep$&'smsq_home_home'
+6960   ex11$=rep$&'smsq_recent_recent'
+6970   EW f$, qr$,ld$,hi$,os1$,ca$,caq$,os2$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4w$,ex5$,ex9$,ex10$,ex11$,ns2$,caq4$, rep$&'smsq_q40_rom'
+6980 END DEFine qx0_target
+6990 :
+7000 DEFine PROCedure qxl_target
+7010   IF FOP_IN (rep$&'smsq_qxl_qxlh.exe') <> -7: PRINT 'QXLH.EXE exists'; cmd$: QUIT
+7020   p$   = rep$&'sys_boot_file'
+7030   bl$  = rep$&'smsq_qxl_qxl2_exe'
+7040   hst$ = rep$&'smsq_qxl_host'
+7050   hi$  = rep$&'smsq_qxl_hwinit'
+7060   ld$  = rep$&'smsq_smsq_loader'
+7070   os1$ = rep$&'smsq_smsq_os'
+7080   ca$  = rep$&'smsq_smsq_cache'
+7090   os2$ = rep$&'smsq_sbas_control'
+7100   ns1$ = rep$&'smsq_qxl_nasty_e'
+7110   ln1$ = rep$&'smsq_smsq_lang'
+7120   ln2$ = rep$&'smsq_qxl_kbd_lang'
+7130   ln3$ = rep$&'smsq_sbas_lang'
+7140   ex1$ = rep$&'smsq_qxl_procs_x'
+7150   ex2$ = rep$&'smsq_qxl_driver_most'  : REMark Keyboard before CON
+7160   ex3$ = rep$&'smsq_qxl_driver_ql'
+7170   ex3b$ = rep$&'smsq_qxl_driver_16'
+7180   ex3w$ = rep$&'smsq_smsq_wman'
+7190   ex4$ = rep$&'smsq_qxl_driver_nd'
+7200   ex5$ = rep$&'smsq_qxl_driver_dv3e'
+7210   ex6$ = rep$&'smsq_smsq_hotkey'
+7220   ex7$ = rep$&'smsq_qxl_sysspr'
+7230   ex8$ = rep$&'smsq_home_home'
+7240   ex10$= rep$&'smsq_recent_recent'
+7250   last$ = rep$&'smsq_qxl_ecache'
+7260   dml$ = rep$&'smsq_qxl_dummy'
+7270   qm$  = rep$&'qmon_qxl_bin'
+7280   r$='ram1_smsqe.exe' : f$=rep$&'smsq_qxl_smsqe.exe'
+7290   cct$=rep$&"extras_exe_cct"
+7300   DELETE f$
+7310   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex11$,last$, r$
+7320   EW cct$, bl$,r$, f$
+7330   DELETE r$
+7340   OPEN #4,f$
+7350   lenf=FLEN(#4)
+7360   lens% = INT ((lenf+511)/512)
+7370   lenb% = lenf - lens% * 512
+7380   IF lenb%: lenb% = lenb% + 512
+7390   BPUT #4\2, lenb% MOD 256, lenb% DIV 256, lens% MOD 256, lens% DIV 256
+7400   CLOSE #4
+7410 END DEFine qxl_target
+7420 :
+7430 DEFine PROCedure java_target
+7440   f$=rep$&'sys_boot_file'
+7450   v$=rep$&'smsq_smsq_vers'
+7460   h$=rep$&'smsq_java_host'
+7470   ld$=rep$&'smsq_smsq_loader'
+7480   hi$=rep$&'smsq_java_hwinit'
+7490   os1$=rep$&'smsq_java_smsq_os'
+7500   os3$=rep$&'smsq_java_smsq_1mb_os'     : REMark must be after os
+7510   ca$=rep$&'smsq_smsq_cache'
+7520   os2$=rep$&'smsq_sbas_control'
+7530   ln1$=rep$&'smsq_smsq_lang'
+7540   ln2$=rep$&'smsq_gold_kbd_lang'
+7550   ln3$=rep$&'smsq_sbas_lang'
+7560   sb$=rep$&'smsq_sbas_procs_x'
+7570   dr1$=rep$&'smsq_java_driver_most'
+7580   dr2$=rep$&'smsq_java_driver_ql'
+7590   dr3$=rep$&'smsq_java_driver_8'
+7600   dr4$=rep$&'smsq_java_driver_16'
+7610   dr5$=rep$&'smsq_smsq_wman'
+7620   dr6$=rep$&'smsq_java_driver_dv3e'
+7630 rem  dr7$=rep$&'smsq_java_driver_qsd_qsd'
+7640   hk$=rep$&'smsq_smsq_hotkey'
+7650   sp$=rep$&'smsq_java_sysspr'
+7660   hm$=rep$&'smsq_home_home'
+7670   ip$=rep$&'smsq_java_ip_x'
+7680   re$=rep$&'smsq_recent_recent'
+7690   EW f$,h$,ld$,hi$,os1$,os3$,ca$,os2$,ln1$,ln2$,ln3$,sb$,dr1$,dr2$,dr3$,dr4$,dr5$,dr6$,hk$,sp$,hm$,ip$,re$, rep$&'SMSQ_java_java'
+7700 END DEFine java_target
+7710 :
+7720 DEFine PROCedure qpc_target
+7730   p$   = rep$&'sys_boot_file'
+7740   hst$ = rep$&'smsq_qpc_host'
+7750   hi$  = rep$&'smsq_qpc_hwinit'
+7760   ld$  = rep$&'smsq_smsq_loader'
+7770   os1$ = rep$&'smsq_smsq_qpc_os'
+7780   ca$  = rep$&'smsq_smsq_cache'
+7790   os2$ = rep$&'smsq_sbas_control'
+7800   ns1$ = rep$&'smsq_qpc_nasty_e'
+7810   ln1$ = rep$&'smsq_smsq_lang'
+7820   ln2$ = rep$&'smsq_qpc_kbd_lang'
+7830   ln3$ = rep$&'smsq_sbas_lang'
+7840   ex1$ = rep$&'smsq_sbas_procs_x'
+7850   ex2$ = rep$&'smsq_qpc_driver_most'  : REMark Keyboard before CON
+7860   ex3$ = rep$&'smsq_qpc_driver_ql'
+7870   ex3b$= rep$&'smsq_qpc_driver_16'
+7880   ex3c$= rep$&'smsq_qpc_driver_8'
+7890   ex3w$= rep$&'smsq_smsq_wman'
+7900   ex3s$= rep$&'smsq_qpc_sysspr'
+7910   ex4$ = rep$&'smsq_qpc_driver_dv3e'
+7920   ex5$ = rep$&'smsq_smsq_hotkey'
+7930   ex6$ = rep$&'smsq_qpc_procs_x'
+7940   ex7$ = rep$&'smsq_qpc_cdaudio_x'
+7950   ex8$ = rep$&'smsq_qpc_dos_x'
+7960   ex9$ = rep$&'smsq_qpc_ip_x'
+7970   exa$ = rep$&'smsq_home_home'
+7980   exb$ = rep$&'smsq_recent_recent'
+7990   exc$ = rep$&'smsq_qpc_driver_qsound'
+8000   qm$ =  rep$&"qmon_qpc_smsq"
+8010   r$='ram1_smsqe.bin'
+8020   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3c$,ex3w$,ex3s$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,exc$,exa$,exb$, r$
+8030   COPY_O r$,rep$&'smsq_qpc_smsqe.bin'
+8040   DELETE r$
+8050 END DEFine qpc_target
+8060 :
+8070 DEFine PROCedure q68_target
+8080   local c%
+8090   tgt$= rep$&'smsq_q68_RAM_SYS'
+8100   leng=350000
+8110   nl$=rep$&'sys_boot_null'
+8120   f$=rep$&'sys_boot_file'
+8130   qr$=rep$&'sys_boot_q68_rom_bin'
+8140   ld$=rep$&'smsq_smsq_loader'
+8150   hi$=rep$&'smsq_q68_hwinit'
+8160   os1$=rep$&'smsq_smsq_q68_os' : REMark change for fast memory
+8170   ca$  = rep$&'smsq_smsq_cache'
+8180   ns2$=rep$&'smsq_q68_nasty'
+8190   os2$=rep$&'smsq_sbas_control'
+8200   ln1$=rep$&'smsq_smsq_lang'
+8210   ln2$=rep$&'smsq_q68_kbd_lang'
+8220   ln3$=rep$&'smsq_sbas_lang'
+8230   ex1$=rep$&'smsq_q68_sbas_procs_x'
+8240   ex2$=rep$&'smsq_q68_driver_dv3'
+8250   ex3$=rep$&'smsq_q68_driver_most'
+8260   ex4a$=rep$&'smsq_q68_driver_ql'
+8270   ex4b$=rep$&'smsq_q68_driver_16'
+8280   ex4c$=rep$&'smsq_q68_driver_8'
+8290   ex4w$=rep$&'smsq_smsq_wman'
+8300   ex5$=rep$&'smsq_q40_sysspr'
+8310   ex9$=rep$&'smsq_smsq_hotkey'
+8320   ex10$=rep$&'smsq_home_home'
+8330   ex11$=rep$&'smsq_recent_recent'
+8340 rem  extr$="dev1_asm_Q0_bin"
+8350   EW f$, qr$,ld$,hi$,os1$,ca$,os2$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex4a$,ex4b$,ex4c$,ex4w$,ex5$,ex9$,ex10$,ex11$,ns2$,tgt$ : rem no net
+8360   COPY_O tgt$,rep$&"smsq_q68_SMSQ_4_WIN"
+8370   c%=fop_in (tgt$)
+8380   fleng=flen(#c%)
+8390   close#c%
+8400   a=ALCHP (leng)
+8410   LBYTES tgt$,a
+8420   poke_l a+16,fleng                               : rem set length here for loader
+8430   SBYTES_O tgt$,a,leng
+8440   RECHP a
+8450 END DEFine q68_target
+8460 :
+8470 DEFine PROCedure qemu_target
+8480 local file$,size,addr
+8490   file$='dev8_smsq_qem_SMSQ_QEM'
+8500   f$='dev8_sys_boot_file'
+8510   v$='dev8_smsq_smsq_vers'
+8520   h$='dev8_smsq_gold_host'
+8530   ld$='dev8_smsq_smsq_loader'
+8540   hi$='dev8_smsq_qem_hwinit'
+8550   qm$='dev8_qmon_qem_smsq'
+8560   os1$='dev8_smsq_smsq_os'
+8570   ca$='dev8_smsq_smsq_cache'
+8580   os2$='dev8_smsq_sbas_control'
+8590   ns1$='dev8_smsq_gold_nasty'
+8600   ln1$='dev8_smsq_smsq_lang'
+8610   ln2$='dev8_smsq_gold_kbd_lang'
+8620   ln3$='dev8_smsq_sbas_lang'
+8630   ex1$='dev8_smsq_sbas_procs_x'         : rem must be after roms (??)
+8640   ex2$='dev8_smsq_gold_driver_most'
+8650   ex3a$='dev8_smsq_qem_driver_ql'
+8660   ex3c$='dev8_smsq_qem_driver_16'
+8670   ex3q$='dev8_smsq_gold_qimi'
+8680   ex3w$='dev8_smsq_smsq_wman'
+8690   ex3sq$='dev8_smsq_q40_sysspr'
+8700   rem ex3sq$='dev8_smsq_qem_sysspr'
+8710   ex4$='dev8_smsq_gold_driver_dv3'
+8720   ex5$='dev8_smsq_gold_driver_nd'
+8730   ex6$='dev8_smsq_qem_procs'
+8740   ex9$='dev8_smsq_smsq_hotkey'
+8750   ex10$='dev8_smsq_gold_roms'
+8760   ex11$='dev8_smsq_home_home'
+8770   ex12$='dev8_smsq_recent_recent'
+8780   nl$='dev8_sys_boot_null'
+8790 rem       EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex2$,ex3a$,ex3c$,ex3q$,ex3w$,ex3sq$,ex4$,'dev8_smsq_qem_SMSQ_QEM'
+8800   EW f$, v$,h$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex2$,ex3a$,ex3c$,ex3q$,ex3w$,ex3sq$,ex4$,ex5$,ex9$,ex10$,ex1$,ex6$,ex11$,ex12$,file$
+8810   size = flen(\file$)
+8820   addr = alchp(size)
+8830   lbytes file$,addr
+8840   sbytes_o file$,addr,size    : rem no longer is executable
+8850   rechp addr
+8860 END DEFine qemu_target
+8870 :
+8880 DEFine PROCedure findit2
+8890 LOCal lp%,a$
+8900 restore 8900
+8910   DATA p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3c$,ex3w$,ex3s$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,exa$, r$,""
+8920   REPeat lp%
+8930     READ a$:IF a$="":EXIT lp%
+8940     t%=FOP_IN(a$ )
+8950     IF (t%<0)
+8960        PRINT "not found "& a$
+8970     END IF
+8980  END REPeat lp%
+8990 END DEFine findit2
+9000 :
+9010 DEFine FuNction find_target% (current%)
+9020   IF "SMSQ Generic" INSTR mdata$(current%):RETurn 1
+9030   IF "Atari" INSTR mdata$(current%):RETurn 2
+9040   IF "GoldCard" INSTR mdata$(current%):RETurn 4
+9050   IF "Q40" INSTR mdata$(current%):RETurn 8
+9060   IF "QXL" INSTR mdata$(current%):RETurn 16
+9070   IF "Aurora" INSTR mdata$(current%):RETurn 32
+9080   IF "Java" INSTR mdata$(current%):RETurn 64
+9090   IF "Ptr_Gen" INSTR mdata$(current%):RETurn 128
+9100   IF "QPC" INSTR mdata$(current%):RETurn 256
+9110   IF "Q68" INSTR mdata$(current%):RETurn 512
+9120   IF "Q-Emulator" INSTR mdata$(current%):RETurn 1024
+9130   RETurn 0                                     : REMark huh???
+9140 END DEFine find_target%
+9150 :
+9160 define procedure change_size (x%,y%)
+9170 rem this uses the GLOBAL vars : maxx%,maxy%, xsize%,ysize%,main_xxx...
+9180 local xrel%,yrel%,temp,a$,ttemp%(main_lit%),abs%,yabs%,t%,bt$,mtemp%(0,0)
+9190   main_lfl%(size_it%)=1                 : remark reset to available
+9200   dim mtemp%(dimn(main_mfl%,1),dimn(main_mfl%,2))
+9210   arrcopy main_lfl%,ttemp%              : remark keep statusses
+9220   arrcopy main_mfl%,mtemp%
+9230   ch_win main_defn,xrel%,yrel%                    : remark get ptr displacement
+9240   xsize%=xsize%-xrel%+3
+9250   if xsize%<420:xsize%=420
+9260   ysize%=ysize%-yrel%                             : remark new sizes
+9270   t%=2^4+2^5                                      : rem return immediately from read ptr call
+9280   rptr xabs%,yabs%,t%,t%,xrel%,yrel%,bt$: remark get absolute coords
+9290   if xsize%>maxx%-16:xsize%=maxy%-16
+9300   if ysize%>maxy%-16:ysize%=maxy%-16    : remark max values
+9310   dr_unst main_defn                               : remark no more wdw defn...
+9320   dr_remv main_defn                               : remark .... now!
+9330   app_addr=0                                      : remark nor any appsub wdw
+9340   rows%=-1
+9350   make_main_wdw                         : remark make window anew
+9360   arrcopy ttemp%,main_lfl%
+9370   arrcopy mtemp%,main_mfl%
+9380   t%=lxs%*3
+9390   xabs%=xabs%-t%:if xabs%<0:xabs%=0     : remark position ptr nicely
+9400   yabs%=yabs%-8:if yabs%<0:yabs%=0
+9410   sptr xabs%,yabs%,0                              : remark now
+9420   if compiled
+9430      dr_ppos main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
+9440   else
+9450      dr_puld main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
+9460   end if
+9470   pos_ptr main_defn,x%*65536+y%,1      : remark position pointer in wdw
+9480 end define change_size
+9490 :
+9500 def proc autochange_size (x%,y%)
+9510 rem change size when items added/removed
+9520 rem this tries to change the wdw position as little as possible
+9530 local lp%,xrel%,yrel%,ttemp%(main_lit%),abs%,yabs%,t%,bt$
+9540   t%=2^4+2^5                                      : rem return immediately from read ptr call
+9550   rptr xabs%,yabs%,t%,t%,xrel%,yrel%,bt$: remark get absolute coords
+9560   arrcopy main_lfl%,ttemp%              : remark keep statusses
+9570   dr_unst main_defn                               : remark no more wdw defn...
+9580   dr_remv main_defn                               : remark .... now!
+9590   app_addr=0                                      : remark nor any appsub wdw
+9600   rows%=data_count%-1
+9610   make_main_wdw                         : remark make window anew
+9620   for lp%=0 to dimn(main_lfl%,1)
+9630      main_lfl%(lp%)=ttemp%(lp%)+1
+9640   end for lp%
+9650   set_statusses
+9660   main_cty%(0,1)=1
+9670   xabs%=xabs%-x%:if xabs%<0:xabs%=x%    : remark position ptr nicely
+9680   yabs%=yabs%-y%:if yabs%<0:yabs%=y%
+9690   sptr xabs%,yabs%,0                              : remark now
+9700   if compiled
+9710      dr_ppos main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
+9720   else
+9730      dr_puld main_defn,-1,-1,main_lfl%,main_mfl%,main_cty%
+9740   end if
+9750   pos_ptr main_defn,x%*65536+y%,1       : remark position pointer in wdw
+9760 end define autochange_size
+9770 :
+9780 DEFine PROCedure set_statusses
+9790 REMark set all statusses of menu appsub objects
+9800 LOCal temp%,lp%,stat%
+9810   temp%=DIMN(main_mfl%,1)               : REMark how many are there?
+9820   stat%=main_lfl%(all_it%)              : REMark status of "all" item
+9830   FOR lp%=0 TO temp%
+9840     IF mdata$(lp%+1,1)='*'
+9850       main_mfl%(lp%,0)=16               : REMark comments set to unavailable
+9860     ELSE
+9870       main_mfl%(lp%,0)=stat%            : REMark all other to status
+9880     END IF
+9890   END FOR lp%
+9900 END DEFine set_statusses
+9910 :
+9920 define procedure make_main_wdw
+9930 rem make the main window - a pretty standard window with 1 menu appsub wdw
+9940 rem nbr_trgs% is the number of targets there are, set in init
+9950 local main_lot,main_iwt,main_iot1,infy1%,lxs%,lys%,xesp%,nbr_post%
+9960 local title$,title_size%,title_x%,temp%,appwinoffset%,li_xorig%,li_xsize%
+9970 :
+9980   appwinoffset%=16                      : remark appsub win additional y offset
+9990   lxs%=24:lys%=12                       : remark standard item x,y, sizes
+10000   inf1y%=lys%+4                         : remark y orig of inner border
+10010   xesp%=lxs%+2                                    : remark loose items x spacing
+10020   nbr_post%=5                                     : remark nbr of item right & left in title bar
+10030   li_xorig%=6
+10040   li_xsize%=7*6 + 2
+10050 :
+10060   title$="dir: "&rep$&" "
+10070   rem first make sure of the wdw sizes (we also come here from change_size!)
+10080   temp%=(xsize%-li_xorig%) div nbr_trgs% : rem x size of 1 target loose item
+10090   xsize%=temp%*nbr_trgs%+ li_xorig% +3
+10100   xsize%=xsize%-(xsize% mod 4)                    : rem make into nbr divisible by 4
+10110 :
+10120   rem calculate the y size of the wdw so that it always looks nice, in that
+10130   rem the rows in the appsub always fill the appsub entirely
+10140   app_y_orig%=inf1y% + appwinoffset%    : rem y offset for appsub win within wdw
+10150   calc_ysize 0                                    : rem set ysize% and rows% variables
+10160 :
+10170   rem first calc info obj size - this also influences one loose item, used
+10180   rem in the title bar
+10190   title_size%=len(title$)*6             : rem length in pixels
+10200   title_x%=int((xsize%-title_size%)/2): rem x orig
+10210 :
+10220   rem first the loose items
+10230 :
+10240   esc%=0:move_it%=esc%+1:size_it%=move_it%+1
+10250   sleep_it%=size_it%+1:all_it%=sleep_it%+1:go_it%=all_it%+1
+10260   dir_it%=go_it%+1:target_its%=dir_it%+1:make_it%=target_its%+nbr_trgs%
+10270   info_it%=make_it%+1:del_it%=info_it%+1:alltargets_it%=del_it%+1
+10280 :
+10290 restore 10290
+10300 :
+10310   main_lit%=21:dim main_lfl%(main_lit%)   : rem there are 22 items
+10320   main_lot=rd_lot(std_iattr,main_lit%)
+10330     data lxs%,lys%,4+xesp%*0,2,0,0,cancel$,text+retr,'ESC'
+10340     data lxs%,lys%,4+xesp%*1,2,0,0,move$,sprite+retr,move_sprite
+10350     data lxs%,lys%,4+xesp%*2,2,0,0,size$,sprite+retn,size_sprite
+10360     data lxs%,lys%,xsize%-2-xesp%*1,2,0,0,sleep$,sprite+retr,sleep_sprite
+10370     data lxs%,lys%,xsize%-2-xesp%*3,2,0,0,'A',sous1+retn,"All"
+10380     data lxs%,lys%,xsize%-2-xesp%*4,2,0,0,'O',sous1+retn,"Ok"
+10390     data 6*6,lys%-2,title_x%+30,3,0,0   ,'D',text+retn,rep$
+10400     data li_xsize%,lys%,li_xorig%,inf1y%+2,0,0,        'G',sous1+retn,"Generic"
+10410     data li_xsize%,lys%,li_xorig%+temp%,inf1y%+2,0,0,  'T',sous2+retn,"Atari"
+10420     data li_xsize%,lys%,li_xorig%+temp%*2,inf1y%+2,0,0,'L',sous3+retn,"Gold"
+10430     data li_xsize%,lys%,li_xorig%+temp%*3,inf1y%+2,0,0,'Q',sous1+retn,"Qx0"
+10440     data li_xsize%,lys%,li_xorig%+temp%*4,inf1y%+2,0,0,'X',sous2+retn,"Qxl"
+10450     data li_xsize%,lys%,li_xorig%+temp%*5,inf1y%+2,0,0,'U',sous2+retn,"Aurora"
+10460     data li_xsize%,lys%,li_xorig%+temp%*6,inf1y%+2,0,0,'J',sous1+retn,"Java"
+10470     data li_xsize%,lys%,li_xorig%+temp%*7,inf1y%+2,0,0,'P',sous1+retn,"PtrGen"
+10480     data li_xsize%,lys%,li_xorig%+temp%*8,inf1y%+2,0,0,'C',sous3+retn,"QPC"
+10490     data li_xsize%,lys%,li_yorig%+temp%*9,inf1y%+2,0,0,'8',sous3+retn,"Q68"
+10500     data li_xsize%,lys%,li_yorig%+temp%*10,inf1y%+2,0,0,'-',sous2+retn,"Q-Em"
+10510     data 4*6,lys%,xsize%-2-xesp%*2,2,0,0,'M',sous1+retn,"Make"
+10520     data 4*6,lys%,xsize%-2-xesp%*5,2,0,0,'?',sous1+retn,"?"
+10530     data lxs%,lys%,4+xesp%*3,2,0,0,"E",sous2+retn,"DEL"
+10540     data lxs%,lys%,4+xesp%*4,2,0,0,"S",sous1+retn,"SaT"
+10550 :
+10560 rem now info wdw objects - here only one, the title
+10570   rem make the title data: calculate size and x position of this object
+10580   main_iot1=rd_iot(0)
+10590     data title_size%,10,4,int((lys%-10)/2),sous1,sp.titlefg,0,0,title$
+10600 :
+10610 rem now the info wdws
+10620   main_iwt=rd_iwt(2)                              : rem there are 3
+10630   rem first the title bar
+10640     data xsize%-8-(2*nbr_post%*xesp%),lys%+2,xesp%*nbr_post%+4,0       : rem x,y sizes & origs
+10650     data 0,0,sp.infwinbd,sp.titlebg     : rem shadow, border size & col,paper col
+10660     data 0                                        : rem object pointer (none)
+10670 :
+10680   rem now wdw containing title itself
+10690     data title_size%+8,lys%,title_x%-4,2
+10700     data 0,0,sp.infwindbd,sp.infwinbg
+10710     data main_iot1                      : rem one object
+10720 :
+10730   rem inner border
+10740     data xsize%-8,ysize%-inf1y%-2,4,inf1y%
+10750     data 0,1,sp.infwinbd,sp.infwinbg
+10760     data 0
+10770 :
+10780 rem now the appsub wdw - use the outptr functions for this
+10790   main_app_list=0                       : rem appsub win list
+10800   app_addr=0                                      : rem there is no appsub win yet
+10810   menu_selkeys$=""                      : rem selkeys to exclude
+10820   appw_sections%=1                      : rem display only one section
+10830   app_addr=mk_main_app(app_addr,mdata$,0,0,1,0,0,0) : rem make apsub wdw
+10840   main_app_list = app_addr+180                    : rem list built by outptr
+10850   set_statusses                         : rem set statusses of menu items
+10860 :
+10870 rem the working defn
+10880   main_defn=rd_wdef
+10890     data 2,1,sp.winbd,sp.winbg                    : rem shad,border size & col,pap col
+10900     data xsize%,ysize%,0,0              : rem x,y size & initial ptr pos
+10910     data main_sprite,main_lot,main_iwt,main_app_list : rem sprite,loose items, info wins, appsubs
+10920 end define make_main_wdw
+10930 :
+10940 def fn warning_pos% (mess$,channel%,title$,pos)
+10950 rem warning wdw with pointer positioning
+10960   pos_ptr main_defn,pos,-1
+10970   return warning%(mess$,channel%,title$)
+10980 end def warning_pos%
+10990 :
+11000 define function warning%(mess$,channel%,title$)
+11010 rem shows a warning message (mess$) in a small window. hit esc or ok
+11020 rem to return; returns 0 if esc, 1 if ok  hit
+11030 local item%,lp%,chan%,y%,swnum%,infot%
+11040   stop_info
+11050   if channel%
+11060     chan%=channel%
+11070   else
+11080     chan%=fopen("con")
+11090   endif
+11100   ch_item warn_defn,-3,0,-1,'','Attention'
+11110   ch_item warn_defn,-1,0,-1,cancel$,'ESC'
+11120   ch_item warn_defn,-1,1,-1,'O','OK'
+11130   warn_lfl%(0)=1:warn_lfl%(1)=1
+11140   poke_w warn_defn+44,sp.errbg                           : rem border colour of wdw
+11150   poke_w warn_defn+46,sp.errbg                           : rem paper colour of wdw
+11160   poke_w warn_wdw_addr+14,sp.errbg             : rem paper of title info wdw
+11170   obj_addr=peek_l(warn_wdw_addr+16)            : rem ptr to object list
+11180   poke_w obj_addr+10,sp.errfg                            : rem info object text  colour
+11190   dr_puld warn_defn,-1,-1
+11200   dr_iwdf #chan%,warn_defn,0
+11210   wm_paper#chan%,sp.errbg
+11220   wm_ink#chan%,sp.errfg
+11230   cls#chan%
+11240   if title$<>"":print#chan%,title$;" :"
+11250   print #chan%,mess$
+11260   pos_ptr warn_defn,160*65536+10,-1
+11270   repeat lp%
+11280     rd_ptr warn_defn,item%,swnum%,y%,y%,y%,warn_lfl%
+11290     if swnum%=-1:exit lp%
+11300   end repeat lp%
+11310   if not channel%:close#chan%
+11320   dr_unst warn_defn
+11330   return item%
+11340 end define warning%
+11350 :
+11360 def proc info_pos (mess$,channel%,pos)
+11370 rem warning wdw with positioning
+11380   pos_ptr main_defn,pos,-1
+11390   info mess$,channel%
+11400 end def info_pos
+11410 :
+11420 define procedure info(mess$,channel%)
+11430 rem shows window containing mess$. channel% is a screen channel, if this is 0,
+11440 rem a temp screen channel will be opened.
+11450 local chan%,infot%,obj_addr
+11460   if channel%
+11470     chan%=channel%
+11480   else
+11490     chan%=fopen("con")
+11500   endif
+11510   ch_item warn_defn,-3,0,-1,"",'  Info.  '
+11520   ch_item warn_defn,-1,0,-1,"",'Info'
+11530   ch_item warn_defn,-1,1,-1,"",'Info'
+11540   poke_w warn_defn+46,sp.infwinbd                 : rem paper colour of wdw
+11550   poke_w warn_defn+44,sp.infwinbd                 : rem border around wdw
+11560   poke_w warn_wdw_addr+14,sp.infwinbg             : rem paper of title info wdw
+11570   obj_addr=peek_l(warn_wdw_addr+16)               : rem ptr to object list
+11580   poke_w obj_addr+10,sp.infwinfg                  : rem info object text        colour
+11590   dr_puld warn_defn,-1,-1
+11600   pos_ptr warn_defn,90*65536+70,-1
+11610   dr_iwdf #chan%,warn_defn,0
+11620   wm_paper#chan%,sp.infwinbg
+11630   wm_ink#chan%,sp.infwinfg
+11640   cls#chan%
+11650   print #chan%,mess$
+11660   if not channel%:close#chan%
+11670   info_is_pulled_down%=1
+11680 end define info
+11690 :
+11700 def proc info_wait(mess$,channel%)
+11710 rem shows info wdw, waits until user clicks, closed info wdw
+11720   show_info mess$,channel%
+11730   info_wait_to_close
+11740 end def info_wait
+11750 :
+11760 def proc info_wait_to_close
+11770 local item%,lp%,chan%,y%,swnum%,infot%
+11780   repeat lp%
+11790     rd_ptr warn_defn,item%,swnum%,y%,y%,y%,warn_lfl%
+11800     if swnum%=-1:exit lp%
+11810   end repeat lp%
+11820   stop_info
+11830 end def info_wait_to_close
+11840 :
+11850 def proc info_pos_wait (mess$,channel%,pos)
+11860 rem positions & shows info wdw, waits until user clicks,closes info wdw
+11870   info_pos mess$,channel%,pos
+11880   info_wait_to_close
+11890 end def info_pos_wait
+11900 :
+11910 def proc stop_info
+11920   if info_is_pulled_down%
+11930     dr_unst warn_defn
+11940     info_is_pulled_down%=0
+11950   endif
+11960 end def stop_info
+11970 :
+11980 def proc show_info (mess$,channel%)
+11990 rem either opens the info wdw and shows the message or shows the message in
+12000 rem the existing info wdw
+12010 local chan%
+12020   if channel%
+12030     chan%=channel%
+12040   else
+12050     chan%=fopen("con")
+12060   endif
+12070   if info_is_pulled_down%
+12080     cls#chan%
+12090     wm_paper#chan%,sp.infwinbg
+12100     wm_ink#chan%,sp.infwinfg
+12110     pe_cls#chan%
+12120     pe_print #chan%,mess$
+12130   else
+12140     info mess$,chan%
+12150   endif
+12160   if not channel%:close#chan%
+12170 end def show_info
+12180 :
+12190 DEFine PROCedure button (def_trav,menu_drap%,app_drap%,control%,chaine$,type_col%)
+12200 REMark les parametres sont, dans l'ordre:
+12210 REMark la dƒfinition de la fen‘tre, suivie des tableaux pour
+12220 REMark les postes du menu dƒliƒ, les postes de la sous-fen‘tre d'appl.
+12230 REMark et la dƒfinition de contr˜le, suivi du nom du bouton et
+12240 REMark du type couleurs.
+12250 REMark Il est supposƒ que vous avez ouvert une fen‘tre #1 si
+12260 REMark le programme est compilƒ
+12270   DR_UNST def_trav
+12280   IF compiled: CLOSE#1
+12290   rem button_wait chaine$
+12300   BTN chaine$,type_col%
+12310   IF compiled
+12320     OPEN#1,"CON_"
+12330     DR_PPOS def_trav,-1,-1,menu_drap%,app_drap%,control%
+12340   ELSE
+12350     DR_PULD def_trav,-1,-1,menu_drap%,app_drap%,control%
+12360   END IF
+12370 END DEFine button
+12380 :
+12390 DEFine FuNction centr$(ctr$,leng)
+12400 rem this "centres" the string ctr$ (i.e. left padds it with spaces) so that
+12410 rem it is centred in a window of leng width (leng is length in chars)
+12420   LOCal l%,cta$
+12430   cta$=ctr$
+12440   strip_spaces cta$
+12450   l%=INT(leng-LEN(cta$))/2
+12460   if l%<0:return cta$
+12470   return FILL$(' ',l%)&cta$&FILL$(' ',l%)
+12480 END DEFine centr$
+12490 :
+12500 def proc calc_ysize (y_csize%)
+12510 rem This tries to calculate the window y size depending on the given y size,
+12520 rem the number of rows wished in the menu appsub window and the y position of
+12530 rem the menu appsub window.
+12540 rem It uses and changes the GLOBAL variables rows%, app_y_orig% and ysize%.
+12550 rem It also uses the GLOBAL var maxy% which is the maximum y size a window
+12560 rem could have in the current screen resolution.
+12570 rem algo is as follows:
+12580 rem if both ysize and rows% are undefined (=-1) : make wdw as big as possible
+12590 rem if one is undefined, calc the other
+12600 rem if both are defined, give precedence to the rows number
+12610 rem
+12620 rem param : y_csize% is the y character height, either 0 (10 pix) or 1 (20 pix)
+12630 rem
+12640 local y_spcg%
+12650   if rows%=0:return
+12660   y_spcg% = 12+(y_csize%*10)
+12670   if rows%= -1
+12680     if ysize%= -1
+12690       rows%=(maxy%-14-app_y_orig%) div y_spcg% : rem max nbr of rows
+12700     else
+12710       rows%= (ysize%-app_y_orig%-4) div y_spcg%
+12720     endif
+12730   endif
+12740   if rows%<2:rows%=2
+12750   ysize%=rows%*y_spcg%+app_y_orig%+4
+12760   if ysize%>=maxy%-14
+12770     ysize%=maxy%-app_y_orig%-14
+12780     rows%=ysize% div y_spcg%
+12790     ysize%=rows%*y_spcg% + app_y_orig% + 4
+12800   endif
+12810   if ysize%<minysize%
+12820     ysize%=minysize% -app_y_orig%-14
+12830     rows%=ysize% div y_spcg%
+12840     ysize%=rows%*y_spcg% + app_y_orig% + 4
+12850   endif
+12860 end def calc_ysize
+12870 :
+12880 DEFine PROCedure scroll_arrows(rows%,nbr_objects%,appfen,cty%)
+12890 rem This determined whether an appsub wdw should have scroll arrows.
+12900 rem Params: number of visible rows in the appsub wdw, ,total nbr of object rows
+12910 rem in the abbsub wdw (not the visible rows, but the rows with objects),
+12920 rem pointer to the appsub wdw defn returned by the APP_MAKE or APP_MAKE2 function
+12930 rem and the control definition
+12940   IF nbr_objects%<=rows%
+12950     POKE_W appfen+150,0       : rem all objects fit , so no scroll arrows
+12960                                         : rem and no y offset to start of menu
+12970     poke_l appfen+96,0                  : rem no scroll bars
+12980     cty%(1,2)=nbr_objects%    : rem nbr of columns/rows
+12990   ELSE
+13000     POKE_W appfen+150,6       : rem leave space for arrows
+13010     cty%(1,2)=rows%-1                   : rem if scroll arrows are there, there is one line less in the window
+13020     poke_l appfen+96,hex("2210222")
+13030   END IF
+13040   IF DIMN(cty%,1)=2:cty%(2,2)=cty%(1,2)
+13050   cty%(0,1)=1                            : rem show that definition has changed
+13060 END DEFine scroll_arrows
+13070 :
+13080 DEFine FuNction getstr$(poste%,drap%,defn,a$)
+13090 REMark opens and sets a window over a loose item and proposes a sting to be edited.
+13100 REMark parameters:
+13110 REMark - item nbr
+13120 REMark - flag whether result MUST be a number (flag<>0)
+13130 REMark - the working definition
+13140 REMark - the string to edit
+13150 rem returns the string or ""
+13160 rem uses the global (!) vars sp.litemselbg and sp.litemselfg
+13170 rem
+13180 local b$,chan%
+13190   chan%=FOPEN("con")
+13200   b$=getstr2$(poste%,drap%,defn,a$,chan%)
+13210   close#chan%
+13220   return b$
+13230 END DEFine getstr$
+13240 :
+13250 DEFine FuNction getstr2$(poste%,drap%,defn,a$,chan%)
+13260 REMark sets a window over a loose item and proposes a sting to be edited.
+13270 REMark parameters:
+13280 REMark - item nbr
+13290 REMark - flag whether result MUST be a number (flag<>0)
+13300 REMark - the working definition
+13310 REMark - the string to edit
+13320 remark - a screen channel to be used
+13330 rem returns the string or ""
+13340 rem uses the global (!) vars sp.litemselbg and sp.litemselfg
+13350 rem
+13360   LOCal b$,res
+13370   b$=" ":b$=a$           : REMark c'est curieusement nƒcessaire
+13380   wm_PAPER#chan%,sp.litemselbg
+13390   wm_INK#chan%,sp.litemselfg
+13400   DR_LWDF#chan%,defn,poste%             : rem open channel over item
+13410   CLS#chan%
+13420   res=GET_STR(#chan%,drap%,b$)                                : rem get string
+13430   IF res<0:b$=""                        : rem ooops
+13440   CH_ITEM defn,-1,poste%,-1,"",b$
+13450   RETurn b$
+13460 END DEFine getstr2$
+13470 :
+13480 def fn showcont$(string$,length%)
+13490 rem this adds '...' at the end of a string, to show that it continues
+13500 local l%,lengt%
+13510   l%=len(string$)
+13520   if not l%:return ""                             : rem empty string
+13530   lengt%=length% div 6
+13540   if l%<=lengt%:return string$                    : rem entire string fits wdw
+13550   return string$(1 to lengt%-3)&"..."
+13560 end def showcont$
+13570 :
+13580 def fn get_free_text$(defn,item%,prompt$,length%)
+13590 rem this opens wdw over loose-item item% of the working definition defn
+13600 rem allows free text to be entered
+13610 rem params: working defintion,item over which wdw is to be opened
+13620 rem           first value of string, length of max string in wdw, if this is...
+13630 rem              -1, the length will be determined here
+13640 local chan%,string$,tempsizes%(3)
+13650   chan%=fopen('con')
+13660   if chan%<0:return prompt$
+13670   dr_lwdf#chan%,defn,item%              : rem open wdw over item
+13680   paper#chan%,menu_brd
+13690   ink#chan%,menu_ink
+13700   cls#chan%
+13710   string$=wedit$(#chan%,prompt$)
+13720   if length%=-1
+13730      wsipo#chan%,tempsizes%
+13740      length%=tempsizes%(0)
+13750   endif
+13760   close#chan%
+13770   if length%
+13780     ch_item defn,-1,item%,-1,"",showcont$(string$,length%)
+13790   else
+13800     ch_item defn,-1,item%,-1,"",string$
+13810   endif
+13820   return string$
+13830 end def get_free_text$
+13840 :
+13850 def proc make_my_palette (cw%)
+13860   sp.winbd            = hex('0200') : rem Window border
+13870   sp.winbg            = hex('0201') : rem Window background
+13880   sp.winfg            = hex('0202') : rem Window foreground
+13890   sp.winmg            = hex('0203') : rem Window middleground
+13900   sp.titlebg          = hex('0204') : rem Title background
+13910   sp.titletextbg  = hex('0205') : rem Title text background
+13920   sp.titlefg          = hex('0206') : rem Title foreground
+13930   sp.litemhigh        = hex('0207') : rem Loose item highlight
+13940   sp.litemavabg   = hex('0208') : rem Loose item available background
+13950   sp.litemavafg   = hex('0209') : rem Loose item available foreground
+13960   sp.litemselbg   = hex('020a') : rem Loose item selected background
+13970   sp.litemselfg   = hex('020b') : rem Loose item selected foreground
+13980   sp.litemunabg   = hex('020c') : rem Loose item unavailable background
+13990   sp.litemunafg   = hex('020d') : rem Loose item unavailable foreground
+14000   sp.infwinbd         = hex('020e') : rem Information window border
+14010   sp.infwinbg         = hex('020f') : rem Information window background
+14020   sp.infwinfg         = hex('0210') : rem Information window foreground
+14030   sp.infwinmg         = hex('0211') : rem Information window middleground
+14040   sp.subinfbd         = hex('0212') : rem Subsidiary information window border
+14050   sp.subinfbg         = hex('0213') : rem Subsidiary information window background
+14060   sp.subinffg         = hex('0214') : rem Subsidiary information window foreground
+14070   sp.subinfmg         = hex('0215') : rem Subsidiary information window middleground
+14080   sp.appbd            = hex('0216') : rem Application window border
+14090   sp.appbg            = hex('0217') : rem Application window background
+14100   sp.appfg            = hex('0218') : rem Application window foreground
+14110   sp.appmg            = hex('0219') : rem Application window middleground
+14120   sp.appihigh         = hex('021a') : rem Application window item highlight
+14130   sp.appiavabg        = hex('021b') : rem Application window item available background
+14140   sp.appiavafg        = hex('021c') : rem Application window item available foreground
+14150   sp.appiselbg        = hex('021d') : rem Application window item selected background
+14160   sp.appiselfg        = hex('021e') : rem Application window item selected foreground
+14170   sp.appiunabg        = hex('021f') : rem Application window item unavailable background
+14180   sp.appiunafg        = hex('0220') : rem Application window item unavailable foreground
+14190   sp.scrbar           = hex('0221') : rem Pan/scroll bar
+14200   sp.scrbarsec        = hex('0222') : rem Pan/scroll bar section
+14210   sp.scrbararr        = hex('0223') : rem Pan/scroll bar arrow
+14220   sp.buthigh          = hex('0224') : rem Button highlight
+14230   sp.butbd            = hex('0225') : rem Button border
+14240   sp.butbg            = hex('0226') : rem Button background
+14250   sp.butfg            = hex('0227') : rem Button foreground
+14260   sp.hintbd           = hex('0228') : rem Hint border
+14270   sp.hintbg           = hex('0229') : rem Hint background
+14280   sp.hintfg           = hex('022a') : rem Hint foreground
+14290   sp.hintmg           = hex('022b') : rem Hint middleground
+14300   sp.errbg            = hex('022c') : rem Error message background
+14310   sp.errfg            = hex('022d') : rem Error message foreground
+14320   sp.errmg            = hex('022e') : rem Error message middleground
+14330   sp.shaded           = hex('022f') : rem sp.shaded area
+14340   sp.3ddark           = hex('0230') : rem Dark 3D border shade
+14350   sp.3dlight          = hex('0231') : rem Light 3D border shade
+14360   sp.vertfill         = hex('0232') : rem Vertical area fill
+14370   sp.subtitbg         = hex('0233')  : rem Subtitle background
+14380   sp.subtittxtbg  = hex('0234')  : rem Subtitle text background
+14390   sp.subtitfg         = hex('0235')  : rem Subtitle foreground
+14400   sp.mindexbg         = hex('0236')  : rem Menu index background
+14410   sp.mindexfg         = hex('0237')  : rem Menu index foreground
+14420   sp.separator        = hex('0238')  : rem Seperator lines etc.
+14430   if cw%
+14440     if not (is_open(#0) or is_open(#1))
+14450       open#1,'con'
 14460       sp_jobpal -1,cw%
-14470     endif
-14480   endif
-14490 end def make_my_palette
-14500 :
-14510 def fn set_colours% (force_mode%)
-14520 rem this sets colour variables according to the colour mode wished, if possible.
-14530 rem force_mode%=
-14540 rem       0 if ql colours wished (mode 4 only)
-14550 rem       1 if pal colours wished
-14560 rem       2 if 24 bit colours wished
-14570 rem This function returns the true QL mode set (4,8,32,33 etc.).
-14580 rem This function also sets the GLOBAL variable mycolour_mode% to the
-14590 rem mode 0,1,2 as above - whatever is possible on the machine, i.e.
-14600 rem if colour_24 is wished on a 4 colour machine (which won't succeed)
-14610 rem this function will set set that variable to 0, i.e. QL mode.
-14620 rem
-14630 rem This function needs the outptr toolkit
-14640 local mode%
-14650   mode%=rmode                                     : rem get current mode now
-14660   select on force_mode%
-14670       = 0                                         : rem mode 4 wished
-14680        select on mode%
-14690             = 4                                   : rem already on, so do nothing
-14700             = 0,1,8 : mode 4            : rem old modes, set to 4 colours
-14710             = remainder
-14720               colour_ql                           : rem if higher colour mode, set to "mode 4"
-14730               mode 4
-14740        end select
-14750        mode%=0                                    : rem new mode we're in  - 4 colour mode
-14760       = 1                                         : rem PALette wished
-14770        select on mode%
-14780             = 16,32,33 : colour_pal:mode%=1  : rem we're in high colour mode, but PAL colours wished
-14790             = remainder
-14800               if mode%<>4:mode 4
-14810               mode%=0
-14820        end select
-14830       = 2
-14840        select on mode%
-14850             = 32,33 : colour_24 :mode%=2          : rem we're in high col mode 24 bit colours
-14860             = 16 : colour_pal : mode%=1
-14870             = remainder
-14880               if mode%<>4:mode 4
-14890               mode%=0
-14900        end select
-14910   end select
-14920   mycolour_mode%=mode%                            : rem set this global variable now:
-14930   rem now set some colour variables
-14940   select on mode%
-14950        = 0                                        : rem Ql 4 mode colours
-14960           Black            = 0
-14970           White            = 7
-14980           Red              = 2
-14990           Green            = 4
-15000           wg_striped     = 92
-15010           br_striped     = 82
-15020           wr_striped     = 107
-15030           bg_striped     = 100
-15040        = 1                              : rem Colour_pal
-15050           Black            = 0
-15060           White            = 1
-15070           Red              = 2
-15080           Green            = 3
-15090           wg_striped     = light_green
-15100           br_striped     = dark_red
-15110           wr_striped     = light_red
-15120           bg_striped     = dark_green
-15130        = 2                              : rem colour_24
-15140           Black            = hex('000000')
-15150           White            = hex('FFFFFF')
-15160           Red              = hex('FF0000')
-15170           Green            = hex('00FF00')
-15180           wg_striped     = light_green
-15190           br_striped     = dark_red
-15200           wr_striped     = light_red
-15210           bg_striped     = dark_green
-15220   end select
-15230   mode%=rmode
-15240   ret mode%                             : rem return current screen mode now
-15250 end def set_colours%
-15260 :
-15270 def fn do_caps(a$,caps%)
-15280 rem set string to capitales etc,caps% determines whether the string....
-15290 REMark ...must be lower case (=0), upper case(=1), all words capitalized (=2),
-15300 REMark ... first word only capitalized (=3), or nothing(=-1)
-15310   SELect ON caps%
-15320    =0: MIN a$
-15330    =1: MAJ a$
-15340    =2: CAP2 a$
-15350    =3: CAP a$
-15360   END SELect
-15370   return a$
-15380 end def do_caps
-15390 :
-15400 def fn mk_main_app (app_addr,subwinarray$,x_csize%,y_csize%, use_apm2%,hit_is_do%,sizex%,origx%)
-15410 rem This makes a standard menu appsub with standard global variables.
-15420 rem It presumes that the followng vars have been set:
-15430 rem  * rows% holds the number of rows to be seen in the appsub window when there
-15440 rem    are no scroll arrows (if there are, 1 less row will be seen)
-15450 rem  * app_y_orig% = y origin of appsub within the main wdw
-15460 rem  * xsize% = x size of main window (NOT subwindow)
-15470 rem  * menu_selkeys$ holds the selkeys to exclude (string with upper cased keys)
-15480 rem  *      set to "" if no selkeys wished, set to " " if no selkeys are excluded
-15490 rem  * appw_sections% holds the nbr of sections to show
-15500 rem  * main_cty% (DIMed here) is the  control sections array
-15510 rem  * main_mfl% (DIMed here) is the menu items flag array
-15520 rem
-15530 rem Params:
-15540 rem  * app_addr is the address of the appsub window, but 0 on first call
-15550 rem  * subwinarry$ holds the data (2 dimensional string array)
-15560 rem  * x, y_csize% are the csizes of objects in the appsub, standard values
-15570 rem  * use_apm2% whether we use (=1) AP_MAKE2 or not (=0)
-15580 rem  * hit_is_do% if hit should be = do
-15590 rem  * sizex%= wished x size, leave at 0 if automatic size wished
-15600 rem  * origx%= wished x orig, leave at 0 if automatic orig wished
-15610 rem
-15620 local temp%,selk%,app_attrs%(3,1),xs%,xo%
-15630   if app_addr:rechp app_addr
-15640   dim main_cty%(0):dim main_mfl%(0,0)
-15650   temp%=x_csize%*16                               : rem x csize into upper nibble
-15660   temp%=(temp%+y_csize%)*256            : rem y into lower, all into upper byte
-15670   temp%=temp%+appw_sections%            : rem temp% is changed by the call to fen_app
-15680   if menu_selkeys$=""
-15690     selk%=0                                       : rem use no selkeys
-15700   else
-15710     selk%=1
-15720   endif
-15730   if hit_is_do%:selk%=selk%+256         : rem hit should be do
-15740   if sizex%<1
-15750     xs%=xsize%-16
-15760   else
-15770     xs%=sizex%
-15780   endif
-15790   if origx%<1
-15800     xo%=0
-15810   else
-15820     xo%=origx%
-15830   endif
-15840   if use_apm2%
-15850     app_addr=ap_make2(selk%,xs%,rows%,xo%,app_y_orig%,temp%,subwinarray$)
-15860   else
-15870     app_addr=ap_make(selk%,xs%,rows%,xo%,app_y_orig%,temp%,subwinarray$,menu_selkeys$&" ")
-15880   endif                                 : rem on return temp%=nbr of objects
-15890   IF app_addr = 0: RETurn 0             : rem  error, return 0
-15900 :
-15910   dim main_cty%(appw_sections%,2)       : rem control defn
-15920   main_cty%(0,0)=1                      : rem at start show 1 section
-15930   if temp%>rows%
-15940     main_cty%(1,2)=rows%                : rem nbr of rows to show
-15950   else
-15960     main_cty%(1,2)=temp%                : rem there are less objects than rows
-15970   endif
-15980   main_cty%(1,2)=rows%
-15990   if appw_sections%=2:main_cty%(2,2)=2
-16000   if temp%
-16010      dim main_mfl%(temp%-1,0)                     : rem flag array if there are any objects
-16020   end if
-16030   scroll_arrows rows%,temp%,app_addr,main_cty%
-16040   return app_addr
-16050 end define mk_main_app
-16060 :
-16070 def proc make_standard_sprites
-16080 rem This makes standard move, sleep and wake sprites and sets the
-16090 rem GLOBAL vars move_sprite,, sleep_sprite, wake_sprite and size_sprite to them.
-16100 rem If there are system sprites, these are used.
-16110 rem This also makes the "main_sprite" pointer sprite.
-16120 :
-16130   espace_vide=ALCHP(100)         : rem for pointers with no mask
-16140 :
-16150 restore 16150
-16160   main_sprite=RD_SPRT(0)         : REMark ici un masque normal
-16170     data 11,13,6,5,4
-16180     data '     www     '
-16190     data '     waw     '
-16200     data '     waw     '
-16210     data '     waw     '
-16220     data 'wwwwwa awwwww'
-16230     data 'waaaa   aaaaw'
-16240     data 'wwwwwa awwwww'
-16250     data '     waw     '
-16260     data '     waw     '
-16270     data '     waw     '
-16280     data '     www     '
-16290 :
-16300   if sys_tspr_addr(6)<>0
-16310     move_sprite=6
-16320   else
-16330 restore 16330
-16340     move_sprite=RD_SPRT(1)         : REMark ici un masque 0
-16350     data 10,14,5,4,4
-16360     data 'aaaaaaaaaa    '
-16370     data 'awwwwwwwwa    '
-16380     data 'awwrrrrwwa    '
-16390     data 'awwrrrrwwaaaaa'
-16400     data 'awwrrwwwwwwwwa'
-16410     data 'awwwwwwwwrrwwa'
-16420     data 'aaaaawwrrrrwwa'
-16430     data '    awwrrrrwwa'
-16440     data '    awwwwwwwwa'
-16450     data '    aaaaaaaaaa'
-16460   endif
-16470 :
-16480   if sys_tspr_addr(10)<>0
-16490     sleep_sprite=10
-16500   else
-16510 restore 16510
-16520     sleep_sprite= RD_SPRT(1)             : REMark ici un masque 0
-16530     data 7,15,0,0,4
-16540     data 'wwwww          '
-16550     data '   w           '
-16560     data '  w  wwww      '
-16570     data ' w     w       '
-16580     data 'wwwww w  wwww  '
-16590     data '     wwww  w   '
-16600     data '          wwww '
-16610   endif
-16620 :
-16630   if sys_tspr_addr(11)<>0
-16640     wake_sprite=11
-16650   else
-16660 restore 16660
-16670     wake_sprite=RD_SPRT(1)          : REMark ici un masque 0
-16680     data 9,14,0,0,4
-16690     data "             w"
-16700     data "            w "
-16710     data "      w   ww  "
-16720     data "     ww www   "
-16730     data "    wwwwww    "
-16740     data "   www ww     "
-16750     data "  w   w      "
-16760     data " w            "
-16770     data "w             "
-16780   endif
-16790 :
-16800   if sys_tspr_addr(7)<>0
-16810     size_sprite=7
-16820   else
-16830 restore 16830
-16840     size_sprite=RD_SPRT(1)
-16850     data 9,14,5,4,4
-16860     data 'aaaaaaaaaaaaaa'
-16870     data 'awwwwwwwwwwwwa'
-16880     data 'awwrrrrrrrrwwa'
-16890     data 'awwrrrrrrrrwwa'
-16900     data 'awwrrwwwwwwwwa'
-16910     data 'awwrrwwrrrrwwa'
-16920     data 'awwrrwwrrrrwwa'
-16930     data 'awwwwwwwwwwwwa'
-16940     data 'aaaaaaaaaaaaaa'
-16950   endif
-16960 :
-16970 end def make_standard_sprites
-16980 :
-16990 DEFine PROCedure warn_make
-17000 rem makes warning & info window
-17010 rem uses global vars sp.xxx
-17020 rem SETS the global var warning_width% (nbr of chars in one line in wdw)
-17030 local lys%,warn_lot,warn_iot1,warn_iwt
-17040 local x%,y%,warning_paper,warning_brd
-17050 restore 17050
-17060   x%=200:y%=82
-17070   lys%=10
-17080   DIM warn_lfl%(1)
-17090   warn_lot=RD_LOT(std_iattr,1)
-17100     DATA 30,lys%,4,4,0,0,cancel$,text+retr,'ESC'
-17110     DATA 30,lys%,x%-34,4,0,0,'O',text+retr,"OK"
-17120 :
-17130   warn_iot1=RD_IOT (0)
-17140     DATA 12*9,10,0,1,text,sp.errfg,2,0,'Attention'
+14470       close#1
+14480     else
+14490       sp_jobpal -1,cw%
+14500     endif
+14510   endif
+14520 end def make_my_palette
+14530 :
+14540 def fn set_colours% (force_mode%)
+14550 rem this sets colour variables according to the colour mode wished, if possible.
+14560 rem force_mode%=
+14570 rem       0 if ql colours wished (mode 4 only)
+14580 rem       1 if pal colours wished
+14590 rem       2 if 24 bit colours wished
+14600 rem This function returns the true QL mode set (4,8,32,33 etc.).
+14610 rem This function also sets the GLOBAL variable mycolour_mode% to the
+14620 rem mode 0,1,2 as above - whatever is possible on the machine, i.e.
+14630 rem if colour_24 is wished on a 4 colour machine (which won't succeed)
+14640 rem this function will set set that variable to 0, i.e. QL mode.
+14650 rem
+14660 rem This function needs the outptr toolkit
+14670 local mode%
+14680   mode%=rmode                                     : rem get current mode now
+14690   select on force_mode%
+14700       = 0                                         : rem mode 4 wished
+14710        select on mode%
+14720             = 4                                   : rem already on, so do nothing
+14730             = 0,1,8 : mode 4            : rem old modes, set to 4 colours
+14740             = remainder
+14750               colour_ql                           : rem if higher colour mode, set to "mode 4"
+14760               mode 4
+14770        end select
+14780        mode%=0                                    : rem new mode we're in  - 4 colour mode
+14790       = 1                                         : rem PALette wished
+14800        select on mode%
+14810             = 16,32,33 : colour_pal:mode%=1  : rem we're in high colour mode, but PAL colours wished
+14820             = remainder
+14830               if mode%<>4:mode 4
+14840               mode%=0
+14850        end select
+14860       = 2
+14870        select on mode%
+14880             = 32,33 : colour_24 :mode%=2          : rem we're in high col mode 24 bit colours
+14890             = 16 : colour_pal : mode%=1
+14900             = remainder
+14910               if mode%<>4:mode 4
+14920               mode%=0
+14930        end select
+14940   end select
+14950   mycolour_mode%=mode%                            : rem set this global variable now:
+14960   rem now set some colour variables
+14970   select on mode%
+14980        = 0                                        : rem Ql 4 mode colours
+14990           Black            = 0
+15000           White            = 7
+15010           Red              = 2
+15020           Green            = 4
+15030           wg_striped     = 92
+15040           br_striped     = 82
+15050           wr_striped     = 107
+15060           bg_striped     = 100
+15070        = 1                              : rem Colour_pal
+15080           Black            = 0
+15090           White            = 1
+15100           Red              = 2
+15110           Green            = 3
+15120           wg_striped     = light_green
+15130           br_striped     = dark_red
+15140           wr_striped     = light_red
+15150           bg_striped     = dark_green
+15160        = 2                              : rem colour_24
+15170           Black            = hex('000000')
+15180           White            = hex('FFFFFF')
+15190           Red              = hex('FF0000')
+15200           Green            = hex('00FF00')
+15210           wg_striped     = light_green
+15220           br_striped     = dark_red
+15230           wr_striped     = light_red
+15240           bg_striped     = dark_green
+15250   end select
+15260   mode%=rmode
+15270   ret mode%                             : rem return current screen mode now
+15280 end def set_colours%
+15290 :
+15300 def fn do_caps(a$,caps%)
+15310 rem set string to capitales etc,caps% determines whether the string....
+15320 REMark ...must be lower case (=0), upper case(=1), all words capitalized (=2),
+15330 REMark ... first word only capitalized (=3), or nothing(=-1)
+15340   SELect ON caps%
+15350    =0: MIN a$
+15360    =1: MAJ a$
+15370    =2: CAP2 a$
+15380    =3: CAP a$
+15390   END SELect
+15400   return a$
+15410 end def do_caps
+15420 :
+15430 def fn mk_main_app (app_addr,subwinarray$,x_csize%,y_csize%, use_apm2%,hit_is_do%,sizex%,origx%)
+15440 rem This makes a standard menu appsub with standard global variables.
+15450 rem It presumes that the followng vars have been set:
+15460 rem  * rows% holds the number of rows to be seen in the appsub window when there
+15470 rem    are no scroll arrows (if there are, 1 less row will be seen)
+15480 rem  * app_y_orig% = y origin of appsub within the main wdw
+15490 rem  * xsize% = x size of main window (NOT subwindow)
+15500 rem  * menu_selkeys$ holds the selkeys to exclude (string with upper cased keys)
+15510 rem  *      set to "" if no selkeys wished, set to " " if no selkeys are excluded
+15520 rem  * appw_sections% holds the nbr of sections to show
+15530 rem  * main_cty% (DIMed here) is the  control sections array
+15540 rem  * main_mfl% (DIMed here) is the menu items flag array
+15550 rem
+15560 rem Params:
+15570 rem  * app_addr is the address of the appsub window, but 0 on first call
+15580 rem  * subwinarry$ holds the data (2 dimensional string array)
+15590 rem  * x, y_csize% are the csizes of objects in the appsub, standard values
+15600 rem  * use_apm2% whether we use (=1) AP_MAKE2 or not (=0)
+15610 rem  * hit_is_do% if hit should be = do
+15620 rem  * sizex%= wished x size, leave at 0 if automatic size wished
+15630 rem  * origx%= wished x orig, leave at 0 if automatic orig wished
+15640 rem
+15650 local temp%,selk%,app_attrs%(3,1),xs%,xo%
+15660   if app_addr:rechp app_addr
+15670   dim main_cty%(0):dim main_mfl%(0,0)
+15680   temp%=x_csize%*16                               : rem x csize into upper nibble
+15690   temp%=(temp%+y_csize%)*256            : rem y into lower, all into upper byte
+15700   temp%=temp%+appw_sections%            : rem temp% is changed by the call to fen_app
+15710   if menu_selkeys$=""
+15720     selk%=0                                       : rem use no selkeys
+15730   else
+15740     selk%=1
+15750   endif
+15760   if hit_is_do%:selk%=selk%+256         : rem hit should be do
+15770   if sizex%<1
+15780     xs%=xsize%-16
+15790   else
+15800     xs%=sizex%
+15810   endif
+15820   if origx%<1
+15830     xo%=0
+15840   else
+15850     xo%=origx%
+15860   endif
+15870   if use_apm2%
+15880     app_addr=ap_make2(selk%,xs%,rows%,xo%,app_y_orig%,temp%,subwinarray$)
+15890   else
+15900     app_addr=ap_make(selk%,xs%,rows%,xo%,app_y_orig%,temp%,subwinarray$,menu_selkeys$&" ")
+15910   endif                                 : rem on return temp%=nbr of objects
+15920   IF app_addr = 0: RETurn 0             : rem  error, return 0
+15930 :
+15940   dim main_cty%(appw_sections%,2)       : rem control defn
+15950   main_cty%(0,0)=1                      : rem at start show 1 section
+15960   if temp%>rows%
+15970     main_cty%(1,2)=rows%                : rem nbr of rows to show
+15980   else
+15990     main_cty%(1,2)=temp%                : rem there are less objects than rows
+16000   endif
+16010   main_cty%(1,2)=rows%
+16020   if appw_sections%=2:main_cty%(2,2)=2
+16030   if temp%
+16040      dim main_mfl%(temp%-1,0)                     : rem flag array if there are any objects
+16050   end if
+16060   scroll_arrows rows%,temp%,app_addr,main_cty%
+16070   return app_addr
+16080 end define mk_main_app
+16090 :
+16100 def proc make_standard_sprites
+16110 rem This makes standard move, sleep and wake sprites and sets the
+16120 rem GLOBAL vars move_sprite,, sleep_sprite, wake_sprite and size_sprite to them.
+16130 rem If there are system sprites, these are used.
+16140 rem This also makes the "main_sprite" pointer sprite.
+16150 :
+16160   espace_vide=ALCHP(100)         : rem for pointers with no mask
+16170 :
+16180 restore 16180
+16190   main_sprite=RD_SPRT(0)         : REMark ici un masque normal
+16200     data 11,13,6,5,4
+16210     data '     www     '
+16220     data '     waw     '
+16230     data '     waw     '
+16240     data '     waw     '
+16250     data 'wwwwwa awwwww'
+16260     data 'waaaa   aaaaw'
+16270     data 'wwwwwa awwwww'
+16280     data '     waw     '
+16290     data '     waw     '
+16300     data '     waw     '
+16310     data '     www     '
+16320 :
+16330   if sys_tspr_addr(6)<>0
+16340     move_sprite=6
+16350   else
+16360 restore 16360
+16370     move_sprite=RD_SPRT(1)         : REMark ici un masque 0
+16380     data 10,14,5,4,4
+16390     data 'aaaaaaaaaa    '
+16400     data 'awwwwwwwwa    '
+16410     data 'awwrrrrwwa    '
+16420     data 'awwrrrrwwaaaaa'
+16430     data 'awwrrwwwwwwwwa'
+16440     data 'awwwwwwwwrrwwa'
+16450     data 'aaaaawwrrrrwwa'
+16460     data '    awwrrrrwwa'
+16470     data '    awwwwwwwwa'
+16480     data '    aaaaaaaaaa'
+16490   endif
+16500 :
+16510   if sys_tspr_addr(10)<>0
+16520     sleep_sprite=10
+16530   else
+16540 restore 16540
+16550     sleep_sprite= RD_SPRT(1)             : REMark ici un masque 0
+16560     data 7,15,0,0,4
+16570     data 'wwwww          '
+16580     data '   w           '
+16590     data '  w  wwww      '
+16600     data ' w     w       '
+16610     data 'wwwww w  wwww  '
+16620     data '     wwww  w   '
+16630     data '          wwww '
+16640   endif
+16650 :
+16660   if sys_tspr_addr(11)<>0
+16670     wake_sprite=11
+16680   else
+16690 restore 16690
+16700     wake_sprite=RD_SPRT(1)          : REMark ici un masque 0
+16710     data 9,14,0,0,4
+16720     data "             w"
+16730     data "            w "
+16740     data "      w   ww  "
+16750     data "     ww www   "
+16760     data "    wwwwww    "
+16770     data "   www ww     "
+16780     data "  w   w      "
+16790     data " w            "
+16800     data "w             "
+16810   endif
+16820 :
+16830   if sys_tspr_addr(7)<>0
+16840     size_sprite=7
+16850   else
+16860 restore 16860
+16870     size_sprite=RD_SPRT(1)
+16880     data 9,14,5,4,4
+16890     data 'aaaaaaaaaaaaaa'
+16900     data 'awwwwwwwwwwwwa'
+16910     data 'awwrrrrrrrrwwa'
+16920     data 'awwrrrrrrrrwwa'
+16930     data 'awwrrwwwwwwwwa'
+16940     data 'awwrrwwrrrrwwa'
+16950     data 'awwrrwwrrrrwwa'
+16960     data 'awwwwwwwwwwwwa'
+16970     data 'aaaaaaaaaaaaaa'
+16980   endif
+16990 :
+17000 end def make_standard_sprites
+17010 :
+17020 DEFine PROCedure warn_make
+17030 rem makes warning & info window
+17040 rem uses global vars sp.xxx
+17050 rem SETS the global var warning_width% (nbr of chars in one line in wdw)
+17060 local lys%,warn_lot,warn_iot1,warn_iwt
+17070 local x%,y%,warning_paper,warning_brd
+17080 restore 17080
+17090   x%=200:y%=82
+17100   lys%=10
+17110   DIM warn_lfl%(1)
+17120   warn_lot=RD_LOT(std_iattr,1)
+17130     DATA 30,lys%,4,4,0,0,cancel$,text+retr,'ESC'
+17140     DATA 30,lys%,x%-34,4,0,0,'O',text+retr,"OK"
 17150 :
-17160   warn_iwt=RD_IWT(1)
-17170     DATA x%-16,y%-32,8,24
-17180     DATA 0,1,sp.winbd,sp.errbg
-17190     DATA 0
-17200 :
-17210     DATA 110,12,(x%-110) div 2,4
-17220     DATA 0,1,sp.winbd,sp.errbg
-17230     DATA warn_iot1
-17240 :
-17250   warn_defn=RD_WDEF
-17260     DATA 2,1,sp.winbd,sp.errbg
-17270     DATA x%,y%,0,0
-17280     DATA main_sprite,warn_lot,warn_iwt,0
-17290 :
-17300   warning_width%=(x%-16) div 6                    : rem width of warning window in chars
-17310   info_is_pulled_down%=0
-17320   warn_wdw_addr=peek_l(warn_defn+100)+20: rem ptr to 2nd info wdw
-17330  rem warn_wdw_addr=peek_l(warn_wdw_addr+16): rem ptr to object list
-17340 END DEFine warn_make
-17350 :
-17360 DEFine PROCedure about_make (titre$,version$)
-17370 local lxs%,lys%,xesp%,inf1y%,abt_lot,longueur_titre%,titre_x%
-17380 local abt_iwt,abt_iot1,abt_iot2
-17390   ab_xt%=200:ab_yt%=120    : REMark tailles x et y: la taille x devrait
-17400                                    : REMark ‘tre un chiffre divisible par 4
-17410   lxs%=24:lys%=10                    : REMark tailles x et y pour postes standard
-17420   inf1y%=lys%+4            : REMark posi. y de la fen. d'inf. intƒrieure
-17430   xesp%=lxs%+2
-17440   nbr_post%=0                      : REMark nombre de postes dans un coin
-17450 :
-17460 restore 17460
-17470 wolfsoft_sprite=rD_SPrT(0)
-17480     DATA 23,51,0,0,4
-17490     DATA 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
-17500     DATA 'rrgggggggggggggggggggggggggggggggggggggggggggggggrr'
-17510     DATA 'rrggggggggrrrrrrrrrrrrrrrrgggggggggggggggggggggggrr'
-17520     DATA 'rrgggggggggggggggggggggrgggggggggggggggggggggggggrr'
-17530     DATA 'rrggggggggggggggggggggrggggggggggggggggggggggggggrr'
-17540     DATA 'rrggggggggagggggagggrrrrrrrrrrrrrggaaaaaaaaggggggrr'
-17550     DATA 'rrggggggggagggggaggggggggggggggggggagggggggggggggrr'
-17560     DATA 'rrggggggggaggaggaggaaaaaaaggaggggggaaaaaaagggggggrr'
-17570     DATA 'rrggggggggagaaagaggaawwaaaggaggggggagggggggggggggrr'
-17580     DATA 'rrggggggggaaagaaaggaawwwwaggaggggggagggggggggggggrr'
-17590     DATA 'rrggrrrrrgaagggaaggawwwwaaggaggggggagggggrrrrrrrgrr'
-17600     DATA 'rrgrgggggrgggggggggaaawwaaggaggggggggggrrrgggggggrr'
-17610     DATA 'rrgrggggggrggggggggaaaaaaaggaaaaaagggrrggrgggggggrr'
-17620     DATA 'rrgrgggggggggggggrrrgggggggggggrrrggrggggrgggggggrr'
-17630     DATA 'rrggrrrrrrggggggrgggrrgggggggrrggggggggggrgggggggrr'
-17640     DATA 'rrggggggggrrrgggrgggggrrgggrrggggggggggggrgggggggrr'
-17650     DATA 'rrgggggggggggrggrgggggggrggrgggggggggggggrgggggggrr'
-17660     DATA 'rrggggggggggggrgrggggggggrgrrrrrrrgggggggrgggggggrr'
-17670     DATA 'rrgrggggggggggrgrggggggggrgrgggggggggggggrgggggggrr'
-17680     DATA 'rrggrgggggggrrgggrggggggrggrgggggggggggggrgggggggrr'
-17690     DATA 'rrgggrrrrrrrggggggrrrrrrgggrgggggggggggggrgggggggrr'
-17700     DATA 'rrgggggggggggggggggggggggggggggggggggggggggggggggrr'
-17710     DATA 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
-17720 :
-17730   yinf1y%=inf1y%+4:
-17740 :
-17750   DIM abt_lfl%(0)
-17760   abt_lot=RD_LOT(std_iattr,0)
-17770     DATA ab_xt%-16,lys%,8,ab_yt%-lys%-8,0,0,cancel$,text+retr,'Super!'
-17780 :
-17790 : REMark  D'abord le titre qui est un objet d'une sous-fen‘tre d'info.
-17800 :
-17810   longueur_titre%=LEN(" Version "&version$)*6               : REMark on calcule la taille et la
-17820   titre_x%=INT((ab_xt%-longueur_titre%)/2)  : REMark position x de cet objet
-17830   abt_iot2=RD_IOT(1)
-17840     DATA longueur_titre%,lys%,4,8,text,sp.winfg,0,0," Version "&version$
-17850     DATA 52,24,ab_xt%-60,40,sprite,0,wolfsoft_sprite
-17860   longueur_titre%=LEN(titre$)*6     : REMark on calcule la taille et la
-17870   titre_x%=INT((ab_xt%-longueur_titre%)/2)  : REMark position x de cet objet
-17880   abt_iot1=RD_IOT(0)
-17890     DATA longueur_titre%,lys%,4,INT((lys%-10)/2),text,sp.titlefg,0,0,titre$
-17900   abt_iwt=RD_IWT(2)               : REMark on veut 3 sous-fen. d'info
-17910 REMark d'abord la fen‘tre contenant la barre entourant le titre
-17920     DATA ab_xt%-8-(2*nbr_post%*xesp%),lys%+2,xesp%*nbr_post%+4,0  : REMark taille x,y, origines x,y
-17930     DATA 0,0,sp.infwinbd,sp.titlebg     : REMark ombre, taille & couleur bordure
-17940                                    : REMark puis couleur papier
-17950     DATA 0                         : REMark pointeur vers objets
-17960 REMark maintenant la fen‘tre qui contient le titre
-17970     DATA longueur_titre%+8,lys%,titre_x%-2,2   : REMark on utilise titre_x% etc
-17980     DATA 0,0, sp.infwinbd,sp.titletextbg
-17990     DATA abt_iot1                 : REMark un objet, le titre
-18000 REMark maintenant la fen‘tre de la bordure intƒrieure
-18010     DATA ab_xt%-8,ab_yt%-inf1y%-2,4,inf1y%
-18020     DATA 0,1,sp.infwinbd,sp.infwinbg
-18030     DATA abt_iot2
-18040   abt_defn=RD_WDEF
-18050     DATA 2,1,sp.winbd,sp.winbg: REMark ombre, larg. & coul. bord., coul. papier
-18060     DATA ab_xt%,ab_yt%,10,10 : REMark taille x,y et position pointeur
-18070     DATA main_sprite,abt_lot,abt_iwt,0
-18080 :
-18090 end def about_make
-18100 :
-18110 DEFine PROCedure about (datet$)
-18120   LOCal loop%,item%,dummy%,chan%
-18130   DR_PULD abt_defn,-1,-1,abt_lfl%
-18140   chan%=fopen('con')
-18150   dr_iwdf#chan%,abt_defn,2
-18160   wm_ink#chan%,sp.infwinfg
-18170   wm_paper#chan%,sp.infwinbg
-18180   at#chan%,4,2
-18190   print#chan%,"Copyright (C) "
-18200   at#chan%,5,2
-18210   print#chan%, datet$
-18220   at#chan%,6,2
-18230   print#chan%,"Wolfgang H. Lenerz"
-18240   close#chan%
-18250   REPeat loop%
-18260     RD_PTR abt_defn,item%,dummy%,dummy%,dummy%,dummy%,abt_lfl%
-18270     SELect ON item%
-18280             =0       : EXIT loop%
-18290     END SELect
-18300   END REPeat loop%
-18310   DR_UNST abt_defn
-18320 END DEFine about
-18330 :
-18340 def proc do_popup(string$)
-18350 rem this pops up a small "hint" window showing the string$ passed
-18360 rem as parameter.
-18370 rem The string MUST be 1 line long and MUST fit
-18380 rem inside the window (YOU must make sure of that!)
-18390   do_popup2 string$,0
-18400 end def do_popup
-18410 :
-18420 def proc popup_make
-18430 rem make a small window defn
-18440 local x%,y%,p_iot,popsub(0)
-18450 restore 18450
-18460   p_sprt=rd_sprt(0)                               : rem make an invisible pointer, all transparent
-18470     data 1,2,0,0,4
-18480     data '  '
-18490   x%=14                                 : rem bogus window sizes
-18500   y%=10
-18510   popsub(0)=rd_appw                               : rem the info wdw
-18520     DATA x%,y%,0,0
-18530     DATA 0,0, sp.hintbd,sp.hintbg
-18540     DATA 0,""
-18550   popup_defn=RD_WDEF                              : rem the working defn
-18560     DATA 0,1,sp.hintbd,sp.hintbg        : rem no shadow, border size & col, paper col
-18570     DATA x%,y%,40,2
-18580     DATA p_sprt,0,0,mk_awl(popsub)
-18590 end def popup_make
-18600 :
-18610 def proc do_popup2(string$,main_defn)
-18620 rem This pops up a small "hint" window showing the string$ passed
-18630 rem as parameter.
-18640 rem main_defn is the working defintion of the window over which the hint
-18650 rem window is to hover. Position the pointer there where you need it before
-18660 rem calling this.
-18670 rem If the string is too long to fit into the window (which can only be as long
-18680 rem as the outline of the working defn) then the string is split up at the
-18690 rem first convenient space and put on a second line, and so on.
-18700 rem If this would lead to the hint window being too high, only as many
-18710 rem lines as possible will be displayed.
-18720 rem !!!!!
-18730 rem This presumes that a char is 10 pixels high & 6 pixels wide (standard ql 6x10 matrix)..
-18740 rem !!!!!
-18750 rem The string may contain the char chr$(10) - there will be a newline.
-18760 rem
-18770 rem note : do not try to pass a screen chaneel, open & close one here.
-18780 rem
-18790 local dummy%,lp%,address,con%,temp%,lastspace%,xs%,ys%,temp$
-18800 local hint$(10),slen% ,maxlength%,popup_lfl%(0),popup_mfl%(0,0)
-18810   if string$="":return                            : rem empty string, do nothing
-18820   strip_spaces string$                         : rem no spaces at ends
-18830   con%=fopen("con")
-18840   if main_defn<>0
-18850     xs%=peek_w (main_defn+32)
-18860     ys%=peek_w(main_defn+34)            : rem get max sizes the hint wdw may have
-18870   else
-18880     scr_size#con%,xs%,ys%
-18890   endif
-18900   xs%=(xs%-4) div 6                               : rem max nbr of chars in 1 line
-18910   ys%=(ys%-4) div 10                              : rem max nbr of lines in wdw
-18920   if xs%=0 or ys%=0:close#con%:return   : rem nothing will really fit, just leave
-18930   dim hint$(ys%,xs%)                              : rem array to contain string
-18940   rem now parse the string, find newlines, make sure of string length
-18950   dummy%=1                                        : rem start of current string section
-18960   temp%=0                                         : rem line
-18970   slen%=0                                         : rem current length of string
-18980   for lp%=1 to len(string$)
-18990     if string$(lp%)=chr$(10)
-19000       hint$(temp%)=string$(dummy% to lp%-1): rem cut string here
-19010       temp%=temp%+1
-19020       if temp%=ys%:exit lp%             : rem max nbr of lines reached
-19030       dummy%=lp%+1                      : rem this is where new start of string is
-19040       lastspace%=lp%
-19050     else
-19060       if string$(lp%)=" "
-19070           lastspace%=lp%                          : rem this is where last space is
-19080       endif
-19090     endif
-19100     slen%=slen%+1                       : rem one more char
-19110     if slen% > xs%
-19120       hint$(temp%)=string$(dummy% to lastspace%-1) : rem too many chars in line
-19130       slen%=0
-19140       temp%=temp%+1                               : rem we need nother line
-19150       if temp%=ys%:exit lp%             : rem max nbr of lines reached
-19160       dummy%=lastspace%+1
-19170     endif
-19180   end for lp%
-19190   if temp%<ys%
-19200      hint$(temp%)=string$(dummy% to)       : rem add last part
-19210      temp%=temp%+1
-19220   endif
-19230   maxlength%=0
-19240   for lp%=0 to temp%
-19250     temp$= hint$(lp%)
-19260     strip_spaces temp$                         : rem use intermediary var, because of QLIB
-19270     if maxlength%<len(temp$):maxlength%=len (temp$)
-19280   end for lp%
-19290   lp%=(maxlength%*6)+4                            : rem hint window length
-19300   poke_w popup_defn+32,lp%              : rem set window xsize
-19310   poke_w popup_defn+34,temp%*10+2       : rem
-19320   address=peek_l(popup_defn+112)        : rem ptr to app sub wdw...
-19330   address=peek_l(address)               : rem ...now
-19340   poke_w address,lp%-2                            : rem set its length
-19350   poke_w address+2,temp%*10             : rem set its height
-19360   dr_puld popup_defn,-1,-1,popup_lfl%,popup_mfl%
-19370   dr_awdf#con%,popup_defn,0             : rem pull wdw over info wdw
-19380   wm_paper#con%,sp.hintbg
-19390   wm_ink#con%,sp.hintfg
-19400   for lp%=0 to dimn(hint$,1)
-19410     if hint$(lp%)<>"":temp$=hint$(lp%):strip_spaces temp$:print#con%,temp$
-19420   end for lp%
-19430   temp%=0:slen%=0:xs%=0:ys%=0:dummy%=0
-19440   RD_PTR popup_defn,temp%,dummy%,slen%,xs%,ys%,popup_lfl%,popup_mfl%: rem comes back immediatley
-19450   RD_PTR popup_defn,temp%,dummy%,slen%,xs%,ys%,popup_lfl%,popup_mfl%
-19460   close#con%
-19470   dr_unst popup_defn
-19480 end def do_popup2
-19490 :
-19500 DEFine FuNction RD_SPRT(drap%)
-19510 REMark drap% determine si masque 0
-19520   LOCal tmp_patt$(32,32)
-19530   LOCal xs,ys,xo,yo, md, l
-19540   READ ys,xs,xo,yo,md
-19550   DIM tmp_patt$(ys,xs)
-19560   FOR l=0 TO ys-1:READ tmp_patt$(l)
-19570   l=ALCHP(SPRSP(xs,ys))
-19580   SPSET l,xo,yo,md,tmp_patt$(0 TO ys-1,1 TO xs)
-19590   IF drap%
-19600     POKE_L l+16,espace_vide-(l+16)
-19610   END IF
-19620   RETurn l
-19630 END DEFine RD_SPRT
-19640 :
-19650 DEFine FuNction RD_WDEF
-19660 rem read window defn
-19670   LOCal ldef%(3), lspr, lloose, linfo, lappl, lattr%(3)
-19680   RD_WATT lattr%
-19690   READ ldef%(0), ldef%(1), ldef%(2), ldef%(3)
-19700   READ lspr, lloose, linf, lappl
-19710   RETurn MK_WDEF (ldef%, lattr%, lspr, lloose, linf, lappl)
-19720 END DEFine RD_WDEF
-19730 :
-19740 DEFine FuNction RD_LOT (lattr,nitem)
-19750   LOCal count(3)
-19760   LOCal item, ltyp, a$, lsk$
-19770   LOCal ldef%(nitem,6), lptr(3,nitem), lstr$(nitem,85)
-19780   lsk$=''
-19790   FOR item = 0 TO nitem
-19800     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
-19810     READ ldef%(item,4), ldef%(item,5)
-19820     READ a$: lsk$=lsk$ & a$
-19830     READ ltyp
-19840     ldef%(item,6)=ltyp: ltyp=(ltyp MOD 256)/2
-19850     IF ltyp>10 or ltyp <0:ltyp=0
-19860     IF ltyp
-19870       READ lptr(ltyp,count(ltyp))
-19880     ELSE
-19890       READ lstr$(count(0))
-19900     END IF
-19910     count(ltyp)=count(ltyp)+1
-19920   END FOR item
-19930   RETurn MK_LIL (lattr, ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), ldef%(TO, 4 TO 5), lsk$, ldef%(TO, 6), lstr$, lptr(1), lptr(2), lptr(3))
-19940 END DEFine RD_LOT
-19950 :
-19960 DEFine FuNction RD_IWT(nitem)
-19970   LOCal item,mc1
-19980   LOCal ldef%(nitem,3), latt%(nitem,3), lptr(nitem)
-19990   FOR item = 0 TO nitem
-20000     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
-20010     READ latt%(item,0), latt%(item,1), latt%(item,2), latt%(item,3)
-20020     READ lptr(item)
-20030   END FOR item
-20040   RETurn MK_IWL (ldef%, latt%, lptr)
-20050 END DEFine RD_IWT
-20060 :
-20070 DEFine FuNction RD_IOT(nitem)
-20080   LOCal count(3)
-20090   LOCal item, ltyp, work1, work2
-20100   LOCal ldef%(nitem,4), lptr(3,nitem), lstr$(nitem,85)
-20110   FOR item = 0 TO nitem
-20120     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
-20130     READ ltyp
-20140     ldef%(item,4)=ltyp:  ltyp=(ltyp MOD 256)/2
-20150     IF ltyp >10:ltyp=0
-20160     IF ltyp
-20170       READ lptr(0,item),lptr(ltyp,count(ltyp))
-20180     ELSE
-20190       if mycolour_mode%=2
-20200           read work1,work2,work3
-20210           lptr(0,item)=WL_4_IOL(work1,work2,work3)
-20220       else
-20230           READ work1
-20240           READ work2: work1=work1*256+work2
-20250           READ work2: lptr(0,item)=work1*256+work2
-20260       endif
-20270       READ lstr$(count(0))
-20280     END IF
-20290     count(ltyp) = count(ltyp) + 1
-20300   END FOR item
-20310   RETurn MK_IOL (ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), lptr(0), ldef%(TO, 4), lstr$, lptr(1), lptr(2), lptr(3))
-20320 END DEFine RD_IOT
-20330 :
-20340 DEFine PROCedure RD_IATT (lattr)
-20350   LOCal i
-20360   READ lattr(0,0), lattr(0,1)
-20370   FOR i=1 TO 3: READ lattr(i,0), lattr(i,1), lattr(i,2), lattr(i,3)
-20380 END DEFine RD_IATT
-20390 :
-20400 DEFine PROCedure RD_WATT (lattr%)
-20410   READ lattr%(0), lattr%(1),lattr%(2),lattr%(3)
-20420 END DEFine RD_WATT
-20430 :
-20440 DEFine FuNction RD_APPW
-20450   LOCal ldef%(3), lspr, sk$, lattr%(3)
-20460   READ ldef%(0), ldef%(1), ldef%(2), ldef%(3)
-20470   RD_WATT lattr%
-20480   READ lspr, sk$
-20490   RETurn MK_APPW (ldef%, lattr%, lspr,sk$)
-20500 END DEFine
-20510 :
+17160   warn_iot1=RD_IOT (0)
+17170     DATA 12*9,10,0,1,text,sp.errfg,2,0,'Attention'
+17180 :
+17190   warn_iwt=RD_IWT(1)
+17200     DATA x%-16,y%-32,8,24
+17210     DATA 0,1,sp.winbd,sp.errbg
+17220     DATA 0
+17230 :
+17240     DATA 110,12,(x%-110) div 2,4
+17250     DATA 0,1,sp.winbd,sp.errbg
+17260     DATA warn_iot1
+17270 :
+17280   warn_defn=RD_WDEF
+17290     DATA 2,1,sp.winbd,sp.errbg
+17300     DATA x%,y%,0,0
+17310     DATA main_sprite,warn_lot,warn_iwt,0
+17320 :
+17330   warning_width%=(x%-16) div 6                    : rem width of warning window in chars
+17340   info_is_pulled_down%=0
+17350   warn_wdw_addr=peek_l(warn_defn+100)+20: rem ptr to 2nd info wdw
+17360  rem warn_wdw_addr=peek_l(warn_wdw_addr+16): rem ptr to object list
+17370 END DEFine warn_make
+17380 :
+17390 DEFine PROCedure about_make (titre$,version$)
+17400 local lxs%,lys%,xesp%,inf1y%,abt_lot,longueur_titre%,titre_x%
+17410 local abt_iwt,abt_iot1,abt_iot2
+17420   ab_xt%=200:ab_yt%=120    : REMark tailles x et y: la taille x devrait
+17430                                    : REMark ‘tre un chiffre divisible par 4
+17440   lxs%=24:lys%=10                    : REMark tailles x et y pour postes standard
+17450   inf1y%=lys%+4            : REMark posi. y de la fen. d'inf. intƒrieure
+17460   xesp%=lxs%+2
+17470   nbr_post%=0                      : REMark nombre de postes dans un coin
+17480 :
+17490 restore 17490
+17500 wolfsoft_sprite=rD_SPrT(0)
+17510     DATA 23,51,0,0,4
+17520     DATA 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
+17530     DATA 'rrgggggggggggggggggggggggggggggggggggggggggggggggrr'
+17540     DATA 'rrggggggggrrrrrrrrrrrrrrrrgggggggggggggggggggggggrr'
+17550     DATA 'rrgggggggggggggggggggggrgggggggggggggggggggggggggrr'
+17560     DATA 'rrggggggggggggggggggggrggggggggggggggggggggggggggrr'
+17570     DATA 'rrggggggggagggggagggrrrrrrrrrrrrrggaaaaaaaaggggggrr'
+17580     DATA 'rrggggggggagggggaggggggggggggggggggagggggggggggggrr'
+17590     DATA 'rrggggggggaggaggaggaaaaaaaggaggggggaaaaaaagggggggrr'
+17600     DATA 'rrggggggggagaaagaggaawwaaaggaggggggagggggggggggggrr'
+17610     DATA 'rrggggggggaaagaaaggaawwwwaggaggggggagggggggggggggrr'
+17620     DATA 'rrggrrrrrgaagggaaggawwwwaaggaggggggagggggrrrrrrrgrr'
+17630     DATA 'rrgrgggggrgggggggggaaawwaaggaggggggggggrrrgggggggrr'
+17640     DATA 'rrgrggggggrggggggggaaaaaaaggaaaaaagggrrggrgggggggrr'
+17650     DATA 'rrgrgggggggggggggrrrgggggggggggrrrggrggggrgggggggrr'
+17660     DATA 'rrggrrrrrrggggggrgggrrgggggggrrggggggggggrgggggggrr'
+17670     DATA 'rrggggggggrrrgggrgggggrrgggrrggggggggggggrgggggggrr'
+17680     DATA 'rrgggggggggggrggrgggggggrggrgggggggggggggrgggggggrr'
+17690     DATA 'rrggggggggggggrgrggggggggrgrrrrrrrgggggggrgggggggrr'
+17700     DATA 'rrgrggggggggggrgrggggggggrgrgggggggggggggrgggggggrr'
+17710     DATA 'rrggrgggggggrrgggrggggggrggrgggggggggggggrgggggggrr'
+17720     DATA 'rrgggrrrrrrrggggggrrrrrrgggrgggggggggggggrgggggggrr'
+17730     DATA 'rrgggggggggggggggggggggggggggggggggggggggggggggggrr'
+17740     DATA 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
+17750 :
+17760   yinf1y%=inf1y%+4:
+17770 :
+17780   DIM abt_lfl%(0)
+17790   abt_lot=RD_LOT(std_iattr,0)
+17800     DATA ab_xt%-16,lys%,8,ab_yt%-lys%-8,0,0,cancel$,text+retr,'Super!'
+17810 :
+17820 : REMark  D'abord le titre qui est un objet d'une sous-fen‘tre d'info.
+17830 :
+17840   longueur_titre%=LEN(" Version "&version$)*6               : REMark on calcule la taille et la
+17850   titre_x%=INT((ab_xt%-longueur_titre%)/2)  : REMark position x de cet objet
+17860   abt_iot2=RD_IOT(1)
+17870     DATA longueur_titre%,lys%,4,8,text,sp.winfg,0,0," Version "&version$
+17880     DATA 52,24,ab_xt%-60,40,sprite,0,wolfsoft_sprite
+17890   longueur_titre%=LEN(titre$)*6     : REMark on calcule la taille et la
+17900   titre_x%=INT((ab_xt%-longueur_titre%)/2)  : REMark position x de cet objet
+17910   abt_iot1=RD_IOT(0)
+17920     DATA longueur_titre%,lys%,4,INT((lys%-10)/2),text,sp.titlefg,0,0,titre$
+17930   abt_iwt=RD_IWT(2)               : REMark on veut 3 sous-fen. d'info
+17940 REMark d'abord la fen‘tre contenant la barre entourant le titre
+17950     DATA ab_xt%-8-(2*nbr_post%*xesp%),lys%+2,xesp%*nbr_post%+4,0  : REMark taille x,y, origines x,y
+17960     DATA 0,0,sp.infwinbd,sp.titlebg     : REMark ombre, taille & couleur bordure
+17970                                    : REMark puis couleur papier
+17980     DATA 0                         : REMark pointeur vers objets
+17990 REMark maintenant la fen‘tre qui contient le titre
+18000     DATA longueur_titre%+8,lys%,titre_x%-2,2   : REMark on utilise titre_x% etc
+18010     DATA 0,0, sp.infwinbd,sp.titletextbg
+18020     DATA abt_iot1                 : REMark un objet, le titre
+18030 REMark maintenant la fen‘tre de la bordure intƒrieure
+18040     DATA ab_xt%-8,ab_yt%-inf1y%-2,4,inf1y%
+18050     DATA 0,1,sp.infwinbd,sp.infwinbg
+18060     DATA abt_iot2
+18070   abt_defn=RD_WDEF
+18080     DATA 2,1,sp.winbd,sp.winbg: REMark ombre, larg. & coul. bord., coul. papier
+18090     DATA ab_xt%,ab_yt%,10,10 : REMark taille x,y et position pointeur
+18100     DATA main_sprite,abt_lot,abt_iwt,0
+18110 :
+18120 end def about_make
+18130 :
+18140 DEFine PROCedure about (datet$)
+18150   LOCal loop%,item%,dummy%,chan%
+18160   DR_PULD abt_defn,-1,-1,abt_lfl%
+18170   chan%=fopen('con')
+18180   dr_iwdf#chan%,abt_defn,2
+18190   wm_ink#chan%,sp.infwinfg
+18200   wm_paper#chan%,sp.infwinbg
+18210   at#chan%,4,2
+18220   print#chan%,"Copyright (C) "
+18230   at#chan%,5,2
+18240   print#chan%, datet$
+18250   at#chan%,6,2
+18260   print#chan%,"Wolfgang H. Lenerz"
+18270   close#chan%
+18280   REPeat loop%
+18290     RD_PTR abt_defn,item%,dummy%,dummy%,dummy%,dummy%,abt_lfl%
+18300     SELect ON item%
+18310             =0       : EXIT loop%
+18320     END SELect
+18330   END REPeat loop%
+18340   DR_UNST abt_defn
+18350 END DEFine about
+18360 :
+18370 def proc do_popup(string$)
+18380 rem this pops up a small "hint" window showing the string$ passed
+18390 rem as parameter.
+18400 rem The string MUST be 1 line long and MUST fit
+18410 rem inside the window (YOU must make sure of that!)
+18420   do_popup2 string$,0
+18430 end def do_popup
+18440 :
+18450 def proc popup_make
+18460 rem make a small window defn
+18470 local x%,y%,p_iot,popsub(0)
+18480 restore 18480
+18490   p_sprt=rd_sprt(0)                               : rem make an invisible pointer, all transparent
+18500     data 1,2,0,0,4
+18510     data '  '
+18520   x%=14                                 : rem bogus window sizes
+18530   y%=10
+18540   popsub(0)=rd_appw                               : rem the info wdw
+18550     DATA x%,y%,0,0
+18560     DATA 0,0, sp.hintbd,sp.hintbg
+18570     DATA 0,""
+18580   popup_defn=RD_WDEF                              : rem the working defn
+18590     DATA 0,1,sp.hintbd,sp.hintbg        : rem no shadow, border size & col, paper col
+18600     DATA x%,y%,40,2
+18610     DATA p_sprt,0,0,mk_awl(popsub)
+18620 end def popup_make
+18630 :
+18640 def proc do_popup2(string$,main_defn)
+18650 rem This pops up a small "hint" window showing the string$ passed
+18660 rem as parameter.
+18670 rem main_defn is the working defintion of the window over which the hint
+18680 rem window is to hover. Position the pointer there where you need it before
+18690 rem calling this.
+18700 rem If the string is too long to fit into the window (which can only be as long
+18710 rem as the outline of the working defn) then the string is split up at the
+18720 rem first convenient space and put on a second line, and so on.
+18730 rem If this would lead to the hint window being too high, only as many
+18740 rem lines as possible will be displayed.
+18750 rem !!!!!
+18760 rem This presumes that a char is 10 pixels high & 6 pixels wide (standard ql 6x10 matrix)..
+18770 rem !!!!!
+18780 rem The string may contain the char chr$(10) - there will be a newline.
+18790 rem
+18800 rem note : do not try to pass a screen chaneel, open & close one here.
+18810 rem
+18820 local dummy%,lp%,address,con%,temp%,lastspace%,xs%,ys%,temp$
+18830 local hint$(10),slen% ,maxlength%,popup_lfl%(0),popup_mfl%(0,0)
+18840   if string$="":return                            : rem empty string, do nothing
+18850   strip_spaces string$                         : rem no spaces at ends
+18860   con%=fopen("con")
+18870   if main_defn<>0
+18880     xs%=peek_w (main_defn+32)
+18890     ys%=peek_w(main_defn+34)            : rem get max sizes the hint wdw may have
+18900   else
+18910     scr_size#con%,xs%,ys%
+18920   endif
+18930   xs%=(xs%-4) div 6                               : rem max nbr of chars in 1 line
+18940   ys%=(ys%-4) div 10                              : rem max nbr of lines in wdw
+18950   if xs%=0 or ys%=0:close#con%:return   : rem nothing will really fit, just leave
+18960   dim hint$(ys%,xs%)                              : rem array to contain string
+18970   rem now parse the string, find newlines, make sure of string length
+18980   dummy%=1                                        : rem start of current string section
+18990   temp%=0                                         : rem line
+19000   slen%=0                                         : rem current length of string
+19010   for lp%=1 to len(string$)
+19020     if string$(lp%)=chr$(10)
+19030       hint$(temp%)=string$(dummy% to lp%-1): rem cut string here
+19040       temp%=temp%+1
+19050       if temp%=ys%:exit lp%             : rem max nbr of lines reached
+19060       dummy%=lp%+1                      : rem this is where new start of string is
+19070       lastspace%=lp%
+19080     else
+19090       if string$(lp%)=" "
+19100           lastspace%=lp%                          : rem this is where last space is
+19110       endif
+19120     endif
+19130     slen%=slen%+1                       : rem one more char
+19140     if slen% > xs%
+19150       hint$(temp%)=string$(dummy% to lastspace%-1) : rem too many chars in line
+19160       slen%=0
+19170       temp%=temp%+1                               : rem we need nother line
+19180       if temp%=ys%:exit lp%             : rem max nbr of lines reached
+19190       dummy%=lastspace%+1
+19200     endif
+19210   end for lp%
+19220   if temp%<ys%
+19230      hint$(temp%)=string$(dummy% to)       : rem add last part
+19240      temp%=temp%+1
+19250   endif
+19260   maxlength%=0
+19270   for lp%=0 to temp%
+19280     temp$= hint$(lp%)
+19290     strip_spaces temp$                         : rem use intermediary var, because of QLIB
+19300     if maxlength%<len(temp$):maxlength%=len (temp$)
+19310   end for lp%
+19320   lp%=(maxlength%*6)+4                            : rem hint window length
+19330   poke_w popup_defn+32,lp%              : rem set window xsize
+19340   poke_w popup_defn+34,temp%*10+2       : rem
+19350   address=peek_l(popup_defn+112)        : rem ptr to app sub wdw...
+19360   address=peek_l(address)               : rem ...now
+19370   poke_w address,lp%-2                            : rem set its length
+19380   poke_w address+2,temp%*10             : rem set its height
+19390   dr_puld popup_defn,-1,-1,popup_lfl%,popup_mfl%
+19400   dr_awdf#con%,popup_defn,0             : rem pull wdw over info wdw
+19410   wm_paper#con%,sp.hintbg
+19420   wm_ink#con%,sp.hintfg
+19430   for lp%=0 to dimn(hint$,1)
+19440     if hint$(lp%)<>"":temp$=hint$(lp%):strip_spaces temp$:print#con%,temp$
+19450   end for lp%
+19460   temp%=0:slen%=0:xs%=0:ys%=0:dummy%=0
+19470   RD_PTR popup_defn,temp%,dummy%,slen%,xs%,ys%,popup_lfl%,popup_mfl%: rem comes back immediatley
+19480   RD_PTR popup_defn,temp%,dummy%,slen%,xs%,ys%,popup_lfl%,popup_mfl%
+19490   close#con%
+19500   dr_unst popup_defn
+19510 end def do_popup2
+19520 :
+19530 DEFine FuNction RD_SPRT(drap%)
+19540 REMark drap% determine si masque 0
+19550   LOCal tmp_patt$(32,32)
+19560   LOCal xs,ys,xo,yo, md, l
+19570   READ ys,xs,xo,yo,md
+19580   DIM tmp_patt$(ys,xs)
+19590   FOR l=0 TO ys-1:READ tmp_patt$(l)
+19600   l=ALCHP(SPRSP(xs,ys))
+19610   SPSET l,xo,yo,md,tmp_patt$(0 TO ys-1,1 TO xs)
+19620   IF drap%
+19630     POKE_L l+16,espace_vide-(l+16)
+19640   END IF
+19650   RETurn l
+19660 END DEFine RD_SPRT
+19670 :
+19680 DEFine FuNction RD_WDEF
+19690 rem read window defn
+19700   LOCal ldef%(3), lspr, lloose, linfo, lappl, lattr%(3)
+19710   RD_WATT lattr%
+19720   READ ldef%(0), ldef%(1), ldef%(2), ldef%(3)
+19730   READ lspr, lloose, linf, lappl
+19740   RETurn MK_WDEF (ldef%, lattr%, lspr, lloose, linf, lappl)
+19750 END DEFine RD_WDEF
+19760 :
+19770 DEFine FuNction RD_LOT (lattr,nitem)
+19780   LOCal count(3)
+19790   LOCal item, ltyp, a$, lsk$
+19800   LOCal ldef%(nitem,6), lptr(3,nitem), lstr$(nitem,85)
+19810   lsk$=''
+19820   FOR item = 0 TO nitem
+19830     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+19840     READ ldef%(item,4), ldef%(item,5)
+19850     READ a$: lsk$=lsk$ & a$
+19860     READ ltyp
+19870     ldef%(item,6)=ltyp: ltyp=(ltyp MOD 256)/2
+19880     IF ltyp>10 or ltyp <0:ltyp=0
+19890     IF ltyp
+19900       READ lptr(ltyp,count(ltyp))
+19910     ELSE
+19920       READ lstr$(count(0))
+19930     END IF
+19940     count(ltyp)=count(ltyp)+1
+19950   END FOR item
+19960   RETurn MK_LIL (lattr, ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), ldef%(TO, 4 TO 5), lsk$, ldef%(TO, 6), lstr$, lptr(1), lptr(2), lptr(3))
+19970 END DEFine RD_LOT
+19980 :
+19990 DEFine FuNction RD_IWT(nitem)
+20000   LOCal item,mc1
+20010   LOCal ldef%(nitem,3), latt%(nitem,3), lptr(nitem)
+20020   FOR item = 0 TO nitem
+20030     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+20040     READ latt%(item,0), latt%(item,1), latt%(item,2), latt%(item,3)
+20050     READ lptr(item)
+20060   END FOR item
+20070   RETurn MK_IWL (ldef%, latt%, lptr)
+20080 END DEFine RD_IWT
+20090 :
+20100 DEFine FuNction RD_IOT(nitem)
+20110   LOCal count(3)
+20120   LOCal item, ltyp, work1, work2
+20130   LOCal ldef%(nitem,4), lptr(3,nitem), lstr$(nitem,85)
+20140   FOR item = 0 TO nitem
+20150     READ ldef%(item,0), ldef%(item,1), ldef%(item,2), ldef%(item,3)
+20160     READ ltyp
+20170     ldef%(item,4)=ltyp:  ltyp=(ltyp MOD 256)/2
+20180     IF ltyp >10:ltyp=0
+20190     IF ltyp
+20200       READ lptr(0,item),lptr(ltyp,count(ltyp))
+20210     ELSE
+20220       if mycolour_mode%=2
+20230           read work1,work2,work3
+20240           lptr(0,item)=WL_4_IOL(work1,work2,work3)
+20250       else
+20260           READ work1
+20270           READ work2: work1=work1*256+work2
+20280           READ work2: lptr(0,item)=work1*256+work2
+20290       endif
+20300       READ lstr$(count(0))
+20310     END IF
+20320     count(ltyp) = count(ltyp) + 1
+20330   END FOR item
+20340   RETurn MK_IOL (ldef%(TO, 0 TO 1), ldef%(TO, 2 TO 3), lptr(0), ldef%(TO, 4), lstr$, lptr(1), lptr(2), lptr(3))
+20350 END DEFine RD_IOT
+20360 :
+20370 DEFine PROCedure RD_IATT (lattr)
+20380   LOCal i
+20390   READ lattr(0,0), lattr(0,1)
+20400   FOR i=1 TO 3: READ lattr(i,0), lattr(i,1), lattr(i,2), lattr(i,3)
+20410 END DEFine RD_IATT
+20420 :
+20430 DEFine PROCedure RD_WATT (lattr%)
+20440   READ lattr%(0), lattr%(1),lattr%(2),lattr%(3)
+20450 END DEFine RD_WATT
+20460 :
+20470 DEFine FuNction RD_APPW
+20480   LOCal ldef%(3), lspr, sk$, lattr%(3)
+20490   READ ldef%(0), ldef%(1), ldef%(2), ldef%(3)
+20500   RD_WATT lattr%
+20510   READ lspr, sk$
+20520   RETurn MK_APPW (ldef%, lattr%, lspr,sk$)
+20530 END DEFine
+20540 :

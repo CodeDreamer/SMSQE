@@ -1,0 +1,87 @@
+; KBD init for PS2 kbd driver for (S)GC + Qimsi  2023-2024  W. Lenerz
+
+; based on
+; SMSQE Q68 KBD initialisation	  1993  Tony Tebby
+;				  2023  W. Lenerz
+
+; 2023-03-23 1.02    adapted for Qimsi PS2 (wl)
+
+
+	section ps2
+
+	xdef	ps2_init
+	xdef	ps2_link
+
+	xref	ps2_poll		; read kbd
+	xref	ps2_sett		; set a table
+	xref	ps2_keyr		; keyrow
+
+	xref	ut_procdef
+	xref	ioq_setq
+
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_sys'
+	include 'dev8_smsq_kbd_keys'
+	include 'dev8_keys_err'
+	include 'dev8_mac_proc'
+	include 'dev8_mac_vecx'
+	include 'dev8_mac_creg'
+	include 'dev1_asm_gold_ps2_keys'    ; load after dev8_smsq_ps2_keys !
+	include 'dev8_smsq_smsq_base_keys'
+	
+
+;+++
+; initialise vectors, set linkage in ps2_link link in basic keywords
+;
+;	a3  r	base of keyboard linkage
+;---
+ps2_init
+	lea	ps2_procs,a1
+	jsr	ut_procdef		; load keywords
+
+	moveq	#sms.xtop,d0		; supervisor mode
+	trap	#do.sms2		; and gets sysvars into a6
+
+	move.l	#kb_end,d1		; create space for linkage
+	moveq	#sms.achp,d0
+	moveq	#0,d2			; permanent
+	trap	#do.sms2
+	tst.l	d0
+	bne.s	ps2_rts 		; oops
+	move.l	a0,a3			;
+
+	lea	ps2_link,a5		; I need to find my address for KPS_TABLE
+	move.l	a3,d0			; and I can't use sys_klnk, as that is
+	swap	d0			; used by normal (QL) kbd
+	jsr	sms.wbase		; use special write routine
+	swap	d0
+	jsr	sms.wbase
+					
+	move.l	#kb.ibm,kb_id(a3)	; set ID
+
+	lea	kb_qu(a3),a2		; preset queue
+	move.l	a2,kb_queue(a3) 	; and pointer to it
+	moveq	#kb.qu,d1
+	jsr	ioq_setq		; set queue header
+
+	move.w	sys_lang(a6),d1 	; default keyboard table = current language
+	moveq	#0,d2
+	jsr	ps2_sett		; set kbd table
+	moveq	#0,d0			; no poll routie set here, poll called from hdop_asm
+ps2_rts
+	rts
+		 
+ps2_link
+	dc.l	0			;  ps2 base of keyboard linkage
+
+ps2_procs
+	proc_stt
+	proc_def  KBD_TABLE_PS2
+	proc_def  KBD_QL
+	proc_def  KBD_PS2
+	proc_end
+	proc_stt
+	proc_end
+
+	end

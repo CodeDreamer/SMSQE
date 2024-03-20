@@ -1,0 +1,107 @@
+; SMSQ KBD set keyboard table 1.01   w. Lenerz 2023
+
+
+; This is based on
+
+; SMSQ_LANG_KBD_SETT  SMSQ KBD set keyboard table    1994	Tony Tebby
+; However, this only allows for KPS_TABLE lang	where lang is the tph index
+
+	section ps2
+
+	xdef	ps2_sett
+	xdef	kbd_table_ps2
+
+	xref	ps2_def
+	xref	ps2_link
+
+	xref	ut_gxin1
+	xref	ut_gxnm1
+	xref	cv_upcas
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_ldm'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_thg'
+	include 'dev8_smsq_kbd_keys'
+	include 'dev8_mac_thg'
+
+kbs_ipar
+	moveq	#err.ipar,d0
+	bra.s	kbs_rts
+
+;+++
+; KPS_TABLE lang  where lang is the intern. tph dial code, car reg code
+;---
+
+kbd_table_ps2
+	jsr	ut_gxin1		; try to get an integer
+	bne.s	kbt_car 		; must be a car registration
+	moveq	#0,d2
+	move.w	(a6,a1.l),d1		; is it unset (=0)
+	bne.s	kbt_link		; ... no, set this
+kbt_car
+	jsr	ut_gxnm1		; try to get name or string
+	bne.s	kbs_rts
+
+	move.w	2(a6,a1.l),d1
+	move.w	(a6,a1.l),d0		; number of characters
+	ble.s	kbs_ipar		; ... oops
+	subq.w	#2,d0			; more than 2 ?
+	bhi.s	kbs_ipar		; yes, wrong
+	beq.s	kbt_two
+	move.w	#$5f00,d0		; capitalize 1 letter
+	bra.s	kbt_cmn
+kbt_two
+	move.w	#$5f5f,d0		; cap 2 letters
+kbt_cmn and.w	d0,d1
+	moveq	#2,d2
+kbt_link
+	moveq	#sms.xtop,d0
+	trap	#do.sms2
+
+	lea	ps2_link,a3
+	move.l	(a3),a3 		; get keyboard linkage
+
+
+; Sets the pointers to the appropriate keyboard table.
+;
+;	d1 c  p language number
+;	d2 c	offset
+;	a3 c  p pointer to kbd linkage
+;---
+
+ps2_sett     trap #14
+	lea	ps2_def-8,a1		; point below 1st table...
+	moveq	#1,d0
+	swap	d0			; $0001000  = ldm.kbdt
+	moveq	#8,d3
+ps2_loop
+	add.w	d3,a1			: point next table
+	cmp.l	(a1)+,d0		; this should not be necessary
+	bne.s	ps2_none		; not found
+	cmp.w	(a1,d2.w),d1		;
+	bne.s	ps2_loop		; this isn't the droid you're looking for
+	addq.l	#4,a1
+
+	add.l	(a1),a1
+	addq.l	#2,a1			; skip language code
+ps2_put
+	move.l	a1,a0
+	add.w	(a1)+,a0
+	add.w	(a1),a1 		; table addresses
+
+	move.l	a0,kb_ktab(a3)		; keyboard table
+	move.l	a1,kb_nstab(a3)
+
+	moveq	#0,d0
+kbs_rts
+	rts
+
+ps2_none
+	moveq	#-15,d0
+	rts
+
+
+	end

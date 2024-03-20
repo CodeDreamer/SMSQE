@@ -1,0 +1,8 @@
+; note
+; The keyboard tables for qimsi + (S)GC  when used with external ps2 keyboard
+; are the same tables as the usual "standard" ones in dev8_smsq_ps2_ibm_base_asm,
+; but they are not set with the usual smsqe mechanism.
+; Smsqe for the goldcard uses very different kbd tables from the "standard PC"
+; ones, so to have both, the ID for each kbd table would have to be different
+; (else they would replace each other). So the PS2 kbd mode uses its own tables
+; which are not linked into SMSQE as usual.

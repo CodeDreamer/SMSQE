@@ -1,0 +1,80 @@
+; Basic commands for PS2 kbd driver for Qimsi  (c) W. Lenerz 2023-2024
+
+; 2023-04-29 v. 1.00 initial version
+
+	section ps2
+		       
+
+	xdef	kbd_ps2
+	xdef	kbd_ql
+
+	xref	ioq_gbyt
+
+	include dev8_mac_proc
+	include dev8_keys_qdos_sms
+	include dev8_keys_sys
+	include dev8_keys_sbasic
+	include dev8_keys_qlv
+
+	include dev8_smsq_kbd_keys
+	include dev8_smsq_qimsi_ps2_keys
+	include dev8_smsq_smsq_base_keys
+
+;------------------
+; KBD_QL keyword switches back to QL keyboard, no parameters
+;------------------
+
+kbd_ql	moveq	#0,d7			; flag for ql kbd
+	bra.s	common
+
+
+;------------------
+; KBD_QL keyword switches to PS2 keyboard, no parameters
+;------------------
+    
+
+kbd_ps2
+	moveq	#-1,d7			; flag for ps2 kbd
+
+common
+	beq.s	common2
+	bsr.s	mq_ps2			; try to empty ps2 queue
+
+common2
+	moveq	#sms.info,d0		; get sys vars into a0
+	trap	#1
+	bne.s	out
+	bsr.s	mpty_qu
+	move.b	d7,sys_ps2(a0)		; set flag
+ok	moveq	#0,d0
+out	rts
+
+
+; empty the keyboard queue before switching to it
+
+mpty_qu
+	tst.w	d7			; empty which queue?
+	beq.s	mpty_ql 		; ql kbd
+
+mq_ps2
+	moveq	#10,d1			; empty ps2 queue
+mq_pslp
+	btst	#kbd.rcv,kbd_status	; any keyboard data?
+	beq.s	ok			; ... no
+							
+	tst.b	kbd_unlock		; acknowledge key receipt
+	move.b	kbd_code,d0		; IBM keycode
+	nop
+	dbf	d1,mq_pslp
+	bra.s	ok
+
+mpty_ql
+	move.l	sys_ckyq(a0),d0 	; empty ql queue
+	beq.s	ok
+	move.l	d0,a2
+mq_loop
+	bsr	ioq_gbyt
+	bne.s	ok
+	bra.s	mq_loop 		: empty all
+
+	end

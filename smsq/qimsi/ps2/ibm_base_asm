@@ -1,0 +1,66 @@
+; IBM SMSQ Keyboard Tables base area
+;
+; 2023-03-22  1.02  adapted for Qimsi PS2 (wl)
+; 2020-04-14  1.01  Added Spanish tables (MK)
+
+	section  ps2
+
+	xdef	ps2_def
+
+	xref	ps2u_tab
+	xref	ps2e_tab
+	xref	ps2d_tab
+	xref	ps2f_tab
+	xref	ps2i_tab
+	xref	ps2es_tab
+
+	xref	ps2_nsid
+	xref	ps2f_nsid
+	xref	ps2es_nsid
+
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_ldm'
+
+ldm.ps2t equ	ldm.kbdt
+
+ps2_def dc.w	ldm.ps2t,0,1		 ; USA keyboard
+	dc.w	'US'
+	dc.l	ps2_usa-*
+
+	dc.w	ldm.ps2t,0,44		 ; English
+	dc.w	'GB'
+	dc.l	ps2_eng-*
+
+	dc.w	ldm.ps2t,0,49		 ; German
+	dc.w	'D '
+	dc.l	ps2_deu-*
+
+	dc.w	ldm.ps2t,0,39		 ; Italian
+	dc.w	'I '
+	dc.l	ps2_ita-*
+
+	dc.w	ldm.ps2t,0,33		 ; French
+	dc.w	'F '
+	dc.l	ps2_fra-*
+
+	dc.w	ldm.ps2t,0,34		 ; Spanish
+	dc.w	'E '
+	dc.l	ps2_esp-*
+
+	dc.l	0
+
+
+ps2_usa dc.w	1
+	dc.w	ps2u_tab-*,ps2_nsid-*-2
+ps2_eng dc.w	44
+	dc.w	ps2e_tab-*,ps2_nsid-*-2
+ps2_deu dc.w	49
+	dc.w	ps2d_tab-*,ps2_nsid-*-2
+ps2_ita dc.w	39
+	dc.w	ps2i_tab-*,ps2_nsid-*-2
+ps2_fra dc.w	33
+	dc.w	ps2f_tab-*,ps2f_nsid-*-2
+ps2_esp dc.w	34
+	dc.w	ps2es_tab-*,ps2es_nsid-*-2
+
+	end

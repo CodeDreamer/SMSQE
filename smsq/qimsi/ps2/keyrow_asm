@@ -1,0 +1,46 @@
+; Qimsi PS2 keyrow emulaion 1.01  W. Lenerz 2023
+;
+; based on
+; SMSQ KEYROW emulation    1988  Tony Tebby
+
+	section ps2
+
+	xdef	ps2_keyr
+
+	xref	ps2_link
+
+	include 'dev8_keys_sys'
+	include 'dev8_keys_err'
+	include 'dev8_smsq_kbd_keys'
+
+;+++
+; Internal keyrow call for SMS.HDOP routine
+; Called with A3 pointing to number of parameters (byte)
+;
+;---
+ps2_keyr
+	cmp.b	#1,(a3)+		 ; just one parameter byte?
+	bne.s	kbkr_bp 		 ; ... no
+	moveq	#%11,d0 		 ; first byte description only
+	and.l	(a3)+,d0
+	bne.s	kbkr_bp 		 ; not a nibble
+	moveq	#0,d1
+	move.b	(a3)+,d1		 ; row number
+
+kbkr_do
+	move.l	ps2_link(pc),a3 	 ; get kbd linkage
+	moveq	#0,d0
+	cmp.b	#1,d1			 ; is it cursor key?
+	bne.s	kbkr_set
+	move.b	kb_joyst(a3),d0 	 ; ... yes, set joystick status
+kbkr_set
+	or.b	kb_krwem(a3,d1.w),d0	 ; get keyrow
+	move.l	d0,d1
+	moveq	#0,d0
+	rts
+
+kbkr_bp
+	moveq	#err.ipar,d0
+	rts
+
+	end

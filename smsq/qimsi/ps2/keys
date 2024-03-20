@@ -1,0 +1,44 @@
+		       nolist
+; keyboard
+kbd_code	equ	$feda		; scan code from keyboard
+kbd_unlock	equ	$fedb		; acknowledge key receipt
+k.ackn		  equ	  0		; bit to set to acknowledge key
+kbd_status	equ	$fedc		; ps2 key status register
+kbd.rcv 	equ	   0		; bit set when keyboard has key waiting
+kbd.isint	equ	   7		; bit set/to set if kbd is driven by interrupts
+
+; keyboard
+;kbd_code	 equ	 $1c140 	 ; scan code from keyboard
+;kbd_unlock	 equ	 $1c144 	 ; acknowledge key receipt
+;k.ackn 	   equ	   0		 ; bit to set to acknowledge key
+;kbd_status	 equ	 $1c148 	 ; ps2 key status register
+;kbd.rcv	 equ	    0		 ; bit set when keyboard has key waiting
+;kbd.isint	 equ	    7		 ; bit set/to set if kbd is driven by interrupts
+;kbd_dlay	 equ	 $17d0c 	 ; config. delay for kbd if no interrupt
+
+
+marker		equ	'W.L.'
+krw_addr	equ	kb_end+8	; address where ptr to patch address lies
+
+; keyboard
+;kbd_code	 equ	 $17d20 	  ; scan code from keyboard
+;kbd_unlock	 equ	 $17d21 	 ; acknowledge key receipt
+;k.ackn 	   equ	   0		 ; bit to set to acknowledge key
+;kbd_status	 equ	 $17d22 	  ; ps2 key status register
+;kbd.rcv	 equ	    0		 ; bit set when keyboard has key waiting
+;kbd.isint	 equ	    7		 ; bit set/to set if kbd is driven by interrupts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		     list

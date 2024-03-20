@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.39'
+smsq_vers equ	 '3.40'
 
 	end
 	    
@@ -13,6 +13,8 @@ smsq_vers equ	 '3.39'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
+; 3.40	Qimsi PS2 keyboard routines integrated (wl).
+;
 ; 3.39	QLSD: Fixed D1 return of iof.rhdr (MK).
 ;	Q-emulator version added (DT).
 ;	EXEP_M, EXEP_W and function variants added (wl).
