@@ -1,0 +1,8 @@
+; SMSQmulator Serial (SerParPrt) IO Driver versions
+
+	section version
+
+	xdef	spp_vers
+
+spp_vers equ	'1.00'
+	end

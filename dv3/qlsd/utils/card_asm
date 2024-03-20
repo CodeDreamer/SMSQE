@@ -780,17 +780,3 @@ err_bp	moveq	#err.ipar,d0
 	rts
 
 	end
-
-
-
-
-
-
-
-
-
-
-
-
-
-	

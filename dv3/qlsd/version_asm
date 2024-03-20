@@ -42,7 +42,9 @@
 ; 1.09	Fixed rare Minerva heap corruption issue
 ;	Always assumes card was changed when it was ejected
 ;	ROM version now includes TK2 QL-network low-level hardware routines
+;
+; 1.10	Fixed D1 return of iof.rhdr (introduced in 1.09)
 
-qlsd_vers equ  '1.09'
+qlsd_vers equ  '1.10'
 
 	end

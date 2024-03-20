@@ -10,13 +10,4 @@ ntabt_ms dc.w	12
 	 dc.b	'Net arr‘tƒ ',$a
 *
 
-
-
-
-
-
-
-
-
-
 	end

@@ -1,5 +1,8 @@
 ; Cursor key control	        1988	Tony Tebby    QJUMP
+; 2022-02-03  v. 1.02 if no job channel possible, return with error (wl)
 ; v .1.01 get channel ID (default to 0), do not presume main sbasic channel 0 (wl)
+
+
 	section proc
 
 	xdef	ckeyon 
@@ -17,22 +20,24 @@ setff	dc.b	$ff
 ; This routine sets the cursor key control flag to on.
 ;---
 ckeyon
-	lea	null,a4 		 ; set to zero
+	lea	null,a4 		; set to zero
 	bra.s	ck_do
 ;+++
 ; This routine sets the cursor key control flag to off.
 ;---
 ckeyoff
-	lea	setff,a4		 ; set to set
-
-ck_do					 ; get channel ID, default to chan 0
-	jsr	ut_chan0
-	moveq	#iop.slnk,d0		 ; set linkage block
+	lea	setff,a4		; set to set
+ck_do
+	jsr	ut_chan0		; get chan ID, default to job chan #0
+	bne.s	ck_done
+ck_chan
+	moveq	#iop.slnk,d0		; set linkage block
 	move.w	#pt_ckey,d1
 	moveq	#1,d2
 	moveq	#-1,d3
-;	 sub.l	 a0,a0
 	move.l	a4,a1
 	trap	#do.io
+ck_done
 	rts
+
 	end

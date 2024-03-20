@@ -5,6 +5,7 @@
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
 ; 1.01	rearranged config items
 ; 2021-02-28  1.02  FAT1_ config item was wrong
+; 2023-02-07  1.03  FAT1_ config item was sill wrong
 
 	section dv3
 
@@ -122,7 +123,7 @@ fat_proctab
    
 ; fat config items
 		dc.w	0
-qcf_fatu	dc.b	-1,q68.coff,-1,-1,-1,-1,-1,-1 ; the cards for each fat drive
+qcf_fatu	dc.b	0,q68.coff,-1,-1,-1,-1,-1,-1 ; the cards for each fat drive
 qcf_fatp	dc.b	1,1,1,1,1,1,1,1 ; the partition (1-4)
 qcf_fatl	dc.b	0
 
@@ -133,7 +134,7 @@ qcf_fatl	dc.b	0
 	  {Link in FAT driver?} \
 	  0,N,{No},1,Y,{Yes}
 
-	  mkcfitem 'Q68a',code,0,qcf_fatu,,,\
+	  mkcfitem 'Q68a',code,0,qcf_fatu+0,,,\
 	  {Fat1_ is on card},0,1,{1},q68.coff,2,{2},$ff,N,{None}
 	  mkcfitem 'Q68b',code,0,qcf_fatu+1,,,\
 	  {Fat2_ is on card},0,1,{1},q68.coff,2,{2},$ff,N,{None}

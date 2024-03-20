@@ -1,12 +1,12 @@
-; SMSQ NFA Driver initialisation (c) W.Lenerz 2012
-
+; SMSQ NFA Driver initialisation (c) v. 1.00 W.Lenerz 2012-20231
 
 ; This handles linking in the driver into the OS.
 ;
-; copyright (C) w. Lenerz 2012	published under the SMSQE licence
+; copyright (C) w. Lenerz 2012-2023  published under the SMSQE licence
 ;
+; 2023-11-06	1.01	use ddf_dtop for length of physical definition
 ; v0.00 stub
-
+;
 ; based on:
 ; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
 ; ******************************************************************
@@ -31,6 +31,7 @@
 	include 'dev8_keys_iod'
 	include 'dev8_mac_proc'
 	include 'dev8_dd_rd_data'
+	include 'dev8_dv3_keys'
 	include 'dev8_keys_java'
 	include 'dev8_mac_config02'
 
@@ -136,7 +137,7 @@ no_cfg	lea	nfa_vect,a3	; set up dd linkage
 
 nfa_vect
 	dc.l	rdd_end 	; length of linkage
-	dc.l	rdd.plen	; length of physical definition
+	dc.l	ddf_dtop	; length of physical definition
 use_nam dc.w	3,'NFA0'	; device name (usage)
 	dc.w	3,'NFA0'	; device name (real)
 
@@ -180,7 +181,6 @@ proctab
 	proc_end
 	proc_stt
 	proc_def NFA_USE$ , nfa_useq
-	proc_def QUERY_JAVA
 	proc_end
 
 	end

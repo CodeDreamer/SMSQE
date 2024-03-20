@@ -1,6 +1,7 @@
-* Get a string on the stack   V0.6    1985  Tony Tebby   QJUMP
+* Get a string on the stack   V0.8    1985  Tony Tebby   QJUMP
 *
-* 2006-08-29  0.6  Fixed return value for sliced strings (MK)
+* 2006-08-29  0.7  Fixed return value for sliced strings (MK)
+* 2022-03-24  0.8  amended for QEmu (DT)
 *
 	section utils
 *
@@ -37,7 +38,7 @@ ut_gtnm1
 	bgt.s	ut_gtnam		; yes, there is
 ut_gtnul
 	bsr.l	ut_ckri6		; make room for string
-	sub.l	#2,a1			; total length 2
+	subq.l	#2,a1			; total length 2
 	clr.w	(a6,a1.l)		; zero length
 	bra.s	utgn_ok
 *

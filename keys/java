@@ -34,108 +34,120 @@ jva_kbrd	equ	jva_sjbID+4	; keyboard  read address
 
 ; "trap" keys : these cause a return to java
 ; they correspond to unused instructions for the mc68000
+; the subkeys are contained in D0 when calling the "trap"
 
 jva.trp0	equ	$a000		; signal a hard break & return to java
 jva.trp1	equ	$a001		; return to java from a trap1
 jva.trp2	equ	$a002		; trap 2
 jva.trp3	equ	$a003		; trap 3
 jva.trp4	equ	$a004		; trap 4
-jva.trp5	equ	$a005		; trap 5 do misc things (flag in d0)
-jt5.mode	equ	  1		;   switch display mode
-jt5.rset	equ	  2		;   reset
-jt5.slep	equ	  3		;   sleep a bit
-jt5.driv	equ	  4		;   set dir/file for a device
-jt5.emumd	equ	  5		;   set mode for screen emulation
-jt5.move	equ	  6		;   move block (modes 16 & 32)
-jt5.use 	equ	  7		;   set USE name for device
-jt5.sssi	equ	  8		;   initialise ssss
-jt5.sssk	equ	  9		;   ssss kill sound
-jt5.sssa	equ	  10		;   ssss add bytes/mutiple bytes to ssss
-jt5.qry 	equ	  11		;   general java query, d1.l =parameter (to and fro)
-jt5.beep	equ	  12		;   start beep
-jt5.bpof	equ	  13		;   stop beep
-jt5.sssc	equ	  14		;   "close" ssss sound
-jt5.drvq	equ	  15		;   drive query
-jt5.host	equ	  16		;   get host OS name and version
-jt5.sndon	equ	  17		;   check whether sound is still playing
-jt5.time	equ	  18		;   get time from java
-jt5.mbar	equ	  19		;   make menu bar visible
-jt5.comb	equ	  20		;   alpha combine 2 blocks
-jt5.xblk	equ	  21		;   xor colour into block (mode 16)
-jt5.svol	equ	  22		;   set sound volume
-jt5.mwrt	equ	  23		;   write mem device back
-jt5.osnd	equ	  24		;   open channel to SOUND device
-jt5.csnd	equ	  25		;   close channel to sound device
-jt5.asnd	equ	  26		;   add bytes to sound device
-jt5.sttmr	equ	  27		;   set (start) timer
-jt5.gttmr	equ	  28		;   get current timer value
-jt5.scrup	equ	  29		;   get screen update
-jt5.jbget	equ	  30		;   get menubar status (1=visible,0=not)
-jt5.exit	equ	  31		;   leave the emulation
-jt5.fblk	equ	  32		;   set colours from stipple & fill block
-jt5.fbkbm	equ	  33		;   fill block but don't set colours
-jt5.xorbk	equ	  34		;   set colours from stipple & xor block, mode 32
-jt5.xbkbm	equ	  35		;   xor block but don't set colours mode 32 or 16
-jt5.vers	equ	  36		;   get smsqmulator version
-jt5.wtit	equ	  37		;   set windowtitle
-jt5.sspl	equ	  38		;   get SSSS sample size
+
+jva.trp5	equ	$a005		;  trap 5 do misc things (flag in d0)
+jt5.mode	equ	  1		  ; switch display mode
+jt5.rset	equ	  2		  ; reset
+jt5.slep	equ	  3		  ; sleep a bit
+jt5.driv	equ	  4		  ; set dir/file for a device
+jt5.emumd	equ	  5		  ; set mode for screen emulation
+jt5.move	equ	  6		  ; move block (modes 16 & 32)
+jt5.use 	equ	  7		  ; set USE name for device
+jt5.sssi	equ	  8		  ; initialise ssss
+jt5.sssk	equ	  9		  ; ssss kill sound
+jt5.sssa	equ	  10		  ; ssss add bytes/mutiple bytes to ssss
+jt5.qry 	equ	  11		  ; general java query, d1.l =parameter (to and fro)
+jt5.beep	equ	  12		  ; start beep
+jt5.bpof	equ	  13		  ; stop beep
+jt5.sssc	equ	  14		  ; "close" ssss sound
+jt5.drvq	equ	  15		  ; drive query
+jt5.host	equ	  16		  ; get host OS name and version
+jt5.sndon	equ	  17		  ; check whether sound is still playing
+jt5.time	equ	  18		  ; get time from java
+jt5.mbar	equ	  19		  ; make menu bar visible
+jt5.comb	equ	  20		  ; alpha combine 2 blocks
+jt5.xblk	equ	  21		  ; xor colour into block (mode 16)
+jt5.svol	equ	  22		  ; set sound volume
+jt5.mwrt	equ	  23		  ; write mem device back
+jt5.osnd	equ	  24		  ; open channel to SOUND device
+jt5.csnd	equ	  25		  ; close channel to sound device
+jt5.asnd	equ	  26		  ; add bytes to sound device
+jt5.sttmr	equ	  27		  ; set (start) timer
+jt5.gttmr	equ	  28		  ; get current timer value
+jt5.scrup	equ	  29		  ; get screen update
+jt5.jbget	equ	  30		  ; get menubar status (1=visible,0=not)
+jt5.exit	equ	  31		  ; leave the emulation
+jt5.fblk	equ	  32		  ; set colours from stipple & fill block
+jt5.fbkbm	equ	  33		  ; fill block but don't set colours
+jt5.xorbk	equ	  34		  ; set colours from stipple & xor block, mode 32
+jt5.xbkbm	equ	  35		  ; xor block but don't set colours mode 32 or 16
+jt5.vers	equ	  36		  ; get smsqmulator version
+jt5.wtit	equ	  37		  ; set windowtitle
+jt5.sspl	equ	  38		  ; get SSSS sample size
 
 jva.trp6	equ	$a006		; position pointer in java screen
 
 jva.trp7	equ	$a007		; check for idleness
 
 jva.trp8	equ	$a008		; flp access
-jt8.rsec	equ	  0		;   read a sector
-jt8.wsec	equ	  1		;   write a sector
-jt8.frmt	equ	  2		;   format drive
-jt8.ckwp	equ	  3		;   check for write protect
-jt8.ckst	equ	  4		;   check for drive status
-jt8.setd	equ	  5		;   set drive to native file string
-jt8.getd	equ	  6		;   get native dir as string
+jt8.rsec	equ	  0		  ; read a sector
+jt8.wsec	equ	  1		  ; write a sector
+jt8.frmt	equ	  2		  ; format drive
+jt8.ckwp	equ	  3		  ; check for write protect
+jt8.ckst	equ	  4		  ; check for drive status
+jt8.setd	equ	  5		  ; set drive to native file string
+jt8.getd	equ	  6		  ; get native dir as string
 
 jva.trp9	equ	$a009		; IP device access
-jt9.opn 	equ	  1		;   IP open
-jt9.io		equ	  2		;   IP I/O
-jt9.cls 	equ	  3		;   IP close
-jt9.cla 	equ	  4		;   IP close all
-jt9.cnm 	equ	  5		;   IP get channel name
-jt9.name	equ	  6		;   (IP) get localhost name
-jt9.addr	equ	  7		;   (IP) get localhost addr
+jt9.opn 	equ	  1		  ; open
+jt9.io		equ	  2		  ; I/O
+jt9.cls 	equ	  3		  ; close
+jt9.cla 	equ	  4		  ; close all
+jt9.cnm 	equ	  5		  ; get channel name
+jt9.name	equ	  6		  ; get localhost name
+jt9.addr	equ	  7		  ; get localhost addr
 
 jva.trpA	equ	$a00a		; (reserved for SWIN access)
-jta.rsec	equ	  0		; read sector
-jta.wsec	equ	  1		; write sector
-jta.frmt	equ	  2		; format drive
-jta.ckwp	equ	  3		; check write protect
-jta.unlk	equ	  4		; un-lock drive
-jta.lock	equ	  5		; lock drive
-jta.ckry	equ	  6		; check drive ready
-jta.snam	equ	  7		; set name of native file
-jta.gnam	equ	  8		; get	"  "	"    "
-jta.strm	equ	  9		; set removable status
-jta.gtrm	equ	 10		; get	  "       "
-jta.sslen	equ	 11		; set sector length in bytes (in D7)
-jta.qslen	equ	 12		; query sector length (in number)
-jte.swin	equ	 13		; check for swin presence
+jta.rsec	equ	  0		  ; read sector
+jta.wsec	equ	  1		  ; write sector
+jta.frmt	equ	  2		  ; format drive
+jta.ckwp	equ	  3		  ; check write protect
+jta.unlk	equ	  4		  ; un-lock drive
+jta.lock	equ	  5		  ; lock drive
+jta.ckry	equ	  6		  ; check drive ready
+jta.snam	equ	  7		  ; set name of native file
+jta.gnam	equ	  8		  ; get   "  "	  "    "
+jta.strm	equ	  9		  ; set removable status
+jta.gtrm	equ	 10		  ; get     "       "
+jta.sslen	equ	 11		  ; set sector length in bytes (in D7)
+jta.qslen	equ	 12		  ; query sector length (in number)
+jta.swin	equ	 13		  ; check for swin presence
 
 jva.trpB	equ	$a00b		; popup iconified prog
-jtb.pop 	equ	  0		;    popup
-jtb.mini	equ	  1		;    minimise
+jtb.pop 	equ	  0		  ; popup
+jtb.mini	equ	  1		  ; minimise
 
 jva.trpC	equ	$a00c		; copy ql screen switching
 
 jva.trpD	equ	$a00d		; scrap/clipboard transfer
-jtd.xc2s	equ	  0		;   transfer from clipboard to scrap
-jtd.xs2cp	equ	  1		;   transfer from scrap to clopboard
-jtd.qryc	equ	  2		;   query current change count
-jtd.strt	equ	  3		;   start java clipborad monitor thread
-jtd.stop	equ	  4		;   stop java clipborad monitor thread
+jtd.xc2s	equ	  0		  ; transfer from clipboard to scrap
+jtd.xs2cp	equ	  1		  ; transfer from scrap to clopboard
+jtd.qryc	equ	  2		  ; query current change count
+jtd.strt	equ	  3		  ; start java clipborad monitor thread
+jtd.stop	equ	  4		  ; stop java clipborad monitor thread
 
 jva.trpE	equ	$a00e		; more miscs
-jte.remv	equ	  0		; set drive removable status
-jte.lon 	equ	  1		; log on   (debug)
-jte.loff	equ	  2		; log off  (debug)
-jte.kbd 	equ	  3		; get char from keyboard queue
+jte.remv	equ	  0		  ; set drive removable status
+jte.lon 	equ	  1		  ; log on   (debug)
+jte.loff	equ	  2		  ; log off  (debug)
+jte.kbd 	equ	  3		  ; get char from keyboard queue
+
+jva.trpF	equ	$a00f		; serial port comms
+jtf.chk 	equ	  0		  ; check max drive nbr / drive exists
+jtf.baud	equ	  jtf.chk+1	  ; set baud rate for port
+jtf.open	equ	  jtf.baud+1	  ; close port
+jtf.clse	equ	  jtf.open+1	  ; open port
+jtf.io		equ	  jtf.clse+1	  ; handles all io
+jtf.setnm	equ	  jtf.io+1	  ; set name for port
+jtf.getnm	equ	  jtf.setnm+1	  ; get host name for port
+jtf.getall	equ	  jtf.getnm+1	  ; get all host names for port
 
 jva.test	equ	$a100		; test instruction
 
@@ -158,4 +170,5 @@ jd3.rdy 	equ	  6		; check for drive ready
 ;
 
 jva_xtra	equ	$12345678	; special key, used for various purposes
+
 	list

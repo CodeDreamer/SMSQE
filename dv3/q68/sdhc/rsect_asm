@@ -1,5 +1,6 @@
-; DV3 Q68 SDHC Card Read Sector  1.05	 2016-2020 W. Lenerz
+; DV3 Q68 SDHC Card Read Sector  1.06	 2016-2023 W. Lenerz
 
+; 1.06	2023-11-18 removes debug code (wl)
 ; 1.05	2020-05-06 added 16 bit read (wl)
 ; 1.04		   add hd_rdsect label (wl)
 ; 1.03	2018-05-09 use sysvars for card type
@@ -81,23 +82,6 @@ hd_rsint
 	blt	hdr_err 		; card isn't initialized
 
 no_l	st	drv_cs(a2)		; enable the card
-		  
-;;;;;  debug code ;;;;; -------------------------------
-	genif debug = 1
-	cmp.l	#'gold',q68_jflg	; SMSQ68mulator?
-	bne.s	nojava			; no...->
-	move.l	d4,d1
-	move.l	ddf_psoff(a4),d4
-	move.l	d0,-(a7)		; will be popped up in java
-	tst.w	d7
-	bne.s	ok
-	moveq	#1,d7
-ok	moveq	#jd3.rsec,d0
-	dc.w	jva.trpa		; call SMSQ68mulator
-	bra   hdr_rts			; and continue ok
-nojava
-	endgen
-;;;;; end debug code ;;;;;; ------------------------------
 
 	move.l	d0,d7			; sector to get
 	moveq	#17,d6			; single sector read

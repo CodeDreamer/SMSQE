@@ -4,6 +4,8 @@
 
 	xdef	spp_init
 
+	xdef	spp_defs
+
 	xref	spp_thing
 	xref	spp_tnam
 	xref	spp_procs

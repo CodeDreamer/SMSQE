@@ -1,4 +1,5 @@
 ; SBAS_PROCS_JOB - SBASIC Job Procedures  V2.00    1994  Tony Tebby
+; 2021-12-02	2.02	expanded max job name length to 48 'wl)
 ; 2004-04-02	2.01	quit takes optional long parameter (pjw)
 
 	section exten
@@ -95,7 +96,7 @@ job_name
 	bne.s	jnm_rts 		 ; ... bad
 	add.l	a6,a1
 	move.w	(a1)+,d2		 ; name length
-	moveq	#40,d0			 ; max?
+	moveq	#sb.maxnm,d0		 ; max?
 	cmp.w	d0,d2
 	ble.s	jnm_set
 	move.w	d0,d2

@@ -1,13 +1,18 @@
-; Procedure to execute programs    V2.03     1988   Tony Tebby   QJUMP
+; Procedure to execute programs    V2.04     1988   Tony Tebby   QJUMP
 ;
 ; 2003-01-18  2.01  added function fep	   pjwitte 2oo3
 ; 2003-03-11  2.02  Fixed launching of files, bug introduced in 2.01 (MK)
 ; 2006-03-27  2.03  Use system specific exec delay (MK)
+; 2022-01-18  2.04  Added fep_m,exep_m,fepw,exep_w (wl)
 
 	section hotkey
 
 	xdef	exep
 	xdef	fep
+	xdef	exep_m
+	xdef	fep_m
+	xdef	exep_w
+	xdef	fep_w
 
 	xref	hot_parm
 	xref	hot_ldit
@@ -15,8 +20,12 @@
 	xref	hot_thfr
 
 	xref	hk_xthgid		 ; ex hotkey, return job ID
+	xref	hk_xthmid		 ; ex hotkey with me as owner, return job ID
+	xref	hk_xthwid		 ; ex hotkey with me as owner, wait, return job ID
 	xref	hk_xfilid		 ; ex file, return job ID
-					 
+	xref	hk_xfimid		 ; ex with me as owner, return job ID
+	xref	hk_xfiwid		 ; ex with me as owner, wait, return job ID
+
 	xref	gu_achp0
 	xref	gu_rchp
 	xref	gu_exdelay
@@ -26,53 +35,159 @@
 
 	include 'dev8_ee_hk_data'
 	include 'dev8_ee_hk_xhdr'
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_jcbq'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_err'
 
 ;+++
 ; jobID = FEP(filename |program name| |I| |G|P|U| |window|memory|)
 ;---
 fep
 	bsr.s	exep			 ; do a normal exep, then
-	bne.s	ex_rts			 ; dont bother if error
+	bne.s	ex_out			 ; dont bother if error
 	bra.l	ut_rtfd1		 ; return job ID as float
 
 ;+++
 ; EXEP filename |program name| |I| |G|P|U| |window|memory|
 ;---
-exep
-	jsr	hot_parm		 ; standard parameter set
+exep	moveq	#0,d1			; owner of job to create
+
+exepa	move.l	d1,-(a7)
+	jsr	hot_parm		; standard parameter set
 	bne.s	ex_rts
 
-	moveq	#hkh.plen+hki_name+4,d0  ; allocate heap item
-	add.w	(a6,a1.l),d0		 ; including variable length file name
+	moveq	#hkh.plen+hki_name+4,d0 ; allocate heap item
+	add.w	(a6,a1.l),d0		; including variable length file name
 	jsr	gu_achp0
 	bne.s	ex_rts
 
-	jsr	hot_thus		 ; use hk
+	jsr	hot_thus		; use hk
 	bne.s	ex_rchp
 
-	moveq	#hki.xthg,d6		 ; execute thing
-	jsr	hot_ldit		 ; set up load item
+	moveq	#hki.xthg,d6		; execute thing
+	jsr	hot_ldit		; set up load item
 
-	move.l	a0,a1			 ; item
-	or.w	d2,d1			 ; any odd parameters?
-	bne.s	ex_do			 ; ... yes
+	move.l	a0,a1			; item
+	or.w	d2,d1			; any odd parameters?
+	bne.s	ex_do			; ... yes
 
-	jsr	hk_xthgid		 ; execut hotkey, return jobid
+	move.l	(a7),d1 		; ID of job that will own the job
 
-	beq.s	ex_pause		 ; sehr gut
+	jsr	hk_xthmid		; execute hotkey, return jobid
+
+	beq.s	ex_pause		; sehr gut
 ex_do
-	jsr	hk_xfilid		 ; now try execute file
+	move.l	(a7),d1 		; ID of job that will own the job
+	jsr	hk_xfimid		; now try execute file
 
 ex_pause
-	jsr	hot_thfr		 ; free
-	bne.s	ex_rchp 		 ; oops
-;	 moveq	 #25,d0 		  ; half a second
-	jsr	gu_exdelay		 ; get system specific delay
-	jsr	gu_pause		 ; ... pause
+	jsr	hot_thfr		; free
+	bne.s	ex_rchp 		; oops
+	jsr	gu_exdelay		; get system specific delay
+	jsr	gu_pause		; ... pause
 
 ex_rchp
-	jmp	gu_rchp 		 ; done
+	addq.l	#4,a7
+	jmp	gu_rchp 		; done
 ex_rts
-	rts
+	addq.l	#4,a7
+ex_out	rts
 
+
+;+++
+; EXEP_M filename |program name| |I| |G|P|U| |window|memory|
+; Same as EXEP, but job belongs to me
+;---
+
+exep_m
+	moveq	#-1,d1
+	bra.s	exepa
+			 
+
+;+++
+; jobID = FEP_M (filename |program name| |I| |G|P|U| |window|memory|)
+; Same as FEP, but created job belongs to me
+;---
+fep_m
+	bsr.s	exep_m
+	bne.s	ex_out
+	bra.l	ut_rtfd1
+	
+  
+;+++
+; EXEP_W filename |program name| |I| |G|P|U| |window|memory|
+; Same as EXEP_M, but I'll wait for created job's completion
+;
+; Admittedly, this is a quiete a bit of a copy pasta. But exep uses the HK
+; thing, then calls code to exec either a file or a thing, then frees the HK
+; thing.
+; Here however I must wait for the created job's completion. This would mean
+; that the HK thing would not be freed until that job's completion  -> no HK
+; would function anymore until then (because the HK thing isn't shareable) ...
+; So I create the job, free the HK thing, then activate the job.
+;---
+exep_w
+	jsr	hot_parm		; standard parameter set
+	bne.s	ex_rts
+
+	moveq	#hkh.plen+hki_name+4,d0 ; allocate heap item
+	add.w	(a6,a1.l),d0		; including variable length file name
+	jsr	gu_achp0
+	bne.s	ex_rts
+
+	jsr	hot_thus		; use hk
+	bne.s	ex_rchp
+
+	moveq	#hki.xthg,d6		; execute thing
+	jsr	hot_ldit		; set up load item
+
+	move.l	a0,a1			; item
+	or.w	d2,d1			; any odd parameters?
+	bne.s	exw_do			; ... yes
+
+	jsr	hk_xthwid		; create job, return jobid
+	beq.s	exw_activ		; sehr gut
+
+exw_do
+	jsr	hk_xfiwid		; now try to execute file
+
+; if we get here, d1 contains created job ID, if no error
+exw_activ
+	jsr	hot_thfr		; free thing (does not change d0/ccr)
+	bne.s	exw_crerr		; oops - job creation problem
+
+	moveq	#32,d2			; priority
+	moveq	#-1,d3			; wait
+	movem.l a0/a3,-(sp)
+	moveq	#sms.acjb,d0		; activate the created job
+	trap	#do.sms2		; and I wait for its completion
+	movem.l (sp)+,a0/a3
+
+exw_rchp
+	jmp	gu_rchp 		; done
+
+exw_crerr				; error when creating job
+; !!!
+	addq.l	#1,d1			; !!! if -1, item not found !!!
+; !!!
+	beq.s	exw_rchp
+	move.l	d0,-(sp)
+	moveq	#0,d3			; I got the real error code already
+	moveq	#sms.frjb,d0
+	trap	#do.sms2
+exw_gerr
+	move.l	(sp)+,d0		; and return original error
+	jmp	gu_rchp
+
+;+++
+; jobID = FEP_W (filename |program name| |I| |G|P|U| |window|memory|)
+; Same as FEPM and I'll wait till created job's completion
+;---
+fep_w
+	bsr.s	exep_w
+	move.l	d0,d1
+	moveq	#0,d0
+	bra.l	ut_rtfd1
+	    
 	end

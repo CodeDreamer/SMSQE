@@ -1,4 +1,6 @@
 ; Atari SMS HDOP initialisation     1988  Tony Tebby	QJUMP
+;
+; 2022-03-24  1.01    amended for QEmu (dt)
 
 	section sms
 
@@ -11,7 +13,7 @@
 	include dev8_smsq_atari_hdop_data
 
 init_hdop			    ; link in polling hdop code
-	move.l	#ho_end,d1		 ; create space for linkage
+	moveq	#ho_end,d1		 ; create space for linkage
 	moveq	#sms.achp,d0
 	moveq	#0,d2			 ; permanent
 	trap	#do.sms2

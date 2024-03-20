@@ -1,7 +1,7 @@
-dev8_smsq_q68_spp_INIT_REL
-dev8_smsq_q68_spp_PAR_REL
-dev8_smsq_q68_spp_SER_REL
-dev8_smsq_q68_spp_RXSER_REL
-dev8_smsq_q68_spp_SENDSER_REL
+dev8_smsq_q68_spp_init_rel
+dev8_smsq_q68_spp_par_rel
+dev8_smsq_q68_spp_ser_rel
+dev8_smsq_q68_spp_rxser_rel
+dev8_smsq_q68_spp_txser_rel
 dev8_smsq_q68_spp_procs_rel
 dev8_smsq_q68_spp_thing_rel

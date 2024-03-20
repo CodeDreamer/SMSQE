@@ -13,7 +13,7 @@
 	include 'dev8_mac_assert'
 
 ;+++
-; SER driver definition
+; PAR driver definition
 ;
 ;---
 q68_pardef

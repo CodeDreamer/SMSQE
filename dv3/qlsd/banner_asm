@@ -10,8 +10,8 @@ banner
 	dc.w	txt_end-*-2
 	dc.b	'QLSD WIN driver '
 	dc.l	qlsd_vers
-	dc.b	' WL + MK 2020',$a
-;		'QLSD WIN driver 0.00 WL + MK 2020',$a
+	dc.b	' WL + MK 2022',$a
+;		'QLSD WIN driver 0.00 WL + MK 2022',$a
 ;		' (max 35 chars)                    ',$0A
 txt_end
 

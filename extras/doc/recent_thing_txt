@@ -823,7 +823,7 @@ length.
 
 The other three parameters are filled in on return of the function:
 The str_len% parameter contains the length of the longest filename currently
-being stored by the Recent list for this job, on in the general list. This
+being stored by the Recent list for this job, or in the general list. This
 length may vary, though, if a new file with a longer name is later opened. It
 will never exceed 41 characters, though.
 

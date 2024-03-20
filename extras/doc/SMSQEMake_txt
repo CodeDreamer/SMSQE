@@ -1,0 +1,122 @@
+SMSQEMake
+
+(NOTE a less succint description  of the  program and  how to  use it  can be
+found in the SMSQ/E reference manual, annex  1.  This  can  be	found  on  my
+website - www.wlenerz.com/qlstuff -  in the documentation section).
+
+This  is a program to  "build" SMSQ/E for one  or several targets. "Building"
+means that the various assembler files are "assembled" and then "linked" into
+modules which are then "made" into one single SMSQ/E file.
+
+Targets
+The  targets are the machines for which SMSQ/E is to be built. They are shown
+in  a line of loose menu items. You can (de)select each target by clicking an
+it. Only selected targets will be built.
+
+Modules
+For each target there are a  certain  number  of  modules  that  need  to  be
+assembled  and	linked.  The  modules  for  each  target  are  shown  in  the
+application  sub-window (their names end in "_link"). Only those modules that
+are selected will be treated.
+
+
+I - Presentation of the program
+
+A - Loose menu items
+There  are two rows of loose  menu items at the top  of the window. The first
+row contains (from left to right):
+
+- ESC	leave the program
+- MOVE	change window position
+- SIZE	change window size by in/de-creasing the application window
+- DEL	If this item is selected, all targets and intermediary files (error,
+	rel and lib files) will be deleted before compilation begins
+- SaT	sets all targets to "selected"
+- DIR	sets the directory where the files to be "made" can be found (dev8_
+	by default)
+- ?	shows version information
+- OK	starts the build process
+- All	selects or deselects all modules for all selected targets
+- Make	if selected, the selected target will be made. If not, the individual
+	assembler files will just be assembled.
+- SLEEP puts the program to sleep behind a button
+
+The second row contains the list of targets.
+
+The ESC, Move, Size and Sleep loose menu items all use the standard keys. For
+the other loose menu items, the selection key is underlined in each item.
+
+B - The application sub-window
+The application sub-window  contains the  list of  modules for	each selected
+target. When building  the targets, only  those modules that  are selected in
+the  application sub-window will be treated. This  means that you do not have
+to  re-make all  modules for  a target,  if there  was an  error in  only one
+module. You cannot choose the individual  assembler  files  that  make	up  a
+module.
+
+
+
+
+II - Using the program
+
+Select	the targets you wish to be built.  Using the SaT item will select all
+of them.
+
+Select	the modules that are to be (re)-made. Using  the All item will select
+all of them.
+
+Possibly  select the DEL item. Be aware,  however, that DEL is not selective:
+it  deletes ALL intermediary, module  and target files, not only the ones for
+selected targets or modules. This means that you need to re-build all modules
+for all targets.
+
+Select the Make item.
+
+Hit the OK button.
+
+The program  now treats every module  that is selected. If  the process for a
+module did not result in an error (i.e. assembling and linking went OK), then
+the module  is made available again.  This allows you to  see in which module
+there was an error.
+
+If  the entire process	went OK, the  program has made	all modules available
+again. If not, a small window pops up telling you that there was an error (it
+doesn't tell you  where the  error was,  though -  just look  which module(s)
+remained selected, then look  in the  source code  at the  log file  for each
+module).
+
+
+III - Command line options.
+When executing SMSQEMake,  you can pass  it some command  line switches. They
+are all two letters long and are preceded by a hyphen. They are:
+
+A - General
+
+Name	Meaning
+-qa	Quit after program finishes
+-q0	Quit if 0 errors
+-as	Autostart: start building as soon as program is launched
+-mk	"Make" item is selected
+-de	Select DEL item: Delete all rel,lib and target files before building
+-sa	All item is selected: select all modules
+-fa	Force assembly of all files
+-ta	Select all targets
+
+
+B - Target selection
+
+Then there are	command line switches  to select individual  targets (but not
+modules):
+
+Name	Target
+-tg	Generic SMSQ/E - routines used by nearly all targets
+-ti	Atari
+-to	(Super) Gold card
+-tq	Q40
+-tx	QXL
+-tu	Aurora
+-tj	SMSQmulator
+-tr	PtrGen
+-tc	QPC
+-t8	Q68
+-tm	Q-emulator

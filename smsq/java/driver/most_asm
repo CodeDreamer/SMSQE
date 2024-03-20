@@ -1,10 +1,11 @@
-; Base area SMSQmulator Drivers  V.1.05 (c) W. Lenerz 2012-2017
-
-; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
-; v. 1.02 2015 May 24	possibly use ieee routines
-; v. 1.03 2015 Jul 29	integrated the rtc routines
-; v. 1.04 2016 Oct 13	call to init copy QL screen routine
+; Base area SMSQmulator Drivers  V.1.06 (c) W. Lenerz 2012-2023
+						     
+; v. 1.06 2023 Mar 10	call ser init, remove call to java at sms_artc
 ; v. 1.05 2017 Apr 07	ctrl_nit replaces timer,scrap;patchfpu also in ctrl thing
+; v. 1.04 2016 Oct 13	call to init copy QL screen routine
+; v. 1.03 2015 Jul 29	integrated the rtc routines
+; v. 1.02 2015 May 24	possibly use ieee routines
+; v. 1.01  possibly set up scheduler loop to check if idle  & cleanup
 
 	section header
 
@@ -21,9 +22,10 @@ header_base
 	dc.w	smsq_name-*
 
 smsq_name
-	dc.w	18,'SMSQ JAVA Drivers '
+	dc.w	nm-*-2
+	dc.b	'SMSQ SMSQmulator Drivers '
+nm
 	dc.w	$200a
-
 
 	section base
 
@@ -48,6 +50,7 @@ smsq_name
 	xref	snd_init
 	xref	cpyscr_init
 	xref	ctrl_init
+	xref	jva_spp_init
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sys'
@@ -62,8 +65,7 @@ smsq_name
 	include 'dev8_keys_java'
 
 
-gl_most
-	bra.l	start
+gl_most bra.l	start
 
 	xdef	iou_dirshr
 iou_dirshr dc.w 0	; shared directories supported	(RAM disk)
@@ -80,11 +82,12 @@ start	jsr	hdop_init
 	jsr	sfa_init
 	jsr	nfa_init
 	jsr	mem_init
-	jsr	win_init		; keep as last device driver
+	jsr	win_init		; keep as last file device driver
 	jsr	ssss_init
 	jsr	snd_init
 	jsr	cpyscr_init
 	jsr	ctrl_init
+	jsr	jva_spp_init
 
 sys_init
 
@@ -102,7 +105,7 @@ sys_init
 	move.b	 #0,sys_qlir(a6)	; always clear interface int
 
 	lea	hw_poll,a0
-	lea	sms.hpoll,a5		; setup harware poll, which is just anrts
+	lea	sms.hpoll,a5		; setup harware poll, which is just an rts
 	move.l	a0,(a5)
 
 	lea	sms_hdop,a0
@@ -174,8 +177,6 @@ sms_rrtc
 
 sms_srtc
 sms_artc
-	moveq	#jt5.qry,d0
-	dc.w	jva.trp5
 	move.l	sms.rte,-(sp)
 	moveq	#0,d0
 	rts

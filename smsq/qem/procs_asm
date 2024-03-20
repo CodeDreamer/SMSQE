@@ -1,0 +1,59 @@
+; Q-emuLator SBASIC Procedures v. 1.00 (c) Daniele Terdina
+
+	section header
+
+	xref	smsq_end
+
+header_base
+	dc.l	sb_initp-header_base	 ; length of header
+	dc.l	0			 ; module length unknown
+	dc.l	smsq_end-sb_initp	 ; loaded length
+	dc.l	0			 ; checksum
+	dc.l	0			 ; always select
+	dc.b	1			 ; one level down
+	dc.b	0
+	dc.w	smsq_name-*
+
+smsq_name
+	dc.w	28,'Q-emuLator SBASIC Procedures'
+	dc.l	'    '	; version
+	dc.w	$200a
+
+	section init
+
+
+;	include 'dev8_mac_basic'
+	include 'dev8_mac_proc'
+	include 'dev8_keys_qlv'
+
+;+++
+; Initialise SBASIC procedures
+;---
+sb_initp
+	lea	qem_proctab,a1
+	move.w	sb.inipr,a2
+	jmp	(a2)			 ; link in procedures
+
+
+qem_proctab
+	proc_stt
+	proc_ref FLP_USE
+	proc_ref WIN_USE
+	proc_end
+	proc_stt
+	proc_end
+
+
+	section procs
+
+	xref	iou_use
+
+flp_use
+	move.l	#'FLP0',d7
+	jmp	iou_use
+
+win_use
+	move.l	#'WIN0',d7
+	jmp	iou_use
+
+	end

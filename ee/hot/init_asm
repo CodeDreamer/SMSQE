@@ -1,6 +1,7 @@
 ; HOTKEY Extensions  V2.03	 1988	Tony Tebby   QJUMP
 ; Added function FEP V2.04	pjwitte 2oo3
 ; 2005.01.12	2.05	added hot_getstuff$ (mk)
+; 2022-01-13	2.06	added exep_m, fep_m, exepw (wl)
 
 
 	section hotkey
@@ -27,6 +28,8 @@ proc_tab
 	proc_def HOT_LIST
 	proc_def HOT_DO
 	proc_def EXEP
+	proc_def EXEP_M
+	proc_def EXEP_W
 	proc_def ERT
 	proc_def TH_FIX
 	proc_def ALTKEY
@@ -34,6 +37,8 @@ proc_tab
 
 	proc_stt
 	proc_def FEP			; Function FEP pjw
+	proc_def FEP_M
+	proc_def FEP_W
 	proc_def HOT_RES
 	proc_def HOT_RES1
 	proc_def HOT_CHP

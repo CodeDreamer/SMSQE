@@ -1,6 +1,126 @@
 
+
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
+-----------------------------------------------------------------------------
+
+3.39
+
+    QLSD (MK)
+	dv3_qlsd_io_asm 		3.04	fixed D1 return of iof.rhdr
+	dv3_qlsd_version_asm		1.10	amended to suit
+	dv3_qlsd_banner_asm		.	amended to suit
+
+
+    SBASIC jobname length (wl)
+	smsq_sbas_procs_job_asm 	2.02	max name length for sbasic job is now 48 (wl)
+	keys_sbasic			.	amended to suit (introduces sb.maxnm), also removes some commented out entries (wl)
+
+
+    SBASIC EXEP_M, EXEP_W et al (wl)
+	ee_hk_xthg_asm			2.02	exec thing may provide job ID
+	ee_hk_xfil_asm			2.02	exec file   "     "	"  "
+	ee_hot_init_asm 		2.06	added FEP_M,EXEP_M,FEPW,EXEP_W
+	ee_hot_exep_asm 		2.04	same
+	util_gut_fexnm_asm		0.03	added gu_fcrnm
+	util_gut_thexn_asm		0.03	xref'd gtx_ucod
+	util_gut_thcrn_asm		1.00	new, create job from thing, without activation
+	util_gut_crjb_asm		1.00	new, general create job routine w/o activating job
+	util_gut_cctx			.	amemnded to suit
+
+
+    SBASIC bugfix (wl)
+	iod_con2_ptr_ckey_asm		1.02	CKEYON/OFF : return with error if no channel opened correctly
+	sbsext_ext_ddef_asm		1.00	DLIST don't presume ut_chan1 always succeeds
+	sbsext_ut_chan_asm		0.50	close newly opened channel if error out of range
+	sbsext_utq_chan_asm		0.50	same
+
+
+    SERIAL PORT SER_FLOW BUGFIX (wl)
+	smsq_spp_basic_asm		1.01	ser_flow longer errors out every time
+	smsq_spp_thing_asm		2.13	ser_flow would always fetch wrong parameter
+
+
+    Q68 general (wl)
+	smsq_q68_rtc_asm		1.02	also sets time in the Q68 hardware register, respects prot_date
+	keys_q68			.	amended to suit
+	dv3_q68_fat_init_asm		1.03	FAT1_ config item was sill wrong
+	smsq_q68_int_asm		1.03	delete debug and resulting dead code, no need to lea a3 for ext. ints
+	smsq_q68_kbd_poll_asm		1.03	allows for configurable home/end keys
+	smsq_smsq_base_q68_asm		2.05	always start mouse interrupts
+	smsq_q68_hwinit_asm		1.04	add switch on led when booting config item, no need to clear kbd_unlock
+	dv3_q68_sdhc_rsect_asm		1.06	removed debug code
+	smsq_q68_driver_mouse_asm	1.02	no longer a minimod, is rommable,  centre button works again, no long "afterscroll" in high colour modes
+	smsq_q68_driver_most_link	.	amended to suit
+
+
+    Q68 better serport handling (wl)
+	smsq_q68_spp_init_asm		1.01	only 1 interrupt routine, rx jumps to tx
+	smsq_q68_spp_rxser_asm		1.01	chains to tx
+	smsq_q68_spp_ser_asm		1.01	remove 230400 baud rate, total revamp
+	smsq_q68_spp_txser_asm		1.01	called from RX, don't read byte twice, can handle 2 serports
+	smsq_q68_spp_thing_asm		2.14	ser_flow fixed
+	smsq_q68_spp_cct		.	adjusted to suit
+
+
+    Q-Emulator (DT)
+	sbsext_ext_maint_asm		1.06	amended for QMAC on Q-Emulator
+	sbsext_ut_gtnam_asm		0.08	amended for QMAC on Q-Emulator
+	sbsext_ut_proc_asm		2.03	amended for QMAC on Q-Emulator
+	smsq_atari_hwinit_asm		3.02	amended for QMAC on Q-Emulator
+	smsq_atari_hdop_init_asm	1.01	amended for QMAC on Q-Emulator
+	smsq_gold_kbd_keyrow_asm	1.01	amended for QMAC on Q-Emulator
+
+	smsq_qem_disptype_asm		1.00	new
+	smsq_qem_hwinit_asm		2.00	new
+	smsq_qem_keys			.	new
+	smsq_qem_procs_asm		1.00	new
+	smsq_qem_...link		.	new driver_16,nd,driver_ql,hwinit,procs
+	smsq_qem_x...link		.	new roms, qimi,nasty,kbd_lang,kbd_abc,kbd_abc_lng,driver_nds, driver_dv3, host
+
+
+    SMSQMULATOR (wl)
+	smsq_java_driver_win_init_asm	1.04	removed unnecessary code around hdi_found,use ddf_dtop for length of physical definition
+	smsq_java_driver_dv3e_asm	1.02	use correct key for check for swin
+	keys_java			.	amended to suit + ser IF keys
+	smsq_java_hwinit_asm		2.02	no longer keep SMSQE version
+	smsq_java_driver_nfa_init_asm	1.01	use ddf_dtop for length of physical definition
+	smsq_java_driver_sfa_init_asm	1.01	use ddf_dtop for length of physical definition
+	smsq_java_kbd_read_asm		1.04	if no key pressed in emulator, rts is done there
+	smsq_java_driver_nfa_query_asm	.	removed
+	smsq_java_driver_nfa_cct	.	adjusted to suit
+
+
+    SMSQMULATOR serial ports (wl)
+	smsq_java_driver_most_asm	1.06	call ser init routine
+	smsq_java_driver_most_link	1.06	amended to suit
+	smsq_java_driver_spp_basic_asm	1.00	initial version
+	smsq_java_driver_spp_init_asm	1.00	initial version
+	smsq_java_driver_spp_io_asm	1.00	initial version
+	smsq_java_driver_spp_par_asm	1.00	initial version
+	smsq_java_driver_spp_procs_asm	1.00	initial version
+	smsq_java_driver_spp_lib_cct	.	like standard smsq_spp lib, but uses my io routine
+	smsq_java_driver_spp_ser_asm	1.00	initial version
+	smsq_java_driver_spp_thing_asm	1.00	initial version
+	smsq_java_driver_spp_version_asm 1.00	initial version
+
+
+    RECENT THING> (wl)
+	smsq_recent_things_asm		1.01	GARR/GALL : use correct regs on exit
+	keys_recent_thing		.	amemnded to suit
+
+
+    MISC (wl)
+	dv3_keys			.	introduce ddf.msqdos
+	keys_qdos_io			.	new ioi_type 4 explained
+	smsq_spp_init_asm		.	xdef'd   spp_defs
+	keys_sys			.	added sys_ps2 at $00c2 :  byte	PS2 kbd in use (SMSQE for QIMSI)
+						added new machine type $1a = Q-emulator
+	smsq_q40_spp_init_asm		same	removed spurious LFs
+	sbsext_ext_french_net_asm	 "       "	  "      "
+	dv3_qlsd_utils_card_asm 	 "       "	  "      "
+
+
 -----------------------------------------------------------------------------
 
 3.38

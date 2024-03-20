@@ -7,7 +7,7 @@
 
 		include 'dev8_keys_java'
 
-		xdef	query_java
+	;	 xdef	 query_java
 		xref	ut_gxin1
 		xref	ut_rtint
 

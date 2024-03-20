@@ -1,0 +1,6 @@
+program dev8_smsq_qem_procs
+
+input   dev8_smsq_qem_procs_rel
+library dev8_iod_iou_lib
+library dev8_sbsext_ut_lib
+library dev8_smsq_smsq_end_rel

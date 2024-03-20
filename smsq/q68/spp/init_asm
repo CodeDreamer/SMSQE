@@ -1,20 +1,26 @@
+; Q68 SER PAR PRT device initialisation  1.01  2017-2023  W. Lenerz
+;
+; based on
+;
 ; Q68 SER PAR PRT device initialisation  V2.10	  1999  Tony Tebby
-;					 V2.11	  2017  W. Lenerz
+;
+; 2023.02.18	v1.01 (wl) Interrupts handled by one interrupt routine, linked
+;		in directly in the SER linkage block. Removed reference to
+;		q68_ser_link. No poll for carrier detect timout (wl)
+
 	section spp
 
 	xdef	q68_spp_init
-;	 xdef	 do_ser
 
 	xref	spp_init
+	xref	spp_defs
+
 	xref	q68_pardef
 	xref	q68_serdef
-	xref	cpy_mmod
-
 	xref	spp_rxser
-	xref	spp_sendser
+	xref	spp_txser
 
 	include 'dev8_mac_vecx'
-	include 'dev8_keys_q68'
 	include 'dev8_keys_qdos_sms'
 
 ;+++
@@ -26,44 +32,31 @@
 q68_spp_init
 	lea	q68_par,a1
 	lea	q68_ser,a2
-	jsr	spp_init
-	move.l	a3,q68_ser_link
+	lea	spp_defs,a1		; do not set a poll routine o check for
+	clr.w	10(a1)			; a carrier detect timout.
+	jsr	spp_init		; setup ports
 
-; link in the interrupt routines
-spp_link
-;	 lea	 spp_sndh,a0		; do NOT make these into minimodules
-;	 jsr	 cpy_mmod		; PC relative code
-	lea	rx_xlnk,a0		; linkage area
+; link in the interrupt routine directly (I don't want to go throught the hassle
+; of using the istable in ser_asm).
+; There is just one single interrupt routine which handles RX and then TX
+; for all ports. This might seem cumbersome (why try to TX if the interrupt was
+; for RX) but since there is only ONE external interrup tfor everything, all of
+; the external interrupt routines will get called anyway.
+; I might just as well do RX and TX in one single go, then.
+
+	move.l	a3,a0			; link location
 	lea	spp_rxser,a1		; external interrupt address
-	move.l	a1,4(a0)		; set it in linkage area
-	moveq	#sms.lexi,d0		; link in interrupt routine
-	trap	#1
-
-lnk_rx
-;	 lea	 spp_rxserh,a0
-;	 jsr	 cpy_mmod
-	lea	tx_xlnk,a0		; linkage area
-	lea	spp_sendser,a1		; external interrupt address
 	move.l	a1,4(a0)		; set it in linkage area
 	moveq	#sms.lexi,d0		; link in interrupt routine
 	trap	#1
 	rts
 
-; the definitions
 		    
 q68_par
-	vec	q68_pardef		 ; PAR driver
+	vec	q68_pardef		; PAR driver definition
 	novec
 q68_ser
-	vec	q68_serdef		 ; SER driver
+	vec	q68_serdef		; SER driver definition
 	novec
-
-; ser interrupt routine linkage area
-
-rx_xlnk dc.l   0		       ; external interrupt linkag
-rx_xiad dc.l   0		       ; external interrupt service routine address
-
-tx_xlnk dc.l   0		       ; external interrupt linkag
-tx_xiad dc.l   0		       ; external interrupt service routine address
 
 	end

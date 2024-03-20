@@ -3,207 +3,209 @@
 * wl added java as machine type ***
 *
 
-        nolist
+	nolist
 *
 * Machine identification
 *
-sys_idnt equ    $0000   long    system variables identifier
-sysid.ql equ    $d2540000       QL (QDOS) system variable identifier
-sysid.at equ    'S2AT'          SMS Atari system variable identifier
-sysid.sq equ    'SMSQ'          SMSQ identifier
+sys_idnt equ	$0000	long	system variables identifier
+sysid.ql equ	$d2540000	QL (QDOS) system variable identifier
+sysid.at equ	'S2AT'		SMS Atari system variable identifier
+sysid.sq equ	'SMSQ'		SMSQ identifier
 *
 * RAM allocation table
 *
-sys_chpb equ    $0004   long    Common HeaP Base
-sys_chpf equ    $0008   long    Common HeaP Free space pointer
-sys_fsbb equ    $000c   long    Filing system Slave Block area Base
-sys_sbab equ    $0010   long    'QL SuperBASIC' Area Base
-sys_tpab equ    $0014   long    Transient Program Area Base
-sys_tpaf equ    $0018   long    Transient Program Area Free space pointer
-sys_rpab equ    $001c   long    Resident Procedure Area Base
-sys_ramt equ    $0020   long    user RAM Top
-sys_mxfr equ    $0024   long    Maximum return from free memory call
+sys_chpb equ	$0004	long	Common HeaP Base
+sys_chpf equ	$0008	long	Common HeaP Free space pointer
+sys_fsbb equ	$000c	long	Filing system Slave Block area Base
+sys_sbab equ	$0010	long	'QL SuperBASIC' Area Base
+sys_tpab equ	$0014	long	Transient Program Area Base
+sys_tpaf equ	$0018	long	Transient Program Area Free space pointer
+sys_rpab equ	$001c	long	Resident Procedure Area Base
+sys_ramt equ	$0020	long	user RAM Top
+sys_mxfr equ	$0024	long	Maximum return from free memory call
 
-sys_rtc  equ    $0028   long    real time (seconds)
-sys_rtcf equ    $002c   word    real time fractional, count down
+sys_rtc  equ	$0028	long	real time (seconds)
+sys_rtcf equ	$002c	word	real time fractional, count down
 
 *
 * Odd working variables
 *
-sys_rand equ    $002e   word    RANDom number
-sys_pict equ    $0030   word    Polling Interupt CounT
-sys_dtyp equ    $0032   byte    Display TYPe (0=normal, 1=TV 625, 2=TV 525)
-sys_dfrz equ    $0033   byte    Display FRoZen (T or F)
-sys_qlmr equ    $0034   byte    QL Master chip Register value
-sysqm..8 equ      3               mode 8 bit
-sys_qlir equ    $0035   byte    QL Interrupt Register value
-sys_rshd equ    $0036   byte    true to reschedule
-sys_nnnr equ    $0037   byte    Network Node NumbeR
+sys_rand equ	$002e	word	RANDom number
+sys_pict equ	$0030	word	Polling Interupt CounT
+sys_dtyp equ	$0032	byte	Display TYPe (0=normal, 1=TV 625, 2=TV 525)
+sys_dfrz equ	$0033	byte	Display FRoZen (T or F)
+sys_qlmr equ	$0034	byte	QL Master chip Register value
+sysqm..8 equ	  3		  mode 8 bit
+sys_qlir equ	$0035	byte	QL Interrupt Register value
+sys_rshd equ	$0036	byte	true to reschedule
+sys_nnnr equ	$0037	byte	Network Node NumbeR
 *
 * Action routine and driver lists
 *
-sys_exil equ    $0038   long    EXternal Interrupt action List
-sys_poll equ    $003c   long    POLled action List
-sys_shdl equ    $0040   long    ScHeDuler loop action List
-sys_iodl equ    $0044   long    IO Driver List
-sys_fsdl equ    $0048   long    Filing System Driver List
+sys_exil equ	$0038	long	EXternal Interrupt action List
+sys_poll equ	$003c	long	POLled action List
+sys_shdl equ	$0040	long	ScHeDuler loop action List
+sys_iodl equ	$0044	long	IO Driver List
+sys_fsdl equ	$0048	long	Filing System Driver List
 *
-sys_ckyq equ    $004c   long    Current Keyboard Queue
+sys_ckyq equ	$004c	long	Current Keyboard Queue
 *
-sys_ertb equ    $0050   long    Exception Redirection Table Base
+sys_ertb equ	$0050	long	Exception Redirection Table Base
 *
 * Resource allocation
 *
 * Filing system slave blocks, 8 byte entries, first byte 0 = unavailable
-*                                                        1 = vacant
+*							 1 = vacant
 *
-sys_sbrp equ    $0054   long    Slave Block Running Pointer
-sys_sbtb equ    $0058   long    Slave Block Table Base
-sys_sbtt equ    $005c   long    Slave Block Table Top
+sys_sbrp equ	$0054	long	Slave Block Running Pointer
+sys_sbtb equ	$0058	long	Slave Block Table Base
+sys_sbtt equ	$005c	long	Slave Block Table Top
 *
-sys_jbtg equ    $0060   word    next JoB TaG
-sys_jbtp equ    $0062   word    highest JoB in table (ToP one)
-sys_jbpt equ    $0064   long    current JoB PoinTer
-sys_jbtb equ    $0068   long    JoB Table Base
-sys_jbtt equ    $006c   long    JoB Table Top
+sys_jbtg equ	$0060	word	next JoB TaG
+sys_jbtp equ	$0062	word	highest JoB in table (ToP one)
+sys_jbpt equ	$0064	long	current JoB PoinTer
+sys_jbtb equ	$0068	long	JoB Table Base
+sys_jbtt equ	$006c	long	JoB Table Top
 *
-sys_chtg equ    $0070   word    next CHannel TaG
-sys_chtp equ    $0072   word    highest CHannel in table (ToP one)
-sys_chpt equ    $0074   long    last checked CHannel PoinTer
-sys_chtb equ    $0078   long    CHannel Table Base
-sys_chtt equ    $007c   long    CHannel Table Top
-sys_frbl equ    $0080   long    FRee Block List (to be returned to common heap)
-sys_tsdd equ    $0084   byte    Thor flag
-sys_capr equ    $0084   long    Capslock routine address (if positive)
+sys_chtg equ	$0070	word	next CHannel TaG
+sys_chtp equ	$0072	word	highest CHannel in table (ToP one)
+sys_chpt equ	$0074	long	last checked CHannel PoinTer
+sys_chtb equ	$0078	long	CHannel Table Base
+sys_chtt equ	$007c	long	CHannel Table Top
+sys_frbl equ	$0080	long	FRee Block List (to be returned to common heap)
+sys_tsdd equ	$0084	byte	Thor flag
+sys_capr equ	$0084	long	Capslock routine address (if positive)
 
 *
 * Fixed peripheral working area (QL)
 *
-sys_perw equ    $0088 to $00ac
+sys_perw equ	$0088 to $00ac
 *
-sys_caps equ    $0088   word    CAPS lock
-sys_lchr equ    $008a   word    Last CHaRacter
-sys_rdel equ    $008c   word    Repeat DELay (20ms units)
-sys.rdel equ       25
-sys_rtim equ    $008e   word    Repeat TIMe (20ms units)
-sys.rtim equ        2
-sys_rcnt equ    $0090   word    Repeat CouNTer (decremented every 20ms)
-sys_swtc equ    $0092   word    SWiTch queues Character
-sys_hstt equ    $0094   byte    additional hardware status
-sys_tmsv equ    $0095   byte    sys_tmod saved by MDV routines ****
-sys_qlbp equ    $0096   byte    QL BeePing
-sys_brk  equ    $0097   byte    set by keyboard break
-sys_qls1r equ   $0098   long    pointer to QL serial 1 receive buffer
-sys_qls2r equ   $009c   long    pointer to QL serial 2 receive buffer
-sys_tmod equ    $00a0   byte    QL transmit mode
-sys_ptyp equ    $00a1   byte    processor type $00 = 68000/8, $30 = 68030 etc.
-sys.immu equ      $01              internal MMU
-sys.851m equ      $02              68851 MMU
-sys.ifpu equ      $04              internal FPU
-sys.88xf equ      $08              68881 68882 FPU
-sys_csub equ    $00a2   long    subroutine to jump to on capslock
-sys_stmo equ    $00a6   byte    serial xmit timeout
-sys_dmiu equ    $00a6   byte    Atari msb DMA in use, lsb kill SER2 xmit
-sys_stiu equ    $00a6   byte    msb Sector transfer in use
-sys_mtyp equ    $00a7   byte    Machine TYPe / display type
-sys.mtyp equ      $1e              machine ID bits
-sys.blit  equ      +1              Blitter fitted
-sys.herm  equ      +1              Hermes fitted
-sys.mst   equ     $00              ordinary ST
-sys.mstr  equ     $02              Mega ST or ST with RTC
-sys.msta  equ     $04              Stacy
-sys.mste  equ     $06              ordinary STE
-sys.mmste equ     $08              Mega STE
-sys.mgold equ     $0a              Gold card
-sys.msgld equ     $0c              SuperGOLD card
-sys.mfal  equ     $10              Falcon
-sys.mq40  equ     $11              Q40
-sys.mq68  equ     $12              Q68
-sys.java  equ     $14              java
-sys.mtt   equ     $18              TT
-sys.mqxl  equ     $1c              QXL
-sys.mqpc  equ     $1e              QPC
-sys.mfut  equ    %00000000         Standard QL or Futura display
-sys.mmon  equ    %00100000         Monochone monitor
-sys.mext  equ    %01000000         Atari Extended 4 Emulator
-sys.mvme  equ    %10000000         Atari QVME emulator
-sys.mqlc  equ    %11000000         QL mode LCD
-sys.mvga  equ    %11000000         VGA
-sys.maur  equ    %10100000         Aurora
+sys_caps equ	$0088	word	CAPS lock
+sys_lchr equ	$008a	word	Last CHaRacter
+sys_rdel equ	$008c	word	Repeat DELay (20ms units)
+sys.rdel equ	   25
+sys_rtim equ	$008e	word	Repeat TIMe (20ms units)
+sys.rtim equ	    2
+sys_rcnt equ	$0090	word	Repeat CouNTer (decremented every 20ms)
+sys_swtc equ	$0092	word	SWiTch queues Character
+sys_hstt equ	$0094	byte	additional hardware status
+sys_tmsv equ	$0095	byte	sys_tmod saved by MDV routines ****
+sys_qlbp equ	$0096	byte	QL BeePing
+sys_brk  equ	$0097	byte	set by keyboard break
+sys_qls1r equ	$0098	long	pointer to QL serial 1 receive buffer
+sys_qls2r equ	$009c	long	pointer to QL serial 2 receive buffer
+sys_tmod equ	$00a0	byte	QL transmit mode
+sys_ptyp equ	$00a1	byte	processor type $00 = 68000/8, $30 = 68030 etc.
+sys.immu equ	  $01		   internal MMU
+sys.851m equ	  $02		   68851 MMU
+sys.ifpu equ	  $04		   internal FPU
+sys.88xf equ	  $08		   68881 68882 FPU
+sys_csub equ	$00a2	long	subroutine to jump to on capslock
+sys_stmo equ	$00a6	byte	serial xmit timeout
+sys_dmiu equ	$00a6	byte	Atari msb DMA in use, lsb kill SER2 xmit
+sys_stiu equ	$00a6	byte	msb Sector transfer in use
+sys_mtyp equ	$00a7	byte	Machine TYPe / display type
+sys.mtyp equ	  $1e		   machine ID bits
+sys.blit  equ	   +1		   Blitter fitted
+sys.herm  equ	   +1		   Hermes fitted
+sys.mst   equ	  $00		   ordinary ST
+sys.mstr  equ	  $02		   Mega ST or ST with RTC
+sys.msta  equ	  $04		   Stacy
+sys.mste  equ	  $06		   ordinary STE
+sys.mmste equ	  $08		   Mega STE
+sys.mgold equ	  $0a		   Gold card
+sys.msgld equ	  $0c		   SuperGOLD card
+sys.mfal  equ	  $10		   Falcon
+sys.mq40  equ	  $11		   Q40/Q60
+sys.mq68  equ	  $12		   Q68
+sys.java  equ	  $14		   SMSQmulator
+sys.mtt   equ	  $18		   TT
+sys.mqem  equ	  $1a		   Q-EmuLator
+sys.mqxl  equ	  $1c		   QXL
+sys.mqpc  equ	  $1e		   QPC
+sys.mfut  equ	 %00000000	   Standard QL or Futura display
+sys.mmon  equ	 %00100000	   Monochone monitor
+sys.mext  equ	 %01000000	   Atari Extended 4 Emulator
+sys.mvme  equ	 %10000000	   Atari QVME emulator
+sys.mqlc  equ	 %11000000	   QL mode LCD
+sys.mvga  equ	 %11000000	   VGA
+sys.maur  equ	 %10100000	   Aurora
 
-sys_polf equ    $00a8   word    polling frequency
-sys.polf equ      50            ... assumed polling frequency
-sys_cfst equ    $00aa   word    cursor flash status
+sys_polf equ	$00a8	word	polling frequency
+sys.polf equ	  50		... assumed polling frequency
+sys_cfst equ	$00aa	word	cursor flash status
 
 *
 * Filing system defaults
 *
-sys.defo equ      $70           offset to make defaults<$80
-sys_prgd equ    $00ac   long    pointer to PRoGram Default
-sys_datd equ    $00b0   long    pointer to DATa Default
-sys_dstd equ    $00b4   long    pointer to DeSTination Default
+sys.defo equ	  $70		offset to make defaults<$80
+sys_prgd equ	$00ac	long	pointer to PRoGram Default
+sys_datd equ	$00b0	long	pointer to DATa Default
+sys_dstd equ	$00b4	long	pointer to DeSTination Default
 *
-sys_thgl equ    $00b8   long    pointer to THinG List
-sys_psf  equ    $00bc   long    Primary stack frame pointer (SMSQ)
-sys_int2i equ   $00c0   byte    interrupt 2 in service
-sys_50i  equ    $00c1   byte    50 Hz in service
-sys_qlsd equ    $00c1   byte    QLSD hardware in use
-sys_plrq equ    $00c3   byte    poll requested (-ve for request)
-sys_clnk equ    $00c4   long    pointer to console linkage
-sys_castt equ   $00c8   byte    0 cache on, +ve cache temp off, -ve off
-sys_casup equ   $00c9   byte    cache suppressd timer
-sys.casup equ      26   byte    25 full ticks
-sys_iopr  equ   $00ca   word    IO priority
-sys_cbas  equ   $00cc   long    current basic (copy of sys_jbpt)
+sys_thgl equ	$00b8	long	pointer to THinG List
+sys_psf  equ	$00bc	long	Primary stack frame pointer (SMSQ)
+sys_int2i equ	$00c0	byte	interrupt 2 in service
+sys_50i  equ	$00c1	byte	50 Hz in service
+sys_qlsd equ	$00c1	byte	QLSD hardware in use
+sys_ps2   equ	$00c2	byte	PS2 kbd in use (SMSQE, QIMSI)
+sys_plrq equ	$00c3	byte	poll requested (-ve for request)
+sys_clnk equ	$00c4	long	pointer to console linkage
+sys_castt equ	$00c8	byte	0 cache on, +ve cache temp off, -ve off
+sys_casup equ	$00c9	byte	cache suppressd timer
+sys.casup equ	   26	byte	25 full ticks
+sys_iopr  equ	$00ca	word	IO priority
+sys_cbas  equ	$00cc	long	current basic (copy of sys_jbpt)
 
-sys_fpu   equ   $00d0   16 bytes
+sys_fpu   equ	$00d0	16 bytes (seem unused but do not touch)
 
-sys_prtc  equ   $00e0    byte   set if real time clock protected
-sys_pmem  equ   $00e1    byte   memory protection level
-sys_slug  equ   $00e2    word   slug level
-sys_klock equ   $00e4    byte   key lock
-sys..shk  equ       0               suppress HOTKEY
-sys..ssf  equ       1               suppress screen freeze
-sys..ssq  equ       2               suppress switch queue
-sys..sbk  equ       4               suppress BREAK
-sys..ssr  equ       6               suppress keyboard soft reset
-sys..shr  equ       7               suppress keyboard hard reset
-sys_mtick equ   $00e6    word   mini tick counter
-sys_klnk  equ   $00e8    long   pointer to keyboard linkage
+sys_prtc  equ	$00e0	 byte	set if real time clock protected
+sys_pmem  equ	$00e1	 byte	memory protection level
+sys_slug  equ	$00e2	 word	slug level
+sys_klock equ	$00e4	 byte	key lock
+sys..shk  equ	    0		    suppress HOTKEY
+sys..ssf  equ	    1		    suppress screen freeze
+sys..ssq  equ	    2		    suppress switch queue
+sys..sbk  equ	    4		    suppress BREAK
+sys..ssr  equ	    6		    suppress keyboard soft reset
+sys..shr  equ	    7		    suppress keyboard hard reset
+sys_mtick equ	$00e6	 word	mini tick counter
+sys_klnk  equ	$00e8	 long	pointer to keyboard linkage
 
 *
-* Fixed filing system working area (QL)
+* Fixed filing system working area (QL, Q68)
 *
-sys_filw equ    $00ee to $0100
-sys_cdiu  equ   $00ee    byte   Q68 flag for card in use
-sys_q8ct  equ   $00f0    word   Q68 card type for cards 1 & 2 (a byte each)
-sys..q8un equ     $80               undetermined (card unititialized)
-sys..q8sd equ       9               simple SD card
-sys..q8hc equ       0               SDHC card
+sys_filw   equ	$00ee to $0100
+sys_cdiu   equ	$00ee	 byte	Q68 flag for card in use
+sys_q8ct  equ	$00f0	 word	Q68 card type for cards 1 & 2 (a byte each)
+sys..q8un  equ	  $80		    undetermined (card uninitialized)
+sys..q8sd  equ	    9		    simple SD card
+sys..q8hc  equ	    0		    SDHC card
 
 *
 * Filing system tables
 *
-sys_fsdd equ    $0100   16*long pointers to Filing System Drive Definitions
-sys_fsdt equ    $0140           Filing System drive Definition table Top
-sys.nfsd equ    $10             max Number of Filing System Drive definitions
-sys_fsch equ    $0140   long    linked list of Filing System CHannel blocks
+sys_fsdd equ	$0100	16*long pointers to Filing System Drive Definitions
+sys_fsdt equ	$0140		Filing System drive Definition table Top
+sys.nfsd equ	$10		max Number of Filing System Drive definitions
+sys_fsch equ	$0140	long	linked list of Filing System CHannel blocks
 
-sys_xact equ    $0144   byte    set if XLATE active
-sys_xtab equ    $0146   long    pointer to XLATE table
-sys_erms equ    $014a   long    pointer to (QDOS) error message table
-sys_mstab equ   $014e   long    pointer to (SMSQ) message table
-sys_taskm equ   $0154   4 long  used by taskmaster - conflicts with
-sys_netio equ   $0154   long    used by tk2 for net i/o vectors
-sys_turbo equ   $0160   long    used by turbo
-sys_qsound equ  $0164   long    used by qsound
+sys_xact equ	$0144	byte	set if XLATE active
+sys_xtab equ	$0146	long	pointer to XLATE table
+sys_erms equ	$014a	long	pointer to (QDOS) error message table
+sys_mstab equ	$014e	long	pointer to (SMSQ) message table
+sys_taskm equ	$0154	4 long	used by taskmaster - conflicts with
+sys_netio equ	$0154	long	used by tk2 for net i/o vectors
+sys_turbo equ	$0160	long	used by turbo
+sys_qsound equ	$0164	long	used by qsound
 
-sys_ldmlst equ  $0168   long    language dependent module list
-sys_lang equ    $016c   word    current language
+sys_ldmlst equ	$0168	long	language dependent module list
+sys_lang equ	$016c	word	current language
 
-sys_vers equ    $0170   long    version
-sys_rthg equ    $017d   byte    use recent thing (<>0 if yes)?
-sys_xdly equ    $017e   byte    suspend delay after executing another job (3.13)
-sys_ouch equ    $017f   byte    ouch flag (currently used to activate SGC debug)
-sys_top  equ    $0180           TOP of system vars - bottom of Supervisor Stack
-        list
+sys_vers equ	$0170	long	version
+sys_rthg equ	$017d	byte	use recent thing (<>0 if yes)?
+sys_xdly equ	$017e	byte	suspend delay after executing another job (3.13)
+sys_ouch equ	$017f	byte	ouch flag (currently used to activate SGC debug)
+sys_top  equ	$0180		TOP of system vars - bottom of Supervisor Stack
+	list

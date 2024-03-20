@@ -1,0 +1,18 @@
+
+EXEP_M and FEP_M
+These two keywords behave like EXEP and FEP, respectively, except that the
+owner of the job being created and executed is Me, i.e. the job issuing
+these commands.
+
+
+EXEP_W and FEP_W
+These two keywords behave like EXEP_M and FEP_M, respectively, except that the
+the job issuing these commends is sueen,ded until the created job terminates.
+(like EXEC_W).
+
+
+Have fun!
+
+W. Lenerz
+
+ 

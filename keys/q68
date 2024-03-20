@@ -37,23 +37,31 @@ q68.coff	equ	$40		; offset from port 1 to port 2
 
 
 ; ser comms keys
-uart_txdata	equ	$1c200
-uart_rxdata	equ	$1c204
-uart_status	equ	$1c208		; ser port status
 q68..txmpty	 equ	   0		  ; Read-only Transmit Buffer Empty
 q68..rxmpty	 equ	   1		  ; Read-only Receive Buffer Empty
 q68..rxfrerr	 equ	   2		  ; Read-only Receive Frame Error
 q68..rxovr	 equ	   3		  ; Read-only Receive Overrun Error
 q68..rxfull	 equ	   4		  ; Read-only Receive FIFO Full
+q68..unused	 equ	   5
 q68..txstat	 equ	   6		  ; bit set to enable transmit interrupt
 q68..rxstat	 equ	   7		  ; bit set to enable receive interrupt
 q68.rxand	 equ	   2		  ; value to AND status with to check for rx bit
-q68.txand	 equ	   1		  ; value to AND status with to check for rx bit
-uart_prescale	equ	$1c20c		; word
-q68_prty	equ	1		; no parity
+q68.txand	 equ	   1		  ; value to AND status with to check for tx bit
+q68_prty	equ	1		; no parity (do NOT set to 0)
 q68_hand	equ	0		; no handshake
 q68_prhd	equ	q68_prty<<8+q68_hand   ; parity and handshake combined
 q68_ser_link	equ	$17d08		; keep ptr to ser linkage block here
+
+ser1base	equ	$1c200
+ser2base	equ	$1c220
+ser_offset	equ	$20		; offset from ser1base to ser2base
+ser_offshft	equ	5		; shift for offset
+qserdiff	equ	$1c218		; diff between Q68 and Q0 here
+; ser offsets relative to the base:
+ser_txdta	equ	0		; offset for tx line  (byte)
+ser_rxdta	equ	4		; offset for rx line  (byte)
+ser_status	equ	8		; offset to status    (byte)
+ser_prescale	equ	$c		; offset to baud prescale (word)
 
 
 ; Q40 compatible SSS
@@ -111,6 +119,11 @@ q68.md		equ    6		  ; Medium (512*384, 16 bit colours)
 q68.hi		equ    7		  ; very high (1024*768,16 bit)
 q68.dmax	equ    q68.hi		  ; highest screen mode nbr
 
+
+; i2c
+q68_iscl	equ	$1c1c0		; i2c serial clock
+q68_isda	equ	$1c1c4		; i2c serial data
+
 ; misc keys
 q68_sramb	equ	$19000		; base of (fast) static ram: this con-
 					; tains a ptr to the next free space in
@@ -121,7 +134,7 @@ q68_dcfg	equ	$0e		; where in cgf info drv-> card table is
 i2c_scl 	equ	$1c00c		; ?
 i2c_sda 	equ	$1c00e		; ?
 q68_card2	equ	$c		; card init item in config block
-;q68_msecf	 equ	 $d		 ; config item for mouse in config block
+q68_msecf	equ	$d		; config item for mouse in config block
 
 q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
 					; (nb 0-5 are the same)
@@ -131,6 +144,7 @@ q68_timer	equ	$1c060
 q68_1sec	equ	40000000	; 40 Mhz timer
 q68_tick	equ	4		; 1 "tick" = 1/10th of a microsecond
 q68_tmrmul	equ	4000		; 1/10 of a milliseond
+
 
 ; network related variables
 q68_netvec	equ	$17d10		; net vectors pointer

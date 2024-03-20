@@ -1,0 +1,34 @@
+; SER / PRT procedures	v. 1.00  @ W. Lenerz 2023
+;
+; based on dev8_smsq_spp_procs_asm    (but removed PAR stuf)
+
+	section procs
+
+	xdef	spp_procs
+
+	include 'dev8_mac_proc'
+
+spp_procs
+	proc_stt
+	proc_def SER_USE
+	proc_def SER_FLOW
+	proc_def SER_BUFF
+	proc_def SER_ROOM
+	proc_def SER_CDEOF
+	proc_def SER_CLEAR
+	proc_def SER_ABORT
+	proc_def SER_PAUSE
+	proc_def SER_SETPORT
+	proc_def PRT_USE
+	proc_def PRT_BUFF
+	proc_def PRT_CLEAR
+	proc_def PRT_ABORT
+	proc_end
+
+	proc_stt
+	proc_def PRT_USE$
+	proc_def SER_GETPORT$
+	proc_def SER_GETALLPORTS$
+	proc_end
+
+	end

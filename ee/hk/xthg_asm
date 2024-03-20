@@ -1,14 +1,18 @@
 ; HOTKEY Execute Thing	V2.01	  1988   Tony Tebby   QJUMP
 ;
 ; 2003-03-11  2.01  Added hk_xthgid (MK)
+; 2022-01-25  2.02  Added hk_xthmid, hk_thxwid (wl)
 
 	section hotkey
 
 	xdef	hk_xthg
 	xdef	hk_xthgid
+	xdef	hk_xthmid
+	xdef	hk_xthwid
 
 	xref	hk_xname
 	xref	gu_thexn
+	xref	gu_thcrn
 
 	include 'dev8_ee_hk_data'
 
@@ -38,14 +42,48 @@ hk_xthg
 hk_xthgid
 reglist reg	d2/a0/a1/a2
 	movem.l reglist,-(sp)
-	jsr	hk_xname			 ; expand executable item name
+	moveq	#0,d1		       ; independent
+hk_do
+	jsr	hk_xname	       ; expand executable item name
 
-	moveq	#0,d1				 ; independent
-	moveq	#32,d2				 ; standard priority
+	moveq	#32,d2		       ; standard priority
 	swap	d2
-	jsr	gu_thexn			 ; execute it
+	jsr	gu_thexn	       ; execute it
 
 	movem.l (sp)+,reglist
 	rts
 
+
+;+++
+; This routine executes a thing defined by a hotkey item
+;
+;	d1 cr	job ID of job owner / job ID of created job
+;	a1 c  p pointer to item
+;	a3 c  p pointer to Hotkey linkage
+;
+;	status return standard
+;---
+hk_xthmid
+	movem.l reglist,-(sp)
+	bra.s	hk_do
+
+
+;+++
+; This routine creates a job owned by calling job from a thing defined by
+; a hotkey item w/o activating the job
+;
+;	d1  r	job ID of created job
+;	a1 c  p pointer to item
+;	a3 c  p pointer to Hotkey linkage
+;
+;	status return standard
+;---
+hk_xthwid
+	movem.l reglist,-(sp)
+	jsr	hk_xname		; expand executable item name
+	moveq	#-1,d1			; of course I'm job owner
+	jsr	gu_thcrn		; only create job
+	movem.l (sp)+,reglist
+	rts
+		  
 	end

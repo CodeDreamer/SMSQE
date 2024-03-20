@@ -1,0 +1,44 @@
+; Create job from a Thing, without activation (with name) 1.00 (wl)
+; based on
+; Execute code from a Thing (with name)   v0.00   Apr 1988  J.R.Oakley  QJUMP
+
+; NB: this should be part of thexn_asm, but if you do, the linker conks out
+
+
+	section gen_util
+
+	include 'dev8_keys_err'
+	include 'dev8_keys_thg'
+	include 'dev8_keys_qdos_sms'
+
+	xdef	gu_thcrn
+
+	xref	gu_crjb
+	xref	gu_thjmp
+	xref	gtx_ucod
+
+;+++
+; This uses the general execute utility gu_CRJB to create a job with code
+; provided by an executable Thing, without activating the job
+;
+;	Registers:
+;		Entry				Exit
+;	D0					error code
+;	D1	owner, or 0, or -1		job ID
+;	D2	priority | timeout		preserved
+;	A0	file name			preserved
+;	A1	parameter string		preserved
+;	A2	Job name
+;	stack	FEXEC $10+gu_CJJB
+;---
+gu_thcrn
+gtx.reg reg	d4/a2/a4
+	movem.l gtx.reg,-(sp)
+	move.l	a2,a4
+	lea	gtx_ucod(pc),a2 	; point to user code
+	jsr	gu_crjb(pc)		; and use it to create job from a file
+	movem.l (sp)+,gtx.reg
+	rts
+*
+
+	end

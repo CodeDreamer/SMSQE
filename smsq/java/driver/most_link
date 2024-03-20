@@ -29,6 +29,9 @@ library dev8_iod_con2_ptr_button3_rel
 library dev8_smsq_java_driver_nfa_lib
 library dev8_smsq_java_driver_snd_lib
 library dev8_smsq_java_ctrl_lib
+library dev8_smsq_java_driver_spp_lib
+library dev8_smsq_java_driver_spp_lib_lib
+
 input   dev8_smsq_java_copyscr_rel
 input   dev8_uti_usemenus_rel
 
@@ -47,7 +50,7 @@ library dev8_util_thg_lib
 library dev8_util_cv_lib
 library dev8_util_dummy_lib
 library dev8_smsq_smsq_reset_rel
-
+library dev8_smsq_hwt_lib
 
 
 

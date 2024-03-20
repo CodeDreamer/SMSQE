@@ -1,3 +1,7 @@
+10 REMark this program makes all of the zip files and puts them in their correct places
+20 REMark Copyright (C) W. Lenerz
+30 REMark Published under the SMSQE licence
+40 :
 100 CLS#1:CLS#2
 110 init_vars
 120 get_smsqe_version ichan%,ochan%
@@ -453,7 +457,7 @@
 4620   END REPeat lp%
 4630   DATA "dd","dv3","ee","extras","iod","keys","lang","mac","minerva","sbsext","smsq","sys","uti","util","qxl"
 4640   DATA ""
-4650 END DEFine d
+4650 END DEFine del_zips
 4660 :
 4670 DEFine PROCedure s
 4680 REMark this resets the data etc dirs to acceptable values, no longer used
@@ -469,7 +473,7 @@
 4780   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
 4790   CLS
 4800   REMark first of all, all into one
-4810   PRINT "Zipping binaries into one file..."
+4810   PRINT "Zipping all binaries into one file..."
 4820   zip$ =' -Q4j9 '&f$&' '
 4830   RESTORE CURRENT_LINE
 4840   REPeat lp%
@@ -484,7 +488,7 @@
 4930   do_zip zip$
 4940 :
 4950   REMark now zip up each individual file
-4960   PRINT "Zipping each binar separately..."
+4960   PRINT "Zipping each binary separately..."
 4970   zip$ =' -Q4j9 '&f$&' '
 4980   RESTORE CURRENT_LINE
 4990   REPeat lp%
@@ -515,67 +519,67 @@
 5240   DATA "dev8_smsq_java_java",       "SMSQE"           : REMark Code file for SMSQmulator, ready to be used
 5250   DATA "nfa1_Q68_SMSQ.WIN",         "Q68_SMSQ.WIN"    : REMark smsqe for Q68, win drive
 5260   DATA "dev8_smsq_qpc_smsqe.bin",   "SMSQE.bin"       : REMark Code file for QPC2, ready to be used
-5270   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-5280   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-5290   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-5300   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-5310   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
-5320   DATA "dev8_whats_new_txt",        "whats_new_txt"
-5330   DATA "dev8_changes_txt",          "changes_txt"
-5340   DATA "dev8_readme_txt",           "readme_txt"
-5350   DATA "","" : REMark leave TWO empty strings here
-5360 END DEFine do_binaries
-5370 :
-5380 DEFine PROCedure do_zip (zip$)
-5390 LOCal destt$,progg$,dataa$
-5400   destt$=DESTD$
-5410   progg$=PROGD$
-5420   dataa$=DATAD$
-5430   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
-5440   EW dev1_progs_zip;zip$
-5450   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
-5460 END DEFine do_zip
-5470 :
-5480 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
-5490 DATA "dev8_iod_con2_ptr_wremv_asm"
-5500 DATA ""
-5510 :
-5520 DEFine PROCedure do_copy
-5530 LOCal lp%,a$ ,f$
-5540   PAUSE 80
-5550   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
-5560   RESTORE 830
-5570   REPeat lp%
-5580     READ a$
-5590     IF a$="":EXIT lp%
-5600     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
-5610   END REPeat lp%
-5620   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
-5630   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
-5640   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
-5650 END DEFine do_copy
-5660 :
-5670 DEFine PROCedure wdel_f (source$,array_with_extns$)
-5680 REMark Delete either all files on dir$, or only all files with any extension
-5690 REMark contained in the array_with_extns$ string array. This does NOT recurse
-5700 REMark into subdirs.
-5710 LOCal lp%,iters%,chan%,myname$,a$,lp2%,dir$
-5720   myname$="wdel_f" &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100)
-5730   chan%=FOP_OVER("ram1_"&myname$)
-5740   IF chan%<0:RETurn             : REMark can't open channel, give up
-5750   IF LEN(source$)>5
-5760     dir$=source$(1 TO 5)
-5770   ELSE
-5780     dir$=source$
-5790   END IF
-5800   DIR#chan%,source$
-5810   GET#chan%\0
-5820   INPUT#chan%,a$
+5270   DATA "smsq_qem_SMSQ_QEM",         "SMSQ_QEM"        : REMark Code file for Q-Emulator, ready to be used
+5280   DATA "dev8_ee_ptr_gen",           "ptr_gen"         : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+5290   DATA "dev8_ee_wman_wman",         "wman"            : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+5300   DATA "dev8_ee_hot_rext_english",  "hot_rext_english": REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+5310   DATA "dev8_ee_hot_rext_french",   "hot_rext_french" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+5320   DATA "dev8_ee_hot_rext_german",   "hot_rext_german" : REMark Part of Extended Environment for the non SMSQ/E (e.g. QDOS, SMSQ), ready to be used
+5330   DATA "dev8_whats_new_txt",        "whats_new_txt"
+5340   DATA "dev8_changes_txt",          "changes_txt"
+5350   DATA "dev8_readme_txt",           "readme_txt"
+5360   DATA "","" : REMark leave TWO empty strings here
+5370 END DEFine do_binaries
+5380 :
+5390 DEFine PROCedure do_zip (zip$)
+5400 LOCal destt$,progg$,dataa$
+5410   destt$=DESTD$
+5420   progg$=PROGD$
+5430   dataa$=DATAD$
+5440   DEST_USE "dev8_"  :PROG_USE "dev8_" :DATA_USE "dev8_"
+5450   EW dev1_progs_zip;zip$
+5460   DEST_USE destt$ :PROG_USE progg$ :DATA_USE dataa$
+5470 END DEFine do_zip
+5480 :
+5490 DATA "dev8_ee_wman_erstr_asm","dev8_ee_wman_data_asm"
+5500 DATA "dev8_iod_con2_ptr_wremv_asm"
+5510 DATA ""
+5520 :
+5530 DEFine PROCedure do_copy
+5540 LOCal lp%,a$ ,f$
+5550   PAUSE 80
+5560   COPY_O ddr$&smsqe$,"nfa2_new_"&smsqe$
+5570   RESTORE 830
+5580   REPeat lp%
+5590     READ a$
+5600     IF a$="":EXIT lp%
+5610     COPY_O ddr$&a$&".zip","nfa2_new_"&a$&".zip"
+5620   END REPeat lp%
+5630   COPY_O ddr$&"qxl.zip","nfa2_new_qxl.zip"
+5640   f$ =ddr$&"smsqe"&version$&"_binaries.zip"
+5650   COPY_O f$,"nfa2_new_"&"smsqe"&version$&"_binaries.zip"
+5660 END DEFine do_copy
+5670 :
+5680 DEFine PROCedure wdel_f (source$,array_with_extns$)
+5690 REMark Delete either all files on dir$, or only all files with any extension
+5700 REMark contained in the array_with_extns$ string array. This does NOT recurse
+5710 REMark into subdirs.
+5720 LOCal lp%,iters%,chan%,myname$,a$,lp2%,dir$
+5730   myname$="wdel_f" &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100) &RND(0 TO 100)
+5740   chan%=FOP_OVER("ram1_"&myname$)
+5750   IF chan%<0:RETurn             : REMark can't open channel, give up
+5760   IF LEN(source$)>5
+5770     dir$=source$(1 TO 5)
+5780   ELSE
+5790     dir$=source$
+5800   END IF
+5810   DIR#chan%,source$
+5820   GET#chan%\0
 5830   INPUT#chan%,a$
-5840   iters%=DIMN(array_with_extns$,1)
-5850   IF iters%=0
-5860                                     : REMark no extension
-5870 PRINT "now"
+5840   INPUT#chan%,a$
+5850   iters%=DIMN(array_with_extns$,1)
+5860   IF iters%=0
+5870                                     : REMark no extension
 5880     REPeat lp%
 5890       IF EOF(#chan%):EXIT lp%
 5900       INPUT#chan%,a$
@@ -609,7 +613,7 @@
 6180   elen%=LEN(extension$)
 6190   nlen%=LEN(name$)
 6200   IF elen%>nlen%:RETurn 0
-6210   IF name$(nlen%-elen%+1 TO)== extension$: RETurn 1
+6210   IF name$(nlen%-elen%+1 TO)== extension$: RETurn 1 : REMark uncased comparison
 6220   RETurn 0
 6230 END DEFine endswith%
 6240 :

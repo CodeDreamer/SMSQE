@@ -1,5 +1,4 @@
 ; Directory Device Driver V3 keys
-; v. 1.01  added ddf_sdhc (wl)
 
 	nolist
 
@@ -97,6 +96,7 @@ ddf.drct      equ  -1		; -ve direct access
 ddf.qdos      equ   1		; generic QDOS format for directory devices
 ddf.msdos     equ   2		; generic MSDOS format for directory devices
 ddf.qubi      equ   3		; generic QUBIDE format for directory devices
+ddf.msqdos    equ   4		; MSDOS format to be treated as QDOS device
 ddf_stype   equ $0029	; byte	  format sub-type
 ddf.ram       equ   -1		; RAM disk (internal format)
 ddf.ql5a      equ   0		; QL5A

@@ -1,8 +1,8 @@
-; SER PAR PRT Thing  V2.12     1999  Tony Tebby
+; SER PAR PRT Thing  V2.13     1999  Tony Tebby
 ;
 ; 2003-09-24  2.11  prt_use$ bug fixed (wl)
 ; 2003-10-06  2.12  Some fixes for non-QPC I had sent TT 2 years ago (MK)
-
+; 2023-11-11  2.13  ser_flow fixed - it would always fetch wrong parameter (wl)
 
 	section exten
 
@@ -186,9 +186,9 @@ serp.reg reg	d1/a1/a3
 	movem.l serp.reg,-(sp)
 	bsr	ser_port
 	blt.s	serp_exit
-	move.l	(sp),a1
-	moveq	#$ffffffdf,d0
-	and.l	4(a1),d0
+;	 move.l  (sp),a1		 ; 2.13 this moves D1 into A1!
+	moveq	#$ffffffdf,d0		 ;
+	and.l	(a1),d0 		 ; 2.13 A1 is increased by 4 in ser_port
 	sub.b	#'I',d0 		 ; ignore = 0?
 	beq.s	serf_set
 	cmp.b	#'H'-'I',d0		 ; hardware = -1?

@@ -1,0 +1,40 @@
+; SMSQmulator serial port i/o	v. 1.00 @ W. Lenerz 2023
+;
+; based on  SER/PAR IO operations  V2.10     1999  Tony Tebby
+
+; this foregoes the usual spp io routine, which generally calls on iob_iox.
+; Any buffering/parity bit setting etc is handled by the serial port driver
+; from JSerialComm.
+
+; 2023.03.10	1.00  initial version
+
+	section spp
+
+	xdef	spp_io
+
+	include dev8_keys_java
+	include 'dev8_keys_serparprt'
+
+; d0 cr 	operation / error
+; d1 c	u	data, depending on op
+; d2 c	s	data, depending on op
+; d3 c	p	timeout (0 on 1st call, -1 thereafter)
+; a0 c	p	chan defn block
+; a1 c	u	ptr to data, depending on op
+
+spp_io
+	move.l	spc_link(a0),a3 	 ; set linkage
+
+	moveq	#1,d7
+	and.w	spc_xlat(a0),d7 	 ; translate
+	ror.l	#1,d7
+	move.w	spc_lfcr(a0),d7
+	lsl.w	#8,d7
+	move.b	spc_prty+1(a0),d7	 ; and parity
+	lea	spc_ibuf(a0),a2 	 ; set buffer pointers
+	move.l	d0,-(a7)
+	moveq	#jtf.io,d0
+	dc.w	jva.trpF		 ; does op, handles condition codes etc
+	rts
+
+	end

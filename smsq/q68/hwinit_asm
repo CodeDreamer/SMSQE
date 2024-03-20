@@ -1,8 +1,11 @@
 ; SMSQ Q68 Hardware Initialisation Copyright (c) W. Lenerz 2016-2020
 ; inspired by the q40 hwinit routine
 
+; 2023-04-24  1.04 add light led when booting config item, no need to clear kbd_unlock
+;
+
 ; 1.03 remove card init config item, add card speed items, check for hardware revision; stop ethernet interrupts
-;      reset ethernet interrupt blocker after reset
+;      reset ethernet interrupt blocker after reset, remove kbd delay config item
 ;
 ; 1.02 added kbd delay config item
 
@@ -60,26 +63,26 @@ qcf_ser2	dc.b	 0	;
 qcf_bflp	dc.b	 0	; 04
 qcf_bwin	dc.b	 1	;
 qcf_lang	dc.w	 49	; 06
-qcf_targ	dc.b	 0	; 08
+q68_led1	dc.b	 1	; 08 was switch led on at all when booting?
 qcf_part	dc.b	 0	;
 qcf_issize	dc.b	 0	; 0a
 qcf_ismode	dc.b	 1	;
 q68_fst1	dc.b	 0	; 0c card 1 use fast speed?
-q68_pmse	dc.b	 0	; 0d mouse per poll(2) or interrupt (0)
+q68_pmse	dc.b	 0	; 0d (was : mouse per poll(2) or interrupt (0) )
 q68_led 	dc.b	 1	; 0e led state after boot
 q68_fst2	dc.b	 0	; 0f card 2 use fast speed?
-qcf_fill	ds.b	 10	; 10  ... 19
+qcf_fill	ds.b	 10	; 10 ... 19
 qcf_mlan	dc.w	 49	; 1a
 qcf_kstuf	dc.b	 250	; 1c
 qcf_curs	dc.b	 1	; 1d
 qcf_bgio	dc.b	 0	; 1e
 qcf_ctrc	dc.b	 0	; 1f
-q68_kbdy	dc.w	 0	; 20
-q68_fast	dc.b	 0
+q68_kbdtyp	dc.b	 1	; 20
+
 
 	xref.l	smsq_vers
 
-	mkcfstart
+	mkcfstart		; this is a comment
 
 ; SMSQ generic config items
 
@@ -120,6 +123,9 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 	  5,5,{WIN5},6,6,{WIN6},7,7,{WIN7},8,8,{WIN8}\
 	  9,F,{FAT1},0,N,{None}
 
+	  mkcfitem 'Q680',code,0,q68_led1,,,\
+	  {Switch LED on when SMSQ/E is initialising?},.noyes
+
 	  mkcfitem 'Q689',code,0,q68_led,,,\
 	  {Switch LED off when SMSQ/E is set up?},.noyes
 	  
@@ -128,6 +134,9 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 
 	  mkcfitem 'Q68M',code,0,q68_fst2,,,\
 	  {Card 2 : Use faster (40 MHz) SD Card speed if available?},.noyes
+
+	  mkcfitem 'Q68N',code,0,q68_kbdtyp,,,\
+	  {Use standard home/end keys?},.noyes
 				    
 	mkcfblend
 
@@ -135,13 +144,13 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 
 ; CONFIG IDs already used
 
-; free	Q680
+;	Q680		here
 ;	Q681 - Q688	WIN
 ;	Q689		here
 ;	Q68A		here
 ;	Q68B - Q68K	WIN
-;	Q68L - Q68M	here
-; free	Q68N - Q68P
+;	Q68L - Q68N	here
+; free	Q68O - Q68P
 ;	Q68R - Q68Z	FAT
 ;	Q68a - Q68i	FAT
 ; free	Q68j - Q68z
@@ -176,10 +185,10 @@ hwinit_hreset				; special hard reset entry
 	move.l	sms.sysb,a6		; sysvars
 	jmp	sms.base		; do warm reset
 hwinit
-	st	led			; LED on
+	lea	q68_led1,a2
+	move.b	(a2),led		; LED on or not
 	sf	q68_ethi		; block CP2200 interrupts v. 1.03
 
-	clr.b	kbd_unlock		; no key may be got
 	st	pc_intr 		; NOT CLEAR?????
 	clr.b	pc_tctrl		; clear transmit control reg
 
@@ -201,7 +210,7 @@ hw_rev	sf	mmc1_40hz		; if v1, this doesn't change value
 	tst.b	mmc1_40hz		; now should be 0
 	bne.s	vers1			; didn't change status - v1
 	st	q68_v2			; signal v2
-	move.b	q68_fst1,mmc1_40Hz
+	move.b	q68_fst1,mmc1_40Hz	; set preset speed
 	move.b	q68_fst2,mmc2_40Hz
 
 vers1	move.b	d0,q68_dmode		; set initial screen mode
@@ -224,10 +233,11 @@ hwi_mem move.l	(sp)+,a0		; return address
 
 	clr.l	-(sp)			; facilities
 	clr.l	-(sp)			; language
+
 	move.l	#sys.mq68,-(sp) 	; processor, mmu/fpu, std disp
-					; plain 68000,ql screen, Q68
 	move.l	#'Q68 ',-(sp)		; Q68
-	move.l	#28*1024*1024,d7	; provisional ramtop  - 28 MiB
+
+hwi_cmn move.l	#28*1024*1024,d7	; provisional ramtop  - 28 MiB
 	moveq	#0,d6			; no special RAM
 	moveq	#0,d5
 	lea	q68_mdinst,a6		; q68 version of module installation
@@ -252,7 +262,7 @@ sms_wbase
 
 mod_table
 	dc.l	sms.base-4,$4000	 ; first slice
-	dc.l	$4200-4,$c000		 ; second slice
+	dc.l	$4200-4,$c000		 ; second slice (leave room for vectors)
 	dc.l	$10000,$17d00-4 	 ; third slice
 	dc.l	0
 

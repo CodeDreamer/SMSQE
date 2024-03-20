@@ -1,0 +1,187 @@
+; SMSQmulator SER device definition & general routines v.1.00  2023 W. Lenerz
+;
+; based on ; QXL SER device definition	   V2.10    1999  Tony Tebby
+;
+;
+	section spp
+
+	xdef	jva_serdef
+
+	xref	iob_room
+	xref	gu_achpp
+
+	include 'dev8_keys_serparprt'
+	include 'dev8_keys_err'
+	include 'dev8_keys_java'
+	include 'dev8_mac_vecx'
+	include 'dev8_mac_assert'
+
+;+++
+; SER driver definition
+;
+;---
+jva_serdef
+	vec	qsd_check
+	vec	qsd_vector
+	vec	qsd_preset
+	vec	qsd_init
+	vec	qsd_istable
+
+;+++
+; Preset table defining hardware specific values
+; The format of this table is
+; entry,length,data
+; where
+; entry  = the offset within the definition block (keys_serparprt)
+; length = how many bytes to fill in
+; data	 = the data to set
+;
+; If you anly want to set a word at an offset that may contain a long word,
+; use offset+2 as entry
+;---
+
+qsd_preset
+	assert	spd_pdir,spd_hand-1
+	dc.w	spd_pdir,2,$ffff	; all parities & handshakes
+	dc.w	spd_room+2,2,spd.room	; input buffer spare room
+	dc.w	spd_ilen+2,2,spd.ilen	; input buffer length
+	dc.w	0
+
+
+;+++
+; Vector table defining hardware specific IO routines
+;---
+qsd_vector
+	dc.w	spd_open,qsd_open-*-2	; open
+	dc.w	spd_close,qsd_close-*-2 ; close
+	dc.w	spd_baud,qsd_baud-*-2	; set baud rate
+	dc.w	spd_iopr,qsd_iopr-*-2	; receive bytes
+	dc.w	spd_oopr,qsd_oopr-*-2	; send bytes
+	dc.w	0			; eend of list (there is NO CD active check)
+
+
+;+++
+; Interrupt server table
+;---
+qsd_istable
+	dc.w	0		      ; no server
+
+
+;+++
+; Routine to check whether a particular port exists & get highest port nbr
+;
+;	d0 cr	port to check (starting at 1) / 0 if it does not exist
+;	d0 cr	0 / highest port number
+;	a4    s
+;
+;	status returned as d0
+;---
+
+qsd_check
+	move.l	d0,a4
+	moveq	#jtf.chk,d0
+	dc.w	jva.trpF		; sets return value and status, does rts
+	rts
+;+++
+; SER port linkage / hardware initialisation
+;
+;	d1 c  p port number (starting at 1)
+;	a3 c  p linkage for this port
+;	a4    s hardware base
+;
+;	status returned zero
+;---
+qsd_init
+	moveq	#0,d0
+	rts
+
+;+++
+; SER port set baud rate
+;
+;	d0  r	0 or error
+;	d1 c  p baud rate
+;	a3 c  p SER port linkage block
+;
+;	all other registers preserved
+;
+;---
+qsd_baud
+	moveq	#jtf.baud,d0
+	dc.w	jva.trpF		; handles status reg + rts
+	rts
+;+++
+; SER port close
+;
+;	d0 cr  p pointer to input buffer
+;	a0 c  p channel block
+;	a3 c  p COM port linkage block
+;	all other registers preserved
+;	status returned according to D0 (if D0 on entry was input buffer, that
+;	will get closed on return from this rouine with NZ in status reg).
+;
+;	Hence this routine doesn't return any error.
+;---
+qsd_close
+	sf	spd_iact(a3)		; input not active
+	move.l	d0,a4
+	moveq	#jtf.clse,d0
+	dc.w	jva.trpF		; sets status reg according to & does RTS
+	rts
+
+;+++
+; SER port open operation (enable rx)
+;
+;	d0    s
+;	d5 c  p byte -1 output only, 0 input and output, 1 input only
+;	a0 c  p channel block
+;	a3 c  p SER port linkage block
+;	all other registers preserved
+
+;	status returned 0
+;---
+qsd_open
+	moveq	#jtf.open,d0
+	pea	qsd_iopr
+	dc.w	jva.trpF		; sets d0 to 0, returns to qsd_iopr
+	rts
+;+++
+; SER port receive input operation (re-enable rx if not enabled)
+;
+;	a3 c  p SER port linkage block
+;	all other registers preserved
+;	status returned according to D0
+;---
+
+qsd_iopr
+	tst.b	spd_iact(a3)
+	bne.s	qsd_ioprts		; port is already active
+
+qsd_rxen
+	movem.l d0/a2,-(sp)
+	move.l	spd_ibuf(a3),d0 	; any buffer?
+	ble.s	qsd_iopexit		; ... no
+
+	move.l	d0,a2
+	jsr	iob_room		; check for enough room
+	cmp.l	spd_room(a3),d0
+	ble.s	qsd_iopexit		; not enough
+	st	spd_iact(a3)		; show port is active
+qsd_iopexit
+	movem.l (sp)+,d0/a2
+
+qsd_ioprts
+	tst.l	d0
+	rts
+
+;+++
+; SER port transmit output operation
+;
+;	a3 c  p SER port linkage block
+;	all other registers preserved
+;	status returned according to D0
+;---
+qsd_oopr
+	moveq	#0,d0
+	rts
+
+	end

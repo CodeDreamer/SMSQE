@@ -1,9 +1,9 @@
-* File maintenance   V1.5     1985   Tony Tebby   QJUMP
+* File maintenance   V1.6     1985   Tony Tebby   QJUMP
 *
 * 2002-05-09  1.3  STAT now calculates big drives correctly (MK)
 * 2018-07-24  1.4  Added FDEL (pjw)
 * 2020-03-07  1.5  correct FDEL
-
+* 2022-03-24  1.6  amended for QEmu (dt)
 	section exten
 *
 *	STAT [#channel,] [name] 		print drive statistics
@@ -263,7 +263,7 @@ copy_op2
 	cmp.l	d3,d0			... exists?
 	bne.s	mnt_cla3		... no
 	moveq	#0,d0			no error, is this a goot idea?
-	bra.s	mnt_cla3		bad
+	bra	mnt_cla3		bad
 *
 *
 rename

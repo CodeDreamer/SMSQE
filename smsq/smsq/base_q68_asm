@@ -1,7 +1,10 @@
-; Initialise SMSQ  V2.02     1994  Tony Tebby
-; 2003-01-22	2.03	use sms_dlan to copy default language (wl)
-; 2017-03-08	2.04	don't clear all mem only between $28000 and $30000
+; Initialise SMSQ for Q68  V2.05   W. Lenerz 2023
+; based on Initialise SMSQ   1994  Tony Tebby
+
+; 2023-11-02	2.05	mouse always used interrupt
+; 2017-03-08	2.04	don't clear all mem, only between $28000 and $30000
 ;			and remove all the blat junk
+; 2003-01-22	2.03	use sms_dlan to copy default language
 
 	section base
 

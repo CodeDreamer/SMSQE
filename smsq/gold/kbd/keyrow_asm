@@ -1,4 +1,6 @@
-; GOLD Card Ketrow (called from pointer routines)
+; GOLD Card Keyrow (called from pointer routines)
+;
+; 2022-03-24  1.01  amended for QEmu (dt)
 
 	section kbd
 
@@ -13,7 +15,7 @@
 kbd_keyrow
 	move.l	a3,-(sp)
 	lsl.w	#8,d1
-	add.w	#%10,d1
+	addq.w	#%10,d1
 	move.w	d1,-(sp)
 	clr.l	-(sp)
 	move.w	#$0901,-(sp)

@@ -99,7 +99,7 @@ kbd_initiq68
 	trap	#do.smsq
 
 	move.l	a3,sys_klnk(a6) 	 ; set pointer to linkage
-	st	kbd_unlock
+;	 st	 kbd_unlock
 
 	move.l	a5,d0
 	beq.s	kbi_rts

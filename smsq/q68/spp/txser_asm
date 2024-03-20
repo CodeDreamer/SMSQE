@@ -1,0 +1,75 @@
+; Q68 send data to SER port    v. 1.01	 2017	     W. Lenerz
+;
+; based on Q68 send data to SER port	 2000	     Tony Tebby
+;
+; This just takes a byte out of the SER output queue and puts it into
+; the hardware FIFO.
+;
+; This is an interrupt routine, all regs are volatile except a6 , it is called
+; via the RX interrupt routine
+
+; 2023.03.06	v. 1.01 	can handle 2 serports, don't read byte twice (wl)
+
+	section spp
+
+	xdef	spp_txser
+	xdef	q68_txser
+
+	xref	iob_gbyt
+	xref	iob_room
+
+	include 'dev8_keys_q68'
+	include 'dev8_keys_serparprt'
+	include 'dev8_keys_k'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_iod'
+
+;+++
+; Send data to ports.
+;
+; a3 c	s points to linkage area; for port 2 if there are 2 ports, else port 1
+; a6 c	p sysvars
+;
+;---
+spp_txser				; check 2 ports for data to be sent
+	bsr.s	q68_txser		; try to Xmit data for ser 2 (if any)
+	sub.w	#spd.len,a3		; and now ser 1
+q68_txser
+	move.l	spd_hbase(a3),a4
+	btst	#q68..txmpty,ser_status(a4) ; transmit buffer empty empty?
+	beq.s	srxp_exit		; no, can't send anything, done ->
+	tst.b	spd_oact(a3)		; output active?
+	beq.s	srxp_exit		; no, nothing to send, done  ->
+   
+	move.l	spd_obuf(a3),d0 	; output queue
+	ble.s	srxp_nomore		; there is none ->
+	move.l	d0,a2
+	moveq	#15,d3			; send 16 bytes a pop
+
+srxp_loop
+	btst	#q68..txmpty,ser_status(a4) ; transmit buffer empty empty?
+	beq.s	srxp_exit		; no, can't send anything, done ->
+	jsr	iob_gbyt		; get byte from output queue (special return)
+	beq.s	srxp_sbyt		; =0 = got one, send it ->
+	blt.s	srxp_nomore		; <0 = none got, we're done ->
+					; >0 = eof, possibly
+	subq.b	#1,d1			; is ff required?
+	blt.s	srxp_exit		; no, done ->
+	bgt.s	srxp_cz 		; yes,	but really it is CTRL Z  ->
+	moveq	#k.ff,d1		; show EOF
+	bra.s	srxp_sbyt		; send it ...
+srxp_cz moveq	#26,d1			; ... or send CTRL Z
+
+srxp_sbyt
+	move.b	d1,ser_txdta(a4)	; put byte into hardware port
+	dbf	d3,srxp_loop
+
+srxp_exit
+	rts
+
+srxp_nomore				; there is no more data, SWITCH INTERRUPT OFF!!!!!
+	sf	spd_oact(a3)		; inactivate output
+	bclr	#q68..txstat,ser_status(a4); and interrupt
+	rts
+
+	end

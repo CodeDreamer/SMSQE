@@ -1,0 +1,38 @@
+; Keys for Gold card odd facilities
+        nolist
+
+sgc_int2 equ $41fff4   interrupt 2 vectors
+sgc.int2 equ $1a1a1a1a auto interrupt vector number
+
+ql_clock equ $18000     QL clock address
+
+glc_base equ $1c000     hardware base
+
+glo_rtcc equ $00        rtc control register
+glk.rtcs equ %01010000  rtc Stop
+glk.rtcg equ %00010000  rtc GO
+glo_ten  equ $04        rtc 1/10s of seconds
+glo_s01  equ $08        rtc seconds units
+glo_s10  equ $0c        rtc seconds tens
+glo_d01  equ $20        rtc days units
+glo_y10  equ $34        rtc years tens
+glo_dow  equ $38        rtc day of week
+glo_rtcs equ $3c        rtc clock setting register
+glk..24h equ   4          rtc 24 hours mode
+glk..pm  equ   5          rtc pm
+glk.lpsf equ   6          leap year shift
+
+glk.rtca equ   4        rtc address spacing
+
+glo_rena equ $60        RAM enable
+glo_rdis equ $64        RAM disable
+
+sgo_scr2 equ $68        SGC screen 2 disable (write) or enable (read)
+
+glo_pdat equ $70        PAR port data reg
+glo_pstb equ $78        PAR port strobe ST to set, TST to clear
+glo_prdy equ $e0        PAR port msb set if ready
+
+sgc_woff equ $400000    Super GOLD card write offset
+
+        list

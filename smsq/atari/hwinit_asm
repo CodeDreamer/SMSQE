@@ -1,5 +1,7 @@
 ; SMSQ Atari Hardware Initialisation V3
-; 2003-05-18			3.01	added message language coinfig item (wl)
+; 2003-05-18  3.01    added message language config item (wl)
+; 2022-03-24  3.02    amended for QEmu (dt)
+;
 ; Called with A7 a valid, safe stack
 ; The hardware is initialised.
 ; If d7 = 0	the RAM is setup.
@@ -182,7 +184,7 @@ hwi_peri
 	or.b	d5,d6
 	move.b	#sys.mtyp,d5
 	and.b	d6,d5
-	cmp.b	#sys.mmste,d5		 ; mega ste?
+	cmpi.b	#sys.mmste,d5		 ; mega ste?
 	blt.s	hwi_sst 		 ; ... no, ST
 	beq.s	hwi_sste		 ; ... yes
 

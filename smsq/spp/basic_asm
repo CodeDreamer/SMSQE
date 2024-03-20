@@ -1,4 +1,5 @@
 ; PAR / SER / PRT SuperBASIC entry points   Tony Tebby 1999
+; 2023-11-11 1.01 ser_flow returns normally, doesn't fall through into error (at label serf_do) (wl)
 
 	section exten
 
@@ -60,6 +61,7 @@ ser_flow
 
 serf_do
 	proc  SERF
+	rts			; 1.01 avoid always ending up with err.ipar
 
 serf_ipar
 	moveq	#err.ipar,d0

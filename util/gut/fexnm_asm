@@ -1,8 +1,9 @@
-* Execute code from a file with name	  v0.02   Apr 1988  J.R.Oakley  QJUMP
+* Execute code from a file with name	  v0.03   Apr 1988  J.R.Oakley  QJUMP
 *						  Jun 1988  Tony Tebby  QJUMP
 *
 * 2005-25-10  0.01  Added home directory thing compatibility (MK)
 * 2005-11-15  0.02  Fixed race condition (MK)
+* 2022-02-01  0.03  added gu_fcrnm(wl)
 *
 	section gen_util
 *
@@ -13,6 +14,7 @@
 	include 'dev8_keys_qdos_sms'
 *
 	xref	gu_exec
+	xref	gu_crjb
 	xref	gu_trap3
 	xref	gu_fopen
 	xref	gu_fclos
@@ -21,6 +23,42 @@
 	xdef	gu_fexnm
 	xdef	gu_fexop
 	xdef	gu_fexld
+	xdef	gu_fcrnm
+
+
+*+++
+* This uses the general execute utility GU_CRJB to load a file, create a
+* job without activating it.
+*
+*	Registers:
+*		Entry				Exit
+*	D0					error code
+*	D1	owner, or 0, or -1		job ID
+*	D2	priority | timeout		preserved
+*	A0	file name			preserved
+*	A1	pointer to parameter string	preserved
+*	A2	pointer to job name		preserved
+*	A3	start address or 0		preserved
+*	stack	FCRNM $08+GU_CRJB
+*		LOAD  $08+GU_TRAP3
+*		OPEN  $16+GU_FOPEN/gu_TRAP3
+*		CLOSE $00+GU_FCLOS
+*---
+gu_fcrnm
+ufereg	reg	d4/a1/a2/a4-a5
+	movem.l ufereg,-(sp)
+	move.l	a2,a4			; keep name
+	move.l	a0,a5			; keep file name for home dir
+	lea	ufe_ucod(pc),a2 	; point to user code
+	jsr	gu_crjb(pc)		; and use it to load file, create job
+	bne.s	gfcr_exit
+	moveq	#0,d0			; ignore error
+gfcr_exit
+	movem.l (sp)+,ufereg
+	rts
+*
+
+
 *+++
 * This uses the general execute utility GU_EXEC to load and execute a file.
 *
@@ -39,7 +77,6 @@
 *		CLOSE $00+GU_FCLOS
 *---
 gu_fexnm
-ufereg	reg	d4/a1/a2/a4-a5
 	movem.l ufereg,-(sp)
 	move.l	a2,a4			; keep name
 	move.l	a0,a5			; keep file name for home dir

@@ -1,15 +1,22 @@
-; HOTKEY Execute File	 V2.01	   1988   Tony Tebby	QJUMP
+; HOTKEY Execute File	 V2.02	   1988   Tony Tebby	QJUMP
 ;
 ; 2003-03-11  2.01  Added hk_xfilid (MK)
+; 2022-01-13  2.02  Added hk_xfimid, hk_xfiwid (wl)
 
 	section hotkey
 
 	xdef	hk_xfil
 	xdef	hk_xfilid
+	xdef	hk_xfimid
+	xdef	hk_xfiwid
+
 
 	xref	hk_dflts
 	xref	hk_xname
 	xref	gu_fexnm
+	xref	gu_fcrnm
+	xref	gu_achp0
+	xref	gu_rchp
 
 	include 'dev8_ee_hk_data'
 	include 'dev8_ee_hk_xhdr'
@@ -38,8 +45,12 @@ hk_xfil
 ;	status return standard
 ;---
 hk_xfilid
-reglist reg	d2/a0/a1/a2/a3/a4
+reglist reg	d2/a0/a1/a2/a3/a4/a5
 	movem.l reglist,-(sp)
+	moveq	#0,d1
+hk_exec
+	lea	gu_fexnm,a5
+hk_do
 	pea	hkd_buf2(a3)			 ; default buffer
 
 	lea	hki_name(a1),a4 		 ; name
@@ -51,14 +62,44 @@ reglist reg	d2/a0/a1/a2/a3/a4
 
 	jsr	hk_xname			 ; expand executable item name
 
-	moveq	#0,d1				 ; independent
 	moveq	#32,d2				 ; standard priority
 	swap	d2
 	move.l	a4,a3				 ; start address
-	lea	gu_fexnm,a4
+	move.l	a5,a4
 	jsr	hk_dflts
 	addq.l	#4,sp
 	movem.l (sp)+,reglist
 	rts
+
+
+;+++
+; This routine executes a file defined by a hotkey item with owner as per d1
+;
+;	d1 cr	owner job ID / created job ID
+;	a1 c  p pointer to item
+;	a3 c  p pointer to pseudo Hotkey linkage
+;
+;	status return standard
+;---
+hk_xfimid
+	movem.l reglist,-(sp)
+	bra.s	hk_exec
+
+
+;+++
+; This routine creates a job from  a file defined by a hotkey item with owner
+; as per d1 w/o activating the job
+;
+;	d1  r	job ID of created job
+;	a1 c  p pointer to item
+;	a3 c  p pointer to Hotkey linkage
+;
+;	status return standard
+;---
+hk_xfiwid
+	movem.l reglist,-(sp)
+	moveq	#-1,d1
+	lea	gu_fcrnm,a5
+	bra.s	hk_do
 
 	end

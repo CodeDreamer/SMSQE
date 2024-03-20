@@ -1,9 +1,10 @@
-; SMSQmulator Read keyboard / mouse  V 1.03 (c) W. Lenerz 2020
+; SMSQmulator Read keyboard / mouse  V 1.04 (c) W. Lenerz 2023
 
 ; read by SMSQE during polling interrupt.
 
 ; this "reads" the keyboard coming from the emulator & puts the keystrokes
 ; into the keyboard queue
+; 1.04 if no key in emulator, does automatic rts there
 ; 1.03 read kbd loops until no more chars in java kbd queue (queue in & out in java are synchronized)
 ; 1.02 mouse wheel code is transferred to driver_mouse
 ; 1.01 special long word input when mouse moved
@@ -14,7 +15,7 @@
 	xdef	kbd_read
 	xdef	kbd_vers
 
-kbd_vers equ	'1.03'
+kbd_vers equ	'1.04'
 
 
 	xref	ioq_tstg
@@ -34,40 +35,29 @@ kbd_vers equ	'1.03'
 
 
 ;+++
-; QL keyboard routine (called from poll)
+; SMSQmulator keyboard routine (called from poll)
 ;---
 
+kbd_read
+	moveq	#jte.kbd,d0
+	dc.w	jva.trpE		; returns key(s) in D1 (if any)
+					; if no key, then it does RTS !!!
 
-smsh.reg reg	d1/d2/a1/a2
-kbd_read movem.l smsh.reg,-(a7)
 	move.l	sys_ckyq(a6),d0 	; any keyboard queue?
-	beq.s	hok_rts 		; no!
+	beq.s	hokb_rts		; no!
 	move.l	d0,a2			; A2 = current keyboard queue
-;	 move.l  jva_lkptr,d0		 ; address of java emul linkage block
-;	 beq.s	 hok_rts		 ; there is none (????)
-;	 move.l  a1,-(sp)
-;	 move.l  d0,a1			 ; point to java linkage block
-;	 move.l  jva_lkkbd(a1),d0	 ; get current key char(s)
-;	 clr.l	 jva_lkkbd(a1)		 ; no more
-;	 move.l  (sp)+,a1
-getkey	moveq	#jte.kbd,d0
-	dc.w	jva.trpE		; returns key(s) in D1, cond codes set
-	tst.l	d1
-	beq.s	hok_done
-
 	move.l	sys_klnk(a6),a1 	; keyboard linkage
-;	 move.l  d0,d1			 ; char(s) gotten
-;	 bne.s	 hok_chkc		 ; there were some
+
+hok_trtk				; treat key
 	btst	#0,$29(a1)		; shift pressed?
-	beq.s	nofrz			 ; no
+	beq.s	nofrz			; no
 	sf	sys_dfrz(a6)		; yes, unfreeze screen
-nofrz	bsr.s	hok_chkc		; do until queue empty
-	bra.s	getkey
+nofrz	bsr.s	hok_chkc
+	moveq	#jte.kbd,d0
+	dc.w	jva.trpE		; same as above
+	bra.s	hok_trtk		; there is a key
 
-
-hok_done movem.l (a7)+,smsh.reg
 hok_rts rts
-
 
 hok_chkc
 	tst.l	d1			; break?
@@ -97,15 +87,15 @@ hok_putc
 	jsr	ioq_pbyt		; put one byte
 	lsr.w	#8,d1			; ... and then the other
 hok_put1
-	jsr	ioq_pbyt		; put byte in kbd queue
-	bra.s	hok_rts
+	jmp	ioq_pbyt		; put byte in kbd queue
+
 ; break
 hok_break
 	btst	#sys..sbk,sys_klock(a6)  ; suppressed?
 	bne.s	hok_rts
 	st	sys_brk(a6)		 ; flag break
 hokb_rts
-	bra.s	hok_rts
+	rts
 
 ; switch keyboard queue
 
@@ -130,7 +120,7 @@ hok_ckq
 
 hok_setq
 	move.l	a2,sys_ckyq(a6) 	 ; reset keyboard queue
-	bra	hok_rts
+	rts
 
 ; screen freeze
 
@@ -138,8 +128,7 @@ hok_dfrz
 	btst	#sys..ssf,sys_klock(a6)  ; suppressed?
 	bne.s	hokb_rts
 	not.b	sys_dfrz(a6)		 ; freeze / unfreeze screen
-
-	bra	hok_rts
+hok_rt	rts
 
 ; CAPSLOCK
 
@@ -147,12 +136,11 @@ hok_caps
 	not.b	sys_caps(a6)		 ; caps lock toggle
 	move.l	sys_capr(a6),d0 	 ; keyboard intercept routine?
 	ble.s	kbp_capsold		 ; ... no, try old style
-	move.l	d0,a1
-	jsr	(a1)			 ; ... yes, do it
-	bra	hok_rts
+do_caps move.l	d0,a1
+	jmp	(a1)			 ; ... yes, do it
+
 kbp_capsold
-	tst.l	sys_csub(a6)
-	beq.l	hok_rts 		 ; no routine
-	jsr	sys_csub(a6)		 ; caps routine
-	bra	hok_rts
+	move.l	sys_csub(a6),d0
+	bne.s	do_caps 		 ; some routine found
+	rts				 ; no routine
 	end

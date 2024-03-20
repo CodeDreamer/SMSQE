@@ -18,15 +18,32 @@ of new features are kept in that "extras_new" directory.
 This here file only contains a short description of the new features.
 
 
-What is new in versions :
-	
+What is new in version:
+
+
+
+=====
+3.39
+=====
+Various bugfixes by Marcel
+SMSQ/E for Q-emulator (by Daniele)
+EXEP_M EXEP_W keywords and related functions
+Name of JOB_NAME for Sbasic may now be 48 chars long
+Q68 setting date also sets it in the hardware clock
+Q68 better serport handling
+Q68 allows for configuurable home/end keys
+SMSQmulator can handle serial ports (experimental feature)
+CKEYON/CKEYOFF could malfunction under some circumstances
+SER_FLOW no longer gives error every time it is used
+Recent thing bugs corrected
+
 
 =====
 3.38
 =====
 Various bugfixes
 WMAN can now use index drawing
-QSOUND improvements fro QPC
+QSOUND improvements for QPC
 QPC new features (QPC_FLASHBUTTON and QPC_HASFOCUS)
 
 

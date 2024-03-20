@@ -6,6 +6,7 @@ rc_maxlen equ	41			; 36 for filename + 5 for drive
 rc_entryl equ	rc_maxlen+7		; + job_id  + length word + even up
 hd_entryl equ	rc_entryl-4		; entry length for 1 filename in heap
 rc_inihash equ	5381			; initial value for hash
+
 ; parameters passed to things
 ;
 ; recent : get one filename extensions
@@ -17,7 +18,7 @@ get_nam equ	get_len+2		; ptr to string
 ;(uses get_id & get_len)
 
 ; Memory requirements for thing + header
-rcnt_base equ	$2e+4			; end of name string
+rcnt_base equ	$3c ;$2e+14		      ; end of name string
 rcnt_heap  equ	rcnt_base+4		; pointer to linked list of heap spaces
 rcnt_first equ	rcnt_heap+4		; ptr to first entry in list (if this is 0,there is nothing in the list)
 rcnt_stop equ	rcnt_first+4		; ptr to end of space for list
@@ -26,13 +27,11 @@ rcnt_ucfn equ	rcnt_temp+4		; uncased name of file, for comparison
 rcnt_end  equ	rcnt_ucfn+rc_entryl	; mem needed for thing (w/o space for list)
 ; list will start here
 
-
-
 ; header for heap assignment, one per job
 rcnt_next equ	0			; ptr to next space
 rcnt_prev equ	rcnt_next+4		; ptr to previous space
 rcnt_jbID equ	rcnt_prev+4		; job id of job
-rcnt_hsh equ	rcnt_jbID+4		; hash of job
+rcnt_hsh  equ	rcnt_jbID+4		; hash of job
 rcnt_hend equ	rcnt_hsh+4		; pointer to end of heap space before name store space
 rcnt_1st  equ	rcnt_hend+4		; pointer to first entry in list
 rcnt_hdr  equ	rcnt_1st+4		; length of header

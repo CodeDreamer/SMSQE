@@ -1,6 +1,7 @@
 ; QD_BAD: check for QD cancer
 
 	section none
+	filetype 0
 
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_err'
@@ -9,7 +10,6 @@
 	include 'dev8_keys_qdos_io'
 	include 'dev8_keys_qdos_ioa'
 	include 'dev8_keys_hdr'
-
 
 *****************************************************************
 *
@@ -28,7 +28,7 @@
 *		as many LFs as the threshold value, between the last NOLFL and
 *		the NOLFL before that, then the extraneous LFs are stripped, and
 *		the file is resaved with the same dates and version number. When
-*		this happens there will one empty line between the penultimate
+*		this happens there will be one empty line between the penultimate
 *		and the last line.
 *
 *    res is the return from the function, the value depends on threshold%:
@@ -115,78 +115,110 @@ getstr	move.l	a3,a5		; don't care how many ints were actually passed
 	add.l	d6,a1		; point end of file
 	moveq	#9,d3		; TAB
 	moveq	#10,d4		; LF
+	moveq	#22,d2
 	move.l	d6,d5		; nbr of bytes in file
-	subq.w	#1,d5
-; loop to find last NOLFL, tab is NOT considered to be a non-LF character but
-; space is
+	bra.s	do_lp1
+
+; loop to find last NOLFL (char which isn't lf,tab,space)
 lp1	move.b	-(a1),d1
 	sub.b	d3,d1		; is tab ?
 	beq.s	do_lp1		; yes, continue, but don't count as LF
 	subq.b	#1,d1		; LF?
+	beq.s	add1		; yes
+	sub.b	d2,d1		; space?
 	bne.s	set_end 	; no, found last line
+	dbf	d5,lp1
+	bra	rel_mem
+add1	addq.w	#1,d0
 do_lp1	dbf	d5,lp1
-	swap	d0		; d0 .H number of LFs after last line
-	bra.s	rel_mem 	; if we get here, start of file reached, done
+	bra	rel_mem 	; if we get here, start of file reached, done
 
 ; reached last non LF char of last NOLFL, now go to start of it
-set_end move.l	a1,a5		; a5 = 1 past end of last NOLFL
+set_end move.l	a1,a5		; a5 = 1 before end of last NOLF
 endLF_1 cmp.b	-(a1),d4	; LF?
 	beq.s	end_LF2 	; yes, found start of last NOLF
 	dbf	d5,endLF_1	; go to start of it
-	bra.s	rel_mem 	; if we get here, start of file reached, done
-
-end_LF2 swap	d0		; d0 .H number of LFs after last line
-	move.l	a1,a4		; a4 = 1 past start of last NOLFL
-
+	bra	rel_mem 	; if we get here, start of file reached, done
+end_LF2
+	move.l	a1,a4		; a4 = 1 before start of last NOLFL (LF of line before that)
+	swap	d0		; d0. H = nbr of lfs after last line
 ; we're at the start of the last line, count the LFs till the preceeding NOLFL
+; ignoring spaces and tabs
+;	 addq.w   #1,d0 	  ; we found one LF already
 lp2	move.b	-(a1),d1
-	sub.b	d3,d1		; is tab ?
-	beq.s	do_lp2		; yes, ignore, but don't count
-	subq.b	#1,d1		; LF?
+	sub.b	d3,d1		; tab?
+	beq.s	do_lp2		; yes
+	subq.b	#1,d1		; lf?
+	beq.s	addd0		; yes
+	sub.b	d2,d1		; space?
 	bne.s	endchk		; no, so end of previous line reached
-	addq.w	#1,d0		; one more LF
+	dbf	d5,lp2
+	bra.s	endchk
+addd0	addq.w	#1,d0		; one more LF
 do_lp2	dbf	d5,lp2
 
+
 ; here
-; d0 counter .H LFs past last NOLFL .L = LFs between last and next to last NOLFL
+; d0 counter .H LFs after last line .L = LFs between last and next to last NOLFL
 ; d4 LF
 ; d7 threshold
 ; a0 channel ID
-; a1 last char of penultimate NOLFL
+; a1 last char of penultimate NOLFL, before its LF
 ; a3 work space
-; a4 1 past start of last NOLFL
+; a4 1 before start of last NOLFL
 ; a5 last char of last NOLFL
 
-endchk	tst.l	d7		; check only?
+
+endchk
+	tst.l	d7		; check only?
 	beq.s	rel_mem 	; yes, release mem, close chan, return d0
 
 ; maybe change file
-	sub.w	d0,d7		; is there a need to change?
-	ble.s	change		; yes
-	moveq	#0,d0		; no, return 0
-	bra.s	rel_mem
+	move.l	d7,d1
+	sub.w	d0,d1		; is there a need to change between the last two lines?
+	bgt.s	chklst		; no, check last line
 
-; must change file by moving last line up, also remove superfluous LFs at end
-change	addq.l	#1,a1		; after prenultimate line
-	move.b	d4,(a1)+	; set end of line
-	move.b	d4,(a1)+	; add one empty line
-	addq.l	#1,a4
-	addq.l	#1,a5
-cpy_lp	move.b	(a4)+,(a1)+	; copy...
-	cmp.l	a4,a5		; ... till end of last line
-	bne.s	cpy_lp
-	move.b	d4,(a1)+	; set LF at end
-	move.l	a1,d2		; end of file
-	sub.l	a3,d2		; - start of file = file length
-	moveq	#0,d1		; set file position to start of file
+	addq.l	#1,a1		; point past penultimate line
+	move.l	a1,a2
+	moveq	#$a,d2
+	move.w	d7,d1
+	subq.w	#1,d1
+addlf	move.b	d2,(a2)+
+	dbf	d1,addlf
+	addq.w	#1,a4
+	addq.w	#1,a5
+cpy	move.b	(a4)+,(a2)+
+	cmp.l	a4,a5
+	bne.s	cpy
+	move.b	d2,(a2)+
+	bra.s	modfile
+; I don't need to xhange space between prenultimate and last, but perhaps there
+; is too much rubbish after last
+chklst
+	move.l	d0,d1
+	moveq	#0,d0
+	swap	d1
+	sub.w	d1,d7		; file needs modifying?
+	bge.s	rel_mem 	; no, done
+	move.l	a5,a2
+	addq.w	#1,a2
+	move.b	d2,(a2)+
+
+modfile moveq	#-1,d3
+	move.l	a1,d1		; set file position after penultimate line
+	sub.l	a3,d1
+	move.l	a1,a5		; keep this
 	moveq	#iof.posa,d0
-	trap	#3
+	trap	#3		; position after penultimate line
+	move.l	a5,a1
+	move.l	a2,d1
+	sub.l	a2,d1
+	subq.l	#1,d1
+	moveq	#iob.smul,d0
+	trap	#3		; send last line
+
 	moveq	#iof.trnc,d0
 	trap	#3		; truncate file
-	move.l	a3,a1
-	moveq	#iof.save,d0
-	moveq	#-1,d3
-	trap	#3		; save entire file
 
 ; now set update and backup dates and version to old values
 	move.l	sb_buffb(a6),a1 ; buffer with old file header

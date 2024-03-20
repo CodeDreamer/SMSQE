@@ -1,5 +1,7 @@
 * Set default or given channel V0.4   PUBLIC DOMAIN by Tony Tebby  QJUMP
 *
+* 2022-02-03  v.0.5 close newly opened channel if error out of range (wl)
+*
 * call parameters   : a3 and a5 standard pointers to name table for parameters
 *		    : d6 channel number
 * return parameters : d4 pointer to channel table
@@ -20,7 +22,10 @@
 	xref	err_bp
 *
 	include dev8_sbsext_ext_keys
+
 *
+
+
 ut_chget
 	moveq	#-1,d6		no default
 	bra.s	ut_chan
@@ -73,12 +78,12 @@ ut_chopen
 	move.l	a3,-(sp)
 	jsr	ut..con*3+qlv.off	and open
 	move.l	(sp)+,a3
-	bne.s	ut_chexit
+	bne.s	ut_cherr
 	move.l	a0,0(a6,d4.l)
 	bra.s	ut_chok
 
 ut_chno
-	moveq	#err.no,d0	channel not open
+	moveq	#err.no,d0	 channel not open
 	bra.s	ut_chexit
 
 con_def dc.b	$ff,$1,$0,$7
@@ -89,5 +94,14 @@ ut_chok
 ut_chexit
 	move.l	(sp)+,a1
 	rts
+
+
+err.orng	equ	-4
+ut_cherr
+	addq.l	#-err.orng,d0	; was error out of range?
+	bne.s	ut_chexit	; no
+	moveq	#2,d0		; yes, close channel
+	trap	#2
+	bra.s	ut_chno 	; and return with general error
 
 	end

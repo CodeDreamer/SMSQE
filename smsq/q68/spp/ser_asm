@@ -1,5 +1,10 @@
-; Q68 SER DEVICE DEFINITION & physical routines  V2.10	 1999	Tony Tebby
-;						 V2.11	 2017	W. Lenert
+; Q68 ser device definition & general routines v1.01   2022  W. Lenerz
+
+; based on : QXL SER device definition	   V2.10    1999  Tony Tebby
+
+
+; 2023.02.23  v. 1.01 changes all over. Remove 230400 baud rate, prepare for 2 ser ports
+
 	section spp
 
 	xdef	q68_serdef
@@ -10,8 +15,6 @@
 	include 'dev8_keys_serparprt'
 	include 'dev8_keys_err'
 	include 'dev8_keys_q68'
-	include 'dev8_smsq_qxl_keys'
-	include 'dev8_smsq_qxl_comm_keys'
 	include 'dev8_mac_vecx'
 	include 'dev8_mac_assert'
 
@@ -38,6 +41,7 @@ q68_serdef
 ; If you anly want to set a word at an offset that may contain a long word,
 ; use offset+2 as entry
 ;---
+
 q68_preset
 	assert	spd_pdir,spd_hand-1
 	dc.w	spd_pdir,2,q68_prhd	; no parity, no hardware handshake
@@ -45,16 +49,18 @@ q68_preset
 	dc.w	spd_ilen+2,2,spd.ilen	; input buffer length
 	dc.w	0
 
+
 ;+++
 ; Vector table defining hardware specific IO routines
 ;---
 q68_vector
-	dc.w	spd_open,q68_open-*-2
-	dc.w	spd_close,q68_close-*-2
-	dc.w	spd_baud,q68_baud-*-2
-	dc.w	spd_iopr,q68_iopr-*-2
-	dc.w	spd_oopr,q68_oopr-*-2
-	dc.w	0
+	dc.w	spd_open,q68_open-*-2	; open
+	dc.w	spd_close,q68_close-*-2 ; close
+	dc.w	spd_baud,q68_baud-*-2	; set baud rate
+	dc.w	spd_iopr,q68_iopr-*-2	; receive bytes
+	dc.w	spd_oopr,q68_oopr-*-2	; send bytes
+	dc.w	0			; eend of list (there is NO CD active check)
+
 
 ;+++
 ; Interrupt server table
@@ -62,129 +68,124 @@ q68_vector
 q68_istable
 	dc.w	0		      ; no server
 
+
 ;+++
-; Routine to check whether a particular ports exist
+; Routine to check whether a particular port exists & get highest port nbr
 ;
-;	d0 cr	port to check / 0 if it does not exist
+;	d0 cr	port to check (starting at 1) / 0 if it does not exist
 ;	d0 cr	0 / highest port number
-;	d7    s if d0 = 0 on entry, otherwise preserved
-;	a4  r	hardware base
+;	a4  r	hardware base (only if d0<>0 on entry)
 ;
 ;	status returned as d0
 ;---
+; Note: when a machine has only one serial port, apparently SMSQE doesn't check
+; the port number when opening a ser port -it automatically uses the only
+; available ser port (and the port name doesn't show a number).  I don't like
+; that, so even for Q68 I suggest that there may be two ports, but then say that
+; port 2 doesn't exist.
+
 q68_check
 	tst.b	d0			; check highest?
 	bne.s	qsdc_portn		; no, check port n ->
-q68_ckok
-	moveq	#1,d0			; there is only one ser port
+qsdc_ckok
+	moveq	#2,d0			; return 2 existing ports, as per above
 	rts
-
 qsdc_portn
-	subq.l	#1,d0			; are we trying for port 1?
-	beq.s	q68_ckok		; yes, done->
-	clr.l	d0			; nothing else exists
+	move.l	#ser1base,a4		; hardware base for ser1
+	subq.b	#1,d0			; ser1 ?
+	beq.s	qsdc_ckok		; yes, this always exists  ->
+	subq.b	#1,d0			; ser2 ?
+	bne.s	qsdc_err		; no, so this doesn't exist ->
+	add.w	#ser_offset,a4		; hardware base for ser2
+	tst.w	qserdiff		; Q68 or Q0? (0 = q0)
+	beq.s	qsdc_ckok		; Q0, so port 2 exists
+qsdc_err
+	clr.l	d0			; port doesn't exist
 	rts
-
 
 ;+++
 ; SER port linkage / hardware initialisation
 ;
-;	a3 c  p linkage for this port
-;	a4    s hardware base
-;
 ;	status returned zero
 ;---
 q68_init
-;	 move.w  #2082,uart_prescale	 ; preset 1200 bauds
 	moveq	#0,d0
 	rts
 
 ;+++
-; SER port baud
+; SER port set baud rate
 ;
-;	d1 c  p baud rate
-;	d2 c  s
+;	d0	0 or error
+;	d1 c  s baud rate
+;	d2    s
 ;	a3 c  p SER port linkage block
+;	a4    s
 ;	all other registers preserved
 ;
 ;---
-baud.reg reg	d3/a1
+bdnbrs	equ	8			; number of allowed baud rates
 q68_baud
-	movem.l baud.reg,-(a7)
-	lea	bauds,a1
-	move.l	a1,d0
-	moveq	#8,d3
-bd_lp	cmp.l	(a1)+,d1
-	dbeq	d3,bd_lp
-	bne.s	bd_err
-	sub.l	d0,a1
-	move.l	a1,d0
-	subq.l	#4,d0
-	lsr.w	#1,d0
-bd_fnd	lea	prescale,a1
-	move.w	(a1,d0.w),uart_prescale
+	tst.l	d1			; highest baud rate wished?
+	beq.s	bd_hi			; yes
+	lea	bauds,a4		; table with allowed baud rates
+	move.l	a4,d0
+
+fnd_bd	moveq	#bdnbrs-1,d2
+bd_lp	cmp.l	(a4)+,d1		; this baud rate?
+	dbeq	d2,bd_lp		; will not take branch if yes
+	bne.s	bd_err			; no corresponding baud rate found
+	sub.l	d0,a4
+	move.l	a4,d0			; offset
+	subq.l	#4,d0			; overshot by 1
+	lsr.w	#1,d0			; LW -> W
+bd_fnd	lea	prescale,a4
+	move.w	(a4,d0.w),d0
+bd_set	move.l	spd_hbase(a3),a4	; hardware base for this serial port
+	move.w	d0,ser_prescale(a4)	; set baud prescale rate
 	moveq	#0,d0
-	movem.l (a7)+,baud.reg
 	rts
 bd_err	moveq	#err.nimp,d0
-	movem.l (a7)+,baud.reg
 	rts
+
+bd_hi	moveq	#21,d0			; set prescale for highest baud rate
+	bra.s	bd_set
+
+
 prescale				; prescaled values according to baud rate
-	dc.w	2082,1041,520,259,129,64,42,21,10
+	dc.w	2082,1041,520,259,129,64,42,21
 bauds					; allowed baud values
-	dc.l	1200,2400,4800,9600,19200,38400,57600,115200,230400
-		  
+	dc.l	1200,2400,4800,9600,19200,38400,57600,115200
 
-;//    1200 baud => 2082
-;//    2400 baud => 1041
-;//    4800 baud =>  520
-;//    9600 baud =>  259
-;//   19200 baud =>  129
-;//   38400 baud =>   64
-;//   57600 baud =>   42
-;//  115200 baud =>   21
-;//  230400 baud =>   10
-
+;+++
+; SER port close.
+;
+;	d0 c  p pointer to input buffer or 0 if none
+;	a3 c  p ser port linkage block
+;	a4    s
+;	all other registers preserved
+;	status returned according to D0
+;---
+q68_close   trap #14
+	tst.l	d0			; input queue?
+	beq.s	rx_nint 		; ... no
+	sf	spd_iact(a3)		; input no longer active
+rx_nint
+	move.l	spd_hbase(a3),a4
+	bclr	#q68..rxstat,ser_status(a4) ; disable receive interrupts
+;	 bset	 #q68..txstat,ser_status(a4) ; enable TX interrupts (to ...
+	rts				; ... make sure output queue is emptied)
 	
-;+++
-; SER port close. If there is no input buffer, it is a nop.
-;
-;	d0 c  p pointer to input buffer
-;	a3 c  p COM port linkage block
-;	all other registers preserved
-;	status returned according to D0
-;---
-q68_close
-	tst.l	 d0			 ; input queue?
-	beq.s	 rx_nint		 ; ... no
-
-;+++
-; SER port disable rx
-;
-;	a3 c  p SER port linkage block
-;	all other registers preserved
-;	status returned according to D0
-;---
-q68_rxdi
-	move.l	d0,-(sp)
-	sf	spd_iact(a3)		 ; input not active
-	move.l	(sp)+,d0
-rx_nint bclr	#q68..rxstat,uart_status ; no rx interrupt
-q68_rts
-	rts
-
-
 ;+++
 ; SER port open operation (enable rx)
 ;
-;	d0  r
+;	d0  r	0
+;	d5 c  p byte -1 output only, 0 input and output, 1 input only
 ;	a3 c  p SER port linkage block
 ;	all other registers preserved
 ;	status returned 0
 ;---
 q68_open
 	moveq	#0,d0
-;	 bra.s	 q68_rxen		  ; enable receive
 
 ;+++
 ; SER port receive input operation (re-enable rx if not enabled)
@@ -194,20 +195,21 @@ q68_open
 ;	status returned according to D0
 ;---
 q68_iopr
-	tst.b	spd_iact(a3)		; port is already active
-	bne.s	q68_ioprts
+	tst.b	spd_iact(a3)
+	bne.s	q68_ioprts		; port is already active
 
 q68_rxen
-	movem.l d0/a2,-(sp)
+	movem.l d0/a2,-(a7)
 	move.l	spd_ibuf(a3),d0 	; any buffer?
 	ble.s	q68_iopexit		; ... no
 
 	move.l	d0,a2
 	jsr	iob_room		; check for enough room
 	cmp.l	spd_room(a3),d0
-	ble.s	q68_iopexit		; ... no
-	st	spd_iact(a3)
-	bset	#q68..rxstat,uart_status ; enable receive interrupts
+	ble.s	q68_iopexit		; not enough
+	st	spd_iact(a3)		; show port is active
+	move.l	spd_hbase(a3),a2
+	bset	#q68..rxstat,ser_status(a2) ; enable receive interrupts
 q68_iopexit
 	movem.l (sp)+,d0/a2
 
@@ -221,11 +223,16 @@ q68_ioprts
 ;	a3 c  p SER port linkage block
 ;	all other registers preserved
 ;	status returned according to D0
+;
+; NB not called with jsr (a4)
 ;---
 q68_oopr
+	move.l	a2,-(a7)
 	st	spd_oact(a3)		; set output to go
-	bset	#q68..txstat,uart_status ; interrupts on
-	clr.l	d0
+	move.l	spd_hbase(a3),a2
+	bset	#q68..txstat,ser_status(a2) ; transmit interrupts on
+	move.l	(a7)+,a2
+	tst.l	d0
 	rts
 
 	end

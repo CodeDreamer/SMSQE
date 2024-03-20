@@ -1,8 +1,10 @@
-; SMSQmulator WIN Driver initialisation  V1.03 (c) W.Lenerz 2012-2020
+; SMSQmulator WIN Driver initialisation  V1.03 (c) W.Lenerz 2012-2023
 
 ; This handles linking in the driver into the OS.
 ;
-; copyright (C) w. Lenerz 2012-2020 published under the SMSQE licence
+; copyright (C) w. Lenerz 2012-2022 published under the SMSQE licence
+
+; 2022.01.08  1.04 remove unnecessary code around hdi_found, use ddf_dtop for length of physical definition
 ; v. 1.03 added WIN_REMV
 ; v. 1.02 data/prog defaults are set
 ; v. 1.01 implement win_drive & win_drive$
@@ -31,6 +33,7 @@
 
 	include 'dev8_keys_iod'
 	include 'dev8_mac_proc'
+	include 'dev8_dv3_keys'
 	include 'dev8_dd_rd_data'
 	include 'dev8_mac_config02'
 	include 'dev8_keys_java'
@@ -131,30 +134,13 @@ none	move.l	(a7)+,a1
 no_cfg	
 	lea	nfa_vect,a3		  ; set up dd linkage
 	jsr	iou_ddst
- 
 	jmp	iou_ddlk
-	jsr	iou_ddlk
-
-hdi_found
-	moveq	#sms.xtop,d0
-	trap	#do.smsq
-	lea	sys_datd(a6),a0 	 ; data default
-	bsr.s	hdi_dset
-	lea	sys_prgd(a6),a0
-hdi_dset
-	move.l	(a0),d0 		 ; set?
-	beq.s	hdi_rts
-	move.l	d0,a0
-	move.l	hdi_boot+2,2(a0)	 ; set boot device as default
-	moveq	#0,d0
-hdi_rts
-	rts
 
 hdi_boot dc.w	 9,'win1_boot'
 
 nfa_vect
 	dc.l	rdd_end 	; length of linkage
-	dc.l	rdd.plen	; length of physical definition
+	dc.l	ddf_dtop	; length of physical definition
 use_nam dc.w	3,'WIN0'	; device name (usage)
 	dc.w	3,'WIN0'	; device name (real)
 

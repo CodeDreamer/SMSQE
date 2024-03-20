@@ -1,7 +1,7 @@
-; Most of the extension things for the Recent thing   V1.00 (c) W. Lenerz, 2015
+; Most of the extension things for the Recent thing   V1.01 (c) W. Lenerz, 2015-2023
 
-;  2015-11-29	 1.00	 initial release version
-
+;  2023-07-10	 1.01	GARR/GALL : use correct regs on exit
+;  2015-11-29	 1.00	initial release version
 
 ;---------------------------------------------------------------------
 ; the list maintained is a circular lifo buffer
@@ -91,7 +91,7 @@ rcnt_info thg_extn {INFO},rcnt_jobs,p_gffm
 inforeg reg	d4/d5/a3/a4
 tinfo	movem.l inforeg,-(sp)
 	move.l	(a1),d1 		; job ID
-	cmp.l	#-3,d1			; is it for general list?
+	addq.l	#3,d1			; is it for general list?
 	beq.s	general 		; yes ->...
 	move.l	d7,d5			; keep
 	moveq	#-1,d7			; don't create heap
@@ -540,16 +540,14 @@ gerr	moveq	#err.bffl,d0		; signal buffer full
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 rcnt_gall thg_extn {GALL},rcnt_garr,p_gtal
 
-rta2.reg reg	 d1/d3-d7/a1/a3-a5
 gallreg reg	d1/d3/d7/a1/a3/a4
 	movem.l gallreg,-(sp)
-					
 	move.l	rcnt_first(a2),a3	; first element in list
 	addq.l	#4,a3			; point after ID
 	lea	rcnt_end(a2),a4 	; start of space for list
 	addq.l	#4,a4
 	move.l	(a1),d3 		; buffer size
-	beq.s	gallerr 		; ah, c'me on!
+	ble.s	gallerr 		; ah, c'me on!
 	move.l	4(a1),a1		; pointer to buffer
 	move.l	a3,d7			; keep pointer
 	clr.l	d1
@@ -602,7 +600,7 @@ cmp2	cmp.l	a3,a4			; first element reached (we've come around)?
 	bne.s	galllp2 		; no
 	clr.l	d0			; yes, done, no error
 gallout clr.w	(a1)
-	movem.l (sp)+,rta2.reg
+	movem.l (sp)+,gallreg
 	tst.l	d0
 	rts
 
@@ -628,7 +626,7 @@ gallerr clr.w	(a1)
 ;	err.ipar if the array had a null dimension or if the length of the elements
 ;		in the array is smaller than the max length of a string in the
 ;		list. NOTE: the max length of the strings in the list amay vary
-;		if a files with a longer name is added, or if the longest file
+;		if a file with a longer name is added, or if the longest file
 ;		falls out of the list.
 ;
 ;+++
@@ -637,19 +635,19 @@ gallerr clr.w	(a1)
 ;
 ; pointer to  array, NOT relative to A6 		(LW)
 ; number of elements in array				(WORD)
-; length of elements in array, INCLUDING length word	(WORD)
+; length of elements in array, INCLUDING length word and
+;			     possible make even byte	(WORD)
 ;
 ;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 garrreg reg	d1-d3/d7/a1-a4
 rcnt_garr thg_extn {GARR},rcnt_gffj,p_gtal
-		
 	movem.l garrreg,-(sp)
 	move.l	a2,a3
 	move.l	(a1),d7 		; keep ptr to array
 	move.l	#-3,(a1)		; set "job id" to "get general list"
 	jsr	tinfo			; d2 = max length of string (NOT incl.
 	move.l	a3,a2			;  ....length word) | nbr of strings
+
 	tst.w	d2
 	beq	garrout 		; there is nothing to copy: no elements in list
 	clr.l	d0
@@ -658,36 +656,42 @@ rcnt_garr thg_extn {GARR},rcnt_gffj,p_gtal
 	cmp.w	d0,d2			; do we have space for all elements in list?
 	ble.s	gr_ok1			; yes->...
 	move.w	d0,d2			; no, only this much
-gr_ok1	swap	d2			; max length of element in list
-	addq.w	#2,d2			; + length word
+gr_ok1
+	swap	d2			; max length of element in list
+	addq.w	#3,d2			; + length word + to make even
+	bclr	#0,d2			; make even
 	move.w	6(a1),d0		; length of element in array
 	cmp.w	d0,d2			; will biggest elements fit in array?
 	bgt	garrerr 		; no, so this is a real error
 	swap	d2			; d2 = nbr of elements to copy
+	subq.w	#2,d0			; don't count length word
 
-; d0 = length of element in array
+; d0 = length of element in array (-2 bytes for length word)
 ; d2 = nbr of elements to copy
 ; d7 = array
 	move.l	rcnt_first(a2),a3	; first element in list
 	addq.l	#4,a3			; point after ID
 	lea	4+rcnt_end(a2),a4	; start of space for list, after job ID of 1st element
 	move.l	d7,a1			; pointer to array
-	move.l	a3,d7			; keep pointer
+	move.l	a3,d7			; pointer to list
 	clr.l	d1
-
-garrlp1 move.w	(a3)+,d1		; bytes to copy
+garrlp1
+	move.w	(a3)+,d1		; bytes to copy
 	beq.s	garcpy1 		; none
 	move.w	d1,(a1)+		; copy length
 	move.l	d0,d3			; length of one element in array
 	sub.l	d1,d3			; number of bytes to set to 0 at end
 	subq.l	#1,d1
-garrlp2 move.b	(a3)+,(a1)+
+garrlp2
+	move.b	(a3)+,(a1)+
 	dbf	d1,garrlp2
-	subq.l	#3,d3			; minus the length word & dbf
+	subq.l	#1,d3			; minus the length word & dbf
 	blt.s	garcpy1
-garz1	move.b	#0,(a1)+		; zero out space at end (for qliberator)
+garz1
+	move.b	#0,(a1)+		; zero out space at end (for qliberator)
 	dbf	d3,garz1
-garcpy1 subq.w	#1,d2
+garcpy1
+	subq.w	#1,d2
 	beq.s	garrout 		; done copying
 	sub.l	#rc_entryl,d7		; point to previous entry
 	move.l	d7,a3
@@ -700,31 +704,38 @@ garcpy1 subq.w	#1,d2
 
 	move.l	rcnt_stop(a2),a3	; end of space for list
 	sub.l	#rc_entryl-4,a3 	; point after job ID
-	move.l	4+rcnt_first(a2),a4	  ; start of space for list
+	move.l	rcnt_first(a2),a4	; start of space for list
+	addq.l	#4,a4
 	move.l	a3,d7			; keep pointer
 
-garrlp3 move.w	(a3)+,d1		; bytes to copy
+garrlp3
+	move.w	(a3)+,d1		; bytes to copy
 	beq.s	garcpy2 		;
 	move.w	d1,(a1)+		; copy length
 	move.l	d0,d3			; length of one element in array
 	sub.l	d1,d3			; number of bytes to set to 0 at end
 	subq.l	#1,d1
-garrlp4 move.b	(a3)+,(a1)+
+garrlp4
+	move.b	(a3)+,(a1)+
 	dbf	d1,garrlp4
-	subq.l	#3,d3			; minus the length word & dbf
+	subq.l	#1,d3			; minus the length word & dbf
 	blt.s	garcpy2
-garz2	move.b	#0,(a1)+		; zero out space at end (qliberator)
+garz2
+	move.b	#0,(a1)+		; zero out space at end (qliberator)
 	dbf	d3,garz2
-garcpy2 subq.w	#1,d2
+garcpy2
+	subq.w	#1,d2
 	beq.s	garrout
 	sub.l	#rc_entryl,d7		; point to previous entry
 	move.l	d7,a3
 	cmp.l	a4,a3			; would we overshoot start of space for list?
 	bne.s	garrlp3 		; no, copy again
-garrout clr.l	d0			; yes, done, no error
+garrout
+	clr.l	d0			; yes, done, no error
 	movem.l (sp)+,garrreg
 	rts
-garrerr moveq	#err.ipar,d0
+garrerr
+	moveq	#err.ipar,d0
 	movem.l (sp)+,garrreg
 	rts
 
@@ -789,8 +800,6 @@ gj_nf	moveq	#0,d1			; nothing found, 0 length string is returned
 	bra.s	gjdocop
 
 
-
-   
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ;
 ; GALJ extension : Get ALl files for Job: fill in buffer with all files for job:
@@ -892,8 +901,6 @@ galjnjb moveq	#err.ijob,d0
 	bra.s	galjout
 
 
-
-
 ;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ;
 ; GARJ extension : Get all files into an ARray for a Job: fill in array with
@@ -938,6 +945,8 @@ rcnt_garj thg_extn {GARJ},rcnt_save,p_gtal
 	subq.l	#8,a1
 	move.l	d6,a2
 	bne	garjexit		; no heap for jobs exist
+
+tde1
 	tst.w	d2
 	beq	garfout 		; there is nothing to copy: no elements in list
 	tst.l	d3			; pointer to heap

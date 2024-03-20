@@ -1,5 +1,8 @@
-; Q68 RTC read / set	1.00 (c) W. Lenerz 2017
+; Q68 RTC read / set	1.02 (c) W. Lenerz 2017-2023
+
+; 2023-07-16  1.02  also sets time in the Q68 hardware reg, respects prot_date
 ; 2020-05-08  1.01  always use PC clock, not  sys_rtc (wl)
+
 	xdef	rtc_init
 
 	xdef	sms_rrtc	read clock
@@ -14,8 +17,20 @@
 	include 'DEV8_keys_qlhw'
 	include 'dev8_keys_err'
 	include 'dev8_mac_assert'
+	include 'dev8_keys_q68'
 
 	section sms
+ 
+stregs	reg d2-d4/d7
+
+;+++
+; Intialize SMSQE clock from hardware clock
+;
+;---
+rtc_init
+	move.l	pc_clock,sys_rtc(a6)
+	rts
+		
 
 ;+++
 ; Read real time clock
@@ -43,18 +58,85 @@ sms_artc
 ;	d1 cr	time to set (seconds) / time read
 ;---
 sms_srtc
-;	 tst.b	 sys_prtc(a6)			 ; hardware clock protected?
-;	 bne.s	 srtc_rtok			 ; yes ->
-	move.l	d1,pc_clock			; also set hardware clock
+	move.l	d1,pc_clock		; set hardware clock
+
+	tst.b	sys_prtc(a6)		; Q68 battery backed RTC protected?
+	bne.s	srtc_rtok		; ... yes, we're done
+
+	movem.l stregs,-(a7)		; also set in Q68 battery backed chip
+	bsr.s	i2strt			; prepare i2c for transmission
+
+; send some magic numbers ($d0,0)
+	moveq	#-48,d0 		; -48->$ffffffd0 (it's the d0 we need)
+	bsr.s	i2_tx			; transmit $d0
+	clr.l	d0
+	bsr.s	i2_tx			; transmit 0
+
+; send the 4 bytes, one at a time, start with LSByte
+	moveq	#3,d4			; 4 bytes to transmit
+stm_lp1 move.b	d1,d0			; start with LSByte
+	bsr.s	i2_tx
+	lsr.l	#8,d1			; next byte
+	dbf	d4,stm_lp1		; do for entire LW
+
+; stop i2c transmission
+i2stop	sf	q68_isda
+	bsr.s	delay
+	st	q68_iscl
+	bsr.s	delay
+	st	q68_isda
+
+	moveq	#0,d0
+	movem.l (a7)+,stregs
 	bra.s	srtc_rtok
 
-;+++
-; Intialize SMSQE clock from hardware clock
-;
-;---
-rtc_init
-	move.l	pc_clock,sys_rtc(a6)
+;------------------------------------
+; bit bang the byte in d0, MSbit first
+; d0.b c  s   data
+; d1	  p
+; d2	  s
+; d3	  s
+; ------------------------------------
+i2_tx	moveq	#7,d2			; loop counter for 8 bits
+tx_lp1	roxl.b	#1,d0			; get next bit (highest bit goes first)
+	scs	q68_isda
+	bcs.s	tx_wait 		; bit was set ->
+	sf	q68_isda		; bit wasn't set
+tx_wait bsr.s	delay
+
+	st	q68_iscl		; toggle clock
+	bsr.s	delay			; wait a bit
+	sf	q68_iscl
+	bsr.s	delay
+	dbf	d2,tx_lp1		; do for all 8 bits
+
+	st	q68_isda
+	bsr.s	delay
+	st	q68_iscl
+	bsr.s	delay
+	sf	q68_iscl		; toggle, and leave via delay
+
+; setup wait loop 81 times
+delay	moveq	#80,d3			; wait for this many "periods" - this....
+					; ... is an arbitrary value that works
+;--------------------------------------
+; simple delay loop
+; d0 c	s nbr of periods to wait
+; d7	s
+;---------------------------------------
+wait	swap	d3
+	swap	d3
+	dbf	d3,wait
 	rts
 
+; prepare i2c for transmission
+i2strt	st	q68_isda		; interleaved toggle of clock and data
+	bsr.s	delay
+	st	q68_iscl
+	bsr.s	delay
+	sf	q68_isda
+	bsr.s	delay
+	sf	q68_iscl
+	bra.s	delay			; return to sender from delay
 
 	end

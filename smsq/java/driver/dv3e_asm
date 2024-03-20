@@ -1,4 +1,5 @@
 ; SMSQ/E for built in DV3 drivers (c) T. Tebby / W. Lenerz 2012
+; 2022.01.08   1.02  use correct key for check for swin
 ; v. 1.01  check for swin
 
 	section header
@@ -39,9 +40,9 @@ dv3_base
 init
 	jsr	dv3_init	 ; initialise
 	jsr	fd_init
-	moveq	#jte.swin,d0
-	dc.w	jva.trpE
-	bne.s	qlf
+	moveq	#jta.swin,d0
+	dc.w	jva.trpA	 ; init HDD?
+	bne.s	qlf		 ; no
 	jsr	hd_init
 qlf	lea	qlf_table,a1
 	jmp	dv3_addfd

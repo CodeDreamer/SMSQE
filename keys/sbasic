@@ -1,440 +1,442 @@
 ; SBASIC keys
-        nolist
+	nolist
 
-sb_offs  equ    $68     ;         offset from JCB to SuperBASIC vars
-sb_vars  equ    $1e8    ;         base of SBASIC variables (rel JCB)
-sb.buffb equ    $100    ;         base of buffer (rel sb_vars)
-sb.buffs equ    $400    ;         initial buffer size
-sb.xvar  equ    $140    ;         extra variables area
-sb.prstl equ    sb.buffb+2*sb.buffs+sb.xvar ; lowest address for stack (rel sb_vars)
-sb.alstk equ    $238    ;         allocation for stack
-sb.jobsz equ    sb_vars+sb.prstl+sb.alstk-sb_offs
+sb_offs  equ	$68	;	  offset from JCB to SuperBASIC vars
+sb_vars  equ	$1e8	;	  base of SBASIC variables (rel JCB)
+sb.buffb equ	$100	;	  base of buffer (rel sb_vars)
+sb.buffs equ	$400	;	  initial buffer size
+sb.xvar  equ	$140	;	  extra variables area
+sb.prstl equ	sb.buffb+2*sb.buffs+sb.xvar ; lowest address for stack (rel sb_vars)
+sb.alstk equ	$238	;	  allocation for stack
+sb.jobsz equ	sb_vars+sb.prstl+sb.alstk-sb_offs
 
-sb.almin equ      $200  ;         minimum allocation (SuperBASIC stub)
-sb.alini equ       $80  ;         initial allocation for each bit
-sb.alinc equ       $80  ;         allocation increment for each bit
-sb.aldat equ      $800  ;         allocation unit for data area
+sb.maxnm equ	$30		  maximum job name length
 
-
-sb_bufft equ    -$64    ; long    input (etc) buffer top
-sb_cmdlt equ    -$5c    ; long    command line top
-sb_srcet equ    -$54    ; long    source program top
-sb_nmtbt equ    -$4c    ; long    name table top
-sb_nmlst equ    -$44    ; long    name list top
-sb_datal equ    -$3c    ; long    pointer to list of data blocks
-sb_chant equ    -$34    ; long    channel table top
-sb_retst equ    -$2c    ; long    return stack top
-
-sb_backl equ    -$20    ; long    parser backtrack stack limit
-sb_grphl equ    -$18    ; long    parser graph stack limit
-sb_chkhp equ    -$14    ; long    address of check heap patch
-sb_arthl equ    -$10    ; long    arithmetic stack limit
-sb_sbjob equ    -$0c    ; long    SBASIC Job
-sb_prstl equ    -$08    ; long    processor stack limit
-sb_flag  equ    -$04    ; long    SBASIC flag
-sb.flag  equ    'SBAS'
-
-sb.toffp equ      -$68            ; top pointer offset from pointer
-sb.loffp equ      -$68            ; limit pointer offset from pointer
-sb.bofpu equ      -$04            ; base pointer offset from pointer (upwards)
-sb.bofpd equ       $04            ; base pointer offset from pointer (dn stacks)
-sb.dnspr equ       $10            ; spare space above downward stacks
-
-sb_buffb equ    $00     ; long    input (etc) buffer base
-sb_buffp equ    $04     ; long    ... and pointer
-sb_cmdlb equ    $08     ; long    command line (parsed) buffer base
-sb_cmdlp equ    $0c     ; long    ... and pointer
-sb_srceb equ    $10     ; long    source program base
-sb_srcep equ    $14     ; long    ... and pointer
-sb_nmtbb equ    $18     ; long    name table base
-sb_nmtbp equ    $1c     ; long    ... and pointer
-sb_nmlsb equ    $20     ; long    name list base
-sb_nmlsp equ    $24     ; long    ... and pointer
-sb_datab equ    $28     ; long    data area base (first block)
-sb_datap equ    $2c     ; long    ... sb_datap-sb_datab is total area allocated
-sb_chanb equ    $30     ; long    channel table base
-sb_chanp equ    $34     ; long    ... and pointer
-sb_retsb equ    $38     ; long    return stack base
-sb_retsp equ    $3c     ; long    ... and pointer
-
-sb_backp equ    $48     ; long    parser backtrack stack pointer
-sb_backb equ    $4c     ; long    ... and base
-sb_grphp equ    $50     ; long    parser graph stack pointer
-sb_grphb equ    $54     ; long    ... and base
-sb_arthp equ    $58     ; long    arithmetic stack pointer
-sb_arthb equ    $5c     ; long    ... and base
-sb_prstp equ    $60     ; long    processor stack pointer
-sb_prstb equ    $64     ; long    ... and base
-
-sb_line  equ    $68     ; word    line number
-sb_stmt  equ    $6c     ; byte    statement number
-sb_cont  equ    $6d     ; byte    set to continue, 00 to stop
-sb_cmdst equ    $6e     ; byte    command line statement number
-sb_cmdl  equ    $6f     ; byte    set if command line
-sb_cmdt2 equ    $70     ; word    the offset from cmdst to token (or 0)
-sb_frdat equ    $72     ; long    free space pointer for data area
-
-sb_pmipt equ    $76     ; long    program interface pointer
-sb_pmidt equ    $7a     ; long    program interface data
-sb_pmint equ    $7e     ; byte    program interface flag
-sb.pmint equ       $ff     ;        read program from interface
-sb.pmist equ       $01     ;        return to program interface on stop
-sb_clc0  equ    $7f     ; byte    set if channel zero to be closed on run
-sb_rand  equ    $80     ; long    random number
-sb_cmdch equ    $84     ; long    command channel
-sb_nline equ    $88     ; word    next line
-sb_nstmt equ    $8a     ; byte    next statement
-
-sb_actn  equ    $8c     ; word    action number
-sb.clear equ      $00
-sb.new   equ      $02
-sb.stop  equ      $04
-sb.run   equ      $06
-sb.lrun  equ      $08
-sb.load  equ      $0a
-sb.mrun  equ      $0c
-sb.merge equ      $0e
-sb.cont  equ      $10
-sb.nact  equ      $12
-
-sb_edt   equ    $8e     ; byte
-sb.edt   equ      $ff             ; program edited
-sb.edtn  equ      $80             ; new names have been set
-sb.edtp  equ      $01             ; program has been pre-compiled
-sb_break equ    $8f     ; byte    msb clear if break
-sb_cstmt equ    $91     ; byte    continue statement
-sb_cline equ    $92     ; word    continue line
-sb_dline equ    $94     ; word    current data line
-sb_dstmt equ    $96     ; byte    current data statement
-sb_ditem equ    $97     ; byte    current data item
-sb_cmppg equ    $98     ; byte    compile program as well as command line
-;sb_lschk equ    $9b     ; byte    list range check
-;sb_lsbef equ    $9c     ; word    line number before top
-;sb_lsbas equ    $9e     ; word    bottom line number
-;sb_lsaft equ    $a0     ; word    line number after bottom
-;sb_lslen equ    $a2     ; word    list window line length
-;sb_lslin equ    $a4     ; word    list window number of lines
-;sb_lsnln equ    $a6     ; word    number of lines so far
-
-sb_auto  equ    $aa     ; byte    set for auto line number
-sb_pline equ    $ab     ; byte    set to print expanded line
-sb_edlin equ    $ac     ; word    next edit line
-sb_edinc equ    $ae     ; word    edit increment
-sb_flags equ    $b0     ; long    flags
-sb_cinst equ    $b0     ; byte    msb set if case dependent instr
-;sb_proc  equ    $b4     ; long    pointer to proc to process (NT index * 8)
-sb_redo  equ    $b8     ; byte    clear return stack and redo procedure / function
-;sb_arrow equ    $b9     ; byte    up or down
-sb_lsfil equ    $ba     ; word    fill list window to here?
-
-sb_rtmde equ    $bc     ; byte    ret stack mode (1 = line/statement no)
-sb_colrm equ    $bd     ; byte    colour specification mode (0 or iow.papx)
-
-sb_wherr equ    $be     ; word    when error clause line number
-sb_wheiu equ    $c0     ; byte    when error in use
-sb_inint equ    $c1     ; byte    in interpreter
-sb_erno  equ    $c2     ; long    error number
-sb_eline equ    $c6     ; word    error line
-sb_estmt equ    $c8     ; byte    error statement
-
-sb_pcerp equ    $cc     ; long    error position during parsing / compiling
-sb_pcern equ    $d0     ; long    error number during parsing compiling
-
-sb_hichn equ    $d4     ; long    command line history channel ID
-
-sb_qlibe equ    $dc     ; ******* QLiberator error table
-sb_cheap equ    $e0     ; ******* common heap pointer
-sb_qlibc equ    $e8     ; ******* QLiberator configuration
-sb_qlibr equ    $ec     ; ******* QLiberator runtimes
-sb_zero  equ    $fc     ; zero
-sb_dmbuf equ    $100    ; dummy buffer
-
-.x       equ    sb_dmbuf+sb.buffs+sb.buffs
-
-sb_nutbb equ    $04+.x  ; long    pointer to name usage table
-sb_nutbp equ    $08+.x  ; long    .... running pointer
-sb_nutbt equ    $0c+.x  ; long    .... top pointer
-
-sb_ptokx equ    $10+.x  ; word    extra program compiler token space (1/256ths)
-sb.ptokx equ      $40   ;           fixed extra token space
-sb_ptokb equ    $14+.x  ; long    pointer to program compile token base
-sb_ptokp equ    $18+.x  ; long    .... running pointer
-sb_ptokt equ    $1c+.x  ; long    .... top pointer
-
-sb_sttbe equ    $20+.x  ; long    statement table size estimate
-sb_sttbb equ    $24+.x  ; long    pointer to statement table base
-sb_sttbp equ    $28+.x  ; long    .... running pointer
-sb_sttbt equ    $2c+.x  ; long    .... top pointer
-
-sb_proge equ    $30+.x  ; long    program size estimate
-sb_progb equ    $34+.x  ; long    pointer to program base
-sb_progp equ    $38+.x  ; long    .... running pointer
-sb_progt equ    $3c+.x  ; long    .... top pointer
-
-sb_ctokx equ    $40+.x  ; word    extra cmd line compiler token space (1/256ths)
-sb.ctokx equ      $40   ;           fixed extra token space
-sb_ctokb equ    $44+.x  ; long    pointer to program compile token base
-sb_ctokp equ    $48+.x  ; long    .... running pointer
-sb_ctokt equ    $4c+.x  ; long    .... top pointer
-
-sb_cstbe equ    $50+.x  ; long    command line statement table size estimate
-sb_cstbb equ    $54+.x  ; long    pointer to statement table base
-sb_cstbp equ    $58+.x  ; long    .... running pointer
-sb_cstbt equ    $5c+.x  ; long    .... top pointer
-
-sb_cprge equ    $60+.x  ; long    command line program size estimate
-sb_cprgb equ    $64+.x  ; long    pointer to command program size
-sb_cprgp equ    $68+.x  ; long    .... running pointer
-sb_cprgt equ    $6c+.x  ; long    .... top pointer
-
-sb_dttbe equ    $70+.x  ; long    data statement table size estimate
-sb_dttbb equ    $74+.x  ; long    pointer to data statement table base
-sb_dttbp equ    $78+.x  ; long    .... running pointer
-sb_dttbt equ    $7c+.x  ; long    .... top pointer
-
-sb_dtste equ    $80+.x  ; long    data statement size estimate
-sb_dtstb equ    $84+.x  ; long    pointer to data statement base
-sb_dtstp equ    $88+.x  ; long    .... running pointer
-sb_dtstt equ    $8c+.x  ; long    .... top pointer
-
-sb_strtl equ    $90+.x  ; long    structure stack limit + (compile)
-sb_strtp equ    $94+.x  ; long    structure stack pointer (compile)
-sb_readp equ    $94+.x  ; long    zero or address of read operation (interpret)
-sb_unrlp equ    $98+.x  ; long    unresolved loop list (compile)
-sb_readd equ    $98+.x  ; long    data pointer at start of read (interpret)
-sb_pdata equ    $9c+.x  ; long    previous data line / statement (compile)
-sb_ndata equ    $9c+.x  ; long    pointer to next data item (interpret)
+sb.almin equ	  $200	;	  minimum allocation (SuperBASIC stub)
+sb.alini equ	   $80	;	  initial allocation for each bit
+sb.alinc equ	   $80	;	  allocation increment for each bit
+sb.aldat equ	  $800	;	  allocation unit for data area
 
 
-sb_fnbas equ    $100+.x ; byte    set if filename should include _bas
-sb_fvers equ    $102+.x ; word    version number
-sb_fname equ    $104+.x ; string  filename (excluding _bas _sav)
-sb.fname equ       $24             ; max length
+sb_bufft equ	-$64	; long	  input (etc) buffer top
+sb_cmdlt equ	-$5c	; long	  command line top
+sb_srcet equ	-$54	; long	  source program top
+sb_nmtbt equ	-$4c	; long	  name table top
+sb_nmlst equ	-$44	; long	  name list top
+sb_datal equ	-$3c	; long	  pointer to list of data blocks
+sb_chant equ	-$34	; long	  channel table top
+sb_retst equ	-$2c	; long	  return stack top
+
+sb_backl equ	-$20	; long	  parser backtrack stack limit
+sb_grphl equ	-$18	; long	  parser graph stack limit
+sb_chkhp equ	-$14	; long	  address of check heap patch
+sb_arthl equ	-$10	; long	  arithmetic stack limit
+sb_sbjob equ	-$0c	; long	  SBASIC Job
+sb_prstl equ	-$08	; long	  processor stack limit
+sb_flag  equ	-$04	; long	  SBASIC flag
+sb.flag  equ	'SBAS'
+
+sb.toffp equ	  -$68		  ; top pointer offset from pointer
+sb.loffp equ	  -$68		  ; limit pointer offset from pointer
+sb.bofpu equ	  -$04		  ; base pointer offset from pointer (upwards)
+sb.bofpd equ	   $04		  ; base pointer offset from pointer (dn stacks)
+sb.dnspr equ	   $10		  ; spare space above downward stacks
+
+sb_buffb equ	$00	; long	  input (etc) buffer base
+sb_buffp equ	$04	; long	  ... and pointer
+sb_cmdlb equ	$08	; long	  command line (parsed) buffer base
+sb_cmdlp equ	$0c	; long	  ... and pointer
+sb_srceb equ	$10	; long	  source program base
+sb_srcep equ	$14	; long	  ... and pointer
+sb_nmtbb equ	$18	; long	  name table base
+sb_nmtbp equ	$1c	; long	  ... and pointer
+sb_nmlsb equ	$20	; long	  name list base
+sb_nmlsp equ	$24	; long	  ... and pointer
+sb_datab equ	$28	; long	  data area base (first block)
+sb_datap equ	$2c	; long	  ... sb_datap-sb_datab is total area allocated
+sb_chanb equ	$30	; long	  channel table base
+sb_chanp equ	$34	; long	  ... and pointer
+sb_retsb equ	$38	; long	  return stack base
+sb_retsp equ	$3c	; long	  ... and pointer
+
+sb_backp equ	$48	; long	  parser backtrack stack pointer
+sb_backb equ	$4c	; long	  ... and base
+sb_grphp equ	$50	; long	  parser graph stack pointer
+sb_grphb equ	$54	; long	  ... and base
+sb_arthp equ	$58	; long	  arithmetic stack pointer
+sb_arthb equ	$5c	; long	  ... and base
+sb_prstp equ	$60	; long	  processor stack pointer
+sb_prstb equ	$64	; long	  ... and base
+
+sb_line  equ	$68	; word	  line number
+sb_stmt  equ	$6c	; byte	  statement number
+sb_cont  equ	$6d	; byte	  set to continue, 00 to stop
+sb_cmdst equ	$6e	; byte	  command line statement number
+sb_cmdl  equ	$6f	; byte	  set if command line
+sb_cmdt2 equ	$70	; word	  the offset from cmdst to token (or 0)
+sb_frdat equ	$72	; long	  free space pointer for data area
+
+sb_pmipt equ	$76	; long	  program interface pointer
+sb_pmidt equ	$7a	; long	  program interface data
+sb_pmint equ	$7e	; byte	  program interface flag
+sb.pmint equ	   $ff	   ;	    read program from interface
+sb.pmist equ	   $01	   ;	    return to program interface on stop
+sb_clc0  equ	$7f	; byte	  set if channel zero to be closed on run
+sb_rand  equ	$80	; long	  random number
+sb_cmdch equ	$84	; long	  command channel
+sb_nline equ	$88	; word	  next line
+sb_nstmt equ	$8a	; byte	  next statement
+
+sb_actn  equ	$8c	; word	  action number
+sb.clear equ	  $00
+sb.new	 equ	  $02
+sb.stop  equ	  $04
+sb.run	 equ	  $06
+sb.lrun  equ	  $08
+sb.load  equ	  $0a
+sb.mrun  equ	  $0c
+sb.merge equ	  $0e
+sb.cont  equ	  $10
+sb.nact  equ	  $12
+
+sb_edt	 equ	$8e	; byte
+sb.edt	 equ	  $ff		  ; program edited
+sb.edtn  equ	  $80		  ; new names have been set
+sb.edtp  equ	  $01		  ; program has been pre-compiled
+sb_break equ	$8f	; byte	  msb clear if break
+sb_cstmt equ	$91	; byte	  continue statement
+sb_cline equ	$92	; word	  continue line
+sb_dline equ	$94	; word	  current data line
+sb_dstmt equ	$96	; byte	  current data statement
+sb_ditem equ	$97	; byte	  current data item
+sb_cmppg equ	$98	; byte	  compile program as well as command line
+;sb_lschk equ	 $9b	 ; byte    list range check
+;sb_lsbef equ	 $9c	 ; word    line number before top
+;sb_lsbas equ	 $9e	 ; word    bottom line number
+;sb_lsaft equ	 $a0	 ; word    line number after bottom
+;sb_lslen equ	 $a2	 ; word    list window line length
+;sb_lslin equ	 $a4	 ; word    list window number of lines
+;sb_lsnln equ	 $a6	 ; word    number of lines so far
+
+sb_auto  equ	$aa	; byte	  set for auto line number
+sb_pline equ	$ab	; byte	  set to print expanded line
+sb_edlin equ	$ac	; word	  next edit line
+sb_edinc equ	$ae	; word	  edit increment
+sb_flags equ	$b0	; long	  flags
+sb_cinst equ	$b0	; byte	  msb set if case dependent instr
+;sb_proc  equ	 $b4	 ; long    pointer to proc to process (NT index * 8)
+sb_redo  equ	$b8	; byte	  clear return stack and redo procedure / function
+;sb_arrow equ	 $b9	 ; byte    up or down
+sb_lsfil equ	$ba	; word	  fill list window to here?
+
+sb_rtmde equ	$bc	; byte	  ret stack mode (1 = line/statement no)
+sb_colrm equ	$bd	; byte	  colour specification mode (0 or iow.papx)
+
+sb_wherr equ	$be	; word	  when error clause line number
+sb_wheiu equ	$c0	; byte	  when error in use
+sb_inint equ	$c1	; byte	  in interpreter
+sb_erno  equ	$c2	; long	  error number
+sb_eline equ	$c6	; word	  error line
+sb_estmt equ	$c8	; byte	  error statement
+
+sb_pcerp equ	$cc	; long	  error position during parsing / compiling
+sb_pcern equ	$d0	; long	  error number during parsing compiling
+
+sb_hichn equ	$d4	; long	  command line history channel ID
+
+sb_qlibe equ	$dc	; ******* QLiberator error table
+sb_cheap equ	$e0	; ******* common heap pointer
+sb_qlibc equ	$e8	; ******* QLiberator configuration
+sb_qlibr equ	$ec	; ******* QLiberator runtimes
+sb_zero  equ	$fc	; zero
+sb_dmbuf equ	$100	; dummy buffer
+
+.x	 equ	sb_dmbuf+sb.buffs+sb.buffs
+
+sb_nutbb equ	$04+.x	; long	  pointer to name usage table
+sb_nutbp equ	$08+.x	; long	  .... running pointer
+sb_nutbt equ	$0c+.x	; long	  .... top pointer
+
+sb_ptokx equ	$10+.x	; word	  extra program compiler token space (1/256ths)
+sb.ptokx equ	  $40	;	    fixed extra token space
+sb_ptokb equ	$14+.x	; long	  pointer to program compile token base
+sb_ptokp equ	$18+.x	; long	  .... running pointer
+sb_ptokt equ	$1c+.x	; long	  .... top pointer
+
+sb_sttbe equ	$20+.x	; long	  statement table size estimate
+sb_sttbb equ	$24+.x	; long	  pointer to statement table base
+sb_sttbp equ	$28+.x	; long	  .... running pointer
+sb_sttbt equ	$2c+.x	; long	  .... top pointer
+
+sb_proge equ	$30+.x	; long	  program size estimate
+sb_progb equ	$34+.x	; long	  pointer to program base
+sb_progp equ	$38+.x	; long	  .... running pointer
+sb_progt equ	$3c+.x	; long	  .... top pointer
+
+sb_ctokx equ	$40+.x	; word	  extra cmd line compiler token space (1/256ths)
+sb.ctokx equ	  $40	;	    fixed extra token space
+sb_ctokb equ	$44+.x	; long	  pointer to program compile token base
+sb_ctokp equ	$48+.x	; long	  .... running pointer
+sb_ctokt equ	$4c+.x	; long	  .... top pointer
+
+sb_cstbe equ	$50+.x	; long	  command line statement table size estimate
+sb_cstbb equ	$54+.x	; long	  pointer to statement table base
+sb_cstbp equ	$58+.x	; long	  .... running pointer
+sb_cstbt equ	$5c+.x	; long	  .... top pointer
+
+sb_cprge equ	$60+.x	; long	  command line program size estimate
+sb_cprgb equ	$64+.x	; long	  pointer to command program size
+sb_cprgp equ	$68+.x	; long	  .... running pointer
+sb_cprgt equ	$6c+.x	; long	  .... top pointer
+
+sb_dttbe equ	$70+.x	; long	  data statement table size estimate
+sb_dttbb equ	$74+.x	; long	  pointer to data statement table base
+sb_dttbp equ	$78+.x	; long	  .... running pointer
+sb_dttbt equ	$7c+.x	; long	  .... top pointer
+
+sb_dtste equ	$80+.x	; long	  data statement size estimate
+sb_dtstb equ	$84+.x	; long	  pointer to data statement base
+sb_dtstp equ	$88+.x	; long	  .... running pointer
+sb_dtstt equ	$8c+.x	; long	  .... top pointer
+
+sb_strtl equ	$90+.x	; long	  structure stack limit + (compile)
+sb_strtp equ	$94+.x	; long	  structure stack pointer (compile)
+sb_readp equ	$94+.x	; long	  zero or address of read operation (interpret)
+sb_unrlp equ	$98+.x	; long	  unresolved loop list (compile)
+sb_readd equ	$98+.x	; long	  data pointer at start of read (interpret)
+sb_pdata equ	$9c+.x	; long	  previous data line / statement (compile)
+sb_ndata equ	$9c+.x	; long	  pointer to next data item (interpret)
+
+
+sb_fnbas equ	$100+.x ; byte	  set if filename should include _bas
+sb_fvers equ	$102+.x ; word	  version number
+sb_fname equ	$104+.x ; string  filename (excluding _bas _sav)
+sb.fname equ	   $24		   ; max length
 
  ; $140+.x is the limit unless sb.xvar is changed
 
 ; name table
 
-nt_usetp equ    $00     ; word  name usage: var, array etc and type
-nt_nvalp equ    $00     ; byte  null / var / array / loop cont / proc fn
-nt.nul   equ      0
-nt.unset equ      0
-nt.var   equ      2
-nt.varst equ      $0201
-nt.varfp equ      $0202
-nt.varin equ      $0203
-nt.varli equ      $0204
-nt.arr   equ      3
-nt.arrst equ      $0301
-nt.arrfp equ      $0302
-nt.arrin equ      $0303
-nt.arrli equ      $0304
-nt.sbprc equ      4
-nt.sbfun equ      5
-nt.rep   equ      6
-nt.for   equ      7
-nt.mcprc equ      8
-nt.mcfun equ      9
+nt_usetp equ	$00	; word	name usage: var, array etc and type
+nt_nvalp equ	$00	; byte	null / var / array / loop cont / proc fn
+nt.nul	 equ	  0
+nt.unset equ	  0
+nt.var	 equ	  2
+nt.varst equ	  $0201
+nt.varfp equ	  $0202
+nt.varin equ	  $0203
+nt.varli equ	  $0204
+nt.arr	 equ	  3
+nt.arrst equ	  $0301
+nt.arrfp equ	  $0302
+nt.arrin equ	  $0303
+nt.arrli equ	  $0304
+nt.sbprc equ	  4
+nt.sbfun equ	  5
+nt.rep	 equ	  6
+nt.for	 equ	  7
+nt.mcprc equ	  8
+nt.mcfun equ	  9
 
-nt_vtype equ    $01
-nt..hash equ      7     ; preceded by hash
+nt_vtype equ	$01
+nt..hash equ	  7	; preceded by hash
 
-nt.seps  equ      4     ; shift for separators in bits 6 to 4
-nt.null  equ      0
-nt.comma equ      1     ; followed by comma
-nt.smicl equ      2     ;             semicolon
-nt.bslsh equ      3     ;             backslash
-nt.exclm equ      4     ;             exclamation mark
-nt.to    equ      5     ;             TO
+nt.seps  equ	  4	; shift for separators in bits 6 to 4
+nt.null  equ	  0
+nt.comma equ	  1	; followed by comma
+nt.smicl equ	  2	;	      semicolon
+nt.bslsh equ	  3	;	      backslash
+nt.exclm equ	  4	;	      exclamation mark
+nt.to	 equ	  5	;	      TO
 
-nt.ss    equ      0
-nt.st    equ      1
-nt.fp    equ      2
-nt.in    equ      3
-nt.li    equ      4
-nt_name  equ    $02
-nt_value equ    $04
+nt.ss	 equ	  0
+nt.st	 equ	  1
+nt.fp	 equ	  2
+nt.in	 equ	  3
+nt.li	 equ	  4
+nt_name  equ	$02
+nt_value equ	$04
 
-nt.len   equ    $08
-nt.ishft equ      3
+nt.len	 equ	$08
+nt.ishft equ	  3
 
 ; name list
 
-nl_nlen  equ    $00     ; byte    length of name
-nl_chars equ    $01     ; nl_nlen characters
+nl_nlen  equ	$00	; byte	  length of name
+nl_chars equ	$01	; nl_nlen characters
 
 ; data area
 
 ; --- block header
 
-dt_bbase equ   -$08     ; long    block base
-dt_blen  equ   -$08     ; long    block length
-dt_bnext equ   -$04     ; long    pointer to next block
-dt_data  equ    $00     ;         usable data area
+dt_bbase equ   -$08	; long	  block base
+dt_blen  equ   -$08	; long	  block length
+dt_bnext equ   -$04	; long	  pointer to next block
+dt_data  equ	$00	;	  usable data area
 
 ; --- free space
 
-dt_flen  equ    $00     ; long    length of this free
-dt_nfree equ    $04     ; long    pointer to next free relative to base of this
+dt_flen  equ	$00	; long	  length of this free
+dt_nfree equ	$04	; long	  pointer to next free relative to base of this
 
 ; --- values and strings
 
-dt_value equ    $00     ;         value in data area
-dt_flint equ    $02     ; long    flag for ints
-dt_fllong equ   $04     ; long    flag for longs
-dt_flfp  equ    $06     ; word    flag for floating points
-dt.flint equ    $BACDC917
-dt.flfp  equ    $C917
+dt_value equ	$00	;	  value in data area
+dt_flint equ	$02	; long	  flag for ints
+dt_fllong equ	$04	; long	  flag for longs
+dt_flfp  equ	$06	; word	  flag for floating points
+dt.flint equ	$BACDC917
+dt.flfp  equ	$C917
 
-dt_stalc equ   -$04     ; word    allocation
-;dt_stfix equ   -$02     ; byte    set if fixed length
-dt_flstr equ   -$01     ; byte    set
-dt_stlen equ    $00     ; word    string length
-dt_stchr equ    $02     ;         chars
+dt_stalc equ   -$04	; word	  allocation
+;dt_stfix equ	-$02	 ; byte    set if fixed length
+dt_flstr equ   -$01	; byte	  set
+dt_stlen equ	$00	; word	  string length
+dt_stchr equ	$02	;	  chars
 
 ; --- loop variables
 
-dt_frbase equ  -$2a     ;         base of allocation
-dt_frallc equ  -$2a     ; long    allocation
-dt_llimit equ  -$26     ; fp      lower limit value   (floating point loops)
-dt_ulimit equ  -$20     ; fp      upper limit value   (floating point loops)
-dt_nlimit equ  -$1a     ; fp      nominal limit value (floating point loops)
-dt_limit  equ  -$1a     ; int     limit               (integer loops)
-dt_step  equ   -$14     ; fp      step                (floating point loops)
-                        ; int     step                (integer loops)
-                        ; byte    step                (string loops)
-dt_chstp equ   -$12     ; word    char to step        (string loops)
-dt_ovflw equ   -$10     ; byte    overflow char       (string loops)
-dt_rstrt equ   -$0f     ; byte    restart char        (string loops)
-dt_range equ   -$0e     ; long    pointer to next range or 0
-dt_start equ   -$0a     ; long    start of loop
-dt_end   equ   -$06     ; long    end of loop or 0
-dt_type  equ   -$02     ; word    type -ve integer, 0 fp, +ve string (max len)
-dt.forrep equ   $30     ; allocation for FOR REP (FP, INT)
-dt.forst  equ   -dt_frallc+2+7 ; round up factor for string
+dt_frbase equ  -$2a	;	  base of allocation
+dt_frallc equ  -$2a	; long	  allocation
+dt_llimit equ  -$26	; fp	  lower limit value   (floating point loops)
+dt_ulimit equ  -$20	; fp	  upper limit value   (floating point loops)
+dt_nlimit equ  -$1a	; fp	  nominal limit value (floating point loops)
+dt_limit  equ  -$1a	; int	  limit 	      (integer loops)
+dt_step  equ   -$14	; fp	  step		      (floating point loops)
+			; int	  step		      (integer loops)
+			; byte	  step		      (string loops)
+dt_chstp equ   -$12	; word	  char to step	      (string loops)
+dt_ovflw equ   -$10	; byte	  overflow char       (string loops)
+dt_rstrt equ   -$0f	; byte	  restart char	      (string loops)
+dt_range equ   -$0e	; long	  pointer to next range or 0
+dt_start equ   -$0a	; long	  start of loop
+dt_end	 equ   -$06	; long	  end of loop or 0
+dt_type  equ   -$02	; word	  type -ve integer, 0 fp, +ve string (max len)
+dt.forrep equ	$30	; allocation for FOR REP (FP, INT)
+dt.forst  equ	-dt_frallc+2+7 ; round up factor for string
 
 ; --- arrays
 
-dt_allc  equ    -$04    ; long    space allocated to array
-dt_offs  equ    $00     ; long    offset in data area of value
-dt_nindx equ    $04     ; word    number of indices
-dt_index equ    $06               start of index descriptions
-dt_mxind equ      $00     ; word    maximum index value
-dt_mlind equ      $02     ; word    multiplier for index
+dt_allc  equ	-$04	; long	  space allocated to array
+dt_offs  equ	$00	; long	  offset in data area of value
+dt_nindx equ	$04	; word	  number of indices
+dt_index equ	$06		  start of index descriptions
+dt_mxind equ	  $00	  ; word    maximum index value
+dt_mlind equ	  $02	  ; word    multiplier for index
 
 ; channel table
 
-ch_chid  equ    $00     ; long    channel ID, -1 if unset
-ch_grphy equ    $04     ; fp      graphics y position
-ch_grphx equ    $0a     ; fp      ..... x
-ch_angle equ    $10     ; fp      turtle angle
-ch_pdwn  equ    $16     ; byte    turtle pen down
-ch_colmn equ    $20     ; word    current column
-ch_width equ    $22     ; word    width in characters
-ch.len   equ      $28
+ch_chid  equ	$00	; long	  channel ID, -1 if unset
+ch_grphy equ	$04	; fp	  graphics y position
+ch_grphx equ	$0a	; fp	  ..... x
+ch_angle equ	$10	; fp	  turtle angle
+ch_pdwn  equ	$16	; byte	  turtle pen down
+ch_colmn equ	$20	; word	  current column
+ch_width equ	$22	; word	  width in characters
+ch.len	 equ	  $28
 
 ; return stack entries
 
-rt_type  equ    -$08    byte    routine type
-rt.gosub equ      0               gosub
-rt.proc  equ      1               procedure
-rt.fun   equ      2               function
-rt.array equ      -1              reference array
+rt_type  equ	-$08	byte	routine type
+rt.gosub equ	  0		  gosub
+rt.proc  equ	  1		  procedure
+rt.fun	 equ	  2		  function
+rt.array equ	  -1		  reference array
 
 ; gosub
 
-rt.gssize equ   $08     gosub frame size
+rt.gssize equ	$08	gosub frame size
 
 ; procedures and functions
 
-rt.pfsize equ   $18     procedure/function frame size
+rt.pfsize equ	$18	procedure/function frame size
 
-rt_arstk equ    -$08    0+3 bytes (ored with rt_type) for functions only
-rt_ret   equ    -$04    long    address of return
+rt_arstk equ	-$08	0+3 bytes (ored with rt_type) for functions only
+rt_ret	 equ	-$04	long	address of return
 
-rt_parm  equ    -$18    long    first parameter pointer      (rel base of nt)
-rt_tparm equ    -$14    long    top of parameter frame       (rel base of nt)
-rt_local equ    -$14    long    first local var              (rel base of nt)
-rt_topn  equ    -$10    long    top of name table parameters (rel base of nt)
-rt_setup equ    -$10    long    (4 bytes on from) procedure call setup
-rt_def   equ    -$0c    long    proc/funct def addr (<=0 if parms swapped)
+rt_parm  equ	-$18	long	first parameter pointer      (rel base of nt)
+rt_tparm equ	-$14	long	top of parameter frame	     (rel base of nt)
+rt_local equ	-$14	long	first local var 	     (rel base of nt)
+rt_topn  equ	-$10	long	top of name table parameters (rel base of nt)
+rt_setup equ	-$10	long	(4 bytes on from) procedure call setup
+rt_def	 equ	-$0c	long	proc/funct def addr (<=0 if parms swapped)
 
 ; string slices and arrays
 
-rt.sasize equ   $08     string slice and array frame size
+rt.sasize equ	$08	string slice and array frame size
 
 ; backtrack and graph keys
 
-sbk.len  equ    $14
-sbk_itmb equ    $00     ; byte item code
-sbk_tokw equ    $02     ; word saved token (in case of subs)
-sbk_buff equ    $04     ; buffer pointer (end of item)
-sbk_grph equ    $08     ; graph pointer (to item)
-sbk_tgrp equ    $0c     ; tg stack pointer (rel the tgbas)
-sbk_tokp equ    $10     ; token list pointer (end of item)
+sbk.len  equ	$14
+sbk_itmb equ	$00	; byte item code
+sbk_tokw equ	$02	; word saved token (in case of subs)
+sbk_buff equ	$04	; buffer pointer (end of item)
+sbk_grph equ	$08	; graph pointer (to item)
+sbk_tgrp equ	$0c	; tg stack pointer (rel the tgbas)
+sbk_tokp equ	$10	; token list pointer (end of item)
 
-sgr.len  equ    $04
-sgr_btrk equ    $00     ; pointer to backtrack
+sgr.len  equ	$04
+sgr_btrk equ	$00	; pointer to backtrack
 
 ; structure stack
 
-st_type  equ    $00     ; byte structure type
-st.if    equ    0       ; if
-st.sel   equ    2       ; select
-st.def   equ    8       ; def proc / fun
-st.when  equ    10      ; when
+st_type  equ	$00	; byte structure type
+st.if	 equ	0	; if
+st.sel	 equ	2	; select
+st.def	 equ	8	; def proc / fun
+st.when  equ	10	; when
 
-st_var   equ    $01     ; control variable type
-st_indx  equ    $02     ; word control index (-ve expression)
-st_def   equ    $04     ; address of definition
-st_else  equ    $08     ; address of ELSE
-st_on    equ    $08     ; address of last ON
-st_next  equ    $08     ; address of last NEXT
-st_onrem equ    $0c     ; set if remainder encountered
-st_exit  equ    $0c     ; address of last EXIT
-st_count equ    $0e     ; count of intermediate clauses
-st.elen  equ    $10
+st_var	 equ	$01	; control variable type
+st_indx  equ	$02	; word control index (-ve expression)
+st_def	 equ	$04	; address of definition
+st_else  equ	$08	; address of ELSE
+st_on	 equ	$08	; address of last ON
+st_next  equ	$08	; address of last NEXT
+st_onrem equ	$0c	; set if remainder encountered
+st_exit  equ	$0c	; address of last EXIT
+st_count equ	$0e	; count of intermediate clauses
+st.elen  equ	$10
 
 ; arithmetic stack keys
 
-ar.null  equ    0       ; null on stack
-ar.strng equ    1       ; string on stack
-ar.adds  equ    -1      ; address of string on stack
-ar.float equ    2       ; float on stack
-ar.int   equ    3       ; integer on stack
-ar.long  equ    4       ; long on stack
+ar.null  equ	0	; null on stack
+ar.strng equ	1	; string on stack
+ar.adds  equ	-1	; address of string on stack
+ar.float equ	2	; float on stack
+ar.int	 equ	3	; integer on stack
+ar.long  equ	4	; long on stack
 
-ar.ovrn  equ    32      ; stack overrun allowance
-ar.allc  equ    96      ; stack allocation unit
+ar.ovrn  equ	32	; stack overrun allowance
+ar.allc  equ	96	; stack allocation unit
 
 ; Name Usage
 
-us..proc equ    0       ; procedure
-us..fun  equ    1       ; function
-us..ary  equ    2       ; array (DIM)
-us..var  equ    3       ; variable (LET, FOR or REP)
-us..lary equ    4       ; local array (LOCAL)
-us..lvar equ    5       ; local variable (LOCAL)
-us..fprm equ    6       ; formal parameter (DEF PROC, DEF FN)
-us..vtyp equ    7       ; variable type
+us..proc equ	0	; procedure
+us..fun  equ	1	; function
+us..ary  equ	2	; array (DIM)
+us..var  equ	3	; variable (LET, FOR or REP)
+us..lary equ	4	; local array (LOCAL)
+us..lvar equ	5	; local variable (LOCAL)
+us..fprm equ	6	; formal parameter (DEF PROC, DEF FN)
+us..vtyp equ	7	; variable type
 
-us.proc  equ    $01     ; procedure
-us.fun   equ    $02     ; function
-us.ary   equ    $04     ; array (DIM)
-us.var   equ    $08     ; variable (LET, FOR or REP)
-us.lary  equ    $10     ; local array (LOCAL)
-us.lvar  equ    $20     ; local variable (LOCAL)
-us.fprm  equ    $40     ; formal parameter (DEF PROC, DEF FN)
-us.vtyp  equ    $80     ; variable type
+us.proc  equ	$01	; procedure
+us.fun	 equ	$02	; function
+us.ary	 equ	$04	; array (DIM)
+us.var	 equ	$08	; variable (LET, FOR or REP)
+us.lary  equ	$10	; local array (LOCAL)
+us.lvar  equ	$20	; local variable (LOCAL)
+us.fprm  equ	$40	; formal parameter (DEF PROC, DEF FN)
+us.vtyp  equ	$80	; variable type
 
 ; Statement Table
 
-st_line  equ    $00     ; line number in statement table
-st_stmt  equ    $02     ; statement number
-st_addr  equ    $04     ; address in program
-st.len   equ      8       ; lengtn of entry
-st.shift equ      3       ; and shift
+st_line  equ	$00	; line number in statement table
+st_stmt  equ	$02	; statement number
+st_addr  equ	$04	; address in program
+st.len	 equ	  8	  ; lengtn of entry
+st.shift equ	  3	  ; and shift
 
-bo.stmt  equ    $ff     ; statement flag in ixtable
+bo.stmt  equ	$ff	; statement flag in ixtable
 
-        list
+	list

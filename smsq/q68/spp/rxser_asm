@@ -1,9 +1,10 @@
-; Q68 Receive data from port	 2000	     Tony Tebby
-;				 2017	     W. Lenerz
-
-
-; this just takes a byte out of the hardware FIFO and puts it into
-; the SER input queue
+; Q68 Receive data from port	 2017-2023	  W. Lenerz
+;
+; based on
+;
+; QXL Receive data from port	 2000	     Tony Tebby
+;
+; 2023.02.18	v1.01	Chains to tx. Can handle 2 ser ports (wl).
 
 	section spp
 
@@ -13,24 +14,35 @@
 	xref	iob_room
 	xref	iob_eof
 
+	xref	spp_txser		; check 2 ports for sending
+	xref	q68_txser		; check 1 port for sending
+
+
 	include 'dev8_keys_q68'
 	include 'dev8_keys_serparprt'
+	include 'dev8_keys_sys'
 
 ;+++
 ; Receive data from port
 ;
-;	d1 c  s port number
-;
+;	a3 c  p linkage area for port 1
 ;---
-
-rxregs	reg	d0/d1/d3/a1/a2/a3
 spp_rxser
-	btst	#q68..rxmpty,uart_status ; receive buffer empty?
+	bsr.s	srxp_get		; get data for port 1
+
+	tst.w	qserdiff		; Q0?
+	bne	q68_txser		; no, go directly to tx
+
+	pea	spp_txser		; go to tx routine after...
+	add.w	#spd.len,a3		; ... this : get data for port 2
+
+srxp_get
+	move.l	spd_hbase(a3),a4	; port hardware base
+	btst	#q68..rxmpty,ser_status(a4) ; receive buffer empty?
 	bne.s	srxp_exit		; yes, done ->
-	move.b	uart_rxdata,d1		; always get data
-	move.l	q68_ser_link,a3
+
 	tst.b	spd_iact(a3)		; is input active?
-	beq.s	srxp_exit		; no nothing to get, then : bye ->
+	beq.s	srxp_exit		; no, nothing to get, then : bye ->
 	move.l	spd_ibuf(a3),d0 	; input queue
 	ble.s	srxp_exit		; there is none ->
 	move.l	d0,a2
@@ -40,10 +52,10 @@ spp_rxser
 	ble.s	srxp_noinput		; =0: no room left - disable input
 	cmp.l	#15,d3			; not more than 16 bytes a pop
 	blt.s	srxp_loop
-	moveq	#14,d3
-	bra.s	rx_chk
+	moveq	#15,d3			; get 16 bytes (if there are any)
 srxp_loop
-	move.b	uart_rxdata,d1		; get data
+	move.b	ser_rxdta(a4),d1	; get byte from hardware
+
 ; now check for CTRL Z etc
 rx_chk	move.b	spb_fz(a2),d0		; <FF> or CTRL Z
 	subq.b	#1,d0
@@ -68,9 +80,10 @@ srxp_ckcr
 srxp_pbyt
 	jsr	iob_pbyt		; put byte in buffer
 srxp_eloop
-	move.b	uart_status,d1		; ser port status
+	move.b	ser_status(a4),d1	; ser port status
 	andi.b	#q68.rxand,d1		; receive buffer empty ?
 	bne.s	srxp_exit
+srxp_dolp
 	dbf	d3,srxp_loop
 srxp_exit
 	rts
@@ -78,7 +91,5 @@ srxp_exit
 srxp_noinput
 	sf	spd_iact(a3)		; inactivate input
 	rts
-
-spp_rxend
 
 	end

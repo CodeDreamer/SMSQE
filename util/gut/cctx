@@ -3,6 +3,7 @@ dev8_util_gut_exvt_rel
 dev8_util_gut_fexec_rel
 dev8_util_gut_fexnm_rel
 dev8_util_gut_mexec_rel
+dev8_util_gut_crjb_rel
 dev8_util_gut_lchp_rel
 dev8_util_gut_mkfll_rel
 dev8_util_gut_flinf_rel
@@ -24,6 +25,7 @@ dev8_util_gut_home_rel
 dev8_util_gut_tpadd_rel
 dev8_util_gut_thex_rel
 dev8_util_gut_thexn_rel
+dev8_util_gut_thcrn_rel
 dev8_util_gut_hkuse_rel
 dev8_util_gut_thuse_rel
 dev8_util_gut_thjmp_rel

@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.38'
+smsq_vers equ	 '3.39'
 
 	end
 	    
@@ -13,6 +13,18 @@ smsq_vers equ	 '3.38'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
+; 3.39	QLSD: Fixed D1 return of iof.rhdr (MK).
+;	Q-emulator version added (DT).
+;	EXEP_M, EXEP_W and function variants added (wl).
+;	DLIST, CKEYON/OFF bugfix (wl).
+;	Max name length for Sbasic job is now 48 characters (wl).
+;	SER port flow command fixed (note that SMSQE doesn't actually implement software xoff, xon...) (wl).
+;	Q68 mouse and SER handling improved (wl).
+;	Q68 more config items (led at boot timen different home/end keys) (wl).
+;	Q68 Time setting routines also set time in the Q68 hardware register, respecting PROT_DATE (wl).
+;	SMSQmulator serial port and better keyboard reading (wl).
+;	SMSQmulator fixed nfa and sfa physical defn length (wl).
+;
 ; 3.38	WMAN can now draw indexes (AH).
 ;	SOUND command renamed to SOUND_AY b/c of clash with SOUND device (MK).
 ;	A single QSOUND channel can now address several chips at once (MK).

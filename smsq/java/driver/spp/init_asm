@@ -1,0 +1,43 @@
+; SMSQmulator SER PAR PRT device initialisation  v. 1.00   2023 W. Lenerz
+
+; based on  SER PAR PRT device initialisation V2.10    1999 Tony Tebby
+;
+;
+; 2023.03.10	1.00  initial release version (wl)
+
+
+	section spp
+
+	xdef	jva_spp_init
+
+	xref	spp_init
+	xref	spp_defs
+	xref	jva_pardef
+	xref	jva_serdef
+
+	include 'dev8_mac_vecx'
+	include 'dev8_keys_qdos_sms'
+
+;+++
+; SPP driver initialisation.
+;
+;	a1-a3  scratch
+;	status return standard
+;---
+jva_spp_init
+	lea	spp_defs,a1		; do not setup a poll routine to check for
+	clr.w	10(a1)			; a carrier detect timout.
+	lea	jva_par,a1
+	lea	jva_ser,a2
+	jmp	spp_init
+
+; the definitions
+
+jva_par
+	vec	jva_pardef		; PAR driver
+	novec
+jva_ser
+	vec	jva_serdef		; SER driver
+	novec
+
+	end

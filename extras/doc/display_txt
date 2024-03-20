@@ -1008,7 +1008,7 @@ SP_GET #1,0,address,first,totcol%
 
 SP_SET [#channel,] [number,] address, first, count
 
-Sets the system palette entries, the addres pointing to a space contianing
+Sets the system palette entries, the addres pointing to a space containing
 the colours. The parameters are similar to those for SP_GET.
 
 
@@ -1196,7 +1196,7 @@ rem	 the x csize (0 ... 3), same as for the CSIZE command
 rem   y_csize%
 rem	 the y csize (0 or 1), same as for the CSIZE command
 rem
-rem   If there is any error in the parameters, this jusy gives up silently
+rem   If there is any error in the parameters, this just gives up silently
 rem   without generating an error
 rem
 local appsub_nbr%,appsub

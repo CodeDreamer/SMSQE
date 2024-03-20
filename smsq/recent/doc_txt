@@ -963,9 +963,11 @@ This might be used as follows:
 	str_len%=0
 	str_nbr%=0
 	str_max%=0
-	blength=RCNT_INFO(,0,str_nbr%,str_len%,str_max%): rem get info on size
-	buffer=ALCHP(blength)				: rem get buffer
-	result%=RCNT_GALL (blength,buffer)
+	blength=RCNT_INFO(0,str_nbr%,str_len%,str_max%): rem get info on size
+	if blength>0
+	  buffer=ALCHP(blength) 			  : rem get buffer
+	  result%=RCNT_GALL (blength,buffer)
+	endif
 
 Perhaps a better way to get the filenames for the basic programmer is the
 RCNT_GARR function.
