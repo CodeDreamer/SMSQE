@@ -35,7 +35,7 @@ nm
 	xref	qpc_patchfpu
 	xref	hdop_init
 	xref	nfa_init
-	xref	mem_init
+;	 xref	 mem_init
 	xref	sfa_init
 	xref	win_init
 	xref	sms_hdop
@@ -81,7 +81,7 @@ start	jsr	hdop_init
 	jsr	history_init
 	jsr	sfa_init
 	jsr	nfa_init
-	jsr	mem_init
+;	 jsr	 mem_init
 	jsr	win_init		; keep as last file device driver
 	jsr	ssss_init
 	jsr	snd_init

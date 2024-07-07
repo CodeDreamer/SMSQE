@@ -1,9 +1,10 @@
-; DV3 Q68 SDHC (WIN) Driver initialisation 1.02  W. Lenerz 2016 - 2020
+; DV3 Q68 SDHC (WIN) Driver initialisation 1.03  W. Lenerz 2016 - 2024
 ;
 ; based on
 ;
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
 
+; 2024-04-24	1.03  preset "correct" drive names (wl)
 ; 2020-11-27	1.02  card_speedup added, removed test code (wl)
 ;		1.01  don't check for card 2 init, config items rearranged (wl)
 
@@ -43,7 +44,7 @@ win_init
 	jsr	dv3_link		; link in driver
 	tst.l	d0
 	bne.s	out			; ooops!
-	
+
 	lea	hd_proctab,a1
 	move.w	sb.inipr,a2
 	jsr	(a2)			; link in procedures
@@ -77,7 +78,7 @@ norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
 	move.l	d6,a1
 	dbf	d7,norm_lp
 
-done	jsr	cpy2mem 		; copy routines into fast mem
+done	jsr	cpy2mem 		; copy routines into fast mem, removed in 1.03
 	movem.l (a7)+,cpyreg
 	moveq	#0,d0			; done
 out	rts
@@ -216,8 +217,8 @@ hd_proctab
 q68_wn1 dc.w   13,8
 	dc.w   'QLWA.WIN',0,0
 
-q68_wn2 dc.w   13,8
-	dc.w   'QLWA.WIN',0,0
+q68_wn2 dc.w   13,9
+	dc.w   'QLWA2.WIN',0
 
 q68_wn3 dc.w   13,9
 	dc.w   'QLWA3.WIN',0

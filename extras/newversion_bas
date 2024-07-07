@@ -98,10 +98,10 @@
 1040   check_and_set_win4              : REMark check win4 can be used
 1050   CLS#ichan%
 1060   IF make_binaries%
-1070     INPUT #ochan%,"Compile everything and recreate binaries first? (y/n) ";a$
+1070     INPUT #ochan%,"Delete old compilation files, then compile everything and recreate binaries first? (y/n) ";a$
 1080     IF a$=="y"
 1090       PRINT "Compiling and creating binaries...."
-1100       EW dev8_extras_exe_SMSQEmake;"-q0 -as -mk -ta -sa"
+1100       EW dev8_extras_exe_SMSQEmake;"-q0 -as -mk -ta -sa -de"
 1110      END IF
 1120     PRINT #ochan%,"Making Q68 win container..."
 1130     make_q68_win ""
@@ -496,7 +496,7 @@
 5020 REMark Ensure that all non source files have been erased first!
 5030 LOCal zip$
 5040   PRINT#ochan%, "Zipping all sources into one zip file... "
-5050   do_zip " -Q4r9 "&ddr$&"smsqe"&svers$&".zip"&" dd_* dv3_* ee_* extras_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* uti_* util_* nfa1_qxl_* changes_txt readme_txt styleguide_txt whats_new_txt licence_doc licence_txt "
+5050   do_zip " -Q4r9 "&ddr$&"smsqe"&svers$&".zip"&" dd_* dv3_* ee_* extras_* iod_* keys_* lang_* mac_* minerva_* sbsext_* smsq_* sys_* uti_* util_* nfa1_qxl_latest_* changes_txt readme_txt styleguide_txt whats_new_txt licence_doc licence_txt "
 5060 END DEFine zip_all_sources_into_one_file
 5070 :
 5080 DEFine PROCedure zip_Win_file

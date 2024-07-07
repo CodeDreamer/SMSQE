@@ -1,14 +1,14 @@
-; SMSQ Q68 Hardware Initialisation Copyright (c) W. Lenerz 2016-2020
-; inspired by the q40 hwinit routine
-
-; 2023-04-24  1.04 add light led when booting config item, no need to clear kbd_unlock
+; SMSQ Q68 Hardware Initialisation 1.05 Copyright (c) W. Lenerz 2016-2024
 ;
-
+; 2024-04-29  1.05 added "Use 16 bit access if available?" config item (wl)
+; 2023-04-24  1.04 add light led when booting config item, no need to clear kbd_unlock (wl)
 ; 1.03 remove card init config item, add card speed items, check for hardware revision; stop ethernet interrupts
-;      reset ethernet interrupt blocker after reset, remove kbd delay config item
+;      reset ethernet interrupt blocker after reset, remove kbd delay config item (wl)
 ;
 ; 1.02 added kbd delay config item
-
+   
+; inspired by the q40 hwinit routine
+   
 ; Called with A7 a valid, safe stack
 ; The hardware is initialised.
 ; If d7 = 0	the RAM is setup.
@@ -78,7 +78,7 @@ qcf_curs	dc.b	 1	; 1d
 qcf_bgio	dc.b	 0	; 1e
 qcf_ctrc	dc.b	 0	; 1f
 q68_kbdtyp	dc.b	 1	; 20
-
+q68_16bit	dc.b	 1	; 21
 
 	xref.l	smsq_vers
 
@@ -134,6 +134,9 @@ noyes	  mkcfitem 'OSPU',code,'U',qcf_curs,,,\
 
 	  mkcfitem 'Q68M',code,0,q68_fst2,,,\
 	  {Card 2 : Use faster (40 MHz) SD Card speed if available?},.noyes
+
+	  mkcfitem 'Q68O',code,0,q68_16bit,,,\
+	  {Use 16 bit access if available?},.noyes
 
 	  mkcfitem 'Q68N',code,0,q68_kbdtyp,,,\
 	  {Use standard home/end keys?},.noyes
@@ -197,6 +200,9 @@ hwinit
 	tst.l	d7
 	bne.s	hw_rev
 	move.b	qcf_ismode,d0
+
+	move.b	 q68_16bit(pc),d1	; use 16 bit access?
+	beq.s	 vers1			; no, so no 40 Mhz either
 
 ; test for hardware revision
 hw_rev	sf	mmc1_40hz		; if v1, this doesn't change value
@@ -265,5 +271,17 @@ mod_table
 	dc.l	$4200-4,$c000		 ; second slice (leave room for vectors)
 	dc.l	$10000,$17d00-4 	 ; third slice
 	dc.l	0
+
+machine 				; table of machine types
+	dc.l	sys.mq68
+	dc.l	'Q68 '
+	dc.l	sys.mq0
+	dc.l	'Q0 '
+	dc.l	sys.mqig
+	dc.l	'QIGD'
+
+
+
+
 
 	end

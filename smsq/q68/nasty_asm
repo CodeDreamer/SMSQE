@@ -1,5 +1,8 @@
-; Nasty Initialisation for Q68 1.01 (c) W. Lenerz  2016-2020
-; 1.01	 get kbd delay and set at q68_dlay ($170dc)
+; Nasty Initialisation for Q68 1.02 (c) W. Lenerz  2016-2024
+
+; 2024-05-04 1.02  remove reference to keyboard delau
+;	     1.01   get kbd delay and set at q68_dlay ($170dc)
+;
 ; There's nothing really nasty here.
 
 	section header
@@ -68,10 +71,10 @@ nasty_base
 	lea	sms_artc,a0
 	move.l	a0,(a5)+
 	clr.l	d0
-	move.w	sms.conf+q68.cfgkb,d0
-	move.w	q68_tmrmul,d1
-	mulu	d1,d0
-	move.l	d0,kbd_dlay
+;	 move.w  sms.conf+q68.cfgkb,d0
+;	 move.w  q68_tmrmul,d1
+;	 mulu	 d1,d0
+;	 move.l  d0,kbd_dlay
 
 nasty_done
 	jmp	rtc_init

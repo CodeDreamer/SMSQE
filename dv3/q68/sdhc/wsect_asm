@@ -1,5 +1,6 @@
-; DV3 SDHC Write Sector for Q68  1.03	 2016-2020 W. Lenerz
+; DV3 SDHC Write Sector for Q68  1.05	 2016-2024 W. Lenerz
 ;
+; 1.05 2024-04-13 removed debug code
 ; 1.04 2020-05-12 implement 16 bit write (needs new firmware) (wl)
 ; 1.03 2018-05-09 save D6, use sysvars for card type (wl)
 ; 1.02 delete multisector write = SMSQE actually NEVER writes more than one sector, anyway
@@ -26,7 +27,6 @@
 	include 'dev8_keys_q68'
 
 sendreg reg	d1-d7/a1-a3
-
 
 ;+++
 ; This routine writes a sector to an sd(hc) card, normally for direct sector I/O.
@@ -58,6 +58,10 @@ hdw_inus
 hd_wsint
 	jsr	hd_hold 		; hold the drive for me
 	bne	hdw_inus		; can't
+
+	move.b	q68_slug,-(a7)
+	sf	q68_slug
+
 	movem.l sendreg,-(a7)
 	lea	hdl_unit-1(a3),a2	; point to "unit" = card for ths drive
 	clr.l	d4
@@ -71,24 +75,8 @@ hd_wsint
 	blt	hdw_err 		; card isn't initialized
 no_l	st	drv_cs(a2)		; enable the card
 
-;;;;; debug code --------------------------------
-	genif	debug = 1
-
-	cmp.l	#'gold',q68_jflg
-	bne.s	nodebug
-	move.l	d4,d1
-	move.l	ddf_psoff(a4),d4
-
-					; java interface
-	move.l	d0,-(a7)		; will be popped up in java
-	moveq	#jd3.wsec,d0
-	dc.w	jva.trpa		; d0 will be set
-	bra.s	hdw_dis
-nodebug
-	endgen
-;;;;; end debug code  ------------------------------
-						
 	move.l	d0,d7			; (first) sector to write
+
 	tst.b	q68_v2			; hardware v2?
 	beq	eight_bit		; no->
 
@@ -117,7 +105,7 @@ lp	st	drv_xfer(a2)		; get another byte back from card
 ; now write 512 bytes, 16 bytes a pop
 	lea	drv_xfer(a2),a3
 	add.w	#drv_writ,a2
-	move.w	#31,d3
+	moveq	#31,d3
 sendlp
 	move.w	(a1)+,(a2)		; copy word to write port
 	move.b	d5,(a3) 		; start transfer
@@ -143,6 +131,7 @@ sendlp
 	st	(a2)			; dumy write
 
 	sub.w	#drv_writ,a2		; point start port again
+
 waitlp	st	(a3)
 	cmp.b	#$ff,drv_read(a2)	; still busy?
 	bne.s	waitlp			; yes ->
@@ -153,6 +142,7 @@ waitlp	st	(a3)
 hdw_ok	moveq	#0,d0			; done and ok
 hdw_dis clr.b	drv_cs(a2)		; disable the card
 hdw_out movem.l (a7)+,sendreg
+	move.b	(a7)+,q68_slug
 	tst.l	d0			; necessary due to clr.b
 	jmp	hd_release		; release & return
 hdw_err
@@ -185,7 +175,7 @@ blk_ad8 moveq	#24,d0
 ; now write 512 times one byte, 8 bytes a pop
 	lea	drv_xfer(a2),a3
 	add.w	#drv_writ,a2
-	move.w	#63,d3
+	moveq	#63,d3
 sendlp8
 	move.b	(a1)+,(a2)		; copy byte to write port
 	st	(a3)			; start transfer

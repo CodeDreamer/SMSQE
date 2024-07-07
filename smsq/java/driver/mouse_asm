@@ -1,4 +1,6 @@
-; SMSQmulator Mmuse Routine  V1.01 (c) W. Lenerz 2012
+; SMSQmulator Mmuse Routine  V1.02 (c) W. Lenerz 2024
+
+; 2024-04-10  1.02 no need to set pt_xinc & pt_yinc anymore
 ; 1.01	handles mouse wheel
 
 ; this is called from the polling interrupt
@@ -38,26 +40,8 @@ smsh.reg reg	a4/a5
 	bmi.s	mse_wheel		; can't be neg, so mouse didn't move, check buttons
 	move.l	d1,pt_npos(a4)
 	move.l	#-1,(a5)		; signal mouse didn't move
-	move.l	jva_mrel-jva_mpos(a5),d1; mouse relative mvt
 
-; I have no idea why the following code adapted from the qxl mouse routines works
-
-	move.w	d1,d0			; supposed count
-	bpl.s	mse_ycount		; ... its positive
-	neg.w	d0
-mse_ycount
-	swap	d1
-	tst.w	d1			; other supposed count
-	bge.s	mse_addinc		; ... its positive
-	neg.w	d1
-mse_addinc
-	add.w	d1,d0			; total count
-	add.w	pt_xicnt(a4),d0 	; total so far
-	lsr.w	#1,d0			; reduced
-	add.b	pt_wake(a4),d0		; wake up speed
-	lsr.w	#1,d0
-	addq.w	#1,d0			; make sure that there is a move
-	move.w	d0,pt_xicnt(a4) 	; update count
+	addq.w	#4,pt_xicnt(a4) 	; update count
 
 ; check wheel
 mse_wheel
@@ -71,6 +55,7 @@ mse_wheel
 	swap	d1			; char
 mse_whl jsr	ioq_pbyt		; put byte in kbd queue
 mse_dwh dbf	d2,mse_whl
+
 ; now check mouse buttons
 mse_bttn
 	move.b	1+jva_mbtn-jva_mpos(a5),d1 ; button clicked

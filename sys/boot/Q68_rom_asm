@@ -21,7 +21,7 @@ base
 					; at a sector start on the disk
 ID	dc.w	14,'  Q68       ',$0a0a
 
-user	st	led
+user
 	clr.b	ini_ouch		; clear debug flag
 	move.w	#$2700,sr
 	move.l	#ini_sstk,a1	       ; copy to here (above smsq stack)
@@ -42,5 +42,11 @@ trailer
 	dc.l	0			 ; fixup
 last_zero
 	dc.l	0
+
+
+
+
+
+
 
 	end

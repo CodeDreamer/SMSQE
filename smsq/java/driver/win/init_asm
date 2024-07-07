@@ -1,16 +1,17 @@
-; SMSQmulator WIN Driver initialisation  V1.03 (c) W.Lenerz 2012-2023
+; SMSQmulator WIN Driver initialisation  V1.05 (c) W.Lenerz 2012-2024
 
 ; This handles linking in the driver into the OS.
 ;
-; copyright (C) w. Lenerz 2012-2022 published under the SMSQE licence
+; copyright (C) w. Lenerz 2012-2024 published under the SMSQE licence
 
+; 2024-04-24  1.05 added WIN_WP
 ; 2022.01.08  1.04 remove unnecessary code around hdi_found, use ddf_dtop for length of physical definition
-; v. 1.03 added WIN_REMV
-; v. 1.02 data/prog defaults are set
-; v. 1.01 implement win_drive & win_drive$
-; v. 1.00 device is called WIN
-; v. 0.01 functional
-; v. 0.00 stub
+;	      1.03 added WIN_REMV
+;	      1.02 data/prog defaults are set
+;	      1.01 implement win_drive & win_drive$
+;	      1.00 device is called WIN
+;	      0.01 functional
+;	      0.00 stub
 ; based on:
 ; RAM Disk disk initialisation	V2.02	 1985	Tony Tebby   QJUMP
 
@@ -42,10 +43,10 @@
 
 maxchars  equ	96
 
-	mkcfhead  {WIN Drives},'1_00'
+	mkcfhead  {WIN Drives},'1_05'
 
 noyes	mkcfitem 'JVW0',code,'D',disable,,,\
-       {Disable WIN drives?} \
+	{Disable WIN drives?} \
 	0,N,{No},1,Y,{Yes}
 
 
@@ -172,7 +173,7 @@ null	dc.w	0		; external interrupt server (none)
 	dc.w	0		; write sector
 	dc.w	-1
 
-; the basic procedures (in driver_nfa_use and driver_nfa_useq)
+; the basic procedures (in driver_nfa_use, driver_nfa_useq, driver_win_remv)
 	section procs
 
 proctab
@@ -180,6 +181,7 @@ proctab
 	proc_def WIN_USE
 	proc_def WIN_DRIVE
 	proc_def WIN_REMV
+	proc_def WIN_WP
 	proc_end
 	proc_stt
 	proc_def WIN_USE$ , win_useq

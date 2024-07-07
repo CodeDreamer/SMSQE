@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.40'
+smsq_vers equ	 '3.41'
 
 	end
 	    
@@ -13,6 +13,14 @@ smsq_vers equ	 '3.40'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
+; 3.41	Q68 16-bit SD card access OK with QUB and FAt drives and with SLUG set
+;	Q68 deleted some unnecessary code and corrected FAT card numbers (wl).
+;	Q68 save slug setting only if actually beeping (wl).
+;	Q68 SERT ports work for Q68, Q0 and Qimsi Gold (wl).
+;	SMSQmulator added WIN_WP, deleted some unnecessary code for mouse (wl).
+;	SMSQmulator xxx_USE($) correct math stack handling (wl).
+;	SMSQmulator correct param for ql screen emulation (wl).
+;
 ; 3.40	Qimsi PS2 keyboard routines integrated (wl).
 ;
 ; 3.39	QLSD: Fixed D1 return of iof.rhdr (MK).

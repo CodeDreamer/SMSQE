@@ -1,8 +1,10 @@
-; SMSQMuator control thing	copyright (c) w. Lenerz 2017-2020
+; SMSQMuator control thing 1.04 copyright (c) w. Lenerz 2017-2024
 
-; v. 1.03 removed test & dead code
-; v. 1.02 added logon, logoff
-; v. 1.01 added jva_minimize
+; versions (all wl)
+; 2024-04-29   1.04 added JVA_NATFILE$
+;	       1.03 removed test & dead code
+;	       1.02 added logon, logoff
+;	       1.01 added jva_minimize
 
 
 	include 'dev8_mac_basic2'
@@ -100,6 +102,10 @@ jvaaddr move.l	#256,d7
 	dc.l	'HADD'
 jvalon	proc	{LON }
 jvaloff proc	{LOFF}
+jvanatf move.l	#256,d7
+	bsr	fun_thg
+	dc.l	'NATF'
+
 
 ; create the keywords
 proctab
@@ -144,6 +150,7 @@ proctab
 	proc_ref JVA_NETADDR$ , jvaaddr
 	proc_ref EMU_NETADDR$ , jvaaddr
 	proc_ref JVA_SOUNDING , jvasndi
+	proc_ref JVA_NORMNM$, jvanatf
 	proc_end
 
 

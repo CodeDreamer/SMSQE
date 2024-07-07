@@ -1,8 +1,51 @@
-
-
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
+					
+3.41
+
+    Q68 misc (wl)
+	smsq_q68_hdop_poll_asm		1.01	only change slug setting if actually BEEPING
+	smsq_q68_driver_ql_asm		1.01	removed unnecessary code
+	smsq_q68_hwinit_asm		1.05	added "Use 16 bit " config item, set IDs of machines (Q68, Q0,Qimsi Gold)
+	keys_sys			.	new machine types ($13=qzero, $15=qimsi gold)
+	sys_boot_Q68_rom_asm		.	used wrong address for led, removed setting led on
+	smsq_q68_nasty_asm		1.02	remove reference to keyboard delay
+	smsq_q68_driver_most_asm	1.02	set correct machine ID
+
+
+    Q68 SD Card access (wl)
+	dv3_q68_win_init_asm		1.03	preset diff. drive names
+	dv3_q68_qub_init_asm		1.04	use r/w routines in fast memory
+	dv3_q68_fat_init_asm		1.04	use r/w routines in fast memory
+	dev8_dv3_q68_fat_thing_asm	1.02	FAT_DRIVE set correct card number
+	dv3_q68_sdhc_rsect_asm		1.07	remove SLUG whilst reading, housekeeping
+	dv3_q68_sdhc_wsect_asm		1.05	remove SLUG whilst writing, removed unnecessary code
+	dv3_q68_sdhc_inicrd_asm 	1.04	removed unnecessary code
+	smsq_q68_driver_snd_ssss_asm	1.03	removed debug code and dead code
+	dv3_q68_sdhc_cpy2mem_asm	1.02	set the pointers in driver defn block (FAT, QUB)
+
+
+    Q68 SER ports (wl)
+	smsq_q68_spp_ser_asm		1.02	prepare for two serports, allow open depending on machine
+	smsq_q68_spp_txser_asm		1.02	check for active before checking hardware, don't start tx interrupt when closing
+	smsq_q68_spp_rxser_asm		1.02	(dito)
+
+
+    SMSQMULATOR (wl)
+	smsq_java_driver_mouse_asm	1.02	removed unnecessary code
+	smsq_java_driver_win_remv_asm	1.02	added WIN_WP
+	smsq_java_driver_win_init_asm	1.05	amended to suit
+	keys_java			.	  "      "  "
+	smsq_java_driver_nfa_useq_asm	2.04	set math stack ptr (A1) correctly before calling java
+	smsq_java_ctrl_init_asm 	1.04	added JVA_NATFILE$
+	smsq_java_ctrl_thing_asm	1.03	added NATF (JVA_NATFILE$)
+	smsq_java_ctrl_scrap_asm	.	(typos)
+	smsq_java_copyscr_asm		1.02	correct param handling
+
+
+-----------------------------------------------------------------------------
+
 3.40
 
     QIMSI integration (wl)

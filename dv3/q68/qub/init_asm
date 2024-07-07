@@ -1,17 +1,19 @@
-; DV3 Q68 QUBIDE Driver initialisation 1.00  W. Lenerz 2016
+; DV3 Q68 QUBIDE Driver initialisation 1.01  W. Lenerz 2016-2024
+;
+; 2024-04-30  1.01 use routines in fast memory
 ;
 ; based on
 ;
 ; DV3 Q40 IDE Initialisation  V3.00    1992  Tony Tebby
 
-
 	section dv3
 
 	xdef	qub_init		; inits the driver
 	xdef	ppr
+
 	xref	dv3_link
 	xref	dv3_acdef
-
+	xref	cpy_rout
 	xref	gu_fopen
 	xref	gu_fclos
 
@@ -48,6 +50,8 @@ qub_init
 	lea	qub_table,a3
 	jsr	dv3_link		; link in driver
 
+	jsr	cpy_rout		; set r/w routines from fast mem
+
 qub_set lea	qcf_qubu,a2
 	lea	hdl_unit(a3),a1
 	move.l	(a2)+,(a1)+
@@ -66,10 +70,6 @@ norm_lp bsr	norm_nm 		; normalize name at (a0) to (a1)
 	add.l	d3,d6
 	move.l	d6,a1
 	dbf	d7,norm_lp
-
-;	 addq.w  #8,a1
-;	 move.l  (a2)+,(a1)+		 ; set configured partitions
-;	 move.l  (a2)+,(a1)+
 qub_out rts
 
 qub_table

@@ -1,4 +1,5 @@
 ; base area SMSQ Q68 Drivers   0.00 (C) W. Lenerz 2016
+; 2024-05-19	1.02	set correct machine ID
 ; 2020-03-27	1.01	check whether kbd read via interrutps is possible
 
 	section header
@@ -86,6 +87,16 @@ start
 no_intr jsr	kbd_initiq68		; both kbd fetch and read queue via poll
 common	jsr	mse_init
 
+	clr.l	d0			; this should be done in hwinit, but crashes the machines
+	move.b	q68_mach,d0		; machine type (0,1,2)
+	lsl.b	#2,d0
+	move.l	a2,-(a7)
+	lea	machine,a2
+	add.l	d0,a2
+	move.b	(a2),sys_mtyp(a6)
+	move.l	(a7)+,a2
+
+
 sys_init
 ; When we have linked in the interrupt servers, we can enable the interrupts
 
@@ -116,5 +127,14 @@ hw_poll
 	or.b	sys_qlir(a6),d7 	 ; Im' not sure this makes sense for Q68
 	move.b	d7,pc_intr		 ; clear offending interrupt
 	rts
+
+
+machine 				; table of machine types
+	dc.l	sys.mq68
+	dc.l	'Q68 '
+	dc.l	sys.mq0
+	dc.l	'Q0 '
+	dc.l	sys.mqig
+	dc.l	'QIGD'
 
 	end

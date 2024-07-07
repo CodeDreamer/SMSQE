@@ -34,12 +34,11 @@ stack	equ	32060
 
 mregs	reg	a0/a1/a4/d2
 
-;********
+;+++
 ; JVA_SGET
-; no parameter
-; GET content of system clipboard and put it into the menu extensions' scrap
-;********
-
+; No parameter.
+; Get content of system clipboard and put it into the menu extensions' scrap.
+;---
 jt_sget thg_extn {SGET},jt_sput,thp_nul
 	moveq	#-1,d1
 jss_sgt movem.l mregs,-(a7)
@@ -75,12 +74,11 @@ exit	movem.l (a7)+,mregs
 	rts
 
  
-;********
+;+++
 ; JVA_SPUT
-; no parameter
-; PUT content of the menu extensions' scrap into the system clipboard
-;********
-
+; No parameter.
+; Put content of the menu extensions' scrap into the system clipboard.
+;---
 jt_sput thg_extn {SPUT},jt_sync,thp_nul
 jss_spt movem.l mregs,-(a7)
 	move.l	#'GET ',d2		; we're GETting things from the scrap
@@ -111,9 +109,9 @@ jss_spt movem.l mregs,-(a7)
 
 ;+++
 ; JVA_SYNCSCRAP
-; sync the scrap and the clopboard
-;
-; this is a blatant copy of MK's corresponding QPC code!
+; No parameters.
+; Sync the scrap and the clopboard.
+; This is a blatant copy of MK's corresponding QPC code!
 ;---
 jt_sync thg_extn {SYNC},jt_stop,thp_nul
 	movem.l mregs,-(sp)
@@ -239,7 +237,7 @@ jss_failed
 	add.l	d3,a0			; point to my job ID
 jss_stop
 	clr.l	(a0)			; no more job there!
-	moveq	#jtd.stop,d0		 ; stop java thread
+	moveq	#jtd.stop,d0		; stop java thread
 	dc.w	jva.trpd
 	move.l	d0,d3
 	moveq	#sms.frjb,d0
@@ -248,7 +246,9 @@ jss_stop
 	rts				; leave this for jt_stop
 
 ;+++
-; JVA_SYNCSCRAP_STOP stop the syncscrap job
+; JVA_SYNCSCRAP_STOP
+; No parameters.
+; Stop the syncscrap job.
 ;---
 jt_stop thg_extn {SSTP},,thp_nul
 	clr.l	d0

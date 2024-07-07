@@ -50,13 +50,11 @@ q68.txand	 equ	   1		  ; value to AND status with to check for tx bit
 q68_prty	equ	1		; no parity (do NOT set to 0)
 q68_hand	equ	0		; no handshake
 q68_prhd	equ	q68_prty<<8+q68_hand   ; parity and handshake combined
-q68_ser_link	equ	$17d08		; keep ptr to ser linkage block here
 
 ser1base	equ	$1c200
-ser2base	equ	$1c220
 ser_offset	equ	$20		; offset from ser1base to ser2base
-ser_offshft	equ	5		; shift for offset
-qserdiff	equ	$1c218		; diff between Q68 and Q0 here
+ser2base	equ	ser1base+ser_offset
+;qserdiff	 equ	 $1c218 	 ; diff between Q68 and Q0 here
 ; ser offsets relative to the base:
 ser_txdta	equ	0		; offset for tx line  (byte)
 ser_rxdta	equ	4		; offset for rx line  (byte)
@@ -66,7 +64,7 @@ ser_prescale	equ	$c		; offset to baud prescale (word)
 
 ; Q40 compatible SSS
 sound_right	equ	$1c400		; right sound byte
-sound_left	equ	$1c404		; left - writing here triggers sound
+sound_left	equ	$1c404		; left	  "     "   - writing here triggers sound
 sound_full	equ	$1c408		; set if DAC queue is full
 
 
@@ -83,6 +81,7 @@ kbd_dlay	equ	$17d0c		; config. delay for kbd if no interrupt
 ; mouse
 mouse_status	equ	$1c168		; mouse status register
 m.rcv		equ	  0		; this bit is set if a byte can be read
+m.1st		equ	  3		; bit set if first byte in packet
 m.type		equ	  4		; bit set if mouse has mousewheel
 m.int		equ	  7		; set this to start the mouse interrupts
 					; (bits 1-3 ignored by me)
@@ -129,22 +128,27 @@ q68_sramb	equ	$19000		; base of (fast) static ram: this con-
 					; tains a ptr to the next free space in
 					; the static ram
 q68_sramt	equ	$1c000		; top of (fast) static ram
+q68_mach	equ	$1c000		; also byte differencing the machines
+q68.mq68	 equ	  0		;   machine is q68
+q68.mqz 	 equ	  1		;   machine is qzero
+q68.mqsi	 equ	  2		;   machine is qimsi gold
 led		equ	$1c100		; st to turn led on, clr to turn it off
-q68_dcfg	equ	$0e		; where in cgf info drv-> card table is
 i2c_scl 	equ	$1c00c		; ?
 i2c_sda 	equ	$1c00e		; ?
-q68_card2	equ	$c		; card init item in config block
-q68_msecf	equ	$d		; config item for mouse in config block
-
+q68_reset	equ	$1c024		;
 q68_slug	equ	$1c028		; hardware slug 0 (no slug) to 255 (max)
-					; (nb 0-5 are the same)
-q68_reset	equ	$1c024
+
 q68_ethi	equ	$1c040		; Ethernet interrupt ON switch
 q68_timer	equ	$1c060
 q68_1sec	equ	40000000	; 40 Mhz timer
 q68_tick	equ	4		; 1 "tick" = 1/10th of a microsecond
 q68_tmrmul	equ	4000		; 1/10 of a milliseond
+					; (nb 0-5 are the same)
 
+q68_card2	equ	$c		; card init item in config block
+q68_msecf	equ	$d		; config item for mouse in config block
+q68_dcfg	equ	$0e		; where in cgf info drv-> card table is
+       
 
 ; network related variables
 q68_netvec	equ	$17d10		; net vectors pointer
@@ -155,16 +159,13 @@ q68_test	equ	$17d1c		; 4 bytes for whatever you want
 
 ; debug
 ;***** if these are changed, also change in smsq68mulator (monitor & mc68000)
-q68_jkbd	equ	$17d00		; ** debug smsq68mulator keybrd input **
 q68_jflg	equ	$17d04		; ** debug smsq68mulator flag **
-debug		equ	0		; if 1 debug code is included
-		      ; $17d08	used for serial port (see above)
-		      ; $17d0c	used for keyboard (see above)
-		      ;
+q68_java	equ	'java'
+debug		equ	1		; if 1 debug code is included
 		      ; $17d10	- $17d1c  QL Net
 q68_v2		equ	$17d20		; (byte) if set : hardware v.2
+q68_mula	equ	$17d24		; use by smsqmulatorq68 for mouse position
 
-; q68 specific config
-q68.cfgkb	 equ	 $20		 ; position in config block of kbd delay
+q68_sdhc	equ	$17d28		; 4 long words, sdhc routines (during init only)
 
 	list

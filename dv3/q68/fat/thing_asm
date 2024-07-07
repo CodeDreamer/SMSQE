@@ -1,6 +1,12 @@
+; Q68 DV3 FAT dirve Control Procedures	 V1.01	  W. Lenerz 2019-2024
+;
+; 2024-04-13	1.02 FAT_DRIVE set correct card number
+;		1.01 initial version
+;
+; based on
+;
 ; DV3 Standard Hard Disk Control Procedures   V1.03    1999   Tony Tebby
-; adapted for Q68			       1.00	2017   W. Lenerz
-; 1.01 removed reference to cv_locas (mk)
+
 
 	section exten
 
@@ -88,22 +94,26 @@ hdt_setd
 	add.w	d7,a3			 ; table entry
 	move.l	(a1)+,d1		 ; card
 	subq.l	#1,d1			 ; my index starts at 0
-	blt.s	hdt_ipar4
+	blt.s	hdt_ipars
 	beq.s	hdt_crd
 	subq.w	#1,d1			 ; not more than "2" as param!
-	bne.s	hdt_ipar4
-	addq.l	#1,d1
-hdt_crd move.b	d1,hdl_unit-1(a3)	 ; set card
+	bne.s	hdt_ipars
+	moveq	#q68.coff,d1
+hdt_crd
+	move.b	d1,hdl_unit-1(a3)	 ; set card
 	move.l	(a1)+,d1		 ; partition
 	subq.l	#1,d1			 ; must be between 1 and 4
-	blt.s	hdt_ipar4
+	blt.s	hdt_ipars
 	moveq	#3,d0
 	cmp.l	d0,d1
-	bgt.s	hdt_ipar4
+	bgt.s	hdt_ipars
 	addq.l	#1,d1
 	move.b	d1,hdl_part-1(a3)	   ; set partition
 hdt_rtok
 	moveq	#0,d0
+	rts
+hdt_ipars
+	moveq	#err.ipar,d0
 	rts
 
 hdt_inus

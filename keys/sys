@@ -119,7 +119,9 @@ sys.msgld equ	  $0c		   SuperGOLD card
 sys.mfal  equ	  $10		   Falcon
 sys.mq40  equ	  $11		   Q40/Q60
 sys.mq68  equ	  $12		   Q68
+sys.mq0   equ	  $13		   Q0
 sys.java  equ	  $14		   SMSQmulator
+sys.mqig  equ	  $15		   Qimsi Gold
 sys.mtt   equ	  $18		   TT
 sys.mqem  equ	  $1a		   Q-EmuLator
 sys.mqxl  equ	  $1c		   QXL

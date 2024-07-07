@@ -138,6 +138,8 @@ jte.remv	equ	  0		  ; set drive removable status
 jte.lon 	equ	  1		  ; log on   (debug)
 jte.loff	equ	  2		  ; log off  (debug)
 jte.kbd 	equ	  3		  ; get char from keyboard queue
+jte.dwp 	equ	  4		  ; set drive write protection
+jte.natf	equ	  5		  ; get a native filename from host
 
 jva.trpF	equ	$a00f		; serial port comms
 jtf.chk 	equ	  0		  ; check max drive nbr / drive exists

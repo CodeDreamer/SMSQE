@@ -1,6 +1,6 @@
-* Copy screen from $20000 to actual screen.
-* v.1.02  Copyright (c) W. Lenerz 2016-2017
+* Copy screen from $20000 to actual screen v.1.02  Copyright (c) W. Lenerz 2016-2024
 *
+*  2024-05-05 1.02  correct param handling
 *  1.01 revamped for jva_qlscremu
 *  1.00 initial version
 
@@ -50,10 +50,7 @@ jva_qlscremu
 	jsr	ut_gxin1
 	bne.s	out			; get exactly one int
 	move.w	(a6,a1.l),d1		; mode
-	addq.l	#2,a1
-	move.l	a1,sb_arthp(a6) 	; clean up stack
-	blt.s	nimp			; automatic not implemented yet
-	moveq	#0,d0
+	addq.l	#2,sb_arthp(a6) 	; clean up stack
 common	dc.w	jva.trpc
 out	rts
 nimp	moveq	#err.nimp,d0

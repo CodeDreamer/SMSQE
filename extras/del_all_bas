@@ -90,7 +90,7 @@
 990   DATA "smsq_gold_qimi","smsq_gold_roms","sys_gold_boot"
 1000   DATA "smsq_gold_sysspr"
 1010   DATA     ""
-1020   DATA     "smsq_gold_gold8","smsq_gold_gold"
+1020   DATA     "smsq_gold_gold8","smsq_gold_gold","smsq_gold_gold_qimsi"
 1030   DATA     ""
 1040 END DEFine gold
 1050 :

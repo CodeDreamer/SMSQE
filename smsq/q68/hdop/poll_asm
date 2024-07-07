@@ -1,4 +1,8 @@
+; Q68 SMS BEEP polling routine 1.01   2024 W. Lenerz
+; adapted from
 ; Q40 SMS BEEP polling routine	  1988  Tony Tebby
+
+; 2024-04-29 1.01 only change q68_slug setting if actually BEEPING
 
 	section sms
 
@@ -12,7 +16,12 @@
 	include 'dev8_keys_68000'
 	include 'dev8_smsq_q40_hdop_data'
 
+hop_xit
+	rts
 hdop_poll
+	tst.w	ho_bptim(a3)		 ; BEEPING?
+	beq.s	hop_xit 		 ; no
+	
 	move.b	q68_slug,-(a7)
 	sf	q68_slug
 	tst.w	ho_bptim(a3)		 ; BEEPING?
@@ -104,7 +113,7 @@ hop_carry
 	bra	hop_tim
 
 hop_rts move.b	(a7)+,q68_slug
-	rts
+hop_out rts
 
 hop_half
 	moveq	#sss_setm,d0
@@ -142,8 +151,6 @@ hop_zero
 	moveq	#$ffffff80,d1		 ; zero amplitude
 	moveq	#$ffffff80,d2		 ; zero amplitude
 	moveq	#sss_add1,d0
-
-
 
 hop_ssss
 hdop_ssss

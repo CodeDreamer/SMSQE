@@ -1,8 +1,10 @@
-; Q68 Initilaise an SHDC card (via bit-banging)      1.03 (C) W. Lenerz 2017-2020
-;
-; 1.03	2020-03-29 get sysvars from sms base, use delay loop  (adapted from MK's code for qlsd)
-; 1.02	2018-05-08 card type is set in sysvars.
-; 1.01	try to detect SD cards as well.
+; Q68 Initilaise an SHDC card (via bit-banging)  1.04 (C) W. Lenerz 2017-2024
+
+; 2024-04-24 1.04  removed debug code
+; 2020-03-29 1.03  get sysvars from sms base, use delay loop  (adapted from MK's code for qlsd)
+; 2018-05-08 1.02  card type is set in sysvars.
+;	     1.01  try to detect SD cards as well.
+
 
 	section dv3
 
@@ -58,19 +60,6 @@ lock_ok
 	moveq	#1,d4
 set_typ add.w	#sys_q8ct,d4		; point card in sysvars
 	sf	(a6,d4.w)		; preset that card is SDHC
-
-;;;;;  debug code ;;;;;---------------------------------
-	genif debug = 1
-
-	cmp.l	#'gold',q68_jflg	; debug?
-	bne.s	nodebug 		; no...->
-	move.l	d0,-(a7)		; will be popped up in java
-	moveq	#5,d0
-	dc.w	jva.trpa		; debug
-	bra	out			; and continue ok
-nodebug
-	endgen
-;;;;; end debug code ;;;;;;-----------------------------
 
 	st	drv_clk(a2)
 	st	drv_dout(a2)

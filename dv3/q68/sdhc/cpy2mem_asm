@@ -1,14 +1,14 @@
-; copy sdhc routines to fast mem & adjust pointers 1.00 (c) W. Lenerz 2017
+; Copy sdhc routines to fast mem & adjust pointers 1.02 (c) W. Lenerz 2017-2024
+;
+; 2024-05-06  1.02 set the pointers in driver defn block (FAT, QUB) (wl)
 ;
 ; on entry a3 = device defn block
-; the first routine to be copied must be rsect
-; then come wsect,sndcmd,srchdrv and hd_hold
 
 	section dv3
 
 	xdef	cpy2mem
 	xdef	q68_dvend
-
+	xdef	cpy_rout
 	xref	cpy_mmod
 	xref	q68_dvstrt
 	xref	hd_rsint
@@ -21,10 +21,13 @@
 	include dev8_dv3_hd_keys
 
 q68_dvend
-cpy2mem lea	q68_dvstrt,a0
+cpy2mem
+	lea	q68_dvstrt,a0
 	jsr	cpy_mmod		; copy into fast mem, 4(a0)=start of routine
+	lea	q68_sdhc,a2
 	move.l	4(a0),d0		; ptr to hd_rdirect in fast mem
 	move.l	d0,ddl_rsect+2(a3)	; hd_rdirect : jump to this routine now
+	move.l	d0,(a2)+
 	lea	hd_rsint,a1		; hd_rsint in "slow" mem
 	move.l	a1,d1
 	lea	hd_rdirect,a1
@@ -32,16 +35,29 @@ cpy2mem lea	q68_dvstrt,a0
 	sub.l	a1,d1			; offset from rdirect to rsint
 	add.l	d0,d1			; poiner to rsint in fast mem
 	move.l	d1,hdl_rsint+2(a3)
+	move.l	d1,(a2)+
 	lea	hd_wsint,a1
 	move.l	a1,d1
 	sub.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,hdl_wsint+2(a3)	; jump to this routine now
+	move.l	d1,(a2)+
 	lea	hd_wdirect,a1
 	move.l	a1,d1
 	sub.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,ddl_wsect+2(a3)	; jump to this routine now
+	move.l	d1,(a2)+
 	rts
+
+; set the pointers in driver defn block
+cpy_rout
+	lea	q68_sdhc,a2
+	move.l	(a2)+,ddl_rsect+2(a3)	   ; hd_rdirect : jump to this routine now
+	move.l	(a2)+,hdl_rsint+2(a3)
+	move.l	(a2)+,hdl_wsint+2(a3)	   ; jump to this routine now
+	move.l	(a2),ddl_wsect+2(a3)	  ; jump to this routine now
+	rts
+
 
 	end

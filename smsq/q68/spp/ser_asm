@@ -1,10 +1,10 @@
-; Q68 ser device definition & general routines v1.01   2022  W. Lenerz
+; Q68 ser device definition & general routines v1.02   2022-2024  W. Lenerz
+
+; 2024-05-06  1.02 prepare for two serports, check depending on machine
+; 2023.02.23  1.01 changes all over. Remove 230400 baud rate, prepare for 2 ser ports
 
 ; based on : QXL SER device definition	   V2.10    1999  Tony Tebby
-
-
-; 2023.02.23  v. 1.01 changes all over. Remove 230400 baud rate, prepare for 2 ser ports
-
+						
 	section spp
 
 	xdef	q68_serdef
@@ -97,8 +97,7 @@ qsdc_portn
 	subq.b	#1,d0			; ser2 ?
 	bne.s	qsdc_err		; no, so this doesn't exist ->
 	add.w	#ser_offset,a4		; hardware base for ser2
-	tst.w	qserdiff		; Q68 or Q0? (0 = q0)
-	beq.s	qsdc_ckok		; Q0, so port 2 exists
+	bra.s	qsdc_ckok
 qsdc_err
 	clr.l	d0			; port doesn't exist
 	rts
@@ -165,16 +164,18 @@ bauds					; allowed baud values
 ;	all other registers preserved
 ;	status returned according to D0
 ;---
-q68_close   trap #14
+q68_close
 	tst.l	d0			; input queue?
 	beq.s	rx_nint 		; ... no
 	sf	spd_iact(a3)		; input no longer active
-rx_nint
 	move.l	spd_hbase(a3),a4
 	bclr	#q68..rxstat,ser_status(a4) ; disable receive interrupts
-;	 bset	 #q68..txstat,ser_status(a4) ; enable TX interrupts (to ...
-	rts				; ... make sure output queue is emptied)
-	
+rx_nint rts
+
+q68_nimp
+	moveq	#err.nimp,d0
+	rts
+
 ;+++
 ; SER port open operation (enable rx)
 ;
@@ -185,6 +186,14 @@ rx_nint
 ;	status returned 0
 ;---
 q68_open
+	move.w	spd_port(a3),d0 	; port number
+	subq.w	#1,d0			; port 1?
+	beq.s	op_allwd		; yes, ok
+	btst	#0,q68_mach		; Q68 or Q0?
+	beq.s	q68_nimp		; yes, don't allow it
+	subq.w	#1,d0			; exactly 2?
+	bne.s	q68_nimp		; no, error
+op_allwd
 	moveq	#0,d0
 
 ;+++
@@ -224,6 +233,7 @@ q68_ioprts
 ;	all other registers preserved
 ;	status returned according to D0
 ;
+; this is called from label ibio_exout in iod_iob_iox_asm
 ; NB not called with jsr (a4)
 ;---
 q68_oopr
@@ -232,7 +242,7 @@ q68_oopr
 	move.l	spd_hbase(a3),a2
 	bset	#q68..txstat,ser_status(a2) ; transmit interrupts on
 	move.l	(a7)+,a2
-	tst.l	d0
+	clr.l	d0
 	rts
 
 	end

@@ -1,8 +1,11 @@
-; SMSQmulator Control Procedures   V1.02    2017 W. Lenerz
+; SMSQmulator Control Procedures  V1.02   W. Lenerz   2017-2024
+;
 ; contains the extensions
-; MBAR, VER$, WTIT,NNAM,PPUP, TMRS,TMRG and dsome more
-; 1.02 LOG added
-; 1.01 JVA_MINIMIZE added
+;
+; 2024-04-29	1.03 added NATF (JVA_NATFILE$)
+;		1.02 LOG added
+;		1.01 JVA_MINIMIZE added
+
 	section exten
 
 	xdef	ctrl_thing
@@ -42,13 +45,20 @@ hd_noptm dc.w	thp.ubyt	 ; drive
 	 dc.w	thp.ubyt+thp.opt+thp.nnul ; default is set
 	 dc.w	0
 
+
 jth_rwrd dc.w	thp.ret+thp.uwrd
 	 dc.w	0
 
 jth_rlng dc.w	thp.ret+thp.ulng
 	 dc.w	0
-jth_log  dc.w	 thp.ubyt+thp.opt
-	 dc.w	 0
+jth_log  dc.w	thp.ubyt+thp.opt
+	 dc.w	0
+
+; for NATF : one optional call, one compulsory return param (both string)
+jth_natf dc.w	thp.call+thp.opt+thp.str
+	 dc.w	thp.call+thp.opt+thp.uwrd
+	 dc.w	thp.str+thp.ret
+	 dc.w	0
 
 ;+++
 ; Thing NAME
@@ -142,7 +152,7 @@ jt_ppup thg_extn {PPUP},jt_minimize,thp_nul
 ;+++
 ; JVA_MINIMIZE
 ; No parameter.
-; Pops up/blinks SMSQmulator wdw.
+; Iconify window.
 ;---
 jt_minimize thg_extn {MMIZ},jt_host,thp_nul
 	moveq	#jtb.mini,d0
@@ -159,7 +169,16 @@ jt_host thg_extn {HOST},jt_sndo,thp_rstr
 	moveq	#jt5.host,d0
 	bra.s	do_tp5		      ; get name, ; D0 & cc set by java
 	rts
-
+      
+;+++
+; JVA_SOUNDING
+; One word return parameter.
+; Gets the status of sound playing   0 = not playing, 1 = yes, still playing
+;---
+jt_sndo thg_extn {SNDO},jt_tmrs,jth_rwrd
+	moveq	#jt5.sndon,d0
+	bra.s	do_tp5
+    
 
 *************************************************************************
 *
@@ -171,16 +190,7 @@ jt_host thg_extn {HOST},jt_sndo,thp_rstr
 *
 ************************************************************************
 
-	    
-;+++
-; JVA_SOUNDING
-; One word return parameter.
-; Gets the status of sond plaing   (0 =hidden, 1 =showing)
-;---
-jt_sndo thg_extn {SNDO},jt_tmrs,jth_rwrd
-	moveq	#jt5.sndon,d0
-	bra.s	do_tp5
-		      
+			  
 ;+++
 ; JVA_TMRSET
 ; No parameter.
@@ -212,6 +222,7 @@ jt_scru thg_extn {SCRU},jt_mbst,thp_wd
 	moveq	#jt5.scrup,d0
 	bra.s	do_tp5
 
+
 ;+++
 ; JVA_MBAR_STATUS
 ; One word return parameter.
@@ -221,22 +232,34 @@ jt_mbst thg_extn {MBST},jt_exit,jth_rwrd
 	moveq	#jt5.jbget,d0
 	bra.s	do_tp5
 
+	       
 ;+++
 ; JVA_EXIT
 ; No parameter.
 ; Quits the emulation.
 ;---
-jt_exit thg_extn {EXIT},jt_lgon,thp_nul
+jt_exit thg_extn {EXIT},jt_ghfn,thp_nul
 	moveq	#jt5.exit,d0
 	bra.s	do_tp5
 
+		
+;+++
+; JVA_NATFILE$
+; Optional proposed string on entry
+; Optional proposed change type (0 or none, change all /\ to OS, 1 change \ to / 2 change / to \
+; Return 1 string
+; Get a native filename from host.
+;---
+jt_ghfn thg_extn {NATF},jt_lgon,jth_natf
+	moveq	#jte.natf,d0
+	dc.w	jva.trpE
+	rts
 
 ;+++
-; JVA_LOGON/LOGOFF
+; JVA_LOGON
 ; No parameter.
-; switches logging on/off
+; Switches logging on
 ;---
-
 jt_lgon thg_extn {LON },jt_loff,jth_log
 	bra.s	lg_exit
 	move.l	jva_lkptr,d0
@@ -250,6 +273,12 @@ jt_lgon thg_extn {LON },jt_loff,jth_log
 do_trpE dc.w	jva.trpE
 lg_exit moveq	#0,d0
 	rts
+      
+;+++
+; JVA_LOGOFF
+; No parameter.
+; Switches logging off
+;---
 
 jt_loff thg_extn {LOFF},jt_qlfp,thp_nul
 	bra.s	lg_exit
