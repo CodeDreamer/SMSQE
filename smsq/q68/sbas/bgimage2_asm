@@ -1,0 +1,63 @@
+; BGIMAGE2 #channel, image_file     (c) w. lenerz 2024
+; use like BGIMAGE, but this load the image into (high) screen memory, so that
+; machine with little memory (4 MB) can use it in high colour.
+;
+;
+; Stronly 'inspired' by BGIMAGE...
+;
+; 2024-12-22 initial version
+;
+
+	section exten
+
+	xdef	bgimage2
+
+	xref	ext_lfile
+
+	xref	ut_chan1		; get channel default #1
+	xref	ut_trap3
+	xref	file_in 		; open file get further params to (a6,a1)
+
+	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_con'
+	include 'dev8_keys_q68'
+
+bgimage2
+	jsr	ut_chan1	; get channel id
+	bne.s	bg2_rts 	; ... oops
+	move.l	a0,d6		; d6 = scr chan ID
+	jsr	file_in 	; after this a0 = file chan ID
+	move.l	(a6,a1.l),d2	; set length to load
+;	 moveq	 #0,d1
+;	 moveq	 #0,d2
+;	 moveq	 #-1,d3
+;	 exg	 a0,d6		 ; d6 = file chan ID
+;	 moveq	 #iop.slnk,d0	 ; find linkage
+;	 trap	 #3
+;	 tst.l	 d0
+;	 bne.s	 bg2_rts
+
+	move.l	#q68_screen+$200000,a1	 ; start of screen mem + 2MiB
+	move.l	a1,d7		; keep
+	moveq	#-1,d3
+	exg	a0,d6
+	moveq	#iof.load,d0
+	trap	#3		; scatter load file ; changes A1
+	move.l	d0,-(a7)	; keep error return
+	moveq	#2,d0
+	trap	#2		; close file
+	move.l	(a7)+,d0	; get error back
+	bne.s	bg2_rts 	; oops
+	move.l	d7,a1		; where file was loaded
+	move.l	d6,a0
+	moveq	#-1,d1
+	moveq	#0,d2
+	moveq	#iop.wpap,d0	; set native file for background image
+	jmp	ut_trap3	; set background image
+
+bg2_rts
+	rts
+
+	end
+
+	      

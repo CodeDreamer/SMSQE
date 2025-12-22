@@ -1,31 +1,32 @@
 ; Q40/Q60 Caches management  v. 1.00	copyright (c) Mark Swift
 ; 2003-10-17	1.01	adapted for SMSQ/E (FD)
 ; 2005-01-21	1.02	rationalised, reset sr as was on entry (wl)
+; 2025-02-16	1.03	the keywords do a simple rts (wl)
+
+
 	section exten
 
-	xdef copyback
-	xdef serialized
-	xdef writethrough
+	xdef	copyback
+	xdef	serialized
+	xdef	writethrough
+	xdef	copyback_init
 
-	include 'dev8_sbsext_ext_keys'
+
+
+;	 include 'dev8_sbsext_ext_keys'
 	include 'dev8_keys_sys'
-;
+	include 'dev8_keys_err'
 
-rprt_ni
-	moveq	#err.ni,d0
-	rts
-	 
 copyback
-	lea	hw_copyback,a2
-	bra.s	common
 writethrough
-	lea	hw_writethrough,a2
-	bra.s	common
 serialized
-	lea	hw_serialized,a2
-common
-	cmp.l	a3,a5			; are htere parameters?
-	bne.s	rprt_bp 		; yes : error
+	moveq	#0,d0
+	rts
+    
+copyback_init
+	lea	hw_copyback,a2
+;	 cmp.l	 a3,a5			 ; are there parameters?
+;	 bne.s	 rprt_bp		 ; yes : error
 
 	moveq	#0,d0			; mt.inf
 	trap	#1
@@ -45,10 +46,9 @@ b_ttracux
 	moveq	#0,d0
 	rts
 
-rprt_bp
-	moveq	#err.bp,d0
+rprt_ni
+	moveq	#err.nimp,d0
 	rts
-
 
 
 ; routine to disable the instruction & data caches
@@ -147,6 +147,7 @@ docachx
 hw_copyback
 	movem.l d0-d2/d7,-(a7)
 	move.l	#$007fc020,d1	; 0-32mb 0 = cachable, copyback (q40)
+
 	bra.s	ttracu
 
 hw_writethrough

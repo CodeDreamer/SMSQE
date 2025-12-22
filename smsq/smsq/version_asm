@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.41'
+smsq_vers equ	 '3.42'
 
 	end
 	    
@@ -13,13 +13,21 @@ smsq_vers equ	 '3.41'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
-; 3.41	Q68 16-bit SD card access OK with QUB and FAt drives and with SLUG set
+
+; 3.42	Qx0 floppy format fixed (wl).
+;	Qx0 scheduler kludge for compatibility with patched Qlibed programs (wl).
+;	SMSQmulator use lower mem slices for part of OS (wl).
+;	Configurable job and channel table sizes - for Qpc,Qx0,Q68,SMSQmulator (wl).
+;	Q68 check for max mem, load bgimage into unused screen mem (wl).
+;
+;
+; 3.41	Q68 16-bit SD card access OK with QUB and FAt drives and with SLUG set.
 ;	Q68 deleted some unnecessary code and corrected FAT card numbers (wl).
 ;	Q68 save slug setting only if actually beeping (wl).
 ;	Q68 SERT ports work for Q68, Q0 and Qimsi Gold (wl).
 ;	SMSQmulator added WIN_WP, deleted some unnecessary code for mouse (wl).
 ;	SMSQmulator xxx_USE($) correct math stack handling (wl).
-;	SMSQmulator correct param for ql screen emulation (wl).
+;	SMSQmulator correct parameter for ql screen emulation (wl).
 ;
 ; 3.40	Qimsi PS2 keyboard routines integrated (wl).
 ;
@@ -30,7 +38,7 @@ smsq_vers equ	 '3.41'
 ;	Max name length for Sbasic job is now 48 characters (wl).
 ;	SER port flow command fixed (note that SMSQE doesn't actually implement software xoff, xon...) (wl).
 ;	Q68 mouse and SER handling improved (wl).
-;	Q68 more config items (led at boot timen different home/end keys) (wl).
+;	Q68 more config items (led at boot time, different home/end keys) (wl).
 ;	Q68 Time setting routines also set time in the Q68 hardware register, respecting PROT_DATE (wl).
 ;	SMSQmulator serial port and better keyboard reading (wl).
 ;	SMSQmulator fixed nfa and sfa physical defn length (wl).

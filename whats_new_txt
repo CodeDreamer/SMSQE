@@ -20,6 +20,21 @@ This here file only contains a short description of the new features.
 
 What is new in version:
 
+=====
+3.42
+=====
+Qx0 scheduler kludge to allow COPYBACK compatibility for PATCHED Qlib programs.
+A more detailed explanation is in the extras_new_ directory
+Qx0 can format floppy disks again.
+The jobs and channels table size  can now be configured. This only  applies to
+QPC, Qx0, SMSQmulator, Q68. (Note: read the doc in the extras_new_ directory).
+There now is a file called "known_bugs_txt" in the extras_doc_ subdirectory.
+
+
+=====
+3.40
+=====
+Qimsi integration.
 
 
 =====

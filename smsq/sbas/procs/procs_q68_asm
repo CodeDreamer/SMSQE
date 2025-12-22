@@ -1,10 +1,9 @@
-; SBAS_PROCS_PROCS - Standard SBASIC Procedures V2.03	 1992	Tony Tebby
-; 2003-10-17  2.03a Added serialized, writethgough, copyback (FD)
+; SBAS_PROCS_PROCS - Standard SBASIC Procedures for Q68 et al V2.06    1992  Tony Tebby
+;
 ; 2005-12-10  2.03  Added POKE_F, PEEK_F (MK)
 ; 2006-06-28  2.04  Added YEAR%, MONTH%, DAY%, WEEKDAY%
 ; 2016-04-16  2.05  Added ALPHA_BLEND (MK)
-; 2025-02-20  2.06  This is now used for qx0, added QEXEC,QEX,QEXEC_W,QEW (wl)
-
+; 2024-12-22  2.06  split off from normal procs; BGIMAGE refers to bgimage2 (wl)
 
 	section procs
 
@@ -31,7 +30,7 @@ sb_procs
 
 	proc_def BGCOLOUR_QL
 	proc_def BGCOLOUR_24
-	proc_def BGIMAGE
+	proc_def BGIMAGE , bgimage2
 
 	proc_def PALETTE_QL
 	proc_def PALETTE_8
@@ -143,21 +142,11 @@ sb_procs
 	proc_def PROT_DATE
 	proc_def PROT_MEM
 	proc_def SLUG
-
 	proc_def CACHE_ON
 	proc_def CACHE_OFF
-	proc_def SERIALIZED
-	proc_def WRITETHROUGH
-	proc_def COPYBACK
-	proc_def QEXEC
-	proc_def QEX,qexec
-	proc_def QEXEC_W
-	proc_def QEW,qexec_w
-
 	proc_def IO_PRIORITY
 	proc_def LANG_USE
 	proc_ref CHK_HEAP
-
 	proc_end
 
 	proc_stt

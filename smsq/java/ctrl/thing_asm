@@ -2,7 +2,8 @@
 ;
 ; contains the extensions
 ;
-; 2024-04-29	1.03 added NATF (JVA_NATFILE$)
+; 2025-03-12	1.04 removed NATF, LON, LOFF
+; 2024-04-29	1.03 added NATF, LON, LOFF
 ;		1.02 LOG added
 ;		1.01 JVA_MINIMIZE added
 
@@ -238,11 +239,15 @@ jt_mbst thg_extn {MBST},jt_exit,jth_rwrd
 ; No parameter.
 ; Quits the emulation.
 ;---
-jt_exit thg_extn {EXIT},jt_ghfn,thp_nul
+jt_exit thg_extn {EXIT},jt_qlfp,thp_nul     ;; don't call jt_ghfn
 	moveq	#jt5.exit,d0
 	bra.s	do_tp5
 
-		
+	end
+
+
+;;; unused, keep for occasional debugging
+
 ;+++
 ; JVA_NATFILE$
 ; Optional proposed string on entry
@@ -261,7 +266,7 @@ jt_ghfn thg_extn {NATF},jt_lgon,jth_natf
 ; Switches logging on
 ;---
 jt_lgon thg_extn {LON },jt_loff,jth_log
-	bra.s	lg_exit
+	bra.s	lg_exit 		; !!!!!!!!!!!!!
 	move.l	jva_lkptr,d0
 	beq.s	lg_exit
 	move.l	d0,a3
@@ -281,7 +286,7 @@ lg_exit moveq	#0,d0
 ;---
 
 jt_loff thg_extn {LOFF},jt_qlfp,thp_nul
-	bra.s	lg_exit
+	bra.s	lg_exit 		; !!!!!!!!!!!!!!!!!!
 	lea	endrt,a1
 	move.l	a1,$6c
 	moveq	#jte.loff,d0
@@ -304,5 +309,4 @@ int3out
 	movem.l (a7)+,psf.oreg
 	movem.l (sp)+,psf.reg		restore registers
 endrt	rte
-
-	end
+	     

@@ -1,10 +1,49 @@
 SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
-					
+
+3.42
+
+    CONFIGURABLE JOBS AND CHANNEL TABLE SIZES (wl)
+	smsq_mem_1mb_init_asm		3.01	allow for configurable job and channel table size
+						(applies to qpc, smsqmulator, qx0,q68)
+
+
+    Qx0 QLIB PROGRAMS WORKAROUND (wl)
+	smsq_shd_sch_q40_asm		2.02	scheduler switches between copyback/writethrough (for qliberated progs)
+	smsq_sms_crjb_q40_as		2.02	add new exception vector table for jobs started from qlib jobs
+	smsq_smsq_q40_link		.	amended to suit
+	smsq_shd_q40_cct		.	    "    "   "
+	smsq_sms_q40_cct		.	    "    "   "
+	smsq_shd_qlibq40_keys		.	new include file
+	smsq_q40_cachemode_asm		1.03	has no function anymore
+	keys_sys			.	added sys_qx0c variable ($ee)
+
+
+    Qx0 MISC (wl)
+	dev8_smsq_q40_hwinit_asm	2.04	qcf_bgio and qcf_curs were switched around
+	dv3_qlf_fsel40_asm		3.02	for floppy use per drive check from ddl_cylhds(a3)
+
+
+    Q68 MISC (wl)
+	smsq_q68_hwinit_asm		1.06	added mem start address check
+	smsq_q68_sbas_bgimage2_asm	1.00	added (loads image to screen mem start +2 MiB)
+	smsq_sbas_procs_procs_q68_asm	2.06	bgimage points to bgimage2
+	smsq_q68_sbas_procs_cct 	.	amended to suit
+	smsq_q68_driver_snd_ssss_asm	1.03	removed debug and commented-out code
+
+
+    SMSQMULATOR MISC (wl)
+	smsq_java_hwinit_asm		2.02	use lower part of mem for part of OS
+	smsq_java_ctrl_init_asm 	1.04	removed JVA_NORMNM
+	smsq_java_ctrl_thing_asm	1.03	removed NATF (JVA_NORMNM$)
+	smsq_java_driver_nfa_useq_asm	2.05	use preset space and ut_rtstr to resurn value to sbasic
+
+-----------------------------------------------------------------------------
+
 3.41
 
-    Q68 misc (wl)
+    Q68 MISC (wl)
 	smsq_q68_hdop_poll_asm		1.01	only change slug setting if actually BEEPING
 	smsq_q68_driver_ql_asm		1.01	removed unnecessary code
 	smsq_q68_hwinit_asm		1.05	added "Use 16 bit " config item, set IDs of machines (Q68, Q0,Qimsi Gold)
@@ -14,7 +53,7 @@ Version  changed		       of file	changes made
 	smsq_q68_driver_most_asm	1.02	set correct machine ID
 
 
-    Q68 SD Card access (wl)
+    Q68 SD CARD ACCESS (wl)
 	dv3_q68_win_init_asm		1.03	preset diff. drive names
 	dv3_q68_qub_init_asm		1.04	use r/w routines in fast memory
 	dv3_q68_fat_init_asm		1.04	use r/w routines in fast memory
@@ -26,7 +65,7 @@ Version  changed		       of file	changes made
 	dv3_q68_sdhc_cpy2mem_asm	1.02	set the pointers in driver defn block (FAT, QUB)
 
 
-    Q68 SER ports (wl)
+    Q68 SER PORTS (wl)
 	smsq_q68_spp_ser_asm		1.02	prepare for two serports, allow open depending on machine
 	smsq_q68_spp_txser_asm		1.02	check for active before checking hardware, don't start tx interrupt when closing
 	smsq_q68_spp_rxser_asm		1.02	(dito)
@@ -48,7 +87,7 @@ Version  changed		       of file	changes made
 
 3.40
 
-    QIMSI integration (wl)
+    QIMSI INTEGRATION (wl)
 	smsq_qimsi_ps2_ibm_base_asm	1.02	adapted for Qimsi PS2
 	smsq_qimsi_ps2_english_asm	1.02	adapted for Qimsi PS2
 	smsq_qimsi_ps2_french_asm	1.02	adapted for Qimsi PS2
@@ -78,7 +117,7 @@ Version  changed		       of file	changes made
 	dv3_qlsd_banner_asm		.	amended to suit
 
 
-    SBASIC jobname length (wl)
+    SBASIC JOBNAME LENGTH (wl)
 	smsq_sbas_procs_job_asm 	2.02	max name length for sbasic job is now 48 (wl)
 	keys_sbasic			.	amended to suit (introduces sb.maxnm), also removes some commented out entries (wl)
 
@@ -95,7 +134,7 @@ Version  changed		       of file	changes made
 	util_gut_cctx			.	amemnded to suit
 
 
-    SBASIC bugfix (wl)
+    SBASIC BUGFIX (wl)
 	iod_con2_ptr_ckey_asm		1.02	CKEYON/OFF : return with error if no channel opened correctly
 	sbsext_ext_ddef_asm		1.00	DLIST don't presume ut_chan1 always succeeds
 	sbsext_ut_chan_asm		0.50	close newly opened channel if error out of range
@@ -107,7 +146,7 @@ Version  changed		       of file	changes made
 	smsq_spp_thing_asm		2.13	ser_flow would always fetch wrong parameter
 
 
-    Q68 general (wl)
+    Q68 GENERAL (wl)
 	smsq_q68_rtc_asm		1.02	also sets time in the Q68 hardware register, respects prot_date
 	keys_q68			.	amended to suit
 	dv3_q68_fat_init_asm		1.03	FAT1_ config item was sill wrong
@@ -120,7 +159,7 @@ Version  changed		       of file	changes made
 	smsq_q68_driver_most_link	.	amended to suit
 
 
-    Q68 better serport handling (wl)
+    Q68 BETTER SERPORT HANDLING (wl)
 	smsq_q68_spp_init_asm		1.01	only 1 interrupt routine, rx jumps to tx
 	smsq_q68_spp_rxser_asm		1.01	chains to tx
 	smsq_q68_spp_ser_asm		1.01	remove 230400 baud rate, total revamp
@@ -129,7 +168,7 @@ Version  changed		       of file	changes made
 	smsq_q68_spp_cct		.	adjusted to suit
 
 
-    Q-Emulator (DT)
+    Q-EMULATOR (DT)
 	sbsext_ext_maint_asm		1.06	amended for QMAC on Q-Emulator
 	sbsext_ut_gtnam_asm		0.08	amended for QMAC on Q-Emulator
 	sbsext_ut_proc_asm		2.03	amended for QMAC on Q-Emulator
@@ -2030,7 +2069,9 @@ Version  changed		       of file	changes made
 
 keys:
 
+AH = Alain Haoui
 BC = Bruno Coativy
+DT = Daniele Terdina
 DW = David Westbury
 FD = Fabrizio Diversi
 GG = George Gwilt

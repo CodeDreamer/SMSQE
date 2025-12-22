@@ -27,7 +27,7 @@
 	include 'dev8_mac_proc'
 	include 'dev8_mac_vecx'
 	include 'dev8_mac_creg'
-	include 'dev1_asm_gold_ps2_keys'    ; load after dev8_smsq_ps2_keys !
+	include 'dev8_smsq_qimsi_ps2_keys'    ; load after dev8_smsq_ps2_keys !
 	include 'dev8_smsq_smsq_base_keys'
 	
 

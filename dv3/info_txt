@@ -280,3 +280,6 @@ NB. This document is probably not exempt from error. If you find any, please
 point them out to me, so that I can correct them.
 
 Todo : explain the format of the init table and how this is all tied together
+
+
+Saving goes through dv3_hd_pflush, see at label hdp_wsec

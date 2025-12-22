@@ -1,0 +1,8 @@
+As of version 3.42, the job (and thus channel) table size can be configured for
+some machines.
+The value thus configured corresponds to the number of entries in the JOB table.
+The number of entrie in the CHANNEL table is directly derived from this value:
+it is three times as much.
+The allowed range is from 80 to 10000.
+The default value is 120 (i.e the size previously used).
+This only applies to SMSQE for QPC, Qx0, SMSQmulator and Q68.

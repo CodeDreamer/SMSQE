@@ -15,7 +15,7 @@
 
 ;+++
 ; Hard disk polling Interrupt Routine - Q68
-; this is currently imperfect, as it doesn't distiguish between both drives
+; this is currently imperfect, as it doesn't distinguish between both drives
 ; so if one is being used, the other won't be.
 ;
 hd_poll_check

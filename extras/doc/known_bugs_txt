@@ -1,0 +1,40 @@
+Known bugs
+=-=-=-=-==
+This is a list of known bugs in SMSQ/E.
+
+
+1 - (all versions)
+If the FIRST variable enumerated when an SBASIC daughter job is parsed, is
+used as a formal parameter in a function/procedure, the machine will
+crash badly. This does not happens in job 0.
+
+According to Per Witte, this description was formulated by Martyn Hill.
+
+Example program showing the bug:
+
+100 p$ = 'abc': p = 123
+110 :
+120 test p$, p
+130 PAUSE
+140 :
+150 DEFine PROCedure test(p$, p)
+160   PRINT "It doesn't get here"
+170 END DEFine test
+
+Workarounds:
+
+A
+Initiate another variable first:
+100 dummy = 0: p$ = 'abc': p = 123
+
+ (rest unchanged)
+
+B
+Replace this line
+150 DEFine PROCedure test(p$, p)
+with
+150 DEFine PROCedure test(another_name$, p)
+i.e. do not use "p$" as formal parameter in the procedure definition
+
+ (rest unchanged)
+----------------------------------------------------------------------------

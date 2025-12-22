@@ -3,9 +3,9 @@
     The HOME thing
     =-=-=-=-=-=-=-
     
-    The latest version	of  SMSQE  has	an  inbuilt  support  for  a  "Home
-    directory thing".  This may be of interest to  some users, so here is a
-    small description of it.
+    As of version 3.11, SMSQE has an inbuilt support for a "Home directory
+    thing".  This may be of interest to  some users, so here is small des-
+    cription of it.
     
     
     I - WHAT DOES IT DO?
@@ -58,7 +58,7 @@
 
     It	is, however, possible to  set up a default  home directory for jobs
     with a  given name. When a	job, for which a  default directory was set
-    up,  executes, for example froma  hotkey, and  tries to get at its home
+    up,  executes, for example from a hotkey, and  tries to get at its home
     directory, a home dir will be set up for it automatically. 
     
     Thus,  whenever a job tries to find its home/current directory/file and
@@ -99,7 +99,7 @@
     programmed	a file manager, further information is given below, showing
     you the code that needs to be implemented for this. If a filemanager is
     in	compiled basic (e.g. DiskMate) no  further action will be necessary
-    under SMSQ/E since the EX commands	in  SMSQ/E  will  do  whathever  is
+    under SMSQ/E since the  EX commands  in  SMSQ/E  will  do  whatever  is
     necessary.
     
     
@@ -117,14 +117,13 @@
     E - QDOS and the HOME Thing
     
     There  is a stand alone version of the HOME thing for QDOS users (which
-    can be downloaded at http://www.wlenerz.com/
-    lf/download/).
-    
-    Thus, QDOS systems can  also profit  the home  directories set  up from
-    QPAC II and FileInfo, but support for the HOME thing through the EX and
-    LOAD  commands  will be non-existent,  since that requires	a change in
-    these commands. The  same is  true for  filemanagers that  are compiled
-    basic.
+    can be downloaded at https://wlenerz.com/qlstuff/home_thing.zip).
+
+    Thus, QDOS systems can  also profit from the home  directories set	up
+    from QPAC II and FileInfo, but support for the HOME thing through  the
+    EX	and LOAD  commands  will  be non-existent,  since that requires  a
+    change in these commands. The  same is  true for filemanagers that are
+    compiled basic.
     
     
     
@@ -156,7 +155,7 @@
     
     1 - Get the home directory
     
-    result$ = <b>HOME_DIR$(job_id)</b>
+    result$ = HOME_DIR$(job_id)
     
     This function  returns the home directory for  the job given as job_id.
     To avoid programs stopping with  an  error	if  for  some  unimaginable
@@ -177,7 +176,7 @@
     
     2 - Get the home filename
     
-    result$ = <b>HOME_FILE$(job_id)</b>
+    result$ = HOME_FILE$(job_id)
     
     Same as for the home directory, but for the home filename.
     
@@ -185,7 +184,7 @@
     
     3 - Get the current directory
     
-    result$ = <b>HOME_CURR$(job_id)</b>
+    result$ = HOME_CURR$(job_id)
     
     Same as for the home directory, but for the current directory.
     
@@ -193,7 +192,7 @@
     
     4 - Default names
     
-    <b>HOME_DEF</b> job_name$, file_name$
+    HOME_DEF job_name$, file_name$
     
     
     This sets  a default filename  for a job  with the name  given as first
@@ -215,12 +214,12 @@
     
     5 - Get the version of the HOME thing.
     
-    result$ = <b>HOME_VER$</b>
+    result$ = HOME_VER$
     
 
     6 - Set the cirrent directory
 
-    <b> HOME_CSET [job_ID], directory$</b>
+    HOME_CSET [job_ID], directory$
 
     Set the current directory for the job. The directory must the a valid directory
 
@@ -245,8 +244,8 @@
     The  name of the thing is, imaginatively,  "HOME", and the names of the
     individual extensions will be given below.
     
-    After  you used the  thing, you then  call the thh_code  routine of the
-    thing with A2 pointing to the linkage and A1 to a parameter list.
+    After  you used the  thing, you call the thh_code  routine of the thing
+    with A2 pointing to the linkage and A1 to a parameter list.
     
     Each  extension thus  has its  own parameter  list. They  are explained
     below for  each extension. An example for  using the thing from machine
@@ -351,7 +350,7 @@
     
     
     Normally,  jobs  should  not  try  to  set	up  a  home  directory	for
-    themselves.  This should be left to  the system/filemanager. When a job
+    themselves. This should be left to the system / filemanager. When a job
     is	started with the SMSQ/E EX, EW or any of the similar commands, this
     is	done automatically. However, filemanager  writers may be interested
     in this info.
@@ -359,7 +358,7 @@
     
     A - From Sbasic
     
-    <b>HOME_SET</b> job_id, device_and_file_name$
+    HOME_SET job_id, device_and_file_name$
     
     Set  the home directory, home filename  and current directory. You pass
     the  thing the job ID of the job for which this is to be set up and the

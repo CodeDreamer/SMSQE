@@ -1,7 +1,8 @@
 ; SMSQMuator control thing 1.04 copyright (c) w. Lenerz 2017-2024
 
 ; versions (all wl)
-; 2024-04-29   1.04 added JVA_NATFILE$
+; 2025-03-12   1.05 removed JVA_NORMNM$
+; 2024-04-29   1.04 added JVA_NORMNM$
 ;	       1.03 removed test & dead code
 ;	       1.02 added logon, logoff
 ;	       1.01 added jva_minimize
@@ -134,8 +135,8 @@ proctab
 	proc_ref EMU_SYNCSCRAP , jvasync
 	proc_ref JVA_SYNCSCRAP_STOP , jvasstp
 	proc_ref EMU_SYNCSCRAP_STOP , jvasstp
-	proc_ref JVA_LOGON , jvalon
-	proc_ref JVA_LOGOFF , jvaloff
+;;;;	    proc_ref JVA_LOGON , jvalon
+;;;;	    proc_ref JVA_LOGOFF , jvaloff
 	proc_end
 	proc_stt
 	proc_ref JVA_NETNAME$ , jvannam
@@ -150,7 +151,7 @@ proctab
 	proc_ref JVA_NETADDR$ , jvaaddr
 	proc_ref EMU_NETADDR$ , jvaaddr
 	proc_ref JVA_SOUNDING , jvasndi
-	proc_ref JVA_NORMNM$, jvanatf
+;;;;	    proc_ref JVA_NORMNM$, jvanatf
 	proc_end
 
 

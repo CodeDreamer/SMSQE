@@ -1,5 +1,6 @@
-; Q68 SMSQ Sampled Sound System  V1.02	  2017-2018 W. Lenerz
+; Q68 SMSQ Sampled Sound System  V1.03	  2017-2025 W. Lenerz
 ; 1.02 improved queue handing
+; 2025-02-21	1.03	removed debug end commented-out code.
 
 ; partially based on
 ; Q40 SMSQ Sampled Sound System  V2.00	  1999  Tony Tebby
@@ -91,15 +92,6 @@ ssss_init
 	moveq	#sms.lpol,d0
 	trap	#do.sms2
 
-;;;;;  debug code ;;;;; ----------------------------
-	genif	debug = 1
-	cmp.l	#'gold',q68_jflg	  ; SMSQ68mulator?
-	bne.s	ssss_jmp
-	move.w	#0,$d000
-	moveq	#jt5.sssi,d0
-	dc.w	jva.trp5
-	endgen
-;!!!!!!!!!!!!!	------------------------------------
 ssss_jmp
        jmp	snd_nam
 
@@ -150,19 +142,6 @@ cont	dbf	d2,sndlp		; 1024 times max
  
 ssss_done
 
-;------------------------------------------
-;;;;  debug code ;;;;;
-	genif	debug = 1
-	cmp.l	#'gold',q68_jflg	; SMSQ68mulator?
-	bne.s	setx			; no
-	move.l	ssss_qout(a3),d0
-	cmp.l	d0,a2			; was anything changed?
-	beq.s	setx			; no, so no need to call add routine
-sds	moveq	#10,d0
-	dc.w	$a005
-	endgen
-;
-;-------------------------------------------
 setx	move.l	a2,ssss_qout(a3)	; new queue out ptr
 out	rts
 
@@ -184,7 +163,6 @@ ssss_vector
 	bra.s	sss_addm
 	nop
 	bra.l	sss_kill
-;	 nop
 	bra.l	sss_sample
 
 ; add a sample
@@ -268,20 +246,6 @@ sss_kill
 	move.l	ssss_qstart(a3),ssss_qout(a3)
 	sf	ssss_sema(a3)
 	rts
-
-;	 movem.l d1/d2/a1/a2,-(sp)
-;	 move.l  ssss_qin(a3),a2    ; the bytes will go here
-;
-;	 moveq	 #$ffffff80,d1
-;	 moveq	 #$ffffff80,d2
-;sss_kloop
-;	 bsr	 sss_add1	    ; add zero
-;	 beq.s	 sss_kloop	    ; keep on until queue is not full
-;
-;	 move.l  a2,ssss_qout(a3)   ; one sample only in queue
-;	 movem.l (sp)+,d1/d2/a1/a2
-;	 rts
-
 
 ; return length  of samples in queue
 

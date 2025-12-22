@@ -2,8 +2,9 @@
 
 ; based on T. Tebby's code
 ;
-* 2003-09-27		v.2.00 (?)	added OSPS config item (wl)
-* 2015 May 24		  2.01		added config item for ieee floats  (wl)
+* 2003-09-27	2.00	(?) added OSPS config item (wl)
+* 2015-05-24	2.01	added config item for ieee floats  (wl)
+* 2025-02-21	2.02	use lower part of mem for part of OS (wl)
 
 
 ; Called with a7 a valid, safe stack
@@ -180,17 +181,16 @@ sms_wbase
 	rts
 
 
-
 ; loader tables
 
 mod_table
 
-	dc.l	sms.base-4,sms.base
-	dc.l	0			; load everything in one slice
+	dc.l	sms.base-4,$4000	; vectors
+	dc.l	$4200,$c000		; leave space for EPROM_LOAD
+	dc.l	$10000,$17d00		; second slice
+	dc.l	0
 
-;	 dc.l	 sms.base-4,$4000	  ; first slice
-;	 dc.l	 $4200-4,$c000		  ; second slice
-;	 dc.l	 $10020-4,$17d00	  ; third slice (avoid 'Gold')
-;	 dc.l	 0
+;	 dc.l	 sms.base-4,sms.base
+;	 dc.l	 0			 ; load everything in one slice
 
 	end

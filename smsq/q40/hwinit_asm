@@ -21,11 +21,13 @@
 ;			    zero in d5
 ;			    zero in d6
 ;			    top of RAM in d7
-* 2003-09-27	v. 2.00 (?)	added OSPS config item
-* 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
-* 2005-11-12	V. 2.02 	better cache handling (TG)
-* 2018-03-30	V. 2.03 	new config tem (boot from floppy?)
-*				don't use trap#0 at 2.02
+; 2003-09-27	v. 2.00 (?)	added OSPS config item
+; 2005-01-10	V. 2.01 	use non cached modes for startup again (WL)
+; 2005-11-12	V. 2.02 	better cache handling (TG)
+; 2018-03-30	V. 2.03 	new config tem (boot from floppy?)
+;				don't use trap#0 at 2.02
+; 2025-02-14	v. 2.04 	qcf_bgio and qcf_curs were switched around (wl)
+;
 
 
 	section hwinit
@@ -80,8 +82,8 @@ qcf_fill	ds.b	 14	; 0c ... 19
 qcf_mlan	dc.w	 44	; 1a
 qcf_kstuf	dc.b	250	; 1c
 qcf_curs	dc.b	1	; 1d
-qcf_ctrc	dc.b	0	; 1e
-qcf_bgio	dc.b	0	; 1f
+qcf_bgio	dc.b	1	; 1e
+qcf_ctrc	dc.b	0	; 1f
 
 
 	xref.l	smsq_vers

@@ -1,0 +1,5 @@
+	nolist
+
+qlib_f1 equ	'QLWL'
+qlib_f2 equ	'4Qx0'
+	list

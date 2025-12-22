@@ -54,13 +54,8 @@ cpyreg	reg	d1/d2/d3/d6/a0
 	movem.l cpyreg,-(a7)
 	lea	hdl_unit(a3),a1
 	lea	q68_drv1,a0		; config: what drv on what card
-	moveq	#7,d7
-	clr.l	d3			; used as flag
-cplp	move.b	(a0)+,d0		; card nbr - can be -1, 0, or q68.coff
-	ble.s	cp			; drive on no card, or card1, just set it
-	st	d3			; d3<>0 = some drives are on card 2
-cp	move.b	d0,(a1)+		; fill in the configured drive-> card assignments
-	dbf	d7,cplp
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+		; fill in the configured drive-> card assignments
 
 ; normalize the configured drive names
 	move.l	d3,a4

@@ -1,5 +1,6 @@
 ; DV3 QL Format Select			      V3.00  1992 Tony Tebby
 ; use per drive check for lba not per device  V3.01  W. Lenerz 2017 Nov 21
+; 2025-02-17 3.02 for floppy use per drive check from ddl_cylhds(a3) (wl)
 
 	section dv3
 
@@ -38,8 +39,8 @@ qfs.reg reg	d1/d2/d3/d4/d5/d6/a1/a2
 	subq.b	#ddl.flp,d2		 ; floppy disk?
 	bne.l	qfs_hdisk		 ; ... no
 
-	tst.b	ddf_lba(a4)		 ; accessed by tracks?
-	beq.l	qfs_nimp		 ; ... no
+	move.b	ddl_cylhds(a3),ddf_lba(a4); make sure floppy is set for cyls//heads
+	beq.l	qfs_nimp		 ; if not accessed by tracks: nimp
 
 	move.w	dff_cyls(a0),d4 	 ; number of cylinders
 	move.w	dff_heads(a0),d3	 ; number of heads

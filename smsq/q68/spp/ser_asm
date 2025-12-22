@@ -237,6 +237,7 @@ q68_ioprts
 ; NB not called with jsr (a4)
 ;---
 q68_oopr
+  move.l	a3,q68_sdhc
 	move.l	a2,-(a7)
 	st	spd_oact(a3)		; set output to go
 	move.l	spd_hbase(a3),a2

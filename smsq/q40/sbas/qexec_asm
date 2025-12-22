@@ -1,0 +1,196 @@
+; Q40/Q60 QEXEC etc keywords for QLIB patch V1.00 (c) @ W. Lenerz 2025
+; this also includes the COPYBACK etc commands (which no longer do anything)
+
+; 2025-03-20	1.00	initial version (wl)
+
+
+
+	section exten
+
+	include dev8_keys_qdos_sms
+	include dev8_keys_err
+	include dev8_keys_sbasic
+	include dev8_keys_qdos_ioa
+	include dev8_keys_qdos_io
+	include dev8_keys_jcbq
+	include dev8_smsq_smsq_base_keys
+	include dev8_keys_sys
+	include dev8_smsq_shd_qlibq40_keys
+
+	xdef	qexec
+	xdef	qexec_w
+	xdef	copyback
+	xdef	writethrough
+	xdef	serialized
+
+	xref	gu_achpj
+	xref	ut_gtnm1
+	xref	gu_shome
+		
+
+; COPYBACK etc are just a return without error
+copyback
+writethrough
+serialized
+	moveq	#0,d0
+	rts
+    
+;+++
+; QEXEC and QEX
+;---
+qexec
+	moveq	#0,d7
+	bra.s	common
+
+;+++
+; QEXEC_W and QEW
+;---
+qexec_w
+	moveq	#-1,d7
+common
+	jsr	ut_gtnm1		; get filename
+	bne	out			; oops
+	move.l	d3,d4
+	move.l	a1,a0
+	add.l	a6,a0
+	move.l	a0,a4			: keep ptr to name
+	moveq	#ioa.kshr,d3		; file must already exist
+	moveq	#ioa.open,d0		; open channel
+	moveq	#-1,d1			; for myself
+	trap	#2			; open file
+	tst.l	d0
+	bne	out			; ooops
+	move.l	sb_buffb(a6),a1 	; point basic buffer base
+	add.l	a6,a1			; absolute
+	move.l	a1,d6			; keep buffer pointer
+	moveq	#64,d2			; length of a file header
+	moveq	#-1,d3
+	moveq	#iof.rhdr,d0		; read file header into buffer
+	trap	#3			;
+	tst.l	d0
+	bne	close			; ooops, couldn't
+	move.l	d6,a1			; point to start of header in buffer
+	moveq	#err.ipar,d0		; preset error
+	cmp.b	#1,5(a1)		; is file executable?
+	bne	close			; no, so close & leave
+	move.l	(a1),d6 		; file length
+	move.l	6(a1),d5		; data space
+	move.w	(a4),d0
+	addq.l	#3,d0
+	lsr.w	#1,d0
+	subq.w	#1,d0
+nm_cp
+	move.w	(a4)+,(a1)+		; copy name to buffer
+	dbf	d0,nm_cp
+	move.l	a0,a4
+
+; the file is found and executable
+; a0 channelID
+; a4 (same as a0)
+; d5 data space
+; d6 file length
+; d7 type of command (qexec_w or qexec) switch
+
+	moveq	#0,d0			; presume no 2nd parameter (cmd line)
+	moveq	#0,d4
+	addq.l	#8,a3
+	cmp.l	a3,a5			; any command line?
+	blt.s	no_cmd			; no->
+	lea	8(a3),a5		; only get 1 more param
+	jsr	ut_gtnm1
+	bne	close
+	add.l	a6,a1
+	move.l	a1,d4			; keep param pointer
+	move.w	(a1),d0 		; length of parameter
+	bne.s	got_prm
+	moveq	#0,d4			; empty param means no param
+got_prm
+	addq.w	#3,d0			; + length word + make even
+	bclr	#0,d0
+no_cmd
+	move.l	d5,d3			; data space
+	add.l	d0,d3			; possible command line
+	move.l	d6,d2			; code space
+	sub.l	a1,a1			; start at copy of header, please
+	moveq	#0,d1			; is owned by job 0
+	moveq	#sms.crjb,d0
+	trap	#1			; create job now (d1 = job id)
+
+	tst.l	d0			; ok?
+	bne   close			; no, close channel & return to caller
+
+; as of here, A0 = job base, D1 = job ID
+	move.l	a0,a1
+	move.l	a0,a5
+	add.l	d2,a5
+	add.l	d3,a5			; point to end of space
+	moveq	#jcb_end,d2
+	exg	a0,a4			; a0 =channel Id, a4 = job base
+	sub.l	d2,a4			; a4 = start of job header
+	move.l	d6,d2			; length of file
+	moveq	#-1,d3
+	moveq	#iof.load,d0
+	move.l	d1,-(a7)
+	trap	#3			; load file into mem now
+	move.l	(a7)+,d6		; d6 = job ID
+	bsr.s	close			; close file now
+	bne.s	out
+
+;  job was created, set its home dir
+	move.l	sb_buffb(a6),a1 	; point basic buffer base
+	add.l	a6,a1			; absolute
+	move.l	d6,d1
+	jsr	gu_shome		; job ID is already in d1
+
+; job was created, copy possible command line
+; a4 =job header
+	tst.l	d4			; was there a command line?
+	beq.s	set_a7			; no
+	move.l	d4,a1
+	moveq	#1,d4			; ( not 3 ==> move.w (a1)+ )
+	add.w	(a1)+,d4		; this is never 0 here (see label got_prm)
+	bclr	#0,d4
+	add.w	d4,a1
+	lsr.w	#1,d4
+cpyprm
+	move.w	-(a1),-(a5)
+	dbf	d4,cpyprm
+set_a7
+	clr.w	-(a5)			; no channels
+	move.l	a5,jcb_a7(a4)		; set job's stack register
+
+; job was created, now make a special exception vector table
+tbl.len equ	$ec			;  exception table length
+set_tble
+	move.l	#tbl.len+8,d0		; space for excepton vector + 2LW
+	move.l	d6,a0			; job ID
+	jsr	gu_achpj		; get mem for exv table for this job
+	bne.s	out
+	move.l	#qlib_f1,(a0)+		; special flag part 1
+	move.l	#qlib_f2,(a0)+		; and part 2
+	move.l	jcb_exv(a4),a1		; old exv table
+	move.l	a0,a2
+	moveq	#tbl.len/4-1,d0
+cpylp
+	move.l	(a1)+,(a2)+
+	dbf	d0,cpylp		; copy all exception vectors
+	move.l	a0,jcb_exv(a4)		; set this as exception vector table
+
+	move.l	d6,d1
+	moveq	#1,d2			; priority
+	move.l	d7,d3
+	moveq	#sms.acjb,d0
+	trap	#1
+out
+	rts
+
+; close channel (ID in A0) keep error
+close
+	move.l	d0,-(a7)		; keep original error
+	moveq	#2,d0
+	trap	#2
+	move.l	(a7)+,d0
+	rts
+
+
+	end

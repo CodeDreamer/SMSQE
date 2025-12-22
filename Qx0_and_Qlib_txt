@@ -1,0 +1,89 @@
+
+		QLiberated programs and the Qx0
+
+
+A - What and why
+B - Starting QLiberated programs with the QEXEC (_w) commands
+C - Patching QLiberated programs permanently
+D - Not Qlib specific
+E - COPYBACK always on
+
+
+A - What and why
+=-=-=-=-=-=-=-=-
+SMSQE 3.42 contains a new scheduler mechanism for the Qx0 machines, so that
+QLiberated programs run correctly on that platform even if the machine is in
+COPYBACK mode.
+
+For this, SMSQE contains 4 new keywords QEXEC and QEX, QEXEC_W and QEW (note
+that QEX and QEW are just shortened versions of the QEXEC and QEXEC_W keywords,
+they add no additional facilities.)
+
+QLiberated program must be started with one of these commands.
+
+
+B - Starting QLiberated programs with the QEXEC (_w) commands
+=-=-=-=-=-=-=-=-=-.=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+The QEXEC etc commands do not modify or patch the code of the program itself,
+they just apply a small patch to a program's exception vector table.
+
+QEXEC and QEX don't suspend the calling job, QEXEC_W and QEW do.
+
+Admittedly, these commands are pretty primitive. They accept only two string
+parameters: the filename and a possible command line. The parameters
+need not be between parentheses. The separator between parameters doesn't
+matter.
+
+Example: QEXEC win1_program ; "command_line"
+
+This executes the program, passing it a possible command line in the usual way.
+
+If you start an (unpatched) QLiberated program with anything else, including
+launching it from a file manager, that program will still crash as usual on a
+Qx0 running in COPYBACK mode.
+    
+
+C - Patching QLiberated programs permanently
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+The above commands are there to allow for an occasional use of a QLiberated
+program. If you routinely use a QLiberated program, you should PATCH this
+program. Once patched, it may be started with any of the usual EXEC, EW etc
+commands.
+
+There is a ready-made program allowing you to apply a patch to any program.
+That program and the patch itself, however, are not part of SMSQE. They can be
+downloaded from my site at
+	www.wlenerz.com/qlstuff
+under the misc utilities section (Qx0_patch).
+
+That is a zip file containing the patch, the patching program and documentation.
+
+
+D - Not Qlib specific
+=-=-=-=-=-=-=-=-=-=-=
+The QEXEC commands are NOT specific to QLiberated programs, potentially any
+other program that would crash when the Qx0 is in COPYBACK mode, but run
+normally when in WRITETHROUGH mode, may be started with these commands
+
+
+
+The QEXEC etc commands do NOT modify the QLiberated program in such a way that
+the program could run in COPYBACK mode.
+Rather, whenever a QEXEC'd program gets a slice of CPU time by the scheduler,
+the CPU is put in WRITETHROUGH mode and then put back into COPYBACK mode when
+another program gets its time slice...
+This means that a patched program will NOT run at the full COPYBACK speed.
+
+
+E - COPYBACK always on
+=-=-=-=-=-=-=-=-=-=-=-
+As a result of this new policy, Qx0 machines now always run in COPYBACK mode.
+The different keywords (SERIALIZD, WRITETHROUGH, COPYBACK) still exist for
+compatibility reasons, but they have no effect any more.
+
+
+March 2025
+
+Copyright W. Lenerz

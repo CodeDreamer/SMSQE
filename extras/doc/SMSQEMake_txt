@@ -1,4 +1,7 @@
-SMSQEMake
+
+				SMSQEMake
+				=-=-=-=-=
+
 
 (NOTE a less succint description  of the  program and  how to  use it  can be
 found in the SMSQ/E reference manual, annex  1.  This  can  be	found  on  my
@@ -11,7 +14,8 @@ modules which are then "made" into one single SMSQ/E file.
 Targets
 The  targets are the machines for which SMSQ/E is to be built. They are shown
 in  a line of loose menu items. You can (de)select each target by clicking an
-it. Only selected targets will be built.
+it.  Only selected targets  will be built.  NOTE that the  "GOLD" target also
+includes the QIMSI target.
 
 Modules
 For each target there are a  certain  number  of  modules  that  need  to  be
@@ -19,10 +23,15 @@ assembled  and	linked.  The  modules  for  each  target  are  shown  in  the
 application  sub-window (their names end in "_link"). Only those modules that
 are selected will be treated.
 
+ATTENTION: if you wish to put this program on a hotkey, use the "i" parameter
+at the end!
+
 
 I - Presentation of the program
 
+
 A - Loose menu items
+
 There  are two rows of loose  menu items at the top  of the window. The first
 row contains (from left to right):
 
@@ -46,7 +55,9 @@ The second row contains the list of targets.
 The ESC, Move, Size and Sleep loose menu items all use the standard keys. For
 the other loose menu items, the selection key is underlined in each item.
 
+
 B - The application sub-window
+
 The application sub-window  contains the  list of  modules for	each selected
 target. When building  the targets, only  those modules that  are selected in
 the  application sub-window will be treated. This  means that you do not have
@@ -55,9 +66,31 @@ module. You cannot choose the individual  assembler  files  that  make	up  a
 module.
 
 
+II - Targets
+
+The targets are the "machines" for which SMSQE may be built.
+
+From left to right they are:
+
+Name	Target
+
+Generic  Generic SMSQ/E - routines used by nearly all targets
+Atari	 Atari ST
+Gold	 (Super) Gold card, includinf Qimsi
+Qx0	 Q40 and Q60
+Qxl	 QXL card
+Aurora	 Aurora card
+Java	 SMSQmulator
+PtrGen	 Stand-alone PtrGen and Hotkey System for non SMSQE machines
+QPC	 QPC
+Q68	 Q68
+Q-Em	 Q-emulator
+
+Note that, to make a target for any machine, you must make the Generic target
+AND the target for the chosen machine.
 
 
-II - Using the program
+III - Using the program
 
 Select	the targets you wish to be built.  Using the SaT item will select all
 of them.
@@ -86,7 +119,7 @@ remained selected, then look  in the  source code  at the  log file  for each
 module).
 
 
-III - Command line options.
+IV - Command line options.
 When executing SMSQEMake,  you can pass  it some command  line switches. They
 are all two letters long and are preceded by a hyphen. They are:
 
@@ -111,7 +144,7 @@ modules):
 Name	Target
 -tg	Generic SMSQ/E - routines used by nearly all targets
 -ti	Atari
--to	(Super) Gold card
+-to	(Super) Gold card, includinf Qimsi
 -tq	Q40
 -tx	QXL
 -tu	Aurora
@@ -120,3 +153,6 @@ Name	Target
 -tc	QPC
 -t8	Q68
 -tm	Q-emulator
+
+
+Program and documentation @ W. Lenerz 2010-2025

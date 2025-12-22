@@ -54,7 +54,7 @@ q68_prhd	equ	q68_prty<<8+q68_hand   ; parity and handshake combined
 ser1base	equ	$1c200
 ser_offset	equ	$20		; offset from ser1base to ser2base
 ser2base	equ	ser1base+ser_offset
-;qserdiff	 equ	 $1c218 	 ; diff between Q68 and Q0 here
+
 ; ser offsets relative to the base:
 ser_txdta	equ	0		; offset for tx line  (byte)
 ser_rxdta	equ	4		; offset for rx line  (byte)
@@ -167,5 +167,8 @@ q68_v2		equ	$17d20		; (byte) if set : hardware v.2
 q68_mula	equ	$17d24		; use by smsqmulatorq68 for mouse position
 
 q68_sdhc	equ	$17d28		; 4 long words, sdhc routines (during init only)
+
+;qserdiff	 equ	 $1c218 	 ; diff between Q68 and Q0 here
+
 
 	list

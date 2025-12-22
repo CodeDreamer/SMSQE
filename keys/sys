@@ -162,28 +162,32 @@ sys_cbas  equ	$00cc	long	current basic (copy of sys_jbpt)
 
 sys_fpu   equ	$00d0	16 bytes (seem unused but do not touch)
 
-sys_prtc  equ	$00e0	 byte	set if real time clock protected
-sys_pmem  equ	$00e1	 byte	memory protection level
-sys_slug  equ	$00e2	 word	slug level
-sys_klock equ	$00e4	 byte	key lock
+sys_prtc  equ	$00e0	byte	set if real time clock protected
+sys_pmem  equ	$00e1	byte	memory protection level
+sys_slug  equ	$00e2	word	slug level
+sys_klock equ	$00e4	byte	key lock
 sys..shk  equ	    0		    suppress HOTKEY
 sys..ssf  equ	    1		    suppress screen freeze
 sys..ssq  equ	    2		    suppress switch queue
 sys..sbk  equ	    4		    suppress BREAK
 sys..ssr  equ	    6		    suppress keyboard soft reset
 sys..shr  equ	    7		    suppress keyboard hard reset
-sys_mtick equ	$00e6	 word	mini tick counter
-sys_klnk  equ	$00e8	 long	pointer to keyboard linkage
+sys_mtick equ	$00e6	word	mini tick counter
+sys_klnk  equ	$00e8	long	pointer to keyboard linkage
 
 *
 * Fixed filing system working area (QL, Q68)
 *
-sys_filw   equ	$00ee to $0100
-sys_cdiu   equ	$00ee	 byte	Q68 flag for card in use
-sys_q8ct  equ	$00f0	 word	Q68 card type for cards 1 & 2 (a byte each)
-sys..q8un  equ	  $80		    undetermined (card uninitialized)
-sys..q8sd  equ	    9		    simple SD card
-sys..q8hc  equ	    0		    SDHC card
+sys_filw  equ	$00ee to $0100
+sys_cdiu  equ	$00ee	byte	flag for card in use (Q68)
+sys_mdrn  equ	$00ee	byte	which mdv drive is running? (QL)
+sys_qx0c  equ	$00ee	byte	copyback (=0) or writethrough (<>0) mode (Qx0)
+sys_mdct  equ	$00ef	byte	mdv run-up run-down counter (QL)
+sys_q8ct  equ	$00f0	word	Q68 card type for cards 1 & 2 (a byte each)
+sys..q8un equ	 $80		   undetermined (card uninitialized)
+sys..q8sd equ	   9		   simple SD card
+sys..q8hc equ	   0		   SDHC card
+sys_mdst  equ	$00f8	8*byte	Status: 0=no pending ops (QL)
 
 *
 * Filing system tables
@@ -206,6 +210,7 @@ sys_ldmlst equ	$0168	long	language dependent module list
 sys_lang equ	$016c	word	current language
 
 sys_vers equ	$0170	long	version
+
 sys_rthg equ	$017d	byte	use recent thing (<>0 if yes)?
 sys_xdly equ	$017e	byte	suspend delay after executing another job (3.13)
 sys_ouch equ	$017f	byte	ouch flag (currently used to activate SGC debug)
