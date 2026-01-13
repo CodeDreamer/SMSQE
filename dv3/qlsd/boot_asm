@@ -1,0 +1,106 @@
+; BOOT device V1.00					2021  Marcel Kilgus
+
+	section boot
+
+	xdef	boot_init
+
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_qdos_ioa'
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_iod'
+	include 'dev8_keys_sys'
+	include 'dev8_keys_err'
+	include 'dev8_dv3_qlsd_boot_data'
+
+;+++
+; BOOT driver initialisation
+;---
+boot_init
+	movem.l a0/a3,-(a7)
+	moveq	#btd_end,d1		; Linkage block length
+	moveq	#sms.achp,d0
+	moveq	#0,d2
+	trap	#1
+	bne.s	init_ret
+
+	lea	iod_ioad(a0),a3
+	lea	boot_io,a2
+	move.l	a2,(a3)+
+	lea	boot_open,a2
+	move.l	a2,(a3)+
+	lea	boot_close,a2
+	move.l	a2,(a3)
+
+	lea	iod_iolk(a0),a0 	; Link into
+	moveq	#sms.liod,d0		; IO device driver list
+	trap	#1
+init_ret
+	movem.l (a7)+,a0/a3
+	rts
+
+;+++
+; BOOT channel open operations
+;---
+boot_open
+	moveq	#err.fdnf,d0		; Pre-select "not for us"
+	cmpi.w	#4,(a0) 		; Name must be 4 chars
+	bne.s	bto_exit
+	move.l	2(a0),d1		; Name
+	andi.l	#$dfdfdfdf,d1		; Upper case
+	cmp.l	#'BOOT',d1
+	bne.s	bto_exit
+
+	movea.l sys_chtb(a6),a4
+bto_scan
+	tst.l	(a4)+			; scan for next free space in table
+	bpl.s	bto_scan		; +ve = occupied
+	clr.l	-(a4)			; reserve space in list so the
+					; next open will not fill it
+	moveq	#ioa.open,d0
+	moveq	#myself,d1
+; Use access key of caller. Makes SAVE BOOT possible. Good idea?
+;;;	   moveq   #ioa.kshr,d3 	   ; Read only
+	lea	win1_boot,a0
+	trap	#2
+
+	st	(a4)			; unreserve again
+
+	tst.l	d0
+	bne.s	bto_exit
+	move.l	a0,a4
+
+	moveq	#btc_end,d1
+	move.w	mem.achp,a2		; Allocate channel block in heap
+	jsr	(a2)
+	move.l	a4,btc_chn(a0)		; Remember channel id
+bto_exit
+	rts
+
+win1_boot
+	dc.w	9
+	dc.b	'win1_BOOT',0
+
+;+++
+; BOOT channel close operation
+;---
+boot_close
+	move.l	a0,-(sp)
+	moveq	#ioa.clos,d0
+	move.l	btc_chn(a0),a0		; Also close BOOT-file channel
+	trap	#2
+	move.l	(sp)+,a0
+
+	move.w	mem.rchp,a2
+	jmp	(a2)
+
+;+++
+; BOOT device IO operations.
+;---
+boot_io
+	move.l	a0,-(sp)
+	movea.l btc_chn(a0),a0		; Redirect to BOOT-file channel
+	trap	#3			; call I/O on it
+	move.l	(sp)+,a0
+	rts
+
+	end

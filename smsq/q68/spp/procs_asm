@@ -16,6 +16,8 @@ spp_procs
 	proc_def SER_CLEAR
 	proc_def SER_ABORT
 	proc_def SER_PAUSE
+	proc_def SER_SWTCH
+	proc_def SER_UNSWT
 	proc_def PRT_USE
 	proc_def PRT_BUFF
 	proc_def PRT_CLEAR

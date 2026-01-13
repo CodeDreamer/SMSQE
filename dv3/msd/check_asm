@@ -1,6 +1,7 @@
-; DV3 MSDOS Check Format	      V3.01	      1993 Tony Tebby
+; DV3 MSDOS Check Format	      V3.02	      1993 Tony Tebby
 ;
 ; 2020-03-08  3.01  modified for correct name in ddf_mname (wl)
+; 2022-02-15  3.02  Clear ddf_mname if medium has no name (MK)
 
 	section dv3
 
@@ -330,6 +331,7 @@ mck_dloop
 mck_cfree
 	st	ddf_mstat(a4)		 ; ... medium OK now
 
+	clr.w	ddf_mname(a4)		 ; in case there is no medium name
 	jsr	msd_mname		 ; ... find medium name
 	bne.s	mck_count
 

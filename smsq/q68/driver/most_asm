@@ -87,13 +87,16 @@ start
 no_intr jsr	kbd_initiq68		; both kbd fetch and read queue via poll
 common	jsr	mse_init
 
+ bra.s	sys_init
 	clr.l	d0			; this should be done in hwinit, but crashes the machines
 	move.b	q68_mach,d0		; machine type (0,1,2)
-	lsl.b	#2,d0
+	lsl.w	#1,d0
 	move.l	a2,-(a7)
 	lea	machine,a2
 	add.l	d0,a2
-	move.b	(a2),sys_mtyp(a6)
+	move.w	(a2),d0
+	move.b	d0,sys_mtyp(a6)
+     ;	 move.b  (a2),sys_mtyp(a6)
 	move.l	(a7)+,a2
 
 
@@ -130,6 +133,11 @@ hw_poll
 
 
 machine 				; table of machine types
+	dc.w	sys.mq68
+	dc.w	sys.mq0
+	dc.w	sys.mqig
+
+
 	dc.l	sys.mq68
 	dc.l	'Q68 '
 	dc.l	sys.mq0

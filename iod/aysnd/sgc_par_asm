@@ -1,0 +1,59 @@
+	section ay_hw
+
+	include 'dev8_sys_gold_keys'
+
+	xdef	max_chip
+	xdef	ay_set_regs
+	xdef	ay_set_chip_type
+	xdef	ay_set_frequency
+	xdef	ay_set_stereo
+	xdef	ay_set_volume
+
+max_chip equ 1			; SGC PAR only has one chip
+
+; All functions have D1 = chip (0/1) and D0 as error return
+
+; a1 = registers
+ay_set_regs
+	move.l	a0,-(sp)
+	moveq	#0,d0			; register number
+	lea	glk_bas0+glo_pbyt,a0
+	tst.b	glo_pstb-glo_pbyt(a0)	; reset /STROBE to activate address mode
+ay_set_loop
+	move.b	(a1)+,d1
+	cmp.b	#13,d0
+	bne.s	ay_set_it
+	cmp.b	#$ff,d1
+	beq.s	ay_set_skip
+ay_set_it
+	move.b	d0,(a0) 		; activate register number
+	move.b	d0,(a0) 		; spend more time for tAS
+	st	glo_pstb-glo_pbyt(a0)	; latch address and activate data mode
+	move.b	d1,(a0) 		; write register data
+	move.b	d1,(a0) 		; spend more time to satisfy tDW
+	move.b	d1,(a0) 		; even more
+	move.b	d1,(a0) 		; even more
+	move.b	d1,(a0) 		; even more
+	tst.b	glo_pstb-glo_pbyt(a0)	; latch data and activate address mode
+ay_set_skip
+	addq.b	#1,d0
+	cmp.b	#14,d0
+	bne.s	ay_set_loop
+	move.l	(sp)+,a0
+	rts
+
+; d2 = type 0 (AY), 1 (YM)
+ay_set_chip_type
+
+; d2 = frequency
+ay_set_frequency
+
+; d2 = stereo mode (0:mono, 1:ABC, 2:ACB, 3:BAC, 4:BCA, 5:CAB, 6:CBA)
+ay_set_stereo
+
+; d2 = volume (0..255)
+ay_set_volume
+	moveq	#0,d0
+	rts
+
+	end

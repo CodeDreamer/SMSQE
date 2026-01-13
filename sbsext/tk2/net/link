@@ -1,7 +1,5 @@
 program dev8_sbsext_tk2_net_bin
 
-filetype 0
-
 section tk2
 section nd
 

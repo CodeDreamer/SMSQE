@@ -5,8 +5,6 @@
 
 	xdef	dv3_addfd
 
-	xref	gu_thuse
-	xref	gu_thfre
 	xref	gu_achpp
 	xref	gu_rchp
 

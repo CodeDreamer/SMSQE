@@ -5,7 +5,7 @@
 
 	xdef	smsq_vers
 
-smsq_vers equ	 '3.42'
+smsq_vers equ	 '3.43'
 
 	end
 	    
@@ -13,7 +13,15 @@ smsq_vers equ	 '3.42'
 ; #&# (note WL : for web site insertion: all lines must end with a full stop, if
 ; #&#  not, the next line is supposed to be a continuation).
 
-
+; 3.43	QLSD: Support for QL-SD v3 ROM e xternal module, added ROM_SWITCH command for QL-SD ROM to switch OS (MK).
+;	QLSDImplemented real BOOT device for auto-boot (instead of renaming to MDV) (MK).
+;	DV3 msd clear ddf_mname if medium has no name (MK).
+;	QSOUND inlines que functions, bug fixes,  uses new AY sound driver (MK).
+;	TK2 fixed address error and #0 editing (MK).
+;	Q68, Q0, Qimsi fixed non working ser 2 (wl).
+:	Q68 fixed card_dir$ potential crash (wl, following MK's qlsd example).
+;
+;
 ; 3.42	Qx0 floppy format fixed (wl).
 ;	Qx0 scheduler kludge for compatibility with patched Qlibed programs (wl).
 ;	SMSQmulator use lower mem slices for part of OS (wl).

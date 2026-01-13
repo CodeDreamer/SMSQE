@@ -1,6 +1,5 @@
 program dev8_sbsext_tk2_bin
 
-filetype 0
 
 section base
 section banner
@@ -17,8 +16,8 @@ input dev8_sbsext_tk2_base_rel
 input dev8_sbsext_tk2_init_rel
 input dev8_sbsext_tk2_banner_rel
 input dev8_sbsext_ext_english_rel
+input dev8_sbsext_ext_english_net_rel
 input dev8_sbsext_tk2_wdef_rel
-!! dev8_sbsext_tk2_procs_asm
 input dev8_sbsext_tk2_procs_respr_rel
 input dev8_sbsext_ext_view_rel
 input dev8_sbsext_ext_dset_rel

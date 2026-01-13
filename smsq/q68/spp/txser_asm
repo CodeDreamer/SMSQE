@@ -1,8 +1,9 @@
-; Q68 send data to SER port    v. 1.02	 2017-2024	  W. Lenerz
+; Q68 send data to SER port    v. 1.03	 2017-2026	  W. Lenerz
 ;
 ; (nb there is no hardware buffer for tx - there is only one byte
 ; that can be send to the hardware at a time)
 
+; 2026-01-07   1.03  send 128 bytes a pop if possible
 ; 2024-05-18   1.02  check for active before checking hardware (nb there is no reammy a buffer for tx
 ; 2023.03.06   1.01  can handle 2 serports, don't read byte twice (wl)
 ;
@@ -16,8 +17,8 @@
 ; via the RX interrupt routine, a3 points to the linkage area
 	  section spp
 
-	xdef	spp_txser	; check both ports
-	xdef	q68_txser	; check port 1 only
+	xdef	spp_tx2ser	; check both ports
+	xdef	spp_tx1ser	; check port 1 only
 
 	xref	iob_gbyt
 	xref	iob_room
@@ -36,26 +37,26 @@
 ; a6 c	p sysvars
 ;
 ;
-; spp_txser is called when the system has two serial ports
-; q68_txser is called when the system has only one serport
+; spp_tx2ser is called when the system has two serial ports
+; q68_tx1ser is called when the system has only one serport
 
 ;---
-spp_txser				; check 2 ports for data to be sent
-	bsr.s	q68_txser		; try to Xmit data for ser 2 (if any)
+spp_tx2ser				; check 2 ports for data to be sent
+	bsr.s	spp_tx1ser		; try to Xmit data for ser 2 (if any)
 	sub.w	#spd.len,a3		; and now ser 1
-q68_txser
+spp_tx1ser
+	move.l	spd_hbase(a3),a4
 	tst.b	spd_oact(a3)		; output active?
 	beq.s	srxp_noint		; no, nothing to send, done  ->
 
-	move.l	spd_hbase(a3),a4
-	btst	#q68..txmpty,ser_status(a4) ; transmit buffer empty?
-	beq.s	srxp_exit		; no, can't send anything, done ->
-   
 	move.l	spd_obuf(a3),d0 	; output queue
 	ble.s	srxp_nomore		; there is none, close and switch interrupt off
 	move.l	d0,a2
-
+	moveq	#127,d3 		; 128 a pop
 srxp_loop
+	btst	#q68..txmpty,ser_status(a4) ; transmit buffer empty?
+	beq.s	srxp_exit		; no, can't send anything, done ->
+
 	jsr	iob_gbyt		; get byte from output queue (special return)
 	beq.s	srxp_sbyt		; =0 = got one, send it ->
 	blt.s	srxp_nomore		; <0 = none got, we're done ->
@@ -69,6 +70,7 @@ srxp_cz moveq	#26,d1			; ... or send CTRL Z
 
 srxp_sbyt
 	move.b	d1,ser_txdta(a4)	; put byte into hardware port
+	dbf	d3,srxp_loop
 srxp_exit
 	rts
 

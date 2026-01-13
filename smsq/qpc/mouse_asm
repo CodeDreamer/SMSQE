@@ -1,5 +1,6 @@
-; QPC Mouse Routines  v1.01				  2006  Marcel Kilgus
+; QPC Mouse Routines  v1.02				  2006  Marcel Kilgus
 ;
+; 2026-01-05  1.02  Removed spurious BTST (MK)
 ; 2006-03-08  1.01  Does horizontal wheel scroll if CTRL is pressed (MK)
 
 	section driver
@@ -112,7 +113,6 @@ mse_button
 	move.w	#$D9D1,d1		 ; ALT+up/ALT+down
 	btst	#kb..ctrl,kb_stat(a3)	 ; CTRL pressed?
 	beq.s	mse_dowheel		 ; ...no
-	btst	#1,d0			 ; ct
 	move.w	#$C9C1,d1		 ; ALT+left/ALT+right
 mse_dowheel
 	tst.w	d3

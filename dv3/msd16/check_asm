@@ -1,5 +1,6 @@
-; DV3 MSDOS FAT16 Check Format	      V3.02	      2017 W. Lenerz
+; DV3 MSDOS FAT16 Check Format	      V3.03	      2017 W. Lenerz
 ; 2020-03-08  3.02  modified for correct name in ddf_mname (MK+wl)
+; 2022-02-15  3.03  Clear ddf_mname if medium has no name (MK)
 ; based on
 ; DV3 MSDOS Check Format	      V3.00	      1993 Tony Tebby
 
@@ -334,6 +335,7 @@ mck_dloop
 mck_cfree
 	st	ddf_mstat(a4)		 ; ... medium OK now
 
+	clr.w	ddf_mname(a4)		 ; in case there is no medium name
 	jsr	msd_mname		 ; ... find medium name
 	bne.s	mck_count
 

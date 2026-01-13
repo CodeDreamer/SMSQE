@@ -1,0 +1,574 @@
+; QL-SD flash utilities  1.00				     Marcel Kilgus 2021
+
+; 2022-01-25  1.00  utilities to selecr ROM, flash ROM
+
+	section flash_procs
+
+	include 'dev8_keys_qdos_sms'
+	include 'dev8_keys_qdos_io'
+	include 'dev8_keys_qdos_ioa'
+	include 'dev8_keys_hdr'
+	include 'dev8_keys_err'
+	include 'dev8_keys_sbasic'
+	include 'dev8_dv3_qlsd_keys'
+
+	xdef	rom_flash
+	xdef	rom_read
+	xdef	rom_id
+
+	xref	ut_gtint
+	xref	ut_gtin1
+	xref	ut_gtli1
+	xref	ut_gtnm1
+	xref	ut_rtfd1
+
+qlsd_close
+	move.l	d0,-(sp)
+	moveq	#ioa.clos,d0		; Close file
+	trap	#2
+	move.l	(sp)+,d0
+	rts
+
+qlsd_ipar
+	moveq	#err.ipar,d0
+qlsd_rts
+	rts
+
+qlsd_eof
+	moveq	#err.ipar,d0
+	rts
+
+
+;+++
+; rom = ROM_SELECTED
+;---
+rom_selected
+	bsr	qlsd_doact
+
+	moveq	#0,d1
+	move.b	if_rom_selected(a4),d1
+	jmp	ut_rtfd1
+
+
+;+++
+; Program FLASH rom
+;
+; ROM_FLASH 0-7,filename
+;---
+rom_flash
+	bsr	ut_gtin1		; Get ROM number
+	bne.s	qlsd_rts
+	move.w	(a6,a1.l),d6		; ROM number
+	cmp.w	#7,d6
+	bhi.s	qlsd_ipar
+
+	addq.w	#8,a3			; Next parameter
+	bsr	ut_gtnm1		; And get filename
+	bne.s	qlsd_ipar
+
+	move.l	a1,a0			; Filename
+	moveq	#ioa.open,d0
+	moveq	#myself,d1
+	moveq	#ioa.kshr,d3
+	trap	#4
+	trap	#2
+	tst.l	d0
+	bne.s	qlsd_rts
+	move.l	a0,a5			; Remember channel ID
+
+	moveq	#iof.rhdr,d0		; Fetch the header
+	moveq	#hdr_name,d2
+	moveq	#-1,d3
+	move.l	sb_buffb(a6),a1
+	trap	#4
+	trap	#3
+	tst.l	d0
+	bne.s	qlsd_rts
+
+	move.l	sb_buffb(a6),a1
+	move.l	hdr_flen(a6,a1.l),d1	; Get file length
+	beq	qlsd_eof		; Empty 8-o
+
+	moveq	#sms.achp,d0		; Allocate in heap
+	movem.l d1/a0,-(sp)		; Save length and channel
+	add.l	#4095,d1
+	and.l	#$ff000,d1		; Round to sector size
+	move.l	d1,d4
+	moveq	#12,d2
+	lsr.l	d2,d4			; d4 = number of sectors
+	moveq	#myself,d2
+	moveq	#0,d3
+	trap	#1
+	move.l	a0,a1			; Memory in a1
+	movem.l (sp)+,d2/a0		; Channel in a0, length in d2
+	tst.l	d0
+	bne	qlsd_close
+
+	move.l	a1,a3			; Save start
+	moveq	#iof.load,d0		; Load file
+	moveq	#-1,d3
+	trap	#3
+	tst.l	d0
+	bne	qlsd_close
+
+	moveq	#ioa.clos,d0		; Close file
+	trap	#2
+
+	suba.l	a2,a2			; By default start at ROM base
+	cmp.b	#4,d4			; <=16kb?
+	bhi.s	rom_base
+	move.l	#$c000,a2		; yes, flash extension ROM
+rom_base
+; d4 = Sector count
+; d6 = ROM number
+; a2 = ROM base
+; a3 = Data ptr
+	move.l	a3,a1			; Data start
+	bsr.s	rom_do_flash
+
+	move.l	d0,-(sp)
+	move.l	a3,a0
+	moveq	#sms.rchp,d0		; Release memory
+	trap	#1
+	move.l	(sp)+,d0
+	rts
+
+
+;+++
+; Flash ROM
+;
+;	d1    s
+;	d4 c  s Sector (4kb) count
+;	d6 c  p Selected ROM
+;	d7    s
+;	a1 c  s Data space
+;	a2 c  s ROM address
+;	a4  r	QL-SD base
+;	a5  r	QL-SD xfer base
+;	error returns standard
+;---
+rom_do_flash
+	bsr	qlsd_doact
+
+	bsr	check_device_id 	; Check device ID
+	bne.s	rom_exit		; Wrong device ID
+
+	moveq	#0,d1			; Make sure all bits clear
+	movem.l d4/a1-a2,-(sp)
+flash_sector_loop
+	bsr	erase_sector
+	bsr	program_sector
+	subq.w	#1,d4
+	bne	flash_sector_loop
+	movem.l (sp)+,d4/a1-a2
+
+; Now verify flash
+verify_sector_loop
+	bsr	verify_sector
+	bne.s	rom_exit
+	subq.w	#1,d4
+	bne	verify_sector_loop
+	moveq	#0,d0
+rom_exit
+	rts
+
+
+;+++
+; Read FLASH rom
+;
+; ROM_READ 0-7,filename
+;---
+rom_read
+	bsr	ut_gtin1		; Get ROM number
+	bne	qlsd_rts
+	move.w	(a6,a1.l),d6		; ROM number
+	cmp.w	#7,d6
+	bhi	qlsd_ipar
+
+	addq.w	#8,a3			; Next parameter
+	bsr	ut_gtnm1		; And get filename
+	bne	qlsd_ipar
+	move.l	a1,a5			; Remember filename for later
+
+	moveq	#sms.achp,d0		; Allocate in heap
+	move.l	#$10000,d1		; 64kb
+	moveq	#myself,d2
+	moveq	#0,d3
+	trap	#1
+	move.l	a0,a3			; Memory in a3
+	tst.l	d0
+	bne	qlsd_rts
+
+; d6 = ROM number
+; a3 = 64kb space
+	move.l	a3,a1			; Space to read into
+	move.l	#$10000,d4		; 64kb
+	move.l	a5,-(sp)		; Save filename
+	bsr.s	rom_do_read
+	move.l	(sp)+,a0		; Restore to a0
+	bne	qlsd_rts
+
+	move.l	#ioa.open,d0
+	moveq	#myself,d1
+	moveq	#ioa.kovr,d3
+	trap	#4
+	trap	#2
+	tst.l	d0
+	bne.s	read_rechp
+
+	move.l	a3,a1			; Memory
+	moveq	#iof.save,d0		; Save to file
+	move.l	#$10000,d2		; 64KB
+	moveq	#-1,d3
+	trap	#3
+
+	move.l	d0,-(sp)
+	moveq	#ioa.clos,d0		; Close file
+	trap	#2
+	move.l	(sp)+,d0
+read_rechp
+	move.l	d0,-(sp)
+	move.l	a3,a0
+	moveq	#sms.rchp,d0		; Release memory
+	trap	#1
+	move.l	(sp)+,d0
+	rts
+
+
+;+++
+; Read ROM
+;
+;	d1    s
+;	d4 c  s Byte count
+;	d6 c  p Selected ROM
+;	d7    s
+;	a1 c	Data space
+;	a2    s
+;	a4  r	QL-SD base
+;	a5  r	QL-SD xfer base
+;	error returns standard
+;---
+rom_do_read
+	bsr	qlsd_doact
+
+	bsr.s	check_device_id 	; Check device ID
+	bne.s	read_exit
+
+	moveq	#0,d1			; Make sure all bits clear
+	suba.l	a2,a2			; Always start from ROM address 0
+read_byte
+	tst.b	if_rom_read(a4)
+	tst.b	(a5,d6.w)		; Selected ROM
+	move.w	a2,d0
+	move.b	d0,d1
+	lsr.w	#8,d0
+	tst.b	(a5,d0.w)		; Address high
+	move.b	(a5,d1.w),(a1)+ 	; Address low
+	addq.l	#1,a2
+
+	subq.w	#1,d4			; finished?
+	bne.s	read_byte		; ... no, more bytes
+read_ok
+	moveq	#0,d0
+read_exit
+	rts
+
+
+;+++
+; id = ROM_ID
+;---
+rom_id
+	bsr	qlsd_doact
+	bsr.s	get_device_id
+
+	moveq	#0,d1
+	move.w	d2,d1
+	jmp	ut_rtfd1
+
+
+;+++
+; rom = ROM_SELECTED
+;---
+rom_selected
+	bsr	qlsd_doact
+
+	moveq	#0,d1
+	move.b	if_rom_selected(a4),d1
+	jmp	ut_rtfd1
+
+
+;+++
+; Check device ID
+;
+;	d2    r Device ID
+;	a4 c  p QL-SD base
+;	a5 c  p QL-SD xfer base
+;	error returns standard
+;---
+check_device_id
+	bsr.s	get_device_id		; Get device ID in D2
+	moveq	#err.mchk,d0
+	cmp.w	#$bfd7,d2
+	bne.s	check_exit		; Wrong device ID
+	moveq	#0,d0
+check_exit
+	rts
+
+
+;+++
+; Get device ID in d2
+;
+;	d2    r Device ID
+;	a4 c  p QL-SD base
+;	a5 c  p QL-SD xfer base
+;---
+get_device_id
+; 1st bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$aa(a5) 		; Data byte AA
+	tst.b	(a5)			; Address 05555
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 2nd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$55(a5) 		; 55
+	tst.b	(a5)			; 02AAA
+	tst.b	$2a(a5)
+	tst.b	$aa(a5)
+
+; Get device ID command
+	tst.b	if_rom_write(a4)
+	tst.b	$90(a5) 		; 90
+	tst.b	(a5)			; 05555
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+	tst.b	if_version(a4)		; Waste some more time just to be sure
+
+	tst.b	if_rom_read(a4)
+	tst.b	(a5)			; 00000
+	tst.b	(a5)
+	move.b	(a5),d2 		; Manufacturer ID
+	lsl.w	#8,d2
+
+	tst.b	if_rom_read(a4)
+	tst.b	(a5)			; 00001
+	tst.b	(a5)
+	move.b	1(a5),d2		; Device ID
+
+; Exit device ID
+; 1st bus cycle
+	tst.b	if_rom_write(a4)	; Begin erase command
+	tst.b	$aa(a5) 		; Data byte AA
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 2nd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$55(a5)
+	tst.b	(a5)
+	tst.b	$2a(a5)
+	tst.b	$aa(a5)
+
+; 3rd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$f0(a5)
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+	tst.b	if_version(a4)		; Waste some more time just to be sure
+	rts
+
+
+;+++
+; Program sector
+;
+;	d6 c  p Selected ROM
+;	a1 c  u Data address / updated
+;	a2 c  u Sector address / updated
+;	a4 c  p QL-SD base
+;	a5 c  p QL-SD xfer base
+;---
+program_sector
+; 1st bus cycle
+	tst.b	if_rom_write(a4)      ; Begin command
+	tst.b	$aa(a5)
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 2nd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$55(a5)
+	tst.b	(a5)
+	tst.b	$2a(a5)
+	tst.b	$aa(a5)
+
+; Write byte command
+	tst.b	if_rom_write(a4)
+	tst.b	$a0(a5)
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; Write byte data
+	tst.b	if_rom_write(a4)
+	move.b	(a1)+,d1
+	tst.b	(a5,d1.w)		; Byte to write
+	tst.b	(a5,d6.w)		; Selected ROM
+	move.w	a2,d0
+	move.b	d0,d1
+	lsr.w	#8,d0
+	tst.b	(a5,d0.w)		; Address high
+	tst.b	(a5,d1.w)		; Address low
+
+; Need to wait at least 20°s
+	moveq	#25,d0
+write_wait
+	tst.b	if_version(a5)		; This will slow us down to QL bus speed
+	dbf	d0,write_wait
+
+	addq.l	#1,a2
+	move.w	a2,d0
+	and.w	#$fff,d0
+	bne	program_sector		; Program more bytes in this sector
+	rts
+
+
+;+++
+; Verify sector
+;
+;	d6 c  p Selected ROM
+;	a1 c  u Data address / updated
+;	a2 c  u Sector address / updated
+;	a4 c  p QL-SD base
+;	a5 c  p QL-SD xfer base
+;	error returns standard
+;---
+verify_sector
+	tst.b	if_rom_read(a4)
+	tst.b	(a5,d6.w)		; Selected ROM
+	move.w	a2,d0
+	move.b	d0,d1
+	lsr.w	#8,d0
+	tst.b	(a5,d0.w)		; Address high
+	move.b	(a5,d1.w),d1		; Address low
+	cmp.b	(a1)+,d1		; Same?
+	bne.s	verify_fail		; ... no
+
+	addq.l	#1,a2
+	move.w	a2,d0
+	and.w	#$fff,d0
+	bne	verify_sector		; Program more bytes in this sector
+
+	moveq	#0,d0
+	rts
+
+verify_fail
+	moveq	#err.trns,d0		; Verify failed
+	rts
+
+
+;+++
+; Erase sector
+;
+;	d6 c  p Selected ROM
+;	a2 c  u Sector address
+;	a4 c  p QL-SD base
+;	a5 c  p QL-SD xfer base
+;---
+erase_sector
+; 1st bus cycle
+	tst.b	if_rom_write(a4)	; Begin erase command
+	tst.b	$aa(a5) 		; Data byte AA
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 2nd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$55(a5)
+	tst.b	(a5)
+	tst.b	$2a(a5)
+	tst.b	$aa(a5)
+
+; 3rd bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$80(a5)
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 4th bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$aa(a5)
+	tst.b	(a5)
+	tst.b	$55(a5)
+	tst.b	$55(a5)
+
+; 5th bus cycle
+	tst.b	if_rom_write(a4)
+	tst.b	$55(a5)
+	tst.b	(a5)
+	tst.b	$2a(a5)
+	tst.b	$aa(a5)
+
+; Erase sector command
+	tst.b	if_rom_write(a4)
+	tst.b	$30(a5)
+	move.w	a2,d0
+	lsr.w	#8,d0
+	tst.b	(a5,d6.w)		; Selected ROM
+	tst.b	(a5,d0.w)		; Erase this sector
+	tst.b	(a5)
+
+; Need to wait at least 25ms. On SGC best case per iteration is 783us IMO
+	move.w	#32000,d0
+erase_wait
+	tst.b	if_version(a5)		; This will slow us down to QL bus speed
+	dbf	d0,erase_wait
+	rts
+
+
+;+++
+; Call the following code in supervisor mode. Will exit the calling
+; sub-routine afterwards
+;
+;	d0  r error code or 0
+;
+; Action routine:
+;	d1  s
+;	d2  s
+;	d3-d6 p from caller
+;	d7  s
+;	a0  s
+;	a1  p from caller
+;	a2  p from caller
+;	a3  p from caller
+;	a4 c  QL-SD base
+;	a5 c  QL-SD xfer base
+;---
+qlsd_doact
+	move.l	(sp)+,a4		; action routine
+	move.w	sr,d7
+
+	trap	#0			; go to supervisor mode to fiddle
+	move.w	d7,-(sp)		; put CCR on SV stack
+	ori.w	#$0700,sr		; inhibit interrupts, too!
+
+; Enable QLSD if not already done
+	move.l	a4,a0
+	lea	if_base,a4
+	lea	spi_xfer,a5
+	tst.b	if_enable(a4)
+
+	jsr	(a0)			; call action routine
+
+	move.w	(sp)+,sr		; return from supervisor mode
+	tst.l	d0
+	rts
+
+	end

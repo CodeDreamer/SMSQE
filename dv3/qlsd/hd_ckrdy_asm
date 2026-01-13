@@ -2,6 +2,7 @@
 ;
 ; 2018-06-10  1.01  Use new qlsd_crdused flags instead of hdl_actm (MK)
 ; 2020-05-05  1.02  Always assume card changed after re-init
+; 2022-03-02  1.03  Remoed unnecessary code at hcrw_err (MK)
 
 	section dv3
 
@@ -68,9 +69,5 @@ hcrw_ok
 hcrw_exit
 	movem.l (sp)+,reg.ckrdy
 	rts
-
-hcrw_err
-	moveq	#err.mchk,d0		; error return
-	bra.s	hcrw_exit
 
 	end

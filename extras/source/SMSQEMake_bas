@@ -722,14 +722,14 @@
 7220   ex6$ = rep$&'smsq_smsq_hotkey'
 7230   ex7$ = rep$&'smsq_qxl_sysspr'
 7240   ex8$ = rep$&'smsq_home_home'
-7250   ex10$= rep$&'smsq_recent_recent'
+7250   ex9$= rep$&'smsq_recent_recent'
 7260   last$ = rep$&'smsq_qxl_ecache'
 7270   dml$ = rep$&'smsq_qxl_dummy'
 7280   qm$  = rep$&'qmon_qxl_bin'
 7290   r$='ram1_smsqe.exe' : f$=rep$&'smsq_qxl_smsqe.exe'
 7300   cct$=rep$&"extras_exe_cct"
 7310   DELETE f$
-7320   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex11$,last$, r$
+7320   EW p$, hst$,ld$,hi$,os1$,ca$,os2$,ns1$,ln1$,ln2$,ln3$,ex1$,ex2$,ex3$,ex3b$,ex3w$,ex4$,ex5$,ex6$,ex7$,ex8$,ex9$,last$, r$
 7330   EW cct$, bl$,r$, f$
 7340   DELETE r$
 7350   OPEN #4,f$

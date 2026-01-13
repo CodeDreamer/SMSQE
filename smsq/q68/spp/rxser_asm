@@ -1,7 +1,9 @@
 ; Q68 Receive data from port   1.02   2017-2024       W. Lenerz
 ;
 ;
-; 2024-05-03	 1.02	check active before checking hardware (wl)
+; 2025-11-29	 1.03	reinstate getting byte from serport early on,
+;			loops until no more bytes or buffer full, integrated put byte (wl).
+; 2024-05-03	 1.02	check active before checking hardware (wl).
 ; 2023.02.18	 1.01	Chains to tx. Can handle 2 ser ports (wl).
 				     
 ; based on
@@ -16,46 +18,45 @@
 	xref	iob_room
 	xref	iob_eof
 
-	xref	spp_txser		; check 2 ports for sending
-	xref	q68_txser		; check 1 port for sending
+	xref	spp_tx2ser		 ; check 2 ports for sending
+	xref	spp_tx1ser		 ; check 1 port for sending
 
 
 	include 'dev8_keys_q68'
 	include 'dev8_keys_serparprt'
 	include 'dev8_keys_sys'
+	include 'dev8_keys_buf'
+
 
 ;+++
 ; Receive data from port
 ;
-;	a3 c  p linkage area for port 1
+;	a3 c  p linkage area for port 1 coming from the interrupt routine
 ;---
 spp_rxser
 	bsr.s	srxp_get		; get data for port 1
-	btst	#0,q68_mach		; Q68 or Qimsi?
-	beq	q68_txser		; yes, go directly to tx FOR Q68/qimsi!
-	pea	spp_txser		; go to tx routine after return
+	tst.b	q68_mach		; Q68 ?
+	beq	spp_tx1ser		; yes, go directly to tx FOR Q68
+	pea	spp_tx2ser		; go to tx routine after return
 	add.w	#spd.len,a3		; point linkage for port 2
 
 srxp_get
-
 	move.l	spd_hbase(a3),a4	; port hardware base
 	btst	#q68..rxmpty,ser_status(a4) ; receive buffer empty?
 	bne.s	srxp_exit		; yes, done ->
- 
+	move.b	ser_rxdta(a4),d1	; get byte from hardware
 	tst.b	spd_iact(a3)		; is input active?
-	beq.s	srxp_exit
+	beq.s	srxp_exit		; no ->
+
 	move.l	spd_ibuf(a3),d0 	; input queue
 	ble.s	srxp_exit		; there is none ->
 	move.l	d0,a2
+	move.l	buf_nxtp(a2),a5 	 ; next place to put
 
 	jsr	iob_room		; check room left
 	move.l	d0,d3			; this much is left
-	ble.s	srxp_noinput		; <=0: no room left - disable input
-	cmp.l	#15,d3			; not more than 16 bytes a pop
-	blt.s	srxp_loop
-	moveq	#15,d3			; get 16 bytes (if there are any)
-srxp_loop
-	move.b	ser_rxdta(a4),d1	; get byte from hardware
+	ble.s	srxp_exit		; nothing, just leave -> I may have jumped over a byte here!
+	subq.w	#1,d3			; get as many bytes as I can
 
 ; now check for CTRL Z etc
 rx_chk
@@ -77,15 +78,28 @@ srxp_ckcr
 	move.b	spb_lf(a2),d1		; ... yes
 	beq.s	srxp_eloop		; cr ignored
 srxp_pbyt
-	jsr	iob_pbyt		; put byte in buffer
+	move.b	d1,(a5)+		; put byte in
+	cmp.l	buf_endb(a2),a5 	; off end?
+	blt.s	ibpb_ckf		; ... no
+	lea	buf_strt(a2),a5 	; ... yes, start again
+ibpb_ckf
+	cmp.l	buf_nxtg(a2),a5 	; buffer full?
+	beq.s	srxp_exita5		; yes we're done
+
 srxp_eloop
 	btst	#q68..rxmpty,ser_status(a4)
-	bne.s	srxp_exit
+	bne.s	srxp_exita5
+	move.b	ser_rxdta(a4),d1	 ; get byte from hardware
 srxp_dolp
-	dbf	d3,srxp_loop
+	dbf	d3,rx_chk
+
+srxp_exita5
+	move.l	a5,buf_nxtp(a2) 	; update pointer
+
 srxp_exit
 	rts
 srxp_ctrz
+	move.l	a5,buf_nxtp(a2) 	; update pointer
 	jsr	iob_eof 		; mark end of file
 	st	spd_ibuf(a3)		; no input buffer pointer now
 srxp_noinput

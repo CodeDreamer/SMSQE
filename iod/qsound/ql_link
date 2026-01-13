@@ -1,0 +1,7 @@
+program dev8_iod_qsound_ql_rom
+
+section rom
+section qsound
+
+input   dev8_iod_qsound_ql_rel
+library dev8_iod_qsound_lib

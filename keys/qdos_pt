@@ -88,6 +88,10 @@ pto.hdrl equ	$18		object HeaDeR Length
 pto_opts equ	$18	long	optional (relative pointer to) options
 pto_blk  equ	$1c	long	optional relative pointer to sprite block
 pto.xshl equ	$20		eXtended Sprite Header Length
+; options block item structure
+popt_siz equ	0	long	size of an options item, in bytes
+popt_typ equ	4	long	type of option, 4 ASCII chars
+popt_dta equ	8		data for item, undetermined size
 
 *
 * Definition of partial save area header

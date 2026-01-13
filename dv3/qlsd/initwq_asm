@@ -1,8 +1,11 @@
-; QLSD init code 1.01				 W. Lenerz + M. Kilgus 2018
+; QLSD init code 1.05				 W. Lenerz + M. Kilgus 2021
 ; With QUB driver
 ;
-; 2020-04-10  1.02  Removed CARD_INIT (wl)
 ; 2018-29-05  1.01  Output the recognised hardware revison (MK)
+; 2020-04-05  1.02  Removed CARD_INIT (wl)
+; 2020-05-08  1.03  Added network driver call (MK)
+; 2021-02-07  1.04  Changed Minerva detection to version-based (MK)
+; 2021-02-07  1.05  Added support for QLSD-ROM card (MK)
 
 	section init
 
@@ -17,10 +20,12 @@
 	xdef	init
 
 	xref	win_init
-	xref	qub_init
+	xref	qub_init		; ***
 	xref	dv3_addfd
 	xref	qw1_table
 	xref	inicrd
+;;;	   xref    nd_init
+;;;	   xref    boot_init
 
 inirgs	reg	d7/a0/a3
 ini.d7	equ	0
@@ -36,15 +41,20 @@ init	movem.l inirgs,-(a7)
 	moveq	#sms.info,d0
 	trap	#1
 	move.l	a0,qlsd_sysvars(a3)	; save so we don't need sms.info again
+	clr.b	sys_qlsd(a0)		; make sure it's clean
 
 	assert	qlsd.smsq,0		; so we can reuse d0=0
 	cmp.l	#sysid.sq,(a0)		; SMSQ/E
 	beq.s	set_os
 
+; Minerva always had the unfortunate "feature" that channel open calls cannot
+; change the address of the channel definition block. Earliest version I could
+; find is 1.61, which already had this problem. But it cannot be identified by
+; the "Minerva extension block", which was only created later. So we check
+; the version number. GoldCard patches do the same, so I think we should be fine
 	moveq	#qlsd.minerva,d0
-	move.l	sys_chtt(a0),a1 	; Minerva extension block lives here
-	cmp.l	#'JSL1',$46(a1) 	; Magic
-	beq.s	set_os			; Yes, Minerva
+	cmp.w	#'60',d2
+	bcc.s	set_os
 
 	moveq	#qlsd.qdos,d0		; Otherwise we assume QDOS
 set_os	move.b	d0,qlsd_os(a3)
@@ -57,53 +67,58 @@ set_os	move.b	d0,qlsd_os(a3)
 ; Output hardware version information
 	move.l	ini.a0(sp),a0		; channel ID
 	move.w	ut.wtext,a2
-	lea	txt.hw(pc),a1		; "QLSD"
+	lea	t.hw(pc),a1		; "H/W"
 	jsr	(a2)
 
 	lea	if_base,a1
 	move.b	if_enable(a1),d1	; Reference ROM byte
-	move.b	if_version(a1),d0	; Read hardware version register
-	lea	txt.v1(pc),a1		; "v1"
-	cmp.b	d0,d1			; v1 has ROM at if_version...
-	beq.s	write_hw		; ... so it should match if_enable
-	andi.b	#if.ver_mask+if.io_mode,d0
+	move.b	if_version(a1),d6	; Read hardware version register
+	moveq	#if.ver_mask+if.io_mode,d0
+	cmp.b	d6,d1			; v1 has ROM at if_version...
+	bne.s	ver_lookup		; ... so it should match if_enable
+	move.w	d0,d6			; did match, we use the mask as ID
+ver_lookup
+	and.w	d0,d6
+	lea	t.table(pc),a1
+ver_loop
+	move.w	(a1)+,d1
+	tst.b	d1
+	beq.s	ver_from_table
+	cmp.b	d1,d6
+	bne.s	ver_loop
 
-	lea	txt.sw(pc),a1		; "v2 (switch)"
-	cmp.b	#if.ver_v2+if.io_mode,d0
-	beq.s	write_hw
-
-	lea	txt.sp(pc),a1		; "v2 (SPI)"
-	cmp.b	#if.ver_v2,d0
-	beq.s	write_hw
-
-	lea	txt.un(pc),a1		; "unknown"
+ver_from_table
+	lsr.w	#8,d1
+	lea	-2(a1,d1.w),a1
 write_hw
 	jsr	(a2)			; HW revision
 
-	lea	txt.c1(pc),a1		; "card 1"
+	lea	t.c1(pc),a1		; "card 1"
 	jsr	(a2)
 
-	lea	txt.nf(pc),a1		; "not found"
+	lea	t.nf(pc),a1		; "not found"
 	tst.l	d7
-	bne.s	write_msg		; no card, don't mess with driver name
+	bne.s	write_msg		; ... not found
 
-	lea	txt.in(pc),a1		; "initialised"
-	tst.l	ini.d7(sp)		; ROM start?
-	bne.s	write_msg		; ... no, don't fake MDV name
-
-	assert	qlsd.smsq,0
-	tst.b	qlsd_os(a3)		; SMSQ?
-	beq.s	write_msg		; ... yes, don't fake MDV name
-
-	move.l	#'MDV0',ddl_dnuse+2(a3) ; Fake MDV name so we can auto-boot
-	st	qlsd_fake(a3)		; Remember that we faked it
+	lea	t.in(pc),a1		; "initialised"
 write_msg
 	jsr	(a2)
 
+;;;	   move.l  qlsd_sysvars(a3),a4	   ; nd_init needs sysVar in a4
+;;;	   bsr	   nd_init		   ; RESPR version will have empty stub
+;;;	   bsr	   boot_init		   ; Also init BOOT device in ROM version
+
 	movem.l (a7)+,inirgs
-	lea	procs,a1
+
 	move.w	sb.inipr,a2
+	subq.b	#if.ver_v3_rom,d6	; ROM version?
+	bne.s	no_rom
+	lea	procs_rom,a1		; ROM_SWITCH only for ROM version
+	jsr	(a2)
+no_rom
+	lea	procs,a1		; Remaining procedures
 	jmp	(a2)
+
 procs
 	proc_stt
 	proc_def WIN_DRIVE
@@ -113,13 +128,27 @@ procs
 	proc_stt
 	proc_end
 
-txt.hw	mkstr	{H/W }
-txt.v1	mkstr	{v1}
-txt.sw	mkstr	{v2 (Sw)}
-txt.sp	mkstr	{v2 (SPI)}
-txt.un	mkstr	{unknown}
-txt.c1	mkstr	{: Card 1 }
-txt.nf	mkstr	{not found\}
-txt.in	mkstr	{initialised\}
+procs_rom
+	proc_stt
+	proc_def ROM_SWITCH
+	proc_end
+	proc_stt
+	proc_end
+
+t.table dc.b	t.v1-*,if.ver_mask+if.io_mode
+	dc.b	t.v2sp-*,if.ver_v2+if.io_mode
+	dc.b	t.v2sw-*,if.ver_v2
+	dc.b	t.v3rom-*,if.ver_v3_rom
+	dc.b	t.un-*,0
+
+t.hw	mkstr	{H/W }
+t.v1	mkstr	{v1}
+t.v2sw	mkstr	{v2 (Sw)}
+t.v2sp	mkstr	{v2 (SPI)}
+t.v3rom mkstr	{v3 (ROM)}
+t.un	mkstr	{unknown}
+t.c1	mkstr	{: Card 1 }
+t.nf	mkstr	{not found\}
+t.in	mkstr	{initialised\}
 
 	end

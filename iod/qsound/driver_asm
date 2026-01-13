@@ -1,6 +1,7 @@
-; AY chip sound driver	 v1.01	  2021 by Marcel Kilgus
+; AY chip sound driver	 v1.02	  2021 by Marcel Kilgus
 ;
 ; 2021-08-01  1.01  Channel can now access several chips at the same time (MK)
+; 2022-10-06  1.02  Inlined queue functions to improve QDOS compatibility (MK)
 
 	section qsound_drv
 
@@ -38,7 +39,9 @@ qsound_drv_init
 	move.l	a2,(a4)+		; close - iod_clos $24
 
 	lea	ay_ipar,a2
-	move.l	a2,(a4)+		; ddb_ssio - byte test not implemented
+	move.l	#$347800ea,(a4)+	; ddb_ssio - move.l iou.ssio,a2
+	move.w	#$4e92,(a4)+		;	     jsr    (a2)
+	move.l	a2,(a4)+		; ddb_sst - byte test not implemented
 	move.l	a2,(a4)+		; ddb_ssi - byte fetch not implemented
 	lea	ay_pbyt,a2
 	move.l	a2,(a4)+		; ddb_sso - byte send
@@ -140,22 +143,31 @@ ayo_slot_ok
 	moveq	#0,d6
 	move.b	mask_to_cnt(pc,d4.w),d6 ; mask to chip count
 	mulu	#14,d6			; buffer must be multiple of this
+	move.w	d6,chn_frame(a0)	; frame size
+
 	move.w	d6,d5
 	mulu	p.buff(sp),d5		; frame buffer size
 	add.l	d5,d1
+	move.l	a3,-(sp)
 	move.w	mem.achp,a2
 	jsr	(a2)
+	move.l	(sp)+,a3
 	bne.s	ayo_rts
 	move.b	d4,chn_chipm(a0)	; remember chip mask
 	move.l	d5,chn_bsze(a0) 	; buffer size
 
 	move.l	d5,d1
 	lea	chn.len(a0),a2		; setup output queue
-	move.l	a2,chn_outq(a0)
-	move.w	ioq.setq,a1
-	jsr	(a1)
 
-	move.w	d6,chn_frame(a0)	; frame size
+; We inline SMSQ/E's queue code to get deterministic behaviour on QDOS
+; so we can work with frames that are not fragmented due to wrap-around
+	move.l	a2,chn_outq(a0)
+	lea	qu_strtq(a2,d1.l),a1	; end of queue
+	clr.l	(a2)+			; no link or eoff
+	move.l	a1,(a2)+		; set end of queue
+	sub.l	d1,a1			; ... back to start
+	move.l	a1,(a2)+		; set in pointer
+	move.l	a1,(a2)+		; and out pointer
 
 	lea	chn_chip0(a0),a2
 	move.b	d4,d0			; chip mask
@@ -226,9 +238,11 @@ ay_io
 	cmp.l	#iof.posr,d0
 	beq.s	ay_posr
 
-	pea	ddb_ssio(a3)
-	move.w	iou.ssio,a2
-	jmp	(a2)
+	movem.l a2-a3,-(sp)
+	jsr	ddb_ssio(a3)
+	movem.l (sp)+,a2-a3
+	tst.l	d0
+	rts
 
 ; Return song position
 ay_posr
@@ -238,14 +252,26 @@ ay_posr
 	moveq	#0,d0
 	rts
 
-; Send register value
+; Send register value. Again, inlined SMSQ/E queue code to be save
 ay_pbyt
 	move.l	chn_outq(a0),a2
-	move.w	ioq.pbyt,a3
-	jmp	(a3)
+	move.l	qu_nexti(a2),a3 	; next in
+	move.b	d1,(a3)+		; set byte
+	cmp.l	qu_endq(a2),a3		; next off end?
+	bne.s	ay_seti 		; ... no
+	lea	qu_strtq(a2),a3 	; ... yes, reset queue pointer
+ay_seti
+	cmp.l	qu_nexto(a2),a3 	; is there room?
+	beq.s	ay_nc			; ... no, set not complete
+	move.l	a3,qu_nexti(a2) 	; set next in
+	moveq	#0,d0
+	rts
+ay_nc
+	moveq	#err.nc,d0
+	rts
 
 ; AY polled task
-ayp.reg reg	a0-a3
+;ayp.reg reg	 a0-a3
 ay_poll
 ;	 movem.l ayp.reg,-(sp)
 	move.l	ddb_cdb0(a3),d0

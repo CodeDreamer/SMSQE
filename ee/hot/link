@@ -1,5 +1,4 @@
 program dev8_ee_hot_rext_#0
-filetype 0
 
 input   dev8_ee_hot_base_rel
 input   dev8_ee_hot_#0_rel

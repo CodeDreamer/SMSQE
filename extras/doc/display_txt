@@ -534,7 +534,7 @@ pto_cpat $0c  long  relative pointer to colour pattern
 pto_mask $10  long  relative pointer to mask/alpha channel
 pto_nobj $14  long  relative pointer to next object
 
-pto_opts $18  long  OPTIONAL (relative pointer to) options
+pto_opts $18  long  OPTIONAL relative pointer to options block
 pto_blk  $1c  long  OPTIONAL relative pointer to sprite block
 
 
@@ -580,11 +580,11 @@ GD2 colour sprite:
 B - Sprite control byte:
 ------------------------
 The sprite control bit is formatted as follows
-	 16368421
+
 	%mpao0xcc
 
 	cc
-	stands for a chache version number. Programs can increment this
+	stands for a cache version number. Programs can increment this
 	value to signal the cache that the sprite has changed. A special
 	value is pto.fupd (force update, %11), which causes the system to
 	never use the cached version.
@@ -604,9 +604,10 @@ The sprite control bit is formatted as follows
 	or is not present (bit x=0) (see below)
 	key pto..blk
 
-	o signals that options are present (=1) or not (=0)(see below)
+	o
+	signals that options are present (=1) or not (=0)(see below)
 	key pto..opt
-	currently unused
+
 
 C - Alpha channel:
 ------------------
@@ -735,8 +736,8 @@ defined just below.
 To keep things compatible with older versions of WMAN, this has been handled
 by setting a bit (pto..blk) in the sprite control byte. If this bit is set to 1,
 then there must be a pointer pointer to a sprite block. Please note that this
-pointer MUST be preceeded by the (pointer to) additional options (see section F
-below) which, currently is just a longword 0.
+pointer MUST be preceeded by the pointer to additional options (see section F
+below) which can be set to 0 if no options block is present.
 
 IF pto..blk IS SET, THEN pto_opts MUST EXIST (AS A LONG WORD 0) AND pto_blk
 MUST POINT TO A VALID BLOCK.
@@ -785,29 +786,147 @@ drawn normally by older versions of WMAN. The newer versions of WMAN will
 use the extended format.
 
 2 - The original sprite could be a simple empty shell, with just the relevant
-data (bit pro..blk) and the pointer to a sprite block set.
+data (bit pto..blk) and the pointer to a sprite block set.
 
 3 - The original sprite could be a normal QL or 24 bit mode sprite which
-will be used by an item in any of its statusses.
+will be used by an item in any of its statuses.
 
 
 Alternative 1 above will ensure that your software remains compatible with
 older versions of WMAN.
 
-F - Options
 
-To provide for future expandability of the sprite format, a special bit in
-the sprite control byte indicates whether the sprite definition is followed
-by an options long word or pointer. If bit pto..opt is set, then this options
-long word or pointer must exist.
 
-At present, the options longword is unused. It has not been decided yet whether
-this will be a pointer to further options, or a bit map of further options.
+F - Sprite Options block
+-------------------------------
 
-Thus, for the time being, this longword can be ignored and even omitted
-UNLESS the sprite also contains a pointer to a sprite block (see above), in
-which case the options longword MUST EXIST (and, for the time being should be
-set to 0).
+A special bit in the sprite control byte indicates whether the sprite definition
+is followed by a relative pointer to an options block. If bit pto..opt is set,
+then this option pointer must exist. If no options block is wished, and
+pto..opt is set (but why would it???), the pointer should be 0.
+
+Also remember: If the sprite also contains a pointer to a sprite block
+(see E above), the options longword MUST EXIST (and be 0 if no options block
+is qprovided).
+
+
+
+IMPORTANT NOTE
+=-=-=-=-=-=-=-
+This document only describes the structure of the options block.  At the
+present time, SMSQ/E provides no inbuilt facilities to handle this block. This
+is left to the application programmer.
+
+
+
+1) - Definition
+
+The options block is a list of option items where each option item is struc-
+tured as follows:
+
+
+popt_siz  $00	long	size of option
+popt_typ  $04	long	type of option
+popt_dta  $08		data for this option
+   ....    as much memory as the option needs
+	dc.w	0	make sure that this is on word boundary
+
+
+The list must be terminated by a long word of 0.
+If there are several option items in the list, they are put one at the end
+of the other.
+
+The size of the option item must be indicated in a way such that it can be
+added to a register ax that points to the start of an option, to then point to
+the start of the next option (or the long word 0 which signals the end of the
+option block):
+
+	add.l	(ax)+,ax
+
+where ax is any address register.
+
+By design, there is no requirement that an option item needs to be limited in
+size.
+
+
+As an example, a sprite option block could be as follows (example code
+provided by P Witte):
+
+
+sp_option
+	 dc.l	 sp_option2-*	  Size of this option
+	 dc.l	 'TEST' 	  Option type. It's Per's option!
+	 [... whatever the option needs ...]
+	 ds.w	 0		  Must be word aligned
+sp_option2
+	 dc.l	 sp_option_end-*  Size of this option
+	 dc.l	 'HINT' 	  Option type
+	 dc.w	 1		  Number of lines/paragraphs
+	 dc.w	 12		  String length
+	 dc.b	 'Hello World!'   String bytes
+	 ds.w	 0		  Must be word aligned
+sp_option_end
+	 dc.l	 0		  No other option
+    
+
+
+2 - Type of option
+
+The type of sprite option is not pre-determined. Sprite designers thus can
+devise any type of sprite option they desire. It is suggested that the type be
+a long word ASCII text.
+
+It is also suggested that, if you conceive your own option type, you do not
+re-use an already existing type. For this purpose, I'll maintain, and
+publish on the SMSQ/E site, a list of already known option types. Please con-
+sider consulting this list before writing your own sprite option, and
+submitting the option type to me.
+
+
+At the time of writing, there is one known type of option block:
+
+	"HINT"
+
+which, as data (at popt_dta) takes a word for the number of lines or para-
+graphs, followed by a standard string, i.e a word with the length of the string
++ the bytes of the string, padded to an even length.  However, SMSQ/E has no
+code that allows to do anything with this, as yet.
+
+
+3 - Modification
+
+The main characteristic of an option item is that it need not be static, it
+may be modified by a suitable configuration program.
+
+In the above example, the string of the HINT option item could be changed to
+any other string (within the limits of SMSQDOS strings).
+
+This means that
+
+a) each option item will most probably need its own configuration program.
+
+At the time of writing, there is no published program that will allow
+for editing of options in a sprite.
+
+
+b) the length of an option block might change if the length of an option item
+is changed.
+This would have to be taken into account by the designer/programmer of the
+configuration program. It is strongly suggested that, when this is the case,
+the newly enlarged item is moved to the end of the option block, all other
+items being moved up to take up the slack space.
+
+
+c) a programmer can not rely on an option item being at a specific offset
+from the start of the option block, since a configuration program may have
+modified a preceding item. It is necessary to iterate over the option items
+until on gets to the correct one.
+
+
+d) An option block must not contain pointers to structures outside itself, nor
+may other structures in the sprite point to anything within that block.  Even
+within the options block, an options item should not point to another options
+item.
 
 
 

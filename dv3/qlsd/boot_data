@@ -1,0 +1,9 @@
+; Data definitions for BOOT device
+        nolist
+
+btd_end  equ    $34
+
+btc_chn  equ    $18     ; long  file channel
+btc_end  equ    $20
+
+        list

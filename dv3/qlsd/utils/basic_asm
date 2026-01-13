@@ -1,4 +1,6 @@
-; QLSD utils init code 1.00			   W. Lenerz + M. Kilgus 2020
+; QL-SD utils init code 1.01			   W. Lenerz + M. Kilgus 2021
+;
+; 2020-02-05  1.01  Added flash functions for QL-SD ROM (MK)
 
 	section init
 
@@ -14,6 +16,7 @@
 	xdef	init
 
 	xref	get_linkage
+
 init
 	suba.l	a0,a0
 	lea	banner(pc),a1
@@ -23,8 +26,17 @@ init
 	bsr	get_linkage
 	bne.s	init_err
 
-	lea	procs,a1
 	move.w	sb.inipr,a2
+
+	move.b	if_base+if_version,d0
+	andi.b	#if.ver_mask,d0
+	cmp.b	#if.ver_v3_rom,d0
+	bne.s	no_flash
+
+	lea	flash_procs,a1
+	jsr	(a2)
+no_flash
+	lea	card_procs,a1
 	jmp	(a2)
 
 init_err
@@ -35,7 +47,7 @@ init_err
 	moveq	#err.nc,d0
 	rts
 
-procs
+card_procs
 	proc_stt
 	proc_def CARD_RENF
 	proc_def CARD_CREATE
@@ -44,7 +56,17 @@ procs
 	proc_def CARD_DIR$
 	proc_end
 
-banner	mkstr	{QLSD CARD utilities v1.00 WL + MK 2020\}
+flash_procs
+	proc_stt
+	proc_def ROM_FLASH
+	proc_def ROM_READ
+	proc_end
+	proc_stt
+	proc_def ROM_ID
+	proc_def ROM_SELECTED
+	proc_end
+
+banner	mkstr	{QLSD utilities v1.02 WL + MK 2021\}
 txt_err mkstr	{QLSD driver not found or too old\}
 
 	end

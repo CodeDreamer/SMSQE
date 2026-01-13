@@ -168,7 +168,6 @@ q68_mula	equ	$17d24		; use by smsqmulatorq68 for mouse position
 
 q68_sdhc	equ	$17d28		; 4 long words, sdhc routines (during init only)
 
-;qserdiff	 equ	 $1c218 	 ; diff between Q68 and Q0 here
 
 
 	list

@@ -1,59 +1,65 @@
 ; QL-SD keys
 ;
-        nolist
+	nolist
 
-        include 'dev8_dv3_keys'
-        include 'dev8_dv3_hd_keys'
+	include 'dev8_dv3_keys'
+	include 'dev8_dv3_hd_keys'
 
-qlsd.maxcard    equ     3               ; We support up to 3 cards
+qlsd.maxcard	equ	3		; We support up to 3 cards
 
 ; Extended driver definition block
-.q             equ     hdl_end
-qlsd.magic      equ     'QLSD'          ; ID for 3rd party software
-qlsd_magic      equ     .q+$00
-qlsd_version    equ     .q+$04          ; Driver version
-qlsd_rscard     equ     .q+$08          ; Read card sector
-qlsd_wscard     equ     .q+$0E          ; Write card sector
-qlsd_inicard    equ     .q+$14          ; Initialise card
-qlsd_os         equ     .q+$1B          ; Detected operating system
-qlsd.smsq       equ     0               ; zero
-qlsd.minerva    equ     1               ; positive
-qlsd.qdos       equ     -1              ; negative
-qlsd_crdused    equ     .q+$1C          ; bits set for cards recently used
-qlsd_fake       equ     .q+$1F          ; Remember if we faked MDV for auto boot
-qlsd_sysvars    equ     .q+$20          ; Address of system variables
-qlsd_names      equ     .q+$24          ; 8 * space for QXL.WIN filenames
-qlsd_end        equ     qlsd_names+8*16
+.q	       equ     hdl_end
+qlsd.magic	equ	'QLSD'		; ID for 3rd party software
+qlsd_magic	equ	.q+$00
+qlsd_version	equ	.q+$04		; Driver version
+qlsd_rscard	equ	.q+$08		; Read card sector
+qlsd_wscard	equ	.q+$0E		; Write card sector
+qlsd_inicard	equ	.q+$14		; Initialise card
+qlsd_os 	equ	.q+$1B		; Detected operating system
+qlsd.smsq	equ	0		; zero
+qlsd.minerva	equ	1		; positive
+qlsd.qdos	equ	-1		; negative
+qlsd_crdused	equ	.q+$1C		; bits set for cards recently used
+qlsd_sysvars	equ	.q+$20		; Address of system variables
+qlsd_names	equ	.q+$24		; 8 * space for QXL.WIN filenames
+qlsd_end	equ	qlsd_names+8*16
 
 ; Extended physical definition block
-sdf_partoffset  equ     ..+$00          ; LBA block address of container file
+sdf_partoffset	equ	..+$00		; LBA block address of container file
 
 ; Hardware keys. We only support the hardware versions with base $FEE0
-if_base         equ     $fee0
-spi_xfer        equ     $ff00
-spi_bg_read     equ     $00ff           ; offset to spi_xfer
+if_base 	equ	$fee0
+spi_xfer	equ	$ff00
+xfer_off	equ	spi_xfer-if_base; offset to if_base
+spi_bg_read	equ	$00ff		; offset to spi_xfer
 
-if_enable       equ     $00
-if_disable      equ     $01
-if_reset        equ     $02
-if_version      equ     $03             ; Hardware revision bit register
-if.ver_mask     equ     $0F             ; Version mask
-if.ver_v2       equ     $01             ; V2 version
-if.io_mode      equ     $10             ; 0 = 3rd SPI channel, 1 = switch version
-if.io_pin4      equ     $20             ; 0 = 48kb ROM space disabled
-if.io_pin2      equ     $40             ; State of PIN IO2
-if.io_pin1      equ     $80             ; State of PIN IO1
-spi_read        equ     $04
-spi_xfer_fast   equ     $06
-spi_xfer_slow   equ     $08
-spi_xfer_off    equ     $0a
-spi_select0     equ     $10
-spi_select1     equ     $11
-spi_select2     equ     $12
-spi_select3     equ     $13
-spi_clr_mosi    equ     $14
-spi_set_mosi    equ     $15
-spi_clr_sclk    equ     $16
-spi_set_sclk    equ     $17
+if_enable	equ	$00
+if_disable	equ	$01
+if_reset	equ	$02
+if_version	equ	$03		; Hardware revision bit register
+if.ver_mask	equ	$07		; Version mask
+if.ver_v2	equ	$01		; V2 version
+if.ver_v3_rom	equ	$03		; V3 ROM version
+if.io_mode	equ	$10		; 0 = 3rd SPI channel, 1 = switch version
+if.io_pin4	equ	$20		; 0 = 48kb ROM space disabled
+if.io_pin2	equ	$40		; State of PIN IO2
+if.io_pin1	equ	$80		; State of PIN IO1
+spi_read	equ	$04
+spi_xfer_fast	equ	$06
+spi_xfer_slow	equ	$08
+spi_xfer_off	equ	$0a
+spi_select0	equ	$10
+spi_select1	equ	$11
+spi_select2	equ	$12
+spi_select3	equ	$13
+spi_clr_mosi	equ	$14
+spi_set_mosi	equ	$15
+spi_clr_sclk	equ	$16
+spi_set_sclk	equ	$17
+if_rom_select	equ	$18
+if_rom_write	equ	$19
+if_rom_read	equ	$1A
+if_rom_selected equ	$1B
+if_xfer_base	equ	$20		; $ff00-$fee0
 
-                list
+		list

@@ -1,5 +1,6 @@
-; SMSQ Q68 Hardware Initialisation 1.05 Copyright (c) W. Lenerz 2016-2024
-;
+; SMSQ Q68 Hardware Initialisation 1.06 Copyright (c) W. Lenerz 2016-2025
+
+; 2025-11-12  1.06 correct machine type identification
 ; 2024-04-29  1.05 added "Use 16 bit access if available?" config item (wl)
 ; 2023-04-24  1.04 add light led when booting config item, no need to clear kbd_unlock (wl)
 ; 1.03 remove card init config item, add card speed items, check for hardware revision; stop ethernet interrupts
@@ -240,10 +241,59 @@ hwi_mem move.l	(sp)+,a0		; return address
 	clr.l	-(sp)			; facilities
 	clr.l	-(sp)			; language
 
-	move.l	#sys.mq68,-(sp) 	; processor, mmu/fpu, std disp
-	move.l	#'Q68 ',-(sp)		; Q68
+	clr.l	d7
+	move.b	q68_mach,d7
+	lsl.w	#3,d7
+	lea	machine,a4
+	add.l	d7,a4
+	move.l	 (a4)+,-(sp)		; processor, mmu/fpu, std disp
+	move.l	 (a4),-(sp)		; machine name
 
-hwi_cmn move.l	#28*1024*1024,d7	; provisional ramtop  - 28 MiB
+ 
+;hwi_cmn move.l  #28*1024*1024,d7	 ; provisional ramtop  - 28 MiB
+
+;-----------------------------------------
+
+; try to find actual mem top
+hwi_cmn move.l	#29*1024*1024,a3       ; provisional ramtop  - 28 MiB
+	subq.l	#4,a3
+	move.l	#$12345678,d7
+	move.l	#1024*1024,d6		; 1MB
+
+mem_top_lp
+	sub.l	d6,a3
+	move.l	d7,(a3)
+	cmp.l	(a3),d7 		; same?
+	beq.s	memtop			; yes
+	subq.l	#1,d7			; avoid possible mirroring (?)
+	cmp.l	a3,d6			; did we go too low?
+	bne.s	mem_top_lp		; no, try next lower address
+
+; memtest failed, don't boot any further
+fail
+	move.l	#q68_timer,a2		; point to Q68 40 MHz timer
+	move.l	#q68_1sec,d0		; one second timeout
+	move.l	(a2),d3 		; current time
+	lea	led,a3
+	moveq	#0,d1
+
+fail_wait
+	move.l	(a2),d2 		; current time
+	sub.l	d3,d2			; difference
+	cmp.l	d0,d2			; time expired ?
+	blt.s	fail_wait		; no
+	not.b	d1
+	andi.b	#1,d1
+	move.b	d1,(a3)
+	move.l	(a2),d3
+	bra.s	fail_wait
+
+
+memtop
+	move.l	a3,d7
+	addq.l	#4,d7
+;---------------------------------------------
+
 	moveq	#0,d6			; no special RAM
 	moveq	#0,d5
 	lea	q68_mdinst,a6		; q68 version of module installation
@@ -279,9 +329,5 @@ machine 				; table of machine types
 	dc.l	'Q0 '
 	dc.l	sys.mqig
 	dc.l	'QIGD'
-
-
-
-
 
 	end

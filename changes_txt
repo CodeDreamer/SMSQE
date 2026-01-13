@@ -2,11 +2,92 @@ SMSQ/E	 file(s)		       version
 Version  changed		       of file	changes made
 -----------------------------------------------------------------------------
 
+3.43
+
+    Q68 ETC BETTER SER2 HANDLING
+
+    MISC
+	smsq_qpc_mouse_asm		1.02	 removed spurious line (MK)
+	dv3_msd_check_asm		3.02	 clear ddf_mname if medium has no name (MK)
+	dv3_msd_check16_asm		3.03	  "     "    "     "	  "    "   "    "
+	removed all "filetype" indications from link files (wl)
+
+
+    QLSD IMPROVEMENTS (MK)
+	dv3_qlsd_banner_asm		.	New banner text (date changed)
+	dv3_qlsd_addfd_asm		.	removed unused XREFs
+	dv3_qlsd_boot_asm		1.00	new, use real BOOT device instead of renaming mdv
+	dv3_qlsd_boot_data		.	data definitions for BOOT device
+	dv3_qlsd_hd_ckrdy_asm		1.03	removed unnecessary code at hcrw_err
+	dv3_qlsd_init_new		1.05	changed Minerva detection to version-based  Added support for QLSD-ROM card
+	dv3_qlsd_initwq_asm		1.05	added network driver call and support for QLSD-ROM card, changed Minerva detection to version-based
+	dv3_qlsd_io_asm 		3.04	correct version number
+	dv3_qlsd_keys			.	amended, mostly for boot device
+	dv3_qlsd_respr_asm		1.01	added boot_init xdef
+	dv3_qlsd_rom_switch_asm 	1.00	add rom switching caopbility
+	dv3_qlsd_win_init_asm		1.03	no need to copy drive -> card mappings as presets are dreclty configured
+	dv3_qlsd_version_asm		.	amended to suit
+	dv3_qlsd_respr_link		.	  "      "   "
+	dv3_qlsd_resprWQ_link		.	  "      "   "
+	dv3_qlsd_rom_link		.	  "      "   "
+
+	dv3_qlsd_hd_check_asm		.	removed, made obsolete by BOOT device
+
+	dv3_qlsd_utils_basic_asm	1.01	added flash functions for QL-SD ROM
+	dv3_qlsd_utils_card_asm 	1.01	fixed crash in CARD_DIR$
+	dv3_qlsd_utils_flash_asm	1.00	new utilities to selecr ROM, flash ROM
+	dv3_qlsd_utils_link_asm 	.	amended to suit
+
+
+    QSOUND IMPROVEMENTS (MK)
+	iod_qsound_driver_asm		1.02	inlined queue functions to improve QDOS compatibility (MK)
+	iod_qsound_main_asm		3.03	fixed AY_CHIP/AY_TYPE, worked around race condition between PLAY and RELEASE (MK)
+	iod_qsound_ql_asm		.	new (MK+JM)
+	iod_qsound_ql_link		.	 "
+	iod_qsound_driver_keys		.	amended to suit
+
+
+    AY CHIP SOUND DRIVER (MK)
+	iod_aysnd_driver_asm		.	new
+	iod_aysnd_keys			.	new
+	iod_aysnd_cct			.	new
+	iod_aysnd_qsound_link		.	new
+	iod_aysnd_sgc_par_asm		.	new
+	iod_aysnd_sgc_par_link		.	new
+	iod_aysnd_version_asm		.	new
+
+
+    TK2 IMPROVEMENTS (MK)
+	sbsext_tk2_ed_basint_asm	1.01	fixed edp.a5 to fix address error and #0 editing (MK)
+	sbsext_tk2_version_asm		.	amended to suit
+	sbsext_tk2_link 		.	amended to suit
+	sbsext_tk2_net_link		.	amended to suit
+
+
+    Q68 ETC BETTER SER2 HANDLING
+	smsq_q68_spp_rxser_asm		1.03	speedup (8K buffer, loops until no more bytes or buffer full, integrated put byte)
+	smsq_q68_spp_ser_asm		1.03	increase ser input buffer to 8K(!), fixed port close
+	smsq_q68_spp_txser_asm		1.03	send 128 bytes a pop if possible
+	smsq_q68_spp_basic_asm		1.01	added so SER_FLOW does nothing
+	smsq_q68_spp_cct		.	amended to suit
+
+
+    MISC
+	smsq_qpc_mouse_asm		1.02	removed spurious line (MK)
+	dv3_msd_check_asm		3.02	clear ddf_mname if medium has no name (MK)
+	dv3_msd_check16_asm		3.03	  "     "    "     "	  "    "   "    "
+	all link files			.	removed "filetype" indications (wl)
+	keys_qdos_pt			.	include sprite options block item definition
+
+    Q68 CARD_DIR$ (wl)
+	dv3_q68_win_card_xxxx_asm	 1.04	include length word when reserving mem for result (cf MK: qlsd_utils_card_asm)
+
+
 3.42
 
     CONFIGURABLE JOBS AND CHANNEL TABLE SIZES (wl)
 	smsq_mem_1mb_init_asm		3.01	allow for configurable job and channel table size
-						(applies to qpc, smsqmulator, qx0,q68)
+					.	(applies to qpc, smsqmulator, qx0, q68)
 
 
     Qx0 QLIB PROGRAMS WORKAROUND (wl)

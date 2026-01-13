@@ -17,6 +17,7 @@
 	xref	thp_ostr
 	xref	thp_rstr
 
+	include 'dev8_keys_q68'
 	include 'dev8_keys_thg'
 	include 'dev8_keys_err'
 	include 'dev8_keys_serparprt'
@@ -401,7 +402,7 @@ prtc_exit
 	rts
 	page
 
-ser_pxt thg_extn SERP,,ptp_2olw
+ser_pxt thg_extn SERP,ser_swtch,ptp_2olw
 	movem.l serp.reg,-(sp)
 	bsr	ser_oport
 	blt	serp_exit
@@ -409,5 +410,31 @@ ser_pxt thg_extn SERP,,ptp_2olw
 	move.w	2(a1),spd_stxp(a3)	 ; set xmit pause
 	bra	serb_ok
 
+; -------------------------------------------------------------
+ser_swtch thg_extn SSWI,ser_unswt,ptp_nul
+	movem.l serp.reg,-(sp)
+	move.l	#ser1base,d1
+	move.l	#ser2base,a1
+	tst.b	q68_mach
+	bne.s	sw_set
+	lea	tsttst,a1
 
+sw_set	move.l	spth_spd-spth_link(a2),a3 ; linkage
+	move.l	a1,spd_hbase(a3)
+	add.l	#spd.len,a3
+	move.l	d1,spd_hbase(a3)
+	moveq	#0,d0
+	bra	serb_ok
+
+ser_unswt thg_extn SRST,,ptp_nul
+	movem.l serp.reg,-(sp)
+	move.l	#ser2base,d1
+	move.l	#ser1base,a1
+	tst.b	q68_mach
+	bne.s	sw_set
+	lea	tsttst,a1
+	bra.s	sw_set
+
+
+tsttst	dc.l	-1,-1,-1,-1,-1
 	end

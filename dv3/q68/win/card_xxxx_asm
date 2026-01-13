@@ -1,5 +1,6 @@
-; Q68 the CARD_xxxx keywords, except card_init	1.01. Copyright (c) W. Lenerz 2016-2020
+; Q68 the CARD_xxxx keywords, except card_init	1.04 Copyright (c) W. Lenerz 2016-2026
 
+; 2026-01-07   1.04  include length word when reserving mem for result (cf MK)
 ; 2020-11-27   1.03  card_speedup added, removed test code (wl)
 ; 2020-06-06   1.02  card_create bugfix (thanks Marcel) (wl)
 ; 2020-04-12   1.01  1st byte of filename in dir =0 means empty slot+end of dir (wl)
@@ -272,7 +273,10 @@ out	rts
 ; function to get the 1st 16 dir entries of the card (Fat32)
 ;
 ;***************************
-			
+
+ds_len	equ 16*14+2			; length of reult string; 16 entries in table
+					; + initial lengh word
+
 crd_dir thg_extn {CDIR},crd_crea,mdir
 	movem.l hdt.reg,-(a7)
 	bsr	hdt_doact		; this calls the following code in super mode
@@ -287,7 +291,7 @@ crd_dir thg_extn {CDIR},crd_crea,mdir
 
 	move.w	2(a1),d0		; buffer size
 	move.l	d0,d1
-	sub.w	#14*12,d1
+	sub.w	#ds_len,d1
 	blt	errbp			; not enough
 	move.l	#512,d0
 	bsr	get_rut
@@ -295,7 +299,7 @@ crd_dir thg_extn {CDIR},crd_crea,mdir
 
 	move.l	4(a5),a4		; point to buffer
 	move.l	a4,a5
-	move.w	#16*14,(a4)+
+	move.w	#ds_len,(a4)+
 ; I should now have the root dir at (a1)
 ; read the first 16 entries in the root dir
 	moveq	#15,d1			; read first 16 entries in root dir

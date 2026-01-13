@@ -1,0 +1,16 @@
+; AY Sound Driver versions
+
+	section version
+
+	xdef	ay_vers
+
+; V1.00   First version.
+
+ay_vers equ    '3.00'
+
+ay_vmess
+	dc.b	'AYSND driver V'
+	dc.l	ay_vers
+	dc.b	' ',$a
+ay_vmend
+	end

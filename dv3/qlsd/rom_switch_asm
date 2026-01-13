@@ -1,0 +1,77 @@
+; ROM_SWITCH for QLSD	1.00   @  Marcel kilgus
+;
+; 2022-01-25  1.00
+
+	section procs
+
+	xdef	rom_switch
+
+	include 'dev8_keys_qlv'
+	include 'dev8_keys_err'
+	include 'dev8_keys_qlhw'
+	include 'dev8_keys_sbasic'
+	include 'dev8_dv3_qlsd_keys'
+
+;+++
+; Switch to different ROM
+;
+; ROM_SWITCH 0-7,(0=no reset, 1=reset)
+;---
+rom_switch
+	moveq	#1,d5			; Reset by default
+	move.w	sb.gtint,a2
+	jsr	(a2)
+	subq.w	#1,d3
+	beq.s	sw_do
+	subq.w	#1,d3
+	bne.s	rom_ipar
+
+	move.w	2(a6,a1.l),d5		; reset?
+sw_do
+	move.w	(a6,a1.l),d6		; ROM number
+	cmp.w	#7,d6
+	bhi.s	rom_ipar
+
+	lea	if_base,a1
+	lea	spi_xfer,a2
+
+	move.w	sr,d7
+	trap	#0			; go to supervisor mode to fiddle
+	ori.w	#$0700,sr		; inhibit interrupts, too!
+
+	tst.b	if_enable(a1)
+
+; Push code to stack to ensure it's not executed from ROM space as that would
+; destroy the needed access order
+
+	move.w	#$4e75,-(a7)		; rts
+	move.l	#$4a326000,-(a7)	; tst.b (a2,d6.w)
+	move.l	#$4a2a0055,-(a7)	; tst.b $55(a2)
+	move.l	#$4a290018,-(a7)	; tst.b if_rom_select(a1)
+	jsr	(a7)
+	adda.w	#14,a7			; remove code from stack
+
+	tst.w	d5
+	bne.s	rom_switch_reset	; do reset
+	move.w	d7,sr
+	moveq	#0,d0
+	rts
+
+; Do hard reset
+rom_switch_reset
+
+; Apparently all this faffing about with the QL registers doesn't change
+; anything, the RESET is enough. We still cannot switch to 68K/OS however,
+; without a manual reset afterwards, reason still unknown...
+	reset				; Reset system
+	suba.l	a0,a0			; 2 bytes less than MOVEM.L 0,...
+	move.l	(a0)+,a7
+	move.l	(a0),a0
+	jmp	(a0)			; Standard ROM reset
+
+rom_ipar
+	moveq	#err.ipar,d0
+	rts
+
+
+	end

@@ -1,4 +1,4 @@
-; DV3 IO routines		V3.03	        1992 Tony Tebby
+; DV3 IO routine	       V3.04	       1992 Tony Tebby
 ;
 ; 2020-03-07  3.01  Modifications for correct medium name (xinf call) (MK+wl)
 ; 2020-04-26  3.02  Removed support for DOS timestamps to save space (MK)

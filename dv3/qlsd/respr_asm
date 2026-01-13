@@ -1,8 +1,11 @@
-; QL-SD RESPR version initialisation				 2018 M. Kilgus
+; QL-SD RESPR version initialisation  v. 1.01		      2018 M. Kilgus
+
+; 2021-02-05  1.01  added boot_init xdef (MK)
 
 	section header
 
 	xdef	nd_init
+	xdef	boot_init
 
 	xref	banner
 	xref	init
@@ -19,6 +22,7 @@ base
 
 ; Doesn't make sense for RESPR version to have network code, provide stub
 nd_init
+boot_init
 	rts
 
 	end

@@ -18,7 +18,6 @@
 	xref	q68_pardef
 	xref	q68_serdef
 	xref	spp_rxser
-	xref	spp_txser
 
 	include 'dev8_mac_vecx'
 	include 'dev8_keys_qdos_sms'

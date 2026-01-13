@@ -1,9 +1,13 @@
-; AY-sound chip API and BASIC commands 3.00  2020 Jochen Merz and Marcel Kilgus
+; AY-sound chip API and BASIC commands 3.03  2021 Jochen Merz and Marcel Kilgus
 ;
 ; Mostly QSOUND compatible where possible, but supports multiple chips.
 ; Actual hardware access is implemented in separate file.
 ;
 ; 2021-03-20  3.01  Renamed SOUND to SOUND_AY because of SOUND device (MK)
+; 2021-12-14  3.02  Fixed bug in SOUND_AY (MK)
+;		    Fixed crash in PLAY when called from SBASIC job (MK)
+; 2022-09-30  3.03  Fixed AY_CHIP/AY_TYPE (MK)
+;		    Worked around race condition between PLAY and RELEASE (MK)
 
 	section qsound
 
@@ -12,6 +16,7 @@
 	include 'dev8_keys_err'
 	include 'dev8_keys_qlv'
 	include 'dev8_keys_sbasic'
+	include 'dev8_keys_qu'
 	include 'dev8_mac_proc'
 	include 'dev8_iod_qsound_keys'
 
@@ -28,7 +33,7 @@
 	xref	ay_hw_volume
 
 cmd.count equ	15
-qsound.vers	equ   '3.01'
+qsound.vers	equ   '3.03'
 
 qsound_base
 	lea	proc_def,a1
@@ -111,7 +116,7 @@ error_no
 ay_wrreg
 	lea	qs_regs_0(a3),a5	; Chip 0
 	move.b	d2,d0
-	andi.b	#$f,d2
+	andi.w	#$f,d2
 	lsr.b	#4,d0
 	beq.s	ay_wrreg0
 	cmp.b	qs_chip_count(a3),d0
@@ -123,29 +128,31 @@ ay_wrreg0
 	bne.s	ay_wrregx		; For QSound we need to make sure the I/O
 	ori.b	#$c0,d1 		; port of chip 0 is always output (for PAR port)
 ay_wrregx
-	cmpi.w	#13,d2
+	cmpi.b	#13,d2
 	bhi.s	error_or
-; Write d1.b into register d2.b, a5 = ptr to chip registers
+; Write d1.b into register d2.b of chip d0, a5 = ptr to chip registers
 write_reg
+	andi.w	#$f,d2
 	move.b	d1,(a5,d2.w)		; Save in register cache
 	bra	ay_hw_wrreg		; Write to h/w
 
 ay_rdreg
 	lea	qs_regs_0(a3),a5	; Chip 0
 	move.b	d2,d0
-	andi.b	#$f,d2
+	andi.w	#$f,d2
 	lsr.b	#4,d0
 	beq.s	ay_rdreg0
 	cmp.b	qs_chip_count(a3),d0
 	bcc.s	error_or
 	lea	qs_regs_1(a3),a5	; Chip 1
 ay_rdreg0
-	cmpi.w	#13,d2
+	cmpi.b	#13,d2
 	bhi.s	error_or
 ; Read the value from register d2.b to d1.b (actually just read cache)
 ; a5 = ptr to chip registers
 read_reg
 	moveq	#0,d1
+	andi.w	#$f,d2
 	move.b	(a5,d2.w),d1
 	moveq	#0,d0
 	rts
@@ -235,10 +242,11 @@ ay_wrall
 
 ; d2 = chip (0/1), a5 = ptr to chip registers
 write_it_all
-	move.l	(a1)+,(a5)
-	move.l	(a1)+,4(a5)
-	move.l	(a1)+,8(a5)
-	move.w	(a1)+,12(a5)
+	moveq	#14-1,d0
+write_it_loop
+	move.b	(a1)+,(a5)+
+	dbf	d0,write_it_loop
+	sub.w	#14,a5
 
 	tst.b	d2
 	bne.s	write_all_1
@@ -255,10 +263,10 @@ ay_rdall
 	beq.s	read_it_all
 	lea	qs_regs_1(a3),a5
 read_it_all
-	move.l	(a5)+,(a1)+
-	move.l	(a5)+,(a1)+
-	move.l	(a5)+,(a1)+
-	move.w	(a5)+,(a1)+
+	moveq	#14-1,d0
+read_it_loop
+	move.b	(a5)+,(a1)+
+	dbf	d0,read_it_loop
 	moveq	#0,d0
 	rts
 
@@ -455,23 +463,17 @@ play_all
 	lsl.w	#2,d1
 	move.l	(a2,d1.w),a0
 	move.l	a0,d0
-	bne	play_start_loop 	; already a queue? -> append
+	bne.s	play_start_loop 	; already a queue? -> append
 
 ; Setup a new queue
 	move.l	a3,-(sp)
-	move.l	#4096,d1
-	moveq	#-1,d2
+	move.l	#4096+qu.hdlen,d1	; Data length + queue header
+	moveq	#0,d2			; owned by BASIC!
 	moveq	#sms.achp,d0
 	trap	#1
 	move.l	(sp)+,a3
 	tst.l	d0
 	bne	error_om
-
-	move.l	a0,a1
-	move.w	#1023,d1
-play_new_loop
-	clr.l	(a1)+
-	dbra	d1,play_new_loop	; clear
 
 	move.l	a3,-(sp)
 	move.l	a0,a2
@@ -731,7 +733,7 @@ get_loop
 	addq.w	#1,d1
 	subq.w	#1,d6
 	move.b	d2,(a5)+
-	cmpi.b	#4,d1
+	cmpi.b	#5,d1		; Get 5 digits max
 	bne.s	get_loop
 get_end
 	tst.b	d1
@@ -760,18 +762,23 @@ get_end_all
 release
 	move.w	sb.gtint,a2
 	jsr	(a2)
+
+	bsr	get_aybas
+	lea	qs_act(a3),a0
+
 	tst.w	d3
 	beq.s	ay_relse_all
 	subq.w	#1,d3
 	bne	error_bp
 	move.w	(a6,a1.l),d1
 ay_relse
-	tst.b	d1
+	tst.w	d1
 	beq.s	ay_relse_all
 
-	bsr	get_aybas
 	subq.w	#1,d1
-	cmp.w	qs_chan_count(a3),d1
+	moveq	#0,d0
+	move.b	qs_chan_count(a3),d0
+	cmp.w	d0,d1
 	bcc	error_or
 
 	lea	qs_mem(a3),a1
@@ -780,19 +787,28 @@ ay_relse
 	tst.l	(a1,d2.w)
 	beq	error_no
 
-	lea	qs_act(a3),a1
-	st	(a1,d1.w)		; Enable playing
-	moveq	#0,d0
-	rts
+	add.w	d1,a0			; qs_act for this channel
+	moveq	#1,d0			; Release one channel
+	bra.s	ay_relse_loop
 
 ay_relse_all
-	bsr	get_aybas
-	lea	qs_act(a3),a1
 	move.b	qs_chan_count(a3),d0
-ay_relse_all_loop
-	st	(a1)+			; Enable all channels
+
+ay_relse_loop
+	moveq	#-1,d1
+	tst.b	(a0)
+	beq.s	ay_relse_was_stopped
+
+; It is already playing... this probably means that the stop command is in
+; the queue but hasn't executed yet. We mark it so the next stop channel
+; command doesn't have any effect
+	moveq	#1,d1
+ay_relse_was_stopped
+	move.b	d1,(a0)+		; Enable this channel
+
 	subq.b	#1,d0
-	bne.s	ay_relse_all_loop
+	bne.s	ay_relse_loop
+ay_relse_ret
 	moveq	#0,d0
 	rts
 
@@ -914,7 +930,6 @@ envelope
 env_rts
 	rts
 
-
 ; Polled interrupt sound handler
 out_sound_queue
 	bsr	get_aybas
@@ -925,7 +940,7 @@ out_sound_loop
 	cmp.b	#3,d7
 	bne.s	out_no_chip_change
 	lea	qs_regs_1(a3),a5
-	moveq	#0,d6			; Start from channel 0 again
+	move.l	#$10000,d6		; Start from channel 0 (chip 1) again
 out_no_chip_change
 	bsr.s	out_queue
 	addq.w	#1,d6
@@ -961,7 +976,7 @@ out_q_1
 	tst.w	d0
 	bne.s	out_susp		; ... done, suspend output
 
-	cmpi.b	#set_w_len,d1		; Command valdi?
+	cmpi.b	#set_w_len,d1		; Command valid?
 	bhi.s	out_susp		; ... no, suspend output
 
 	andi.l	#$0f,d1
@@ -998,13 +1013,18 @@ out_period
 	lsl.w	#1,d3			; Tune register low for ch <d6>
 	move.w	d3,d2
 	move.w	d4,d1
-	bsr	write_reg
+	bsr.s	out_write_reg
 
 	addq.w	#1,d3			; Tune register high
 	move.w	d3,d2
 	move.w	d5,d1
-	bsr	write_reg
+	bsr.s	out_write_reg
 	bra	out_q_end
+
+out_write_reg
+	move.l	d6,d0			; Chip number is in upper word
+	swap	d0
+	bra	write_reg
 
 out_len
 	bsr	get_byte
@@ -1017,7 +1037,12 @@ out_len
 
 out_susp
 	lea	qs_act(a3),a2
+	cmp.b	#1,(a2,d7.w)		; Flagged for "ignore next stop"?
+	beq.s	out_susp_enable 	; ... yes, ignore stop and clear flag
 	sf	(a2,d7.w)		; Not playing anymore
+	bra	out_q_end
+out_susp_enable
+	st	(a2,d7.w)
 	bra	out_q_end
 
 out_rel
@@ -1035,7 +1060,7 @@ out_n_per
 	tst.w	d0
 	bne.s	out_susp
 	moveq	#ay_noise_period,d2
-	bsr	write_reg
+	bsr.s	out_write_reg
 	bra	out_q_e_0
 
 out_volume
@@ -1046,23 +1071,23 @@ out_volume
 	beq.s	out_vol_0
 	moveq	#ay_amplitude_a,d2
 	add.b	d6,d2			; ay_amplitude_<d6>
-	bsr	write_reg
+	bsr.s	out_write_reg
 
 	moveq	#ay_enable,d2
 	bsr	read_reg
 	bclr	d6,d1			; Enable tone <d6>
-	bsr	write_reg
+	bsr.s	out_write_reg
 	bra	out_q_1
 
 out_vol_0
 	moveq	#ay_amplitude_a,d2
 	add.b	d6,d2			; ay_amplitude_<d6>
-	bsr	write_reg
+	bsr.s	out_write_reg
 
 	moveq	#ay_enable,d2
 	bsr	read_reg
 	bset	d6,d1			; Disable tone <d6>
-	bsr	write_reg
+	bsr	out_write_reg
 	bra	out_q_1
 
 out_noise
@@ -1077,7 +1102,7 @@ out_noise
 	moveq	#ay_enable,d2
 	bsr	read_reg
 	bclr	d3,d1			; Enable noise <d6>
-	bsr	write_reg
+	bsr	out_write_reg
 	bra	out_q_1
 
 out_n_reset
@@ -1086,7 +1111,7 @@ out_n_reset
 	moveq	#ay_enable,d2
 	bsr	read_reg
 	bset	d3,d1			; Disable noise <d6>
-	bsr	write_reg
+	bsr	out_write_reg
 	bra	out_q_1
 
 out_wave
@@ -1094,7 +1119,7 @@ out_wave
 	tst.w	d0
 	bne	out_susp
 	moveq	#ay_env_shape,d2
-	bsr	write_reg
+	bsr	out_write_reg
 	bra	out_q_1
 
 out_w_len
@@ -1110,11 +1135,11 @@ out_w_len
 	move.w	d1,d5
 	move.w	d4,d1
 	moveq	#ay_env_period_l,d2
-	bsr	write_reg
+	bsr	out_write_reg
 
 	move.w	d5,d1
 	moveq	#ay_env_period_h,d2
-	bsr	write_reg
+	bsr	out_write_reg
 	bra	out_q_1
 
 get_byte
@@ -1226,7 +1251,7 @@ sound_1
 	move.l	2(a0),6(a6,a1.l)
 	move.w	6(a0),10(a6,a1.l)
 
-	move.l	(a3),-(sp)
+	move.l	a3,-(sp)
 	move.w	qa.mop,a2
 	lea	operation1,a3
 	jsr	(a2)
@@ -1327,7 +1352,6 @@ sound_v0_all
 swait
 	dbra	d1,swait
 
-
 	lea	qs_mem(a3),a1
 	lsl.w	#2,d4
 	tst.l	(a1,d4.w)
@@ -1374,7 +1398,7 @@ ay_ret_byte
 
 	bsr	get_aybas
 	moveq	#0,d1
-	move.w	(a3,d5.w),d1
+	move.b	(a3,d5.w),d1
 
 	move.l	sb_arthp(a6),a1
 	subq.l	#2,a1

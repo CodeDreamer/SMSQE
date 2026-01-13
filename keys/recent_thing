@@ -18,7 +18,7 @@ get_nam equ	get_len+2		; ptr to string
 ;(uses get_id & get_len)
 
 ; Memory requirements for thing + header
-rcnt_base equ	$3c ;$2e+14		      ; end of name string
+rcnt_base equ	$2e+14			; end of name string
 rcnt_heap  equ	rcnt_base+4		; pointer to linked list of heap spaces
 rcnt_first equ	rcnt_heap+4		; ptr to first entry in list (if this is 0,there is nothing in the list)
 rcnt_stop equ	rcnt_first+4		; ptr to end of space for list

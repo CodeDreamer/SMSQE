@@ -1,4 +1,4 @@
-program dev8_dv3_qlsd_driverWQ_bin
+program dev8_dv3_qlsd_driver_bin
 
 section header
 section banner
@@ -6,19 +6,18 @@ section init
 
 section driver
 
-section dv3	  ; DV3 drivers
+section dv3       ; DV3 drivers
 
-section procs	  ; SuperBASIC procedure table
+section procs     ; SuperBASIC procedure table
 section cv
 section gen_util
 section config
 
 input dev8_dv3_qlsd_respr_rel
 input dev8_dv3_qlsd_banner_rel
-input dev8_dv3_qlsd_initWQ_rel
+input dev8_dv3_qlsd_init_rel
 input dev8_dv3_qlsd_addfd_rel
 input dev8_dv3_qlsd_basic_rel
-input dev8_dv3_qlsd_rom_switch_rel
 input dev8_dv3_qlsd_getstr_rel
 input dev8_dv3_qlsd_link_rel
 input dev8_dv3_qlsd_version_rel
@@ -39,11 +38,8 @@ input dev8_dv3_qlsd_qlf_drmake_rel
 input dev8_dv3_qlsd_qlf_umap_rel
 
 input dev8_dv3_qlsd_win_init_rel
-input dev8_dv3_qlsd_qub_init_rel
 library dev8_dv3_qlsd_drv_lib
-library dev8_dv3_qw1_lib
 library dev8_dv3_qlf_lib
-
 library dev8_dv3_dv3_lib
 library dev8_util_gut_lib
 library dev8_util_cv_lib

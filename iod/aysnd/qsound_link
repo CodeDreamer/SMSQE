@@ -1,0 +1,8 @@
+program dev8_iod_aysnd_qsound_x
+
+section ay
+section ay_hw
+
+input   dev8_iod_aysnd_driver_rel
+input   dev8_iod_aysnd_qsound_rel
+library dev8_iod_aysnd_lib

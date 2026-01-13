@@ -3,8 +3,6 @@ program dev8_sbsext_tk2_rom
 ; Pad ROM to 16kb
 ex dev8_sbsext_tk2_rom_pad_bas
 
-filetype 0
-
 section header
 section banner
 section init

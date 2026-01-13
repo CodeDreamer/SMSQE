@@ -2,7 +2,6 @@ dev8_dv3_qlsd_1sec_rel
 dev8_dv3_qlsd_hd_poll_check_rel
 dev8_dv3_hd_poll_rel
 dev8_dv3_hd_pflush_rel
-dev8_dv3_qlsd_hd_check_rel
 dev8_dv3_hd_check_rel
 dev8_dv3_hd_direct_rel
 dev8_dv3_hd_slbfill_rel

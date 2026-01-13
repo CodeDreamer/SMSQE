@@ -1,5 +1,6 @@
-; Q68 ser device definition & general routines v1.02   2022-2024  W. Lenerz
+; Q68 ser device definition & general routines v1.02   2022-2026  W. Lenerz
 
+; 2025-11-29  1.03 increase ser input buffer to 8K(!), correct port close
 ; 2024-05-06  1.02 prepare for two serports, check depending on machine
 ; 2023.02.23  1.01 changes all over. Remove 230400 baud rate, prepare for 2 ser ports
 
@@ -42,11 +43,12 @@ q68_serdef
 ; use offset+2 as entry
 ;---
 
+q68.ilen equ $2000			; 8K buffer!
 q68_preset
 	assert	spd_pdir,spd_hand-1
 	dc.w	spd_pdir,2,q68_prhd	; no parity, no hardware handshake
 	dc.w	spd_room+2,2,spd.room	; input buffer spare room
-	dc.w	spd_ilen+2,2,spd.ilen	; input buffer length
+	dc.w	spd_ilen+2,2,q68.ilen	; input buffer length
 	dc.w	0
 
 
@@ -66,7 +68,7 @@ q68_vector
 ; Interrupt server table
 ;---
 q68_istable
-	dc.w	0		      ; no server
+	dc.w	0			; no server
 
 
 ;+++
@@ -96,7 +98,9 @@ qsdc_portn
 	beq.s	qsdc_ckok		; yes, this always exists  ->
 	subq.b	#1,d0			; ser2 ?
 	bne.s	qsdc_err		; no, so this doesn't exist ->
-	add.w	#ser_offset,a4		; hardware base for ser2
+	tst.b	q68_mach		; q68?
+	beq.s	qsdc_ckok		; yes, so don't allow port2
+no_q68	move.l	#ser2base,a4
 	bra.s	qsdc_ckok
 qsdc_err
 	clr.l	d0			; port doesn't exist
@@ -189,8 +193,8 @@ q68_open
 	move.w	spd_port(a3),d0 	; port number
 	subq.w	#1,d0			; port 1?
 	beq.s	op_allwd		; yes, ok
-	btst	#0,q68_mach		; Q68 or Q0?
-	beq.s	q68_nimp		; yes, don't allow it
+	tst.b	q68_mach		; Q68?								       ; Q68 ?
+	beq.s	q68_nimp		; yes, don't allow anything other than ser1
 	subq.w	#1,d0			; exactly 2?
 	bne.s	q68_nimp		; no, error
 op_allwd
@@ -233,11 +237,10 @@ q68_ioprts
 ;	all other registers preserved
 ;	status returned according to D0
 ;
-; this is called from label ibio_exout in iod_iob_iox_asm
-; NB not called with jsr (a4)
+; this is called (not with jsr (a4)) from label ibio_exout in iod_iob_iox_asm
+; also called before label sppc_ibuf in smsq_spp_close_asm
 ;---
 q68_oopr
-  move.l	a3,q68_sdhc
 	move.l	a2,-(a7)
 	st	spd_oact(a3)		; set output to go
 	move.l	spd_hbase(a3),a2
@@ -245,5 +248,4 @@ q68_oopr
 	move.l	(a7)+,a2
 	clr.l	d0
 	rts
-
 	end

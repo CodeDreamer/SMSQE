@@ -1,7 +1,5 @@
 program dev8_sbsext_tk2_rom_net
 
-filetype 0
-
 section header
 section banner
 section init
@@ -21,7 +19,6 @@ input dev8_sbsext_tk2_init_rel
 input dev8_sbsext_ext_english_rel
 input dev8_sbsext_ext_english_net_rel
 input dev8_sbsext_tk2_wdef_rel
-!! dev8_sbsext_tk2_procs_asm
 input dev8_sbsext_tk2_procs_rom_net_rel
 input dev8_sbsext_ext_view_rel
 input dev8_sbsext_ext_dset_rel

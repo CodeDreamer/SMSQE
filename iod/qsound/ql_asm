@@ -1,0 +1,155 @@
+; QSound hardware driver for SMSQ/E QSound code     2022 J. Merz and M. Kilgus
+
+	section rom
+
+	xref	qsound_base
+
+	xdef	ay_hw_setup
+	xdef	ay_hw_wrreg
+	xdef	ay_hw_wrall
+	xdef	ay_hw_type
+	xdef	ay_hw_freq
+	xdef	ay_hw_stereo
+	xdef	ay_hw_volume
+
+	include 'dev8_keys_qsound'
+	include 'dev8_iod_qsound_keys'
+
+PA	equ	0	; PIA-PORT A
+CA	equ	1	; PIA-CONTROL-REG. A
+PB	equ	2	; PIA-PORT B
+CB	equ	3	; PIA-CONTROL-REG. B
+
+port	macro
+	lea	rom_start+8192,a5
+	endm
+
+rom_start
+	dc.l	$4afb0001
+	dc.w	0
+	dc.w	start-rom_start
+	dc.w	36
+	dc.b	'QSound V1.94  2022 J.Merz/M.Kilgus',10
+
+rom_regs reg	a0/a3	; Don't preserve A6, it could move during sb.inipr
+start
+	movem.l rom_regs,-(a7)
+
+	port
+	clr.b	ca(a5)
+	move.b	#$ff,pa(a5)
+	move.b	#4,ca(a5)
+	clr.b	cb(a5)
+	move.b	#15,pb(a5)
+	move.b	#4,cb(a5)
+	move.b	#10,pb(a5)
+
+	bsr	qsound_base
+	movem.l (a7)+,rom_regs
+	moveq	#0,d0
+	rts
+
+;+++
+; AY hardware setup
+;
+;	a3 c p	QSound data block
+;---
+ay_hw_setup
+	move.b	#1,qs_chip_count(a3)		; One chip
+	move.b	#3,qs_chan_count(a3)		; = 3 channels
+	move.l	#1500000,qs_chip_freq(a3)	; AY frequency
+	move.b	#ayct.ay,qs_chip_type(a3)	; AY chip
+	move.b	#ayst.abc,qs_stereo(a3) 	; ABC
+	move.b	#255,qs_volume(a3)
+	rts
+
+;+++
+; AY write single register
+;
+;	d0.b cr   Chip number / Error return
+;	d1.b c p  Register value
+;	d2.b c p  Register number
+;	a3   c p  QSound data block
+;	a5   c	  Chip register cache
+;---
+ay_hw_wrreg
+	move.l	a5,-(sp)
+	port
+	andi.b	#$F,d2
+	move.b	d2,pa(a5)
+	move.b	#15,pb(a5)
+	move.b	#10,pb(a5)
+	move.b	d1,pa(a5)
+	move.b	#14,pb(a5)
+	move.b	#10,pb(a5)
+	move.l	(sp)+,a5
+	moveq	#0,d0
+	rts
+
+;+++
+; AY write all registers
+;
+;	d0    r   Error return
+;	d1	s
+;	d2.b c	s Chip number
+;	a3   c p  QSound data block
+;	a5   c	s Chip register cache
+;---
+ay_hw_wrall
+	moveq	#0,d2
+write_a1
+	move.b	(a5,d2),d1
+	bsr.s	ay_hw_wrreg
+	addq.b	#1,d2
+	cmpi.b	#14,d2
+	bne.s	write_a1
+	moveq	#0,d0
+	rts
+
+;+++
+; AY set chip type
+;
+;	d0    r   Error return
+;	d1.b cr   Chip type
+;	d2     s
+;---
+ay_hw_type
+	moveq	#ayct.ay,d1		; We only have an AY chip
+ay_hw_ret
+	moveq	#0,d0
+	rts
+
+;+++
+; AY set chip frequency
+;
+;	d0    r   Error return
+;	d1.l cr   Chip frequency
+;	d2     s
+;---
+ay_hw_freq
+	move.l	#1500000,d1		; We have a fixed frequency
+	bra.s	ay_hw_ret
+
+;+++
+; AY set stereo mode
+;
+;	d0    r   Error return
+;	d1.b cr   Stereo mode
+;	d2     s
+;---
+ay_hw_stereo
+	moveq	#ayst.abc,d1		; We have fixed stereo mode
+	bra.s	ay_hw_ret
+
+;+++
+; AY set stereo mode
+;
+;	d0    r   Error return
+;	d1.b cr   Volume mode
+;	d2     s
+;---
+ay_hw_volume
+	moveq	#255,d1 		; Full volume it is... always!
+	bra.s	ay_hw_ret
+
+	end

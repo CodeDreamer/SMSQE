@@ -1,0 +1,116 @@
+Sprite option block.
+
+A) - Definition
+
+The options block is a list of option items where each option item is structured
+as follows:
+
+
+popt_siz  $00	long	size of option
+popt_nam  $04	long	name of option
+popt_dta  $08		data for this option
+   ....    as much memory as the option needs
+	dc.w	0	make sure that this is on word boundary
+
+
+The list must be terminated by a long word of 0.
+If there are several option items in the list, they are put one at the end
+of the other.
+
+
+As an example, a sprite option block could be as follows (example code
+provided by P Witte):
+
+
+sp_option
+	 dc.l	 sp_option2-*	  Size of this option
+	 dc.l	 'TEST' 	  Option type. It's Per's option!
+	 [... whatever the option needs ...]
+	 ds.w	 0		  Must be word aligned
+sp_option2
+	 dc.l	 sp_option_end-*  Size of this option
+	 dc.l	 'HINT' 	  Option type
+	 dc.w	 12
+	 dc.b	 'Hello World!'
+	 ds.w	 0		  Must be word aligned
+sp_option_end
+	 dc.l	 0		  No other option
+
+
+The length of the sprite must be indicated in such a way such that it can be
+added to a register ax that points to the start of an option, to then point to
+the start of the next option (or the long word 0 which signals the end of the
+option block):
+
+add.l	(ax)+,ax
+
+where ax is any address register.
+
+
+
+By design, there is no requirement that an option needs to be limlted
+in size.
+			
+
+Moreover, the type of sprite option is not pre-determined. Sprite designers
+thus can devise any type of sprite option they desire.
+
+
+At the time of writing, there is one known type of option block:
+
+	"HINT"
+
+which, as data (at popt_dta) takes a word for the length of a string, followed
+by the bytes of the string.
+
+
+B - Modification
+The main charcateristic of an option item is that it need not be static, it
+may be modified by a suitable configuration program.
+
+In the aboove example, the string of the HINT option item could be changed to
+any other string (within the limits of SMSQDOSO strings).
+
+This means that
+	    
+a) each option item will most probably need its own configuration program.
+				    
+At the time of writing, there is no published program that will allow
+for editing of options in a sprite.
+
+				
+b) the length of an option block might change if the length of an option item
+is changed.
+This would have to be taken into account by the designer/programmer of the
+configuration program.	It is strongly suggested that, when this is the case,
+the newly enlarged item is moved to the end of the option block, all other items
+being moved up to take up the slack space.
+
+
+c) a programmer can not rely on an option item being at a specific offset
+from the start of the option block, since a configuaation program may have
+modified a preceeding item. It is necessary to iterate over the option
+items until on gets to the correct one.
+
+
+
+NOTE TO PER:
+
+
+COULD/SHOULD AN OPTION BLOCK POSSIBLE HAVE SEVERAL ITEMS OF THE SAME TYPE,
+e.g. 2 HINT items?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				  
